@@ -4,7 +4,7 @@ NodeGraph
 	var <nodes;
 	var <rootNode;
 
-	var <sequencer;
+	var <>sequencer;
 
 	*new {
 		// rootNode.graph_(this);
@@ -21,7 +21,7 @@ NodeGraph
 	}
 
 	addNode {|node|
-		if( node.name != \rootNode, {			
+		if( node.name != \rootNode, {
 			nodes[node.name] = node;
 		})
 	}

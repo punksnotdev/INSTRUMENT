@@ -1,4 +1,4 @@
-Sequencer
+Sequencer : InstrumentNode
 {
 	var <patterns;
 

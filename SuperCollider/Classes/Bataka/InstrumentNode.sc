@@ -14,8 +14,6 @@ InstrumentNode {
 		}, {
 			^super.new.init(name_,this.graph);
 		})
-		// nodeGraph.postln;
-		^super.new.init(name,graph_);
 	}
 
 	*initClass{|graph_|
@@ -27,7 +25,7 @@ InstrumentNode {
 		nodeGraph = nodeGraph_;
 
 		if(nodeGraph!=nil,{ nodeGraph.addNode(this) });
-		
+
 	}
 
 
