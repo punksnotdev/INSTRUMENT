@@ -53,6 +53,7 @@ Sequencer : I8Tnode
 	addPattern {|track,key,pattern,repetitions|
 
 		var eventName;
+		var newEvent;
 
 		if( patterns[ track ] == nil, {
 			patterns[ track ] = Dictionary.new;
@@ -66,11 +67,10 @@ Sequencer : I8Tnode
 			eventName = eventName ++ "-" ++ track ++ "-" ++ key;
 			eventName = eventName.toLower;
 
-			// var e = new i8tEvent( this, eventName );
+			newEvent = I8Tevent.new( eventName, this, {|e,l| [e,l].postln; });
 
-			sequence.add(
-				"Event"
-			);
+			sequence.add( newEvent );
+
 			// [track][key] = repetitions;
 
 		}

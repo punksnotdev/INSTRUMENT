@@ -19,7 +19,15 @@ Tests {
 		2.do{"".postln;};
 
 		tests.collect({|test,key|
-			( key ++ " -> " ++ test.value ).postln;
+
+			if( test.value, {
+				"[   OK!   ] <- ".post;
+			}, {
+				"[ FAILURE ] <- ".post;
+			});
+
+			key.postln;
+
 		});
 
 		2.do{"".postln;};

@@ -4,19 +4,22 @@ I8Tevent
 	var <>name;
 	var <>listener;
 	var <>parameters;
+	var <>action;
 
-	*new {|name_,listener_|
-		^super.new.init(name_,listener_);
+
+	*new {|listener_,callback_,name_|
+		^super.new.init(listener_,callback_,name_);
 	}
 
-	init{|name_,listener_|
-		name = name_;
+	init{|listener_,callback_,name_|
 		listener = listener_;
+		action = callback_;
+		name = name_;
 		parameters = Dictionary.new;
 	}
 
 	execute {
-		^listener.execute( this );
+		^listener.executeEvent( this );
 	}
 
 }

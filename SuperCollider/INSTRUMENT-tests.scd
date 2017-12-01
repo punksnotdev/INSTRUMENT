@@ -94,26 +94,29 @@ t.tests["Events with Parameters call Listeners"] = {
 	var callback;
 	var result;
 
-	callback = {|event|
-
-		event.parameters;
-
+	callback = {|event_,listener_|
+		if(event_.listener == listener_,{
+			event_;
+		});
 	};
 
 	g = NodeGraph.new;
 
 	listener = I8Tnode.new("testListener");
 
-	listener.eventAction = callback;
-
-	event = I8Tevent.new( "testEvent", listener );
+	event = I8Tevent.new( listener, callback, "testEvent" );
 
 	event.parameters[\testParameter] = "testValue";
 
-	event.parameters == event.execute();
+	result = event.execute();
+
+	event.name == result.name &&
+	event.parameters == result.parameters;
 
 
 };
+
+
 
 // t.tests["Sequencer stores Patterns"] = {
 //
