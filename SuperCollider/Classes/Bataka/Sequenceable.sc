@@ -18,21 +18,19 @@ Sequenceable : I8Tnode
 	init{|name_,graph_|
 		super.init(name_,graph_);
 		sequencer = classSequencer;
+		sequencer.registerInstrument(this);
 	}
 
 	seq {|pattern,repetitions,key|
 		this.addPattern(key,pattern,repetitions);
 	}
 	addPattern {|key,pattern,repetitions|
-		if( key == nil, {
-			key = sequencer.sequence[name].size;
-		});
 		sequencer.addPattern(name,key,pattern,repetitions);
 	}
 
 
 	play {
-		sequencer.playInstrument( this );
+		^sequencer.playInstrument( this );
 	}
 
 }

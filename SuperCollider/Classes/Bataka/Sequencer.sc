@@ -1,10 +1,10 @@
+// instruments se va a tomar de nodegraph!
 //defaultRepetitions
 
 Sequencer : I8Tnode
 {
 
-	var <patterns;
-	var <sequence;
+	var <instruments;
 
 	var <>repeat;
 
@@ -14,8 +14,8 @@ Sequencer : I8Tnode
 
 	init {
 
-		patterns = Dictionary.new();
-		sequence = List.new();
+		instruments = Dictionary.new();
+
 
 		repeat = 4;
 
@@ -23,73 +23,40 @@ Sequencer : I8Tnode
 
 	play {
 
-
-		// Tdef(\batako1,{
-		// 	inf.do {
-        //
-		// 		instruments.collect({|instrument|
-		// 			// instrument.getBeat[]
-		// 			// instrument[pattern][currentBeat]
-		// 			// instrument[synth].trig();
-		// 			// instrument.ar;
-		// 			// instrument.postln;
-		// 		});
-        //
-		// 		1.wait;
-        //
-		// 	}
-		// }).play;
-
-
 	}
 
 	playInstrument {|instrument|
-		["play ",instrument, instrument.getName()].postln;
+		^instrument
 	}
 
 	registerInstrument {|instrument|
-		( "Register: " ++ instrument.getName()).postln;
+		this.createTrack(instrument);
 	}
 
-	addPattern {|track,key,pattern,repetitions|
+	addPattern {|track,key,pattern,repetitions=0|
+		this.createTrack(track);
+		instruments[ track ].addPattern(key,pattern,repetitions);
+	}
 
-		var eventName;
-		var newEvent;
+	createTrack {|instrument|
 
-		if( patterns[ track ] == nil, {
-			patterns[ track ] = Dictionary.new;
-		});
+		if( instrument.isKindOf(Instrument), {
 
+			if( instruments[instrument.name] == nil, {
+				instruments[instrument.name] = SequencerTrack.new(instrument);
+			}, {
+				instruments[instrument.name].instrument = instrument;
+			});
 
+		},{
 
-		if( patterns[ track ][ key ] == nil, {
-
-			eventName = pattern.class.name;
-			eventName = eventName ++ "-" ++ track ++ "-" ++ key;
-			eventName = eventName.toLower;
-
-			newEvent = I8Tevent.new( this, {|e,l| [e,l].postln; }, eventName);
-
-			sequence.add( newEvent );
-
-			// if( repetitions != nil && repetitions != 0 ) {
-			// [track][key] = repetitions;
-			// }
+			if( instruments[instrument] == nil, {
+				instruments[instrument] = SequencerTrack.new();
+			});
 
 		});
 
-
-		patterns[ track ][ key ] = pattern;
-
-
 	}
 
-
-	getPattern {|i|
-		^patterns[i];
-	}
-	getBeat {|pattern,beat|
-		^this.getPattern(pattern)[beat]
-	}
 
 }

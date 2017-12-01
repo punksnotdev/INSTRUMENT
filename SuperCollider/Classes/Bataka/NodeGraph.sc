@@ -16,12 +16,12 @@ NodeGraph
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
 
-		rootNode = I8Tnode.new(\rootNode,this);
+		rootNode = I8Tnode.new("rootNode",this);
 
 	}
 
 	addNode {|node|
-		if( node.name != \rootNode, {
+		if( node.name != "rootNode", {
 			nodes[node.name] = node;
 		})
 	}
