@@ -1,10 +1,10 @@
-InstrumentNode {
+I8Tnode : I8TeventListener
+{
 
-	classvar test;
 	classvar <>graph;
 
-	var <>nodeGraph;
 	var <>name;
+	var <>nodeGraph;
 
 	*new {|name_,graph_|
 
@@ -14,6 +14,7 @@ InstrumentNode {
 		}, {
 			^super.new.init(name_,this.graph);
 		})
+
 	}
 
 	*initClass{|graph_|
@@ -21,13 +22,12 @@ InstrumentNode {
 	}
 
 	init {|name_,nodeGraph_|
+
 		name = name_;
 		nodeGraph = nodeGraph_;
 
 		if(nodeGraph!=nil,{ nodeGraph.addNode(this) });
 
 	}
-
-
 
 }

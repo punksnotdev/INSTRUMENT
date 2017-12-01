@@ -1,13 +1,23 @@
-Sequencer : InstrumentNode
+//defaultRepetitions
+
+Sequencer : I8Tnode
 {
+
 	var <patterns;
+	var <sequence;
+
+	var <>repeat;
 
 	*new {
 		^super.new.init();
 	}
 
 	init {
+
 		patterns = Dictionary.new();
+
+		repeat = 4;
+
 	}
 
 	play {
@@ -40,16 +50,31 @@ Sequencer : InstrumentNode
 		( "Register: " ++ instrument.getName()).postln;
 	}
 
-	seq {|track,key,pattern|
-		this.addPattern(track,key,pattern);
-	}
-	addPattern {|track,key,pattern|
+	addPattern {|track,key,pattern,repetitions|
+
+		var eventName;
 
 		if( patterns[ track ] == nil, {
 			patterns[ track ] = Dictionary.new;
 		});
 
 		patterns[ track ][ key ] = pattern;
+
+		if( repetitions != nil && repetitions != 0 ) {
+
+			eventName = pattern.class.name;
+			eventName = eventName ++ "-" ++ track ++ "-" ++ key;
+			eventName = eventName.toLower;
+
+			// var e = new i8tEvent( this, eventName );
+
+			sequence.add(
+				"Event"
+			);
+			// [track][key] = repetitions;
+
+		}
+
 
 	}
 

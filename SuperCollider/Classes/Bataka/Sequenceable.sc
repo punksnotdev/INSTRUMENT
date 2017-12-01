@@ -1,4 +1,4 @@
-Sequenceable : InstrumentNode
+Sequenceable : I8Tnode
 {
 
 	classvar <>classSequencer;
@@ -20,14 +20,14 @@ Sequenceable : InstrumentNode
 		sequencer = classSequencer;
 	}
 
-	seq {|pattern,key|
-		this.addPattern(key,pattern);
+	seq {|pattern,repetitions,key|
+		this.addPattern(key,pattern,repetitions);
 	}
-	addPattern {|key,pattern|
+	addPattern {|key,pattern,repetitions|
 		if( key == nil, {
-			key = sequencer.patterns[name].size;
+			key = sequencer.sequence[name].size;
 		});
-		sequencer.addPattern(name,key,pattern);
+		sequencer.addPattern(name,key,pattern,repetitions);
 	}
 
 

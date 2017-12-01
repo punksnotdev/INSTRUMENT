@@ -86,58 +86,93 @@ t.tests["Instrument has Sequencer"] = {
 };
 
 
-t.tests["Sequencer stores Patterns"] = {
+t.tests["Events with Parameters call Listeners"] = {
 
-	var g = NodeGraph.new;
+	var g;
+	var event;
+	var listener;
+	var callback;
+	var result;
 
-	var s = g.sequencer;
+	callback = {|event|
 
-	var patterns;
+		event.parameters;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
+	};
 
-	s.seq(\testTrack, "newPattern1", newPattern1 );
-	s.seq(\testTrack, "newPattern2", newPattern2 );
+	g = NodeGraph.new;
 
-	patterns = s.patterns[\testTrack];
+	listener = I8Tnode.new("testListener");
 
+	listener.eventAction = callback;
 
-	patterns["newPattern1"] == newPattern1 &&
-	patterns["newPattern2"] == newPattern2 &&
-	patterns.size == 2
+	event = I8Tevent.new( "testEvent", listener );
+
+	event.parameters[\testParameter] = "testValue";
+
+	event.parameters == event.execute();
 
 
 };
 
-
-
-t.tests["Instrument adds Pattern to Sequencer"] = {
-
-	var g = NodeGraph.new;
-
-	var i = Instrument.new("testInstrument");
-
-	var patterns;
-
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
-
-	i.seq(newPattern1);
-	i.seq(newPattern2,"newPattern2");
-
-	patterns = g.sequencer.patterns[i.name];
-
-	patterns[0] == newPattern1 &&
-	patterns["newPattern2"] == newPattern2 &&
-	patterns.size == 2;
-
-};
-
-
-// t.tests["Sequencer plays Patterns"] = {
+// t.tests["Sequencer stores Patterns"] = {
 //
 // 	var g = NodeGraph.new;
+//
+// 	var s = g.sequencer;
+//
+// 	var patterns;
+//
+// 	var newPattern1 = [1,0,0,1,0,1,0,0];
+// 	var newPattern2 = [1,0,1,0,1,0,0,0];
+//
+// 	var patternsCorrect;
+// 	var sequenceCorrect;
+//
+//
+// 	s.addPattern(\testTrack, "newPattern1", newPattern1 );
+// 	s.addPattern(\testTrack, "newPattern2", newPattern2 );
+//
+// 	patterns = s.patterns[\testTrack];
+//
+// 	patternsCorrect =
+// 	patterns["newPattern1"] == newPattern1 &&
+// 	patterns["newPattern2"] == newPattern2 &&
+// 	patterns.size == 2;
+//
+// 	sequenceCorrect = false;
+//
+// 	patternsCorrect && sequenceCorrect;
+//
+// };
+
+
+//
+// t.tests["Instrument adds Pattern to Sequencer"] = {
+//
+// 	var g = NodeGraph.new;
+//
+// 	var i = Instrument.new("testInstrument");
+//
+// 	var patterns;
+//
+// 	var newPattern1 = [1,0,0,1,0,1,0,0];
+// 	var newPattern2 = [1,0,1,0,1,0,0,0];
+//
+// 	i.seq(newPattern1);
+// 	i.seq(newPattern2,"newPattern2");
+//
+// 	patterns = g.sequencer.sequence[i.name];
+//
+// 	patterns[0] == newPattern1 &&
+// 	patterns["newPattern2"] == newPattern2 &&
+// 	patterns.size == 2;
+//
+// };
+//
+
+
+// t.tests["Sequencer stores Repetitions"] = {
 //
 // 	false
 //
@@ -145,12 +180,7 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 
 
-
 // t.tests["Instrument triggers play in Sequencer"] = {
-//
-// 	var g = NodeGraph.new;
-//
-// 	var i = Instrument.new("testInstrument");
 //
 // 	false
 //
@@ -158,10 +188,6 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 
 // t.tests["Sequencer plays Instrument"] = {
-//
-// 	var g = NodeGraph.new;
-//
-// 	var i = Instrument.new("testInstrument");
 //
 // 	false
 //

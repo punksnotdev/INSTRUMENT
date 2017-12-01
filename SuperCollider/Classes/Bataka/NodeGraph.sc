@@ -16,7 +16,7 @@ NodeGraph
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
 
-		rootNode = InstrumentNode.new(\rootNode,this);
+		rootNode = I8Tnode.new(\rootNode,this);
 
 	}
 
