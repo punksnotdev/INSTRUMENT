@@ -40,11 +40,17 @@ Sequencer : InstrumentNode
 		( "Register: " ++ instrument.getName()).postln;
 	}
 
+	seq {|track,key,pattern|
+		this.addPattern(track,key,pattern);
+	}
+	addPattern {|track,key,pattern|
 
-	addPattern {|pattern|
-		patterns.add(
-			pattern
-		);
+		if( patterns[ track ] == nil, {
+			patterns[ track ] = Dictionary.new;
+		});
+
+		patterns[ track ][ key ] = pattern;
+
 	}
 
 

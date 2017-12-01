@@ -18,8 +18,18 @@ Sequenceable : InstrumentNode
 	init{|name_,graph_|
 		super.init(name_,graph_);
 		sequencer = classSequencer;
-
 	}
+
+	seq {|pattern,key|
+		this.addPattern(key,pattern);
+	}
+	addPattern {|key,pattern|
+		if( key == nil, {
+			key = sequencer.patterns[name].size;
+		});
+		sequencer.addPattern(name,key,pattern);
+	}
+
 
 	play {
 		sequencer.playInstrument( this );
