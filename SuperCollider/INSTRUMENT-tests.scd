@@ -118,36 +118,43 @@ t.tests["Events with Parameters call Listeners"] = {
 
 
 
-// t.tests["Sequencer stores Patterns"] = {
-//
-// 	var g = NodeGraph.new;
-//
-// 	var s = g.sequencer;
-//
-// 	var patterns;
-//
-// 	var newPattern1 = [1,0,0,1,0,1,0,0];
-// 	var newPattern2 = [1,0,1,0,1,0,0,0];
-//
-// 	var patternsCorrect;
-// 	var sequenceCorrect;
-//
-//
-// 	s.addPattern(\testTrack, "newPattern1", newPattern1 );
-// 	s.addPattern(\testTrack, "newPattern2", newPattern2 );
-//
-// 	patterns = s.patterns[\testTrack];
-//
-// 	patternsCorrect =
-// 	patterns["newPattern1"] == newPattern1 &&
-// 	patterns["newPattern2"] == newPattern2 &&
-// 	patterns.size == 2;
-//
-// 	sequenceCorrect = false;
-//
-// 	patternsCorrect && sequenceCorrect;
-//
-// };
+t.tests["Sequencer stores Patterns"] = {
+
+	var g = NodeGraph.new;
+
+	var s = g.sequencer;
+
+	var patterns;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern2 = [1,0,1,0,1,0,0,0];
+	var newPattern3 = [1,1,1,0,0,0,1,0];
+
+	var patternsCorrect;
+	var sequenceCountBefore;
+	var sequenceCorrect;
+
+	sequenceCountBefore = s.sequence.size;
+
+	s.addPattern(\testTrack, "newPattern1", newPattern1 );
+	s.addPattern(\testTrack, "newPattern2", newPattern2 );
+
+	// test it!
+	s.addPattern(\testTrack, "newPattern1", newPattern1 );
+	s.addPattern(\testTrack, "newPattern2", newPattern2 );
+
+	patterns = s.patterns[\testTrack];
+
+	patternsCorrect =
+	patterns["newPattern1"] == newPattern1 &&
+	patterns["newPattern2"] == newPattern2 &&
+	patterns.size == 2;
+
+	sequenceCorrect = s.sequence.size - sequenceCountBefore == 2;
+
+	patternsCorrect && sequenceCorrect;
+
+};
 
 
 //

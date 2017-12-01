@@ -15,6 +15,7 @@ Sequencer : I8Tnode
 	init {
 
 		patterns = Dictionary.new();
+		sequence = List.new();
 
 		repeat = 4;
 
@@ -59,21 +60,26 @@ Sequencer : I8Tnode
 			patterns[ track ] = Dictionary.new;
 		});
 
-		patterns[ track ][ key ] = pattern;
 
-		if( repetitions != nil && repetitions != 0 ) {
+
+		if( patterns[ track ][ key ] == nil, {
 
 			eventName = pattern.class.name;
 			eventName = eventName ++ "-" ++ track ++ "-" ++ key;
 			eventName = eventName.toLower;
 
-			newEvent = I8Tevent.new( eventName, this, {|e,l| [e,l].postln; });
+			newEvent = I8Tevent.new( this, {|e,l| [e,l].postln; }, eventName);
 
 			sequence.add( newEvent );
 
+			// if( repetitions != nil && repetitions != 0 ) {
 			// [track][key] = repetitions;
+			// }
 
-		}
+		});
+
+
+		patterns[ track ][ key ] = pattern;
 
 
 	}
