@@ -25,18 +25,34 @@ Sequencer : I8Tnode
 
 	}
 
-	playInstrument {|instrument|
-		^instrument
+
+	playInstrument {|instrument, position|
+		^instruments[instrument.name].play();
 	}
+	stopInstrument {|instrument|
+		^instruments[instrument.name].stop();
+	}
+
 
 	registerInstrument {|instrument|
 		this.createTrack(instrument);
 	}
+	unregisterInstrument {|instrument|
 
+	}
+
+
+	seq {|track,key,pattern,repetitions=0|
+		this.addPattern(track,key,pattern,repetitions);
+	}
 	addPattern {|track,key,pattern,repetitions=0|
 		this.createTrack(track);
 		instruments[ track ].addPattern(key,pattern,repetitions);
 	}
+	removePattern {|track,key,pattern|
+		instruments[ track ].removePattern(key,pattern);
+	}
+
 
 	createTrack {|instrument|
 
@@ -54,6 +70,15 @@ Sequencer : I8Tnode
 				instruments[instrument] = SequencerTrack.new();
 			});
 
+		});
+
+	}
+	deleteTrack {|instrument|
+
+		if( instrument.isKindOf(Instrument), {
+			instruments[instrument.name] = nil;
+		},{
+			instruments[instrument] = nil;
 		});
 
 	}

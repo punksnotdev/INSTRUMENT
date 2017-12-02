@@ -5,21 +5,21 @@ Sequenceable : I8Tnode
 	var <>sequencer;
 
 	*new{|name_,graph_|
-		this.initClass(this.graph);
+		// this.initClass(this.graph);
 		^super.new.init(name_,this.graph);
 	}
 
-	*initClass{|graph_|
-		super.initClass(graph_);
-		if(graph_!=nil,{
-			classSequencer = graph_.sequencer;
-		});
-	}
-	init{|name_,graph_|
-		super.init(name_,graph_);
-		sequencer = classSequencer;
-		sequencer.registerInstrument(this);
-	}
+	// *initClass{|graph_|
+	// 	super.initClass(graph_);
+	// 	if(graph_!=nil,{
+	// 		classSequencer = graph_.sequencer;
+	// 	});
+	// }
+	// init{|name_,graph_|
+	// 	super.init(name_,graph_);
+		// sequencer = classSequencer;
+		// sequencer.registerInstrument(this);
+	// }
 
 	seq {|pattern,repetitions,key|
 		this.addPattern(key,pattern,repetitions);
@@ -27,10 +27,16 @@ Sequenceable : I8Tnode
 	addPattern {|key,pattern,repetitions|
 		sequencer.addPattern(name,key,pattern,repetitions);
 	}
+	removePattern {|key,pattern|
+		sequencer.removePattern(name,key,pattern);
+	}
 
 
-	play {
-		^sequencer.playInstrument( this );
+	play {|position|
+		^sequencer.playInstrument( this, position );
+	}
+	stop {|position|
+		^sequencer.stopInstrument( this );
 	}
 
 }

@@ -17,6 +17,10 @@ I8Tnode : I8TeventListener
 
 	}
 
+	free {
+		nodeGraph.free( this );
+	}
+
 	*initClass{|graph_|
 		graph = graph_;
 	}

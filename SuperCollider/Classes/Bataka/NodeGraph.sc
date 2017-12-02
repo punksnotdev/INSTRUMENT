@@ -23,7 +23,21 @@ NodeGraph
 	addNode {|node|
 		if( node.name != "rootNode", {
 			nodes[node.name] = node;
+
+			if( node.isKindOf(Sequenceable), {
+
+				node.sequencer = sequencer;
+				sequencer.registerInstrument(node);
+
+			})
 		})
+	}
+
+	free {|node|
+		if( node.isKindOf(Sequenceable), {
+			sequencer.instruments[node.name] = nil;
+		});
+		nodes[node.name] = nil;
 	}
 
 }

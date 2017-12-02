@@ -36,6 +36,22 @@ t.tests["Instrument is in Node Graph"] = {
 
 };
 
+
+
+t.tests["Instrument is removed from Node Graph"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new("testInstrument");
+
+	var nodeName = i.name;
+
+	i.free;
+
+	g.nodes[nodeName] == nil;
+
+};
+
 t.tests["Node Graph Instruments Communication"] = {
 
 	var g = NodeGraph.new;
@@ -77,6 +93,18 @@ t.tests["Instrument has Sequencer Track"] = {
 	var i = Instrument.new("trackInstrument");
 
 	g.sequencer.instruments[i.name].isKindOf(SequencerTrack);
+
+};
+
+t.tests["Deleting Node removes corresponding Sequencer Track"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new("trackInstrument");
+
+	i.free;
+
+	g.sequencer.instruments[i.name] == nil
 
 };
 
@@ -133,12 +161,12 @@ t.tests["Sequencer stores Patterns"] = {
 		sequenceCountBefore = 0;
 	});
 
-	s.addPattern("noInstrument", "newPattern1", newPattern1 );
-	s.addPattern("noInstrument", "newPattern2", newPattern2 );
+	s.seq("noInstrument", "newPattern1", newPattern1 );
+	s.seq("noInstrument", "newPattern2", newPattern2 );
 
 	// test it!
-	s.addPattern("noInstrument", "newPattern1", newPattern1 );
-	s.addPattern("noInstrument", "newPattern2", newPattern2 );
+	s.seq("noInstrument", "newPattern1", newPattern1 );
+	s.seq("noInstrument", "newPattern2", newPattern2 );
 
 	patterns = s.instruments["noInstrument"].patterns;
 
@@ -147,11 +175,148 @@ t.tests["Sequencer stores Patterns"] = {
 	patterns["newPattern2"] == newPattern2 &&
 	patterns.size == 2;
 
-	sequenceCorrect = s.instruments["noInstrument"].sequence.size - sequenceCountBefore == 2;
+	sequenceCorrect = s.instruments["noInstrument"].sequence.size - sequenceCountBefore == 4;
 
 	patternsCorrect && sequenceCorrect;
 
 };
+
+
+t.tests["Sequencer stores Patterns in Sequence in chronological order when key and value is the same"] = {
+
+	var g = NodeGraph.new;
+
+	var s = g.sequencer;
+
+	var patterns;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+
+	var repetitionsCorrect1 = false;
+	var repetitionsCorrect2 = false;
+	var repetitionsCorrect3 = false;
+	var trackSequence;
+
+	// use repetitions to check correctness
+
+	s.seq("noInstrument", 0, newPattern1, 2);
+	s.seq("noInstrument", 0, newPattern1, 4);
+	s.seq("noInstrument", 0, newPattern1, 6);
+
+	trackSequence = s.instruments["noInstrument"].sequence;
+
+	repetitionsCorrect1 = trackSequence[0].parameters["repetitions"] == 2;
+	repetitionsCorrect2 = trackSequence[1].parameters["repetitions"] == 4;
+	repetitionsCorrect3 = trackSequence[2].parameters["repetitions"] == 6;
+
+	trackSequence.size == 3 &&
+	repetitionsCorrect1 &&
+	repetitionsCorrect2 &&
+	repetitionsCorrect3;
+
+};
+
+
+
+
+t.tests["Sequencer removes Patterns"] = {
+
+	var g = NodeGraph.new;
+
+	var s = g.sequencer;
+
+	var patterns;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern2 = [1,0,1,0,1,0,0,0];
+	var newPattern3 = [1,1,1,0,0,0,1,0];
+	var newPattern4 = [1,0,0,0,0,0,1,0];
+
+	var patternsCountBefore;
+	var sequenceCountBefore;
+
+	if( s.instruments["noInstrument"] == nil, {
+		sequenceCountBefore = 0;
+	});
+
+	s.seq("noInstrument", 0, newPattern1 );
+	s.seq("noInstrument", 1, newPattern2 );
+	s.seq("noInstrument", "newPattern3", newPattern3 );
+	s.seq("noInstrument", "newPattern4", newPattern4 );
+
+	patternsCountBefore = s.instruments["noInstrument"].patterns.size;
+	sequenceCountBefore = s.instruments["noInstrument"].sequence.size;
+
+	s.removePattern("noInstrument", 0 );
+	s.removePattern("noInstrument",  1 );
+	s.removePattern("noInstrument", "newPattern3" );
+	s.removePattern("noInstrument",  newPattern4 );
+
+
+	patternsCountBefore == 4 &&
+	sequenceCountBefore == 4 &&
+	s.instruments["noInstrument"].patterns.size == 0 &&
+	s.instruments["noInstrument"].sequence.size == 0
+
+};
+
+
+
+t.tests["Sequencer removes Patterns from Sequence in reverse chronological order when value is the same"] = {
+
+	var g = NodeGraph.new;
+
+	var s = g.sequencer;
+
+	var patterns;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+
+	var repetitionsCorrect1 = false;
+	var repetitionsCorrect2 = false;
+	var repetitionsCorrect3 = false;
+	var trackSequence;
+	var size;
+	// use repetitions to check correctness
+
+	s.seq("noInstrument", 0, newPattern1, 2);
+	s.seq("noInstrument", 0, newPattern1, 4);
+	s.seq("noInstrument", 0, newPattern1, 6);
+
+	trackSequence = s.instruments["noInstrument"].sequence;
+
+	// trackSequence.size.postln;
+	size = trackSequence.size-1;
+	repetitionsCorrect1 = trackSequence[size].parameters["repetitions"] == 6;
+
+	s.removePattern("noInstrument",  newPattern1 );
+
+
+	// trackSequence.size.postln;
+	size = trackSequence.size-1;
+	repetitionsCorrect2 = trackSequence[size].parameters["repetitions"] == 4;
+
+	s.removePattern("noInstrument",  newPattern1 );
+
+	// trackSequence.size.postln;
+	size = trackSequence.size-1;
+	repetitionsCorrect3 = trackSequence[size].parameters["repetitions"] == 2;
+
+
+	s.removePattern("noInstrument",  newPattern1 );
+
+	// trackSequence.size.postln;
+
+
+	// trackSequence.size == 0 &&
+	repetitionsCorrect1 &&
+	repetitionsCorrect2 &&
+	repetitionsCorrect3;
+
+};
+
+
+
 
 
 t.tests["Instrument adds Pattern to Sequencer"] = {
@@ -168,23 +333,57 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 	i.seq(newPattern1);
 
-	// patterns with no keys get added even when identical
-	i.seq(newPattern2,4);
-	i.seq(newPattern2,4);
+	i.seq(newPattern2,0,"newPattern2");
 
-	// patterns with keys dont get duplicated:
-	i.seq(newPattern3,0,"newPattern3");
-	i.seq(newPattern2,0,"newPattern3");
+	// patterns with no keys get added even when identical
+	i.seq(newPattern3,4);
+	i.seq(newPattern3,4);
+
 
 	patterns = g.sequencer.instruments[i.name].patterns;
 
 	patterns[0] == newPattern1 &&
-	patterns[1] == newPattern2 &&
-	patterns["newPattern3"] == newPattern2 &&
+	patterns["newPattern2"] == newPattern2 &&
+	patterns[2] == newPattern3 &&
+	patterns[3] == newPattern3 &&
 	patterns.size == 4 &&
 	g.sequencer.instruments[i.name].sequence.size == 4;
 
 };
+
+// t.tests["Instrument removes Patterns from Sequencer"] = {
+//
+// 	var g = NodeGraph.new;
+//
+// 	var i = Instrument.new("testInstrument");
+//
+// 	var patterns;
+//
+// 	var newPattern1 = [1,0,0,1,0,1,0,0];
+// 	var newPattern2 = [1,0,1,0,1,0,0,0];
+// 	var newPattern3 = [1,0,0,0,1,0,1,0];
+//
+// 	i.seq(newPattern1);
+//
+// 	i.seq(newPattern2,0,"newPattern2");
+//
+// 	// patterns with no keys get added even when identical
+// 	i.seq(newPattern3,4);
+// 	i.seq(newPattern3,4);
+//
+//
+// 	patterns = g.sequencer.instruments[i.name].patterns;
+//
+// 	patterns[0] == newPattern1 &&
+// 	patterns["newPattern2"] == newPattern2 &&
+// 	patterns[2] == newPattern3 &&
+// 	patterns[3] == newPattern3 &&
+// 	patterns.size == 4 &&
+// 	g.sequencer.instruments[i.name].sequence.size == 4;
+//
+// 	false;
+//
+// };
 
 
 
@@ -207,32 +406,40 @@ t.tests["Sequencer stores Repetitions"] = {
 
 
 };
-
-
-
-t.tests["Instrument triggers play in Sequencer"] = {
-
-	var g = NodeGraph.new;
-
-	var i = Instrument.new("testInstrument");
-
-	var patterns;
-
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
-
-	i.seq(newPattern1,2);
-	i.seq(newPattern1,4);
-
-	i == i.play();
-
-};
-
-
-// t.tests["Sequencer plays Instrument"] = {
 //
-// 	false
+//
+//
+// t.tests["Instrument triggers play/stop in Sequencer"] = {
+//
+// 	var g = NodeGraph.new;
+//
+// 	var i = Instrument.new("testInstrument");
+//
+// 	var patterns;
+//
+// 	var newPattern1 = [1,0,0,1,0,1,0,0];
+// 	var newPattern2 = [1,0,1,0,1,0,0,0];
+//
+// 	i.seq(newPattern1,2);
+// 	i.seq(newPattern1,4);
+//
+// 	i.play();
+//
+// 	if( g.sequencer.instruments[i.name].playing, {
+// 		i.stop();
+// 	});
+//
+// 	g.sequencer.instruments[i.name].playing == false
 //
 // };
-
+//
+//
+// // t.tests["Sequencer plays Instrument"] = {
+// //
+// // 	false
+// //
+// // };
+//
+// // test delete patterns, tracks, instruments, etc.
+//
 t.run;
