@@ -11,6 +11,7 @@ SequencerTrack
 	var <patternEvents;
 
 	var <playing;
+	var beat;
 
 	*new {|instrument_|
 		^super.new.init(instrument_);
@@ -25,16 +26,30 @@ SequencerTrack
 			name = instrument_;
 		});
 
+		beat = 0;
+
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
 	}
 
+	fwd{|i|
+		if( playing == true, {
+
+			if( ( i % (32/instrument.speed).floor ) == 0, {
+				beat = beat + 1;
+				beat.postln;
+			});
+
+		});
+	}
 	play {|position|
+		if( position != nil, { beat = position; });
 		^playing = true;
 	}
 	stop {|position|
+		if( position != nil, { beat = position; });
 		^playing = false;
 	}
 

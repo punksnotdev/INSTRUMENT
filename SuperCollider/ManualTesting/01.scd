@@ -1,13 +1,15 @@
-g = NodeGraph.new;
+(
 
-i = Instrument.new("test")
+	g = NodeGraph.new;
 
-d = [\test,123].asDict
+	g.sequencer.play;
 
-d[\test]
+	i = Instrument.new("test1");
 
-d=Dictionary.new;
-d["a"]=123;
-d["b"]=456;
+	i.play;
 
-d.asPairs
+	j = Instrument.new("test2");
+	j.speed = 3;
+	j.play;
+
+)

@@ -3,9 +3,15 @@ Sequenceable : I8Tnode
 
 	classvar <>classSequencer;
 	var <>sequencer;
+	var <>speed;
 
 	*new{|name_,graph_|
 		^super.new.init(name_,this.graph);
+	}
+
+	init{|name_,graph_|
+		super.init(name_,graph_);
+		speed = 1;
 	}
 
 	seq {|pattern,key,parameters|
@@ -32,5 +38,6 @@ Sequenceable : I8Tnode
 	trigger {
 		// do something
 	}
+
 
 }

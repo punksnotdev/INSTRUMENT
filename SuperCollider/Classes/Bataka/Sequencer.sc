@@ -8,6 +8,8 @@ Sequencer : I8Tnode
 
 	var <>repeat;
 
+	var tdef;
+
 	*new {
 		^super.new.init();
 	}
@@ -23,21 +25,31 @@ Sequencer : I8Tnode
 
 	play {
 
+		tdef = Tdef(\sequencer,{
 
-		/*
+			var beat = 0;
+
+			inf.do{|i|
+
+				instruments.collect({|track|
+					track.fwd(i);
+				});
+
+				(1/32).wait;
+			}
 
 
+		}).play;
 
-		*/
+	}
 
-
-
-
+	stop {
+		tdef.stop;
 	}
 
 
 	playInstrument {|instrument, position|
-		^instruments[instrument.name].play();
+		^instruments[instrument.name].play(position);
 	}
 	stopInstrument {|instrument|
 		^instruments[instrument.name].stop();
@@ -93,5 +105,11 @@ Sequencer : I8Tnode
 
 	}
 
+
+	setInstrumentSpeed{|instrument|
+
+		// instruments[]
+
+	}
 
 }
