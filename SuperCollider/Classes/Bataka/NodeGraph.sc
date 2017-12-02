@@ -25,11 +25,10 @@ NodeGraph
 			nodes[node.name] = node;
 
 			if( node.isKindOf(Sequenceable), {
-
 				node.sequencer = sequencer;
 				sequencer.registerInstrument(node);
-
 			})
+			
 		})
 	}
 

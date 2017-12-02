@@ -388,8 +388,6 @@ t.tests["Sequencer stores Repetitions"] = {
 
 	var i = Instrument.new("testInstrument");
 
-	var patterns;
-
 	var newPattern1 = [1,0,0,1,0,1,0,0];
 	var newPattern2 = [1,0,1,0,1,0,0,0];
 
@@ -410,13 +408,10 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 
 	var i = Instrument.new("testInstrument");
 
-	var patterns;
-
 	var newPattern1 = [1,0,0,1,0,1,0,0];
 	var newPattern2 = [1,0,1,0,1,0,0,0];
 
-	i.seq(newPattern1,2);
-	i.seq(newPattern1,4);
+	i.seq(newPattern1);
 
 	i.play();
 
@@ -429,11 +424,18 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 };
 
 
-// t.tests["Sequencer plays Instrument"] = {
-//
-// 	false
-//
-// };
+t.tests["Sequencer plays Instrument"] = {
+
+	var g = NodeGraph.new;
+
+	var s = g.sequencer;
+
+	var i = Instrument.new("testInstrument");
+
+	s.instruments[i.name].instrument.play();
+
+};
+
 
 
 t.run;
