@@ -49,8 +49,8 @@ Sequencer : I8Tnode
 		this.createTrack(track);
 		instruments[ track ].addPattern(key,pattern,repetitions);
 	}
-	removePattern {|track,key,pattern|
-		instruments[ track ].removePattern(key,pattern);
+	removePattern {|track,key|
+		instruments[ track ].removePattern(key);
 	}
 
 

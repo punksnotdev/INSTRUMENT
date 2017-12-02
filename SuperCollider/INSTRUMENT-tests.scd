@@ -182,7 +182,7 @@ t.tests["Sequencer stores Patterns"] = {
 };
 
 
-t.tests["Sequencer stores Patterns in Sequence in chronological order when key and value is the same"] = {
+t.tests["Sequencer stores Patterns in Sequence in chronological order when key and value equal"] = {
 
 	var g = NodeGraph.new;
 
@@ -262,7 +262,7 @@ t.tests["Sequencer removes Patterns"] = {
 
 
 
-t.tests["Sequencer removes Patterns from Sequence in reverse chronological order when value is the same"] = {
+t.tests["Sequencer removes Patterns from Sequence in reverse chronological order when value equal"] = {
 
 	var g = NodeGraph.new;
 
@@ -351,39 +351,34 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 };
 
-// t.tests["Instrument removes Patterns from Sequencer"] = {
-//
-// 	var g = NodeGraph.new;
-//
-// 	var i = Instrument.new("testInstrument");
-//
-// 	var patterns;
-//
-// 	var newPattern1 = [1,0,0,1,0,1,0,0];
-// 	var newPattern2 = [1,0,1,0,1,0,0,0];
-// 	var newPattern3 = [1,0,0,0,1,0,1,0];
-//
-// 	i.seq(newPattern1);
-//
-// 	i.seq(newPattern2,0,"newPattern2");
-//
-// 	// patterns with no keys get added even when identical
-// 	i.seq(newPattern3,4);
-// 	i.seq(newPattern3,4);
-//
-//
-// 	patterns = g.sequencer.instruments[i.name].patterns;
-//
-// 	patterns[0] == newPattern1 &&
-// 	patterns["newPattern2"] == newPattern2 &&
-// 	patterns[2] == newPattern3 &&
-// 	patterns[3] == newPattern3 &&
-// 	patterns.size == 4 &&
-// 	g.sequencer.instruments[i.name].sequence.size == 4;
-//
-// 	false;
-//
-// };
+t.tests["Instrument removes Patterns from Sequencer"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new("testInstrument");
+
+	var patterns;
+
+	var previousCount;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern2 = [1,0,1,0,1,0,0,0];
+
+	i.seq(newPattern1);
+	i.seq(newPattern2,0);
+	i.seq(newPattern2,0,"newPattern2");
+
+	patterns = g.sequencer.instruments[i.name].patterns;
+
+	previousCount = patterns.size;
+
+	i.removePattern(newPattern1);
+	i.removePattern(newPattern2);
+	i.removePattern("newPattern2");
+
+	previousCount == 3 && patterns.size == 0
+
+};
 
 
 
@@ -406,40 +401,39 @@ t.tests["Sequencer stores Repetitions"] = {
 
 
 };
+
+
+
+t.tests["Instrument triggers play/stop in Sequencer"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new("testInstrument");
+
+	var patterns;
+
+	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern2 = [1,0,1,0,1,0,0,0];
+
+	i.seq(newPattern1,2);
+	i.seq(newPattern1,4);
+
+	i.play();
+
+	if( g.sequencer.instruments[i.name].playing, {
+		i.stop();
+	});
+
+	g.sequencer.instruments[i.name].playing == false
+
+};
+
+
+// t.tests["Sequencer plays Instrument"] = {
 //
-//
-//
-// t.tests["Instrument triggers play/stop in Sequencer"] = {
-//
-// 	var g = NodeGraph.new;
-//
-// 	var i = Instrument.new("testInstrument");
-//
-// 	var patterns;
-//
-// 	var newPattern1 = [1,0,0,1,0,1,0,0];
-// 	var newPattern2 = [1,0,1,0,1,0,0,0];
-//
-// 	i.seq(newPattern1,2);
-// 	i.seq(newPattern1,4);
-//
-// 	i.play();
-//
-// 	if( g.sequencer.instruments[i.name].playing, {
-// 		i.stop();
-// 	});
-//
-// 	g.sequencer.instruments[i.name].playing == false
+// 	false
 //
 // };
-//
-//
-// // t.tests["Sequencer plays Instrument"] = {
-// //
-// // 	false
-// //
-// // };
-//
-// // test delete patterns, tracks, instruments, etc.
-//
+
+
 t.run;

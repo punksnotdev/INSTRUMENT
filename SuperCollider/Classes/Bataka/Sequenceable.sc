@@ -27,8 +27,12 @@ Sequenceable : I8Tnode
 	addPattern {|key,pattern,repetitions|
 		sequencer.addPattern(name,key,pattern,repetitions);
 	}
-	removePattern {|key,pattern|
-		sequencer.removePattern(name,key,pattern);
+	removePattern {|key|
+		// if( key.isKindOf(Array), {
+		// 	sequencer.removePattern(name,nil,key);
+		// }, {
+			sequencer.removePattern(name,key);
+		// });
 	}
 
 

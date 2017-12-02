@@ -97,7 +97,7 @@ SequencerTrack
 
 	}
 
-	
+
 	removePatterns {|pattern|
 
 		if(pattern.isKindOf(Array),{
