@@ -11,7 +11,9 @@ SequencerTrack
 	var <patternEvents;
 
 	var <playing;
-	var beat;
+
+	var beats;
+	var currentSeqEvent;
 
 	*new {|instrument_|
 		^super.new.init(instrument_);
@@ -26,30 +28,42 @@ SequencerTrack
 			name = instrument_;
 		});
 
-		beat = 0;
+		beats = 0;
 
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
+		currentSeqEvent = 0;
+
 	}
+
+
 
 	fwd{|i|
 		if( playing == true, {
 
 			if( ( i % (32/instrument.speed).floor ) == 0, {
-				beat = beat + 1;
-				beat.postln;
+				beats = beats + 1;
+				beats.postln;
+
+				sequence[ currentSeqEvent ].postln;
+
+				// AQUI ME QUEDE!
+				// CALCULAR PATRON!
+
 			});
 
 		});
 	}
+
+
 	play {|position|
-		if( position != nil, { beat = position; });
+		if( position != nil, { beats = position; });
 		^playing = true;
 	}
 	stop {|position|
-		if( position != nil, { beat = position; });
+		if( position != nil, { beats = position; });
 		^playing = false;
 	}
 
@@ -67,8 +81,9 @@ SequencerTrack
 
 		eventName = ("pattern" ++ "-" ++ name ++ "-" ++ key).toLower;
 
-		newEvent = I8Tevent.new( this, {|e,l| [e,l].postln; }, eventName);
+		newEvent = PatternEvent.new( pattern, eventName);
 
+		newEvent.pattern = pattern;
 
 		if( parameters.isArray, {
 			var paramDict = parameters.asDict;
@@ -94,23 +109,20 @@ SequencerTrack
 
 		if(key.isKindOf(Array),{
 			var pattern;
-			// var k;
+			var k;
 
 			pattern = key;
-			// "isarray".postln;
-			patterns.collect({|p,k|
-				if(p==key,{
-			// k = patterns.findKeyForValue( pattern );
-			// if( patterns[k] != nil, {
+
+			k = patterns.findKeyForValue( pattern );
+			if( patterns[k] != nil, {
 
 				this.removePatternEvents(k);
+
 				if( patternEvents[k].size <= 0, {
 					patterns[k] = nil;
 					patternEvents[k] = nil;
 				});
 
-			// });
-				})
 			});
 
 		},{
@@ -157,6 +169,7 @@ SequencerTrack
 				seqindex = (sequence.size-1)-si;
 			});
 		});
+
 		if(seqindex!=nil, {
 			if(sequence[seqindex]!=nil, {
 				sequence.removeAt(seqindex);

@@ -1,7 +1,6 @@
 Sequenceable : I8Tnode
 {
 
-	classvar <>classSequencer;
 	var <>sequencer;
 	var <>speed;
 

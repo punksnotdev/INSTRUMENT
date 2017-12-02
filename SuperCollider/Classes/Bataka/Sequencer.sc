@@ -11,10 +11,14 @@ Sequencer : I8Tnode
 	var tdef;
 
 	*new {
+		// SequencerEvent instances need to have a reference to 'this' (sequencer):
+
 		^super.new.init();
 	}
 
 	init {
+
+		SequencerEvent.classSequencer = this;
 
 		instruments = Dictionary.new();
 
@@ -106,10 +110,5 @@ Sequencer : I8Tnode
 	}
 
 
-	setInstrumentSpeed{|instrument|
-
-		// instruments[]
-
-	}
 
 }

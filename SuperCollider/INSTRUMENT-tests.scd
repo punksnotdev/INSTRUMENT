@@ -141,6 +141,35 @@ t.tests["Events with Parameters call Listeners"] = {
 
 };
 
+t.tests["SequencerEvents call Listeners"] = {
+
+	var g;
+	var event;
+	var listener;
+	var callback;
+	var result;
+
+	callback = {|event_,listener_|
+		if(event_.listener == listener_,{
+			event_;
+		});
+	};
+
+	g = NodeGraph.new;
+
+	listener = I8Tnode.new(\testListener);
+
+	event = SequencerEvent.new( [\param, 1], "testEvent" );
+
+	event.parameters[\testParameter] = "testValue";
+
+	result = event.execute();
+
+	event.name == result.name &&
+	event.parameters == result.parameters;
+
+};
+
 
 
 t.tests["Sequencer stores Patterns"] = {
@@ -150,6 +179,7 @@ t.tests["Sequencer stores Patterns"] = {
 	var s = g.sequencer;
 
 	var patterns;
+	var sequence;
 
 	var newPattern1 = [1,0,0,1,0,1,0,0];
 	var newPattern2 = [1,0,1,0,1,0,0,0];
@@ -171,13 +201,19 @@ t.tests["Sequencer stores Patterns"] = {
 	s.seq(\noInstrument, \newPattern2, newPattern2 );
 
 	patterns = s.instruments[\noInstrument].patterns;
+	sequence = s.instruments[\noInstrument].sequence;
 
 	patternsCorrect =
 	patterns[\newPattern1] == newPattern1 &&
 	patterns[\newPattern2] == newPattern2 &&
 	patterns.size == 2;
 
-	sequenceCorrect = s.instruments[\noInstrument].sequence.size - sequenceCountBefore == 4;
+	sequenceCorrect =
+	sequence[0].pattern == newPattern1 &&
+	sequence[1].pattern == newPattern2 &&
+	sequence[2].pattern == newPattern1 &&
+	sequence[3].pattern == newPattern2 &&
+	sequence.size - sequenceCountBefore == 4;
 
 	patternsCorrect && sequenceCorrect;
 
@@ -331,6 +367,7 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 	var i = Instrument.new(\testInstrument);
 
 	var patterns;
+	var sequence;
 
 	var newPattern1 = [1,1,1,1,1,1,1,1];
 	var newPattern2 = [2,2,2,2,2,2,2,2];
@@ -346,14 +383,15 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 
 	patterns = g.sequencer.instruments[i.name].patterns;
-	// patterns.postln;
+	sequence = g.sequencer.instruments[i.name].sequence;
 
-	// patterns[0] == newPattern1 &&
-	// patterns[\newPattern2] == newPattern2 &&
-	// patterns[2] == newPattern3 &&
-	// patterns[3] == newPattern3 &&
+
+	sequence[0].pattern == newPattern1 &&
+	sequence[1].pattern == newPattern2 &&
+	sequence[2].pattern == newPattern3 &&
 	patterns.size == 4 &&
-	g.sequencer.instruments[i.name].sequence.size == 4;
+	sequence.size == 4;
+
 
 };
 

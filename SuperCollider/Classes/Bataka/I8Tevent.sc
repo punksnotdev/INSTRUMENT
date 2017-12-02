@@ -19,7 +19,9 @@ I8Tevent
 	}
 
 	execute {
-		^listener.executeEvent( this );
+		if( listener.isKindOf(I8TeventListener), {
+			^listener.executeEvent( this );
+		});
 	}
 
 }
