@@ -23,6 +23,16 @@ Sequencer : I8Tnode
 
 	play {
 
+
+		/*
+
+
+
+		*/
+
+
+
+
 	}
 
 
@@ -42,12 +52,12 @@ Sequencer : I8Tnode
 	}
 
 
-	seq {|track,key,pattern,repetitions=0|
-		this.addPattern(track,key,pattern,repetitions);
+	seq {|track,key,pattern,parameters|
+		this.addPattern(track,key,pattern,parameters);
 	}
-	addPattern {|track,key,pattern,repetitions=0|
+	addPattern {|track,key,pattern,parameters|
 		this.createTrack(track);
-		instruments[ track ].addPattern(key,pattern,repetitions);
+		instruments[ track ].addPattern(key,pattern,parameters);
 	}
 	removePattern {|track,key|
 		instruments[ track ].removePattern(key);

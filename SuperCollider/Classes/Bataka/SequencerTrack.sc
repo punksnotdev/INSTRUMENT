@@ -1,5 +1,4 @@
 // instruments se va a tomar de nodegraph!
-//defaultRepetitions
 
 SequencerTrack
 {
@@ -26,8 +25,8 @@ SequencerTrack
 			name = instrument_;
 		});
 
-		patterns = Dictionary.new();
-		patternEvents = Dictionary.new();
+		patterns = IdentityDictionary.new();
+		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
 	}
@@ -39,10 +38,11 @@ SequencerTrack
 		^playing = false;
 	}
 
-	addPattern {|key,pattern,repetitions|
+	addPattern {|key,pattern,parameters|
 
 		var eventName;
 		var newEvent;
+
 
 		if( key == nil, {
 			key = patterns.size;
@@ -53,7 +53,13 @@ SequencerTrack
 		eventName = ("pattern" ++ "-" ++ name ++ "-" ++ key).toLower;
 
 		newEvent = I8Tevent.new( this, {|e,l| [e,l].postln; }, eventName);
-		newEvent.parameters["repetitions"] = repetitions;
+
+
+		if( parameters.isArray, {
+			var paramDict = parameters.asDict;
+			newEvent.parameters[\repeat] = paramDict[\repeat];
+			newEvent.parameters[\speed] = paramDict[\speed];
+		});
 
 		sequence.add( newEvent );
 
@@ -67,23 +73,33 @@ SequencerTrack
 
 	}
 
+
 	removePattern {|key|
 		var eventKey;
 
 		if(key.isKindOf(Array),{
+			var pattern;
+			// var k;
+
+			pattern = key;
 			// "isarray".postln;
 			patterns.collect({|p,k|
 				if(p==key,{
-					this.removePatternEvents(k);
-					if( patternEvents[k].size <= 0, {
-						patterns[k] = nil;
-						patternEvents[k] = nil;
-					});
+			// k = patterns.findKeyForValue( pattern );
+			// if( patterns[k] != nil, {
+
+				this.removePatternEvents(k);
+				if( patternEvents[k].size <= 0, {
+					patterns[k] = nil;
+					patternEvents[k] = nil;
+				});
+
+			// });
 				})
 			});
 
 		},{
-			if( key.isKindOf(Integer) || key.isKindOf(String), {
+			if( key.isKindOf(Integer) || key.isKindOf(Symbol), {
 				eventKey = key;
 				patterns[key] = nil;
 
