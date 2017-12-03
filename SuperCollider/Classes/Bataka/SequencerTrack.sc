@@ -158,6 +158,8 @@ SequencerTrack
 			})
 		});
 
+		this.updateSequenceInfo();
+		
 	}
 
 	getPattern{|key|

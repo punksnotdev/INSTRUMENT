@@ -19,7 +19,7 @@
 
 
 	i.seq([0,2,3,5]);
-	i.seq([12,2,3,5],1);
+	i.seq([12,2,3,5],1,[\speed,0.5]);
 	i.seq([7,2,3,5],2);
 	i.removePattern([12,2,3,5]);
 	i.removePattern(2);
