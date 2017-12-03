@@ -81,7 +81,12 @@ Sequencer : I8Tnode
 	removePattern {|track,key|
 		instruments[ track ].removePattern(key);
 	}
-
+	getPattern {|track,key|
+		^instruments[ track ].getPattern(key);
+	}
+	setPattern {|track,key,parameters,pattern|
+		^instruments[ track ].setPattern(key,parameters,pattern);
+	}
 
 	createTrack {|instrument|
 

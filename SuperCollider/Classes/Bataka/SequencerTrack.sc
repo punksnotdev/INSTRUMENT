@@ -94,11 +94,9 @@ SequencerTrack
 		var eventName;
 		var newEvent;
 
-
 		if( key == nil, {
 			key = patterns.size;
 		});
-
 
 
 		eventName = ("pattern" ++ "-" ++ name ++ "-" ++ key).toLower;
@@ -127,7 +125,6 @@ SequencerTrack
 
 	}
 
-
 	removePattern {|key|
 		var eventKey;
 
@@ -137,7 +134,7 @@ SequencerTrack
 
 			pattern = key;
 
-			k = patterns.findKeyForValue( pattern );
+			k = patterns.findKey( pattern );
 			if( patterns[k] != nil, {
 
 				this.removePatternEvents(k);
@@ -161,9 +158,20 @@ SequencerTrack
 			})
 		});
 
-
 	}
 
+	getPattern{|key|
+
+		// [key,patterns.findKey( key )].postln;
+		if( key.isArray, {
+			^patterns[patterns.findKey( key )];
+		}, {
+			^patterns[key]
+		});
+	}
+
+	setPattern{|key,parameters,pattern|
+	}
 
 	removePatterns {|pattern|
 
@@ -261,7 +269,7 @@ SequencerTrack
 			});
 		});
 
-		sequenceInfo.postln;
+		// sequenceInfo.postln;
 
 	}
 

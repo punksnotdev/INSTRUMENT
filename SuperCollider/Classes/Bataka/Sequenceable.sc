@@ -27,6 +27,14 @@ Sequenceable : I8Tnode
 		sequencer.removePattern(name,key);
 	}
 
+
+	getPattern {|key|
+		^sequencer.getPattern(name,key);
+	}
+	setPattern {|key,parameters,pattern|
+		^sequencer.setPattern(name,key,parameters,pattern);
+	}
+
 	play {|position|
 		^sequencer.playInstrument( this, position );
 	}

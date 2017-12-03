@@ -12,30 +12,29 @@
 	g = NodeGraph.new;
 
 	q = g.sequencer;
+	q.play;
 
 	i = Instrument.new("test1");
 	i.synth = Synth(\test);
 
 
-	// i.seq([0,2,3,5]);
-	// i.seq([12,7,8,1]);
-	// i.seq([10,9,11]);
 	i.seq([0,2,3,5]);
-	i.seq([12,7,8,1],[\repeat,3,\speed,2]);
-	i.seq([10,8,6,7],[\speed,8]);
-	i.seq([12,7,8,1],[\repeat,2]);
+	i.seq([12,2,3,5],1);
+	i.seq([7,2,3,5],2);
+	i.removePattern([12,2,3,5]);
+	i.removePattern(2);
 
-	// i.seq([0,3],[\repeat,2,\speed,3]);
-	// i.seq([2,3],[\repeat,4,\speed,6]);
-	// i.seq([7,8],[\repeat,3,\speed,3]);
 
-	q.instruments[i.name].speed = 4;
+	// i.getPattern([0,2,3,5]).postln;
+	// i.getPattern([4,2,3,5]).postln;
 
-	q.play;
-    //
+	// i.seq([12,7,8,1],[\repeat,3,\speed,2]);
+	// i.seq([10,8,6,7],[\speed,8]);
+	// i.seq([12,7,8,1],[\repeat,2]);
+
+	q.instruments[i.name].speed = 8;
+
 	i.play;
-
-	// g.sequencer.instruments[i.name].currentEvent.postln;
 
 
 )
