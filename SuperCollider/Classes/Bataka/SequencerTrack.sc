@@ -53,9 +53,9 @@ SequencerTrack
 
 	fwd{|i|
 
-
-
 		if( playing == true, {
+
+
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
 
@@ -65,21 +65,19 @@ SequencerTrack
 				instrument.noteOn( beatValue );
 
 				if( this.currentEvent().parameters[\speed] != nil, {
-
 					currentSpeed = this.currentEvent().parameters[\speed];
-
-					}, {
-						currentSpeed = speed;
-					});
-
-					beats = beats + 1;
-					beats = beats % this.totalBeats();
-
+				}, {
+					currentSpeed = speed;
 				});
+
+				beats = beats + 1;
+				beats = beats % this.totalBeats();
 
 			});
 
-		}
+		});
+
+	}
 
 
 	play {|position|
@@ -242,21 +240,42 @@ SequencerTrack
 		sequenceInfo = Order.new;
 
 		sequence.collect({|e|
-			if( e.pattern.isArray && e.parameters[\repeat] != nil, {
-				var numBeats = e.pattern.size * e.parameters[\repeat];
+
+			var numBeats;
+			var repetitions;
+
+			repetitions = sequencer.repeat;
+
+			if( e.pattern.isArray, {
+				if( e.parameters.isKindOf(Dictionary), {
+					if( e.parameters[\repeat] != nil, {
+						repetitions = e.parameters[\repeat];
+					});
+				});
+
+				numBeats = e.pattern.size * repetitions;
+
 				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
+
 			});
 		});
+
+		sequenceInfo.postln;
 
 	}
 
 	currentEvent {
 
-		var nearestIndex = sequenceInfo.indices.indexOfNearest(beats);
+		var nearestBeatCountKey;
 		var currentIndex;
 
-		currentIndex = sequenceInfo.indices.indexOfNearest( beats - 1);
+		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
+		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
+
+		if( nearestBeatCountKey > beats, {
+			currentIndex = currentIndex - 1;
+		})
 
 		^sequence[ currentIndex ];
 
