@@ -17,12 +17,13 @@
 	i = Instrument.new("test1");
 	i.synth = Synth(\test);
 
+	i.seq(P(\note,[0,2,3,5]));
+	i.seq(P(\note,[12,2,3,5]),1,[\speed,2]);
+	i.seq(P(\note,[7,2,3,5]),2);
 
-	i.seq([0,2,3,5]);
-	i.seq([12,2,3,5],1,[\speed,0.5]);
-	i.seq([7,2,3,5],2);
-	i.removePattern([12,2,3,5]);
-	i.removePattern(2);
+	
+	// i.removePattern([12,2,3,5]);
+	// i.removePattern(2);
 
 
 	// i.getPattern([0,2,3,5]).postln;

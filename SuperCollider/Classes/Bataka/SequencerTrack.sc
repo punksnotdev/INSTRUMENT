@@ -59,10 +59,17 @@ SequencerTrack
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
 
-				var beatPatternIndex = beats % this.currentEvent().pattern.size;
-				var beatValue = this.currentEvent().pattern[ beatPatternIndex ];
+				var beatPatternIndex;
+				var beatValue;
+				var currentPattern;
 
-				instrument.noteOn( beatValue );
+				currentPattern = this.currentEvent().pattern;
+
+				beatPatternIndex = beats % currentPattern.pattern.size;
+
+				beatValue = currentPattern.pattern[ beatPatternIndex ];
+
+				instrument.trigger( currentPattern, beatValue );
 
 				if( this.currentEvent().parameters[\speed] != nil, {
 					currentSpeed = this.currentEvent().parameters[\speed];
@@ -128,7 +135,7 @@ SequencerTrack
 	removePattern {|key|
 		var eventKey;
 
-		if(key.isKindOf(Array),{
+		if(key.isKindOf(I8Tpattern),{
 			var pattern;
 			var k;
 
@@ -159,7 +166,7 @@ SequencerTrack
 		});
 
 		this.updateSequenceInfo();
-		
+
 	}
 
 	getPattern{|key|
@@ -233,8 +240,8 @@ SequencerTrack
 				seSpeed = e.parameters[\speed];
 			});
 
-			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.size * ( seRepeats ));
-			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.size * ( seRepeats / seSpeed ));
+			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats ));
+			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats / seSpeed ));
 
 		});
 
@@ -256,16 +263,16 @@ SequencerTrack
 
 			repetitions = sequencer.repeat;
 
-			if( e.pattern.isArray, {
+			if( e.pattern.pattern.isArray, {
 				if( e.parameters.isKindOf(Dictionary), {
 					if( e.parameters[\repeat] != nil, {
 						repetitions = e.parameters[\repeat];
 					});
 				});
 
-				numBeats = e.pattern.size * repetitions;
+				numBeats = e.pattern.pattern.size * repetitions;
 
-				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
+				sequenceInfo[ totalSequenceEventBeats ] = e.pattern.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
 			});

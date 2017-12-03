@@ -181,9 +181,9 @@ t.tests["Sequencer stores Patterns"] = {
 	var patterns;
 	var sequence;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
-	var newPattern3 = [1,1,1,0,0,0,1,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
+	var newPattern2 = P(\test,[1,0,1,0,1,0,0,0]);
+	var newPattern3 = P(\test,[1,1,1,0,0,0,1,0]);
 
 	var patternsCorrect;
 	var sequenceCountBefore;
@@ -228,7 +228,7 @@ t.tests["Sequencer stores Patterns in Sequence in chronological order when key a
 
 	var patterns;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
 
 	var paramsCorrect1 = false;
 	var paramsCorrect2 = false;
@@ -266,10 +266,10 @@ t.tests["Sequencer removes Patterns"] = {
 	var patterns;
 	var sequence;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
-	var newPattern3 = [1,1,1,0,0,0,1,0];
-	var newPattern4 = [1,0,0,0,0,0,1,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
+	var newPattern2 = P(\test,[1,0,1,0,1,0,0,0]);
+	var newPattern3 = P(\test,[1,1,1,0,0,0,1,0]);
+	var newPattern4 = P(\test,[1,0,0,0,0,0,1,0]);
 
 	var patternsCountBefore;
 	var sequenceCountBefore;
@@ -292,7 +292,7 @@ t.tests["Sequencer removes Patterns"] = {
 	s.removePattern(\noInstrument, 0 );
 	s.removePattern(\noInstrument,  1 );
 	s.removePattern(\noInstrument, \newPattern3 );
-	s.removePattern(\noInstrument,  newPattern4 );
+	s.removePattern(\noInstrument, newPattern4 );
 
 	patternsCountBefore == 4 &&
 	sequenceCountBefore == 4 &&
@@ -311,7 +311,7 @@ t.tests["Sequencer removes Patterns from Sequence in reverse chronological order
 
 	var patterns;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
 
 	var paramsCorrect1 = false;
 	var paramsCorrect2 = false;
@@ -369,9 +369,9 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 	var patterns;
 	var sequence;
 
-	var newPattern1 = [1,1,1,1,1,1,1,1];
-	var newPattern2 = [2,2,2,2,2,2,2,2];
-	var newPattern3 = [3,3,3,3,3,3,3,3];
+	var newPattern1 = P(\test,[1,1,1,1,1,1,1,1]);
+	var newPattern2 = P(\test,[2,2,2,2,2,2,2,2]);
+	var newPattern3 = P(\test,[3,3,3,3,3,3,3,3]);
 
 	i.seq(newPattern1);
 
@@ -406,8 +406,8 @@ t.tests["Instrument removes Patterns from Sequencer"] = {
 
 	var previousCount;
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
+	var newPattern2 = P(\test,[1,0,1,0,1,0,0,0]);
 
 	i.seq(newPattern1);
 	i.seq(newPattern2);
@@ -432,8 +432,8 @@ t.tests["Sequencer stores Repetitions"] = {
 
 	var i = Instrument.new(\testInstrument);
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
+	var newPattern2 = P(\test,[1,0,1,0,1,0,0,0]);
 
 	i.seq(newPattern1,[\repeat,4]);
 	i.seq(newPattern1,[\repeat,6]);
@@ -452,8 +452,8 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 
 	var i = Instrument.new(\testInstrument);
 
-	var newPattern1 = [1,0,0,1,0,1,0,0];
-	var newPattern2 = [1,0,1,0,1,0,0,0];
+	var newPattern1 = P(\test,[1,0,0,1,0,1,0,0]);
+	var newPattern2 = P(\test,[1,0,1,0,1,0,0,0]);
 
 	i.seq(newPattern1);
 
@@ -501,9 +501,9 @@ t.tests["SequencerTrack calculates totalBeats"] = {
 
 	i = Instrument.new("test1");
 
-	i.seq([1,0,0,0,1,0,0,1]);
-	i.seq([1,0,1,1,1,0,0,1],[\repeat,1,\speed,0.5]);
-	i.seq([1,0,1,1,1,0,0,1],[\repeat,3,\speed,4]);
+	i.seq(P(\test,[1,0,0,0,1,0,0,1]));
+	i.seq(P(\test,[1,0,1,1,1,0,0,1]),[\repeat,1,\speed,0.5]);
+	i.seq(P(\test,[1,0,1,1,1,0,0,1]),[\repeat,3,\speed,4]);
 
 	g.sequencer.instruments[i.name].totalBeats() == 64;
 
