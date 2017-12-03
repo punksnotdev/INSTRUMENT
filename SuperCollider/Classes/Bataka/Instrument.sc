@@ -5,7 +5,8 @@ Instrument : Sequenceable
 	var <>volume;
 
 	noteOn {|note|
-		// synth.play(note);
+		[synth,note].postln;
+		synth.set(\t_trig,1,\note,60+note);
 	}
 
 }

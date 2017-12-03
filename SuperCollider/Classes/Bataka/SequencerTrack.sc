@@ -59,10 +59,10 @@ SequencerTrack
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
 
+				var beatPatternIndex = beats % this.currentEvent().pattern.size;
+				var beatValue = this.currentEvent().pattern[ beatPatternIndex ];
 
-				this.currentEvent().pattern[
-					beats % this.currentEvent().pattern.size
-				].postln;
+				instrument.noteOn( beatValue );
 
 				if( this.currentEvent().parameters[\speed] != nil, {
 
