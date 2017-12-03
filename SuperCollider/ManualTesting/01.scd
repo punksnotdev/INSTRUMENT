@@ -21,19 +21,22 @@
 	i.synth = Synth(\test);
 
 	i.seq(P(\note,[0,2,3,5]));
-	// i.seq(P(\note,[12,2,3,5]),1,[\speed,2]);
+	i.removePattern(P(\note,[0,2,3,5]));
+	i.seq(P(\note,[12,2,3,5]),1,[\speed,2]);
 	i.seq(P(\note,[6,2,4,5]));
-	// i.seq(P(\note,[7,2,3,5]),2);
-	// i.seq(P(\decay,[1,4,7,30]/5),2,[\speed,0.5]);
-	// i.seq(P(\distortion,[2,1114,7,110]));
-	// i.seq(P(\cutoff,[2,0.4,6,0.1,12]*1000),[\speed,0.5]);
-	// i.removePattern(P(\distortion,[2,1114,7,110]));
-	// i.removePattern(P(\cutoff,[2,0.4,6,0.1,12]*1000),[\speed,0.5]);
+	i.seq(P(\note,[7,2,3,5]),2);
+	i.seq(P(\decay,[1,4,7,30]/5),2,[\speed,0.5]);
+	i.seq(P(\distortion,[2,1114,7,110]));
+	i.seq(P(\cutoff,[2,0.4,6,0.1,12]*100),[\speed,5]);
+	i.seq(P(\cutoff,[0.112,0.4,0.16,0.1,0.12]*100),[\speed,5]);
+	i.removePattern(P(\cutoff,[12,0.4,6,0.1,12]*100));
+	i.removePattern(P(\cutoff,[0.112,0.4,0.16,0.1,0.12]*100));
+	i.removePattern(P(\distortion,[2,1114,7,110]));
+	i.removePattern(P(\cutoff,[2,0.4,6,0.1,12]*100),[\speed,0.5]);
 
 
 	// i.removePattern([12,2,3,5]);
-	i.removePattern([6,2,4,5]);
-
+	// i.removePattern(P(\note,[6,2,4,5]));
 
 	// i.getPattern([0,2,3,5]).postln;
 	// i.getPattern([4,2,3,5]).postln;
