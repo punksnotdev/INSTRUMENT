@@ -6,6 +6,7 @@ Sequencer : I8Tnode
 
 	var <instruments;
 
+	var <>speed;
 	var <>repeat;
 
 	var tdef;
@@ -18,11 +19,13 @@ Sequencer : I8Tnode
 
 	init {
 
+		SequencerTrack.classSequencer = this;
 		SequencerEvent.classSequencer = this;
 
 		instruments = Dictionary.new();
 
 
+		speed = 1;
 		repeat = 4;
 
 	}
@@ -109,6 +112,8 @@ Sequencer : I8Tnode
 
 	}
 
-
+	setSpeed{|name_,speed_|
+		instruments[name_].speed = speed_;
+	}
 
 }

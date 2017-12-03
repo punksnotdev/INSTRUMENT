@@ -468,6 +468,20 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 };
 
 
+t.tests["Instrument sets SequencerTrack speed"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new(\testInstrument);
+
+	i.play();
+
+	i.speed = 5;
+
+	g.sequencer.instruments[i.name].speed == i.speed
+};
+
+
 t.tests["Sequencer plays Instrument"] = {
 
 	var g = NodeGraph.new;
@@ -477,6 +491,21 @@ t.tests["Sequencer plays Instrument"] = {
 	var i = Instrument.new(\testInstrument);
 
 	i == s.instruments[i.name].instrument.trigger();
+
+};
+
+
+t.tests["SequencerTrack calculates totalBeats"] = {
+
+	g = NodeGraph.new;
+
+	i = Instrument.new("test1");
+
+	i.seq([1,0,0,0,1,0,0,1]);
+	i.seq([1,0,1,1,1,0,0,1],[\repeat,1,\speed,0.5]);
+	i.seq([1,0,1,1,1,0,0,1],[\repeat,3,\speed,4]);
+
+	g.sequencer.instruments[i.name].totalBeats() == 64;
 
 };
 

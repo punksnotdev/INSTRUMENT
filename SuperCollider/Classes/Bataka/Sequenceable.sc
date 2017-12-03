@@ -2,7 +2,7 @@ Sequenceable : I8Tnode
 {
 
 	var <>sequencer;
-	var <>speed;
+	var <speed;
 
 	*new{|name_,graph_|
 		^super.new.init(name_,this.graph);
@@ -32,6 +32,11 @@ Sequenceable : I8Tnode
 	}
 	stop {|position|
 		^sequencer.stopInstrument( this );
+	}
+
+	speed_{|sp_|
+		speed = sp_;
+		sequencer.setSpeed(name,speed);
 	}
 
 	trigger {

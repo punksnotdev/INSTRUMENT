@@ -3,6 +3,9 @@
 SequencerTrack
 {
 
+	classvar <>classSequencer;
+	var sequencer;
+
 	var <>instrument;
 	var <>name;
 
@@ -12,14 +15,20 @@ SequencerTrack
 
 	var <playing;
 
-	var beats;
-	var currentSeqEvent;
+	var <>repeats;
+	var <>speed;
+	var currentSpeed;
+	var <>beats;
+
+	var sequenceInfo;
 
 	*new {|instrument_|
 		^super.new.init(instrument_);
 	}
 
 	init {|instrument_|
+
+		sequencer = classSequencer;
 
 		if( instrument_.isKindOf(Instrument), {
 			instrument = instrument_;
@@ -28,34 +37,49 @@ SequencerTrack
 			name = instrument_;
 		});
 
+		repeats = 4;
+		speed = 1;
+		currentSpeed = 1;
+
 		beats = 0;
 
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
-		currentSeqEvent = 0;
-
 	}
 
 
 
 	fwd{|i|
+
+
+
 		if( playing == true, {
 
-			if( ( i % (32/instrument.speed).floor ) == 0, {
-				beats = beats + 1;
-				beats.postln;
+			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
 
-				sequence[ currentSeqEvent ].postln;
 
-				// AQUI ME QUEDE!
-				// CALCULAR PATRON!
+				this.currentEvent().pattern[
+					beats % this.currentEvent().pattern.size
+				].postln;
+
+				if( this.currentEvent().parameters[\speed] != nil, {
+
+					currentSpeed = this.currentEvent().parameters[\speed];
+
+					}, {
+						currentSpeed = speed;
+					});
+
+					beats = beats + 1;
+					beats = beats % this.totalBeats();
+
+				});
 
 			});
 
-		});
-	}
+		}
 
 
 	play {|position|
@@ -98,6 +122,8 @@ SequencerTrack
 		});
 
 		patternEvents[key].add(newEvent);
+
+		this.updateSequenceInfo();
 
 		patterns[ key ] = pattern;
 
@@ -178,5 +204,62 @@ SequencerTrack
 
 	}
 
+	totalBeats {
+
+		var totalBeatsInSeq = 0;
+
+		sequence.collect({|e|
+
+			var seRepeats;
+			var seSpeed;
+
+			if( e.parameters[\repeat] == nil, {
+				seRepeats = sequencer.repeat;
+			}, {
+				seRepeats = e.parameters[\repeat];
+			});
+
+			if( e.parameters[\speed] == nil, {
+				seSpeed = sequencer.speed;
+			}, {
+				seSpeed = e.parameters[\speed];
+			});
+
+			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.size * ( seRepeats ));
+			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.size * ( seRepeats / seSpeed ));
+
+		});
+
+		^totalBeatsInSeq;
+
+	}
+
+	updateSequenceInfo {
+		var totalSequenceEventBeats;
+
+		totalSequenceEventBeats = 0;
+
+		sequenceInfo = Order.new;
+
+		sequence.collect({|e|
+			if( e.pattern.isArray && e.parameters[\repeat] != nil, {
+				var numBeats = e.pattern.size * e.parameters[\repeat];
+				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
+				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
+			});
+		});
+
+	}
+
+	currentEvent {
+
+		var nearestIndex = sequenceInfo.indices.indexOfNearest(beats);
+		var currentIndex;
+
+		currentIndex = sequenceInfo.indices.indexOfNearest( beats - 1);
+
+		^sequence[ currentIndex ];
+
+	}
 
 }

@@ -1,6 +1,6 @@
 SequencerEvent : I8Tevent
 {
-	classvar <classSequencer;
+	classvar <>classSequencer;
 	var <sequencer;
 
 	*new{|parameters_, name_|
@@ -11,11 +11,11 @@ SequencerEvent : I8Tevent
 		var callback = {|event| ^event; };
 		sequencer = classSequencer;
 		super.init( sequencer, callback, name_ );
-			
+
 	}
 
-	*classSequencer_ {|sequencer_|
-		classSequencer = sequencer_;
-	}
+	// *classSequencer_ {|sequencer_|
+	// 	classSequencer = sequencer_;
+	// }
 
 }
