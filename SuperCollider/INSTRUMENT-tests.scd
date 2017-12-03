@@ -200,8 +200,8 @@ t.tests["Sequencer stores Patterns"] = {
 	s.seq(\noInstrument, \newPattern1, newPattern1 );
 	s.seq(\noInstrument, \newPattern2, newPattern2 );
 
-	patterns = s.instruments[\noInstrument].patterns;
-	sequence = s.instruments[\noInstrument].sequence;
+	patterns = s.instruments[\noInstrument].parameterTracks[\test].patterns;
+	sequence = s.instruments[\noInstrument].parameterTracks[\test].sequence;
 
 	patternsCorrect =
 	patterns[\newPattern1] == newPattern1 &&
@@ -216,6 +216,7 @@ t.tests["Sequencer stores Patterns"] = {
 	sequence.size - sequenceCountBefore == 4;
 
 	patternsCorrect && sequenceCorrect;
+
 
 };
 
@@ -241,7 +242,7 @@ t.tests["Sequencer stores Patterns in Sequence in chronological order when key a
 	s.seq(\noInstrument, 0, newPattern1, [\speed,0.25]);
 	s.seq(\noInstrument, 0, newPattern1, [\repeat,6]);
 
-	trackSequence = s.instruments[\noInstrument].sequence;
+	trackSequence = s.instruments[\noInstrument].parameterTracks[\test].sequence;
 
 	paramsCorrect1 = trackSequence[0].parameters[\repeat] == 2;
 	paramsCorrect2 = trackSequence[1].parameters[\speed] == 0.25;
@@ -283,8 +284,8 @@ t.tests["Sequencer removes Patterns"] = {
 	s.seq(\noInstrument, \newPattern3, newPattern3 );
 	s.seq(\noInstrument, \newPattern4, newPattern4 );
 
-	patterns = s.instruments[\noInstrument].patterns;
-	sequence = s.instruments[\noInstrument].sequence;
+	patterns = s.instruments[\noInstrument].parameterTracks[\test].patterns;
+	sequence = s.instruments[\noInstrument].parameterTracks[\test].sequence;
 
 	patternsCountBefore = patterns.size;
 	sequenceCountBefore = sequence.size;
@@ -324,32 +325,24 @@ t.tests["Sequencer removes Patterns from Sequence in reverse chronological order
 	s.seq(\noInstrument, 0, newPattern1, [\repeat,4]);
 	s.seq(\noInstrument, 0, newPattern1, [\repeat,6]);
 
-	trackSequence = s.instruments[\noInstrument].sequence;
+	trackSequence = s.instruments[\noInstrument].parameterTracks[\test].sequence;
 
-	// trackSequence.size.postln;
 	size = trackSequence.size-1;
 	paramsCorrect1 = trackSequence[size].parameters[\repeat] == 6;
 
 	s.removePattern(\noInstrument,  newPattern1 );
 
-
-	// trackSequence.size.postln;
 	size = trackSequence.size-1;
 	paramsCorrect2 = trackSequence[size].parameters[\repeat] == 4;
 
 	s.removePattern(\noInstrument,  newPattern1 );
 
-	// trackSequence.size.postln;
 	size = trackSequence.size-1;
 	paramsCorrect3 = trackSequence[size].parameters[\repeat] == 2;
 
 
 	s.removePattern(\noInstrument,  newPattern1 );
 
-	// trackSequence.size.postln;
-
-
-	// trackSequence.size == 0 &&
 	paramsCorrect1 &&
 	paramsCorrect2 &&
 	paramsCorrect3;
@@ -382,8 +375,8 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 	i.seq(newPattern3,[\repeat,4]);
 
 
-	patterns = g.sequencer.instruments[i.name].patterns;
-	sequence = g.sequencer.instruments[i.name].sequence;
+	patterns = g.sequencer.instruments[i.name].parameterTracks[\test].patterns;
+	sequence = g.sequencer.instruments[i.name].parameterTracks[\test].sequence;
 
 
 	sequence[0].pattern == newPattern1 &&
@@ -413,7 +406,7 @@ t.tests["Instrument removes Patterns from Sequencer"] = {
 	i.seq(newPattern2);
 	i.seq(newPattern2,\newPattern2);
 
-	patterns = g.sequencer.instruments[i.name].patterns;
+	patterns = g.sequencer.instruments[i.name].parameterTracks[\test].patterns;
 
 	previousCount = patterns.size;
 
@@ -438,8 +431,8 @@ t.tests["Sequencer stores Repetitions"] = {
 	i.seq(newPattern1,[\repeat,4]);
 	i.seq(newPattern1,[\repeat,6]);
 
-	g.sequencer.instruments[i.name].sequence[0].parameters[\repeat] == 4 &&
-	g.sequencer.instruments[i.name].sequence[1].parameters[\repeat] == 6;
+	g.sequencer.instruments[i.name].parameterTracks[\test].sequence[0].parameters[\repeat] == 4 &&
+	g.sequencer.instruments[i.name].parameterTracks[\test].sequence[1].parameters[\repeat] == 6;
 
 
 };
@@ -459,11 +452,11 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 
 	i.play();
 
-	if( g.sequencer.instruments[i.name].playing, {
+	if( g.sequencer.instruments[i.name].parameterTracks[\test].playing, {
 		i.stop();
 	});
 
-	g.sequencer.instruments[i.name].playing == false
+	g.sequencer.instruments[i.name].parameterTracks[\test].playing == false
 
 };
 
@@ -505,7 +498,7 @@ t.tests["SequencerTrack calculates totalBeats"] = {
 	i.seq(P(\test,[1,0,1,1,1,0,0,1]),[\repeat,1,\speed,0.5]);
 	i.seq(P(\test,[1,0,1,1,1,0,0,1]),[\repeat,3,\speed,4]);
 
-	g.sequencer.instruments[i.name].totalBeats() == 64;
+	g.sequencer.instruments[i.name].parameterTracks[\test].totalBeats() == 64;
 
 };
 

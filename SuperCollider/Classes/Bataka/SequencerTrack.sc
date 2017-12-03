@@ -4,14 +4,12 @@ SequencerTrack
 {
 
 	classvar <>classSequencer;
-	var sequencer;
+	var <sequencer;
+
+	var <>parameterTracks;
 
 	var <>instrument;
 	var <>name;
-
-	var <patterns;
-	var <sequence;
-	var <patternEvents;
 
 	var <playing;
 
@@ -19,8 +17,6 @@ SequencerTrack
 	var <>speed;
 	var currentSpeed;
 	var <>beats;
-
-	var sequenceInfo;
 
 	*new {|instrument_|
 		^super.new.init(instrument_);
@@ -43,9 +39,7 @@ SequencerTrack
 
 		beats = 0;
 
-		patterns = IdentityDictionary.new();
-		patternEvents = IdentityDictionary.new();
-		sequence = List.new();
+		parameterTracks = IdentityDictionary.new;
 
 	}
 
@@ -55,31 +49,8 @@ SequencerTrack
 
 		if( playing == true, {
 
-
-
-			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
-
-				var beatPatternIndex;
-				var beatValue;
-				var currentPattern;
-
-				currentPattern = this.currentEvent().pattern;
-
-				beatPatternIndex = beats % currentPattern.pattern.size;
-
-				beatValue = currentPattern.pattern[ beatPatternIndex ];
-
-				instrument.trigger( currentPattern, beatValue );
-
-				if( this.currentEvent().parameters[\speed] != nil, {
-					currentSpeed = this.currentEvent().parameters[\speed];
-				}, {
-					currentSpeed = speed;
-				});
-
-				beats = beats + 1;
-				beats = beats % this.totalBeats();
-
+			parameterTracks.collect({|p|
+				p.fwd(i)
 			});
 
 		});
@@ -89,94 +60,37 @@ SequencerTrack
 
 	play {|position|
 		if( position != nil, { beats = position; });
+
+		parameterTracks.collect({|p| p.play(position); });
+
 		^playing = true;
 	}
 	stop {|position|
 		if( position != nil, { beats = position; });
+
+		parameterTracks.collect({|p| p.stop(position); });
+
 		^playing = false;
 	}
 
 	addPattern {|key,pattern,parameters|
 
-		var eventName;
-		var newEvent;
-
-		if( key == nil, {
-			key = patterns.size;
+		if( parameterTracks[ pattern.target ] == nil, {
+			parameterTracks[ pattern.target ] = ParameterTrack.new( this );
 		});
-
-
-		eventName = ("pattern" ++ "-" ++ name ++ "-" ++ key).toLower;
-
-		newEvent = PatternEvent.new( pattern, eventName);
-
-		newEvent.pattern = pattern;
-
-		if( parameters.isArray, {
-			var paramDict = parameters.asDict;
-			newEvent.parameters[\repeat] = paramDict[\repeat];
-			newEvent.parameters[\speed] = paramDict[\speed];
-		});
-
-		sequence.add( newEvent );
-
-		if(patternEvents[key]==nil,{
-			patternEvents[key] = List.new;
-		});
-
-		patternEvents[key].add(newEvent);
-
-		this.updateSequenceInfo();
-
-		patterns[ key ] = pattern;
-
+		parameterTracks[ pattern.target ].addPattern(key,pattern,parameters)
 	}
 
 	removePattern {|key|
-		var eventKey;
-
-		if(key.isKindOf(I8Tpattern),{
-			var pattern;
-			var k;
-
-			pattern = key;
-
-			k = patterns.findKey( pattern );
-			if( patterns[k] != nil, {
-
-				this.removePatternEvents(k);
-
-				if( patternEvents[k].size <= 0, {
-					patterns[k] = nil;
-					patternEvents[k] = nil;
-				});
-
-			});
-
-		},{
-			if( key.isKindOf(Integer) || key.isKindOf(Symbol), {
-				eventKey = key;
-				patterns[key] = nil;
-
-				while({patternEvents[eventKey].size>0},{
-					this.removePatternEvents(key);
-				});
-
-			})
+		parameterTracks.collect({|t|
+			t.removePattern(key);
 		});
-
-		this.updateSequenceInfo();
-
 	}
 
 	getPattern{|key|
 
-		// [key,patterns.findKey( key )].postln;
-		if( key.isArray, {
-			^patterns[patterns.findKey( key )];
-		}, {
-			^patterns[key]
-		});
+		// parameterTracks[pattern.target].removePatterns(pattern);
+
 	}
 
 	setPattern{|key,parameters,pattern|
@@ -184,118 +98,9 @@ SequencerTrack
 
 	removePatterns {|pattern|
 
-		if(pattern.isKindOf(Array),{
-			patterns.collect({|p,k|
-				if(p==k,{
-					patterns[k] = nil;
-					while({patternEvents[k].size>0},{
-						this.removePatternEvents(k);
-					});
-				})
-			});
-		});
+		parameterTracks[pattern.target].removePatterns(pattern);
 
 	}
 
-
-	removePatternEvents {|key|
-
-		var seqindex;
-		var pattevent;
-
-		pattevent = patternEvents[key].pop;
-
-		sequence.reverseDo({|se,si|
-			if( se == pattevent, {
-				seqindex = (sequence.size-1)-si;
-			});
-		});
-
-		if(seqindex!=nil, {
-			if(sequence[seqindex]!=nil, {
-				sequence.removeAt(seqindex);
-			});
-		});
-
-	}
-
-	totalBeats {
-
-		var totalBeatsInSeq = 0;
-
-		sequence.collect({|e|
-
-			var seRepeats;
-			var seSpeed;
-
-			if( e.parameters[\repeat] == nil, {
-				seRepeats = sequencer.repeat;
-			}, {
-				seRepeats = e.parameters[\repeat];
-			});
-
-			if( e.parameters[\speed] == nil, {
-				seSpeed = sequencer.speed;
-			}, {
-				seSpeed = e.parameters[\speed];
-			});
-
-			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats ));
-			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats / seSpeed ));
-
-		});
-
-		^totalBeatsInSeq;
-
-	}
-
-	updateSequenceInfo {
-		var totalSequenceEventBeats;
-
-		totalSequenceEventBeats = 0;
-
-		sequenceInfo = Order.new;
-
-		sequence.collect({|e|
-
-			var numBeats;
-			var repetitions;
-
-			repetitions = sequencer.repeat;
-
-			if( e.pattern.pattern.isArray, {
-				if( e.parameters.isKindOf(Dictionary), {
-					if( e.parameters[\repeat] != nil, {
-						repetitions = e.parameters[\repeat];
-					});
-				});
-
-				numBeats = e.pattern.pattern.size * repetitions;
-
-				sequenceInfo[ totalSequenceEventBeats ] = e.pattern.pattern;
-				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
-
-			});
-		});
-
-		// sequenceInfo.postln;
-
-	}
-
-	currentEvent {
-
-		var nearestBeatCountKey;
-		var currentIndex;
-
-		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
-		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
-
-		if( nearestBeatCountKey > beats, {
-			currentIndex = currentIndex - 1;
-		})
-
-		^sequence[ currentIndex ];
-
-	}
 
 }
