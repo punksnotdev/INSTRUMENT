@@ -16,11 +16,16 @@ Instrument : Sequenceable
 	}
 
 	trigger {|pattern,value|
-		
+
 		if( pattern.isKindOf(I8Tpattern), {
 			if( pattern.target == \note, {
 				synth.set(\t_trig,1,\note,(octave*12)+value);
+			}, {
+				// if( pattern.target == \decay, {
+					synth.set(pattern.target,value);
+				// });
 			});
+
 		});
 
 	}

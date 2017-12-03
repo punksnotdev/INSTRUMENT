@@ -14,7 +14,7 @@ SequencerTrack
 	var <playing;
 
 	var <>repeats;
-	var <>speed;
+	var <speed;
 	var currentSpeed;
 	var <>beats;
 
@@ -102,5 +102,11 @@ SequencerTrack
 
 	}
 
+	speed_{|sp_|
+		speed = sp_;
+		parameterTracks.collect({|t|
+			t.speed = speed;
+		});
+	}
 
 }
