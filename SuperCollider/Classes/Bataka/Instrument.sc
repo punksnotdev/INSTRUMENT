@@ -18,12 +18,13 @@ Instrument : Sequenceable
 	trigger {|pattern,value|
 
 		if( pattern.isKindOf(I8Tpattern), {
+			[pattern.target,value].postln;
+
 			if( pattern.target == \note, {
+				value.postln;
 				synth.set(\t_trig,1,\note,(octave*12)+value);
 			}, {
-				// if( pattern.target == \decay, {
-					synth.set(pattern.target,value);
-				// });
+				synth.set(pattern.target.asSymbol,value);
 			});
 
 		});

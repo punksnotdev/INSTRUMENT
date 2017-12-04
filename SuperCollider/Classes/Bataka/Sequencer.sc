@@ -9,6 +9,9 @@ Sequencer : I8Tnode
 	var <>speed;
 	var <>repeat;
 
+	var patterns;
+	var sequence;
+
 	var tdef;
 
 	*new {
@@ -120,5 +123,6 @@ Sequencer : I8Tnode
 	setSpeed{|name_,speed_|
 		instruments[name_].speed = speed_;
 	}
+
 
 }

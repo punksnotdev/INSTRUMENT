@@ -88,6 +88,19 @@ t.tests["Graph has Sequencer"] = {
 };
 
 
+t.tests["Instrument has Patterns & Sequence references"] = {
+
+	var g = NodeGraph.new;
+
+	var i = Instrument.new(\testInstrument);
+
+	i.seq( P(\note,[0,2,3,5]) );
+
+	i.patterns(\note) == g.sequencer.instruments[i.name].parameterTracks[\note].patterns &&
+	i.sequence(\note) == g.sequencer.instruments[i.name].parameterTracks[\note].sequence &&
+	i.sequenceInfo(\note) == g.sequencer.instruments[i.name].parameterTracks[\note].sequenceInfo
+};
+
 t.tests["Instrument has Sequencer Track"] = {
 
 	var g = NodeGraph.new;

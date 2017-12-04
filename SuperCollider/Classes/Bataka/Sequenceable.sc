@@ -52,4 +52,14 @@ Sequenceable : I8Tnode
 	}
 
 
+	patterns{|parameter|
+		^sequencer.instruments[name].parameterTracks[parameter].patterns;
+	}
+	sequence{|parameter|
+		^sequencer.instruments[name].parameterTracks[parameter].sequence;
+	}
+	sequenceInfo{|parameter|
+		^sequencer.instruments[name].parameterTracks[parameter].sequenceInfo;
+	}
+
 }

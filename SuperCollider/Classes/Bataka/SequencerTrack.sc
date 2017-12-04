@@ -76,7 +76,7 @@ SequencerTrack
 	addPattern {|key,pattern,parameters|
 
 		if( parameterTracks[ pattern.target ] == nil, {
-			parameterTracks[ pattern.target ] = ParameterTrack.new( this );
+			parameterTracks[ pattern.target ] = ParameterTrack.new( this, pattern.target );
 		});
 		parameterTracks[ pattern.target ].addPattern(key,pattern,parameters)
 	}

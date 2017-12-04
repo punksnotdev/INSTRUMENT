@@ -2,6 +2,7 @@ ParameterTrack
 {
 
 	var track;
+	var <>name;
 
 	var <patterns;
 	var <sequence;
@@ -14,13 +15,15 @@ ParameterTrack
 	var currentSpeed;
 	var <>beats;
 
-	var sequenceInfo;
+	var <sequenceInfo;
 
-	*new{|track_|
-		^super.new.init(track_);
+	*new{|track_,name_|
+		^super.new.init(track_,name_);
 	}
-	init{|track_|
+	init{|track_,name_|
 		track = track_;
+		name = name_;
+
 		repeats = track.repeats;
 		speed = track.speed;
 		currentSpeed = speed;
@@ -35,9 +38,8 @@ ParameterTrack
 
 	fwd{|i|
 
+
 		if( playing == true, {
-
-
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
 
@@ -45,6 +47,7 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
+				// name.postln;
 
 				if( this.currentEvent().notNil, {
 
@@ -89,9 +92,26 @@ ParameterTrack
 		var newEvent;
 
 		if( key == nil, {
-			key = patterns.size;
-		});
 
+			var found = -1;
+			block{|break|
+				patterns.keysValuesDo({|key,item|
+					if( item.pattern == pattern.pattern, {
+						found = key;
+						break.value;
+					});
+				});
+			};
+
+			key = patterns.size;
+
+			if( found >= 0, {
+				if( patterns[found] != nil, {
+					key = found;
+				});
+			});
+
+		});
 
 		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key).toLower;
 
@@ -105,17 +125,21 @@ ParameterTrack
 			newEvent.parameters[\speed] = paramDict[\speed];
 		});
 
-		sequence.add( newEvent );
-
 		if(patternEvents[key]==nil,{
 			patternEvents[key] = List.new;
 		});
 
+		sequence.add( newEvent );
+
 		patternEvents[key].add(newEvent);
+
+		[key,patternEvents[key]].postln;
 
 		this.updateSequenceInfo();
 
 		patterns[ key ] = pattern;
+
+		// sequenceInfo.postln;
 
 	}
 
@@ -260,7 +284,7 @@ ParameterTrack
 
 				numBeats = e.pattern.pattern.size * repetitions;
 
-				sequenceInfo[ totalSequenceEventBeats ] = e.pattern.pattern;
+				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
 			});
@@ -272,7 +296,7 @@ ParameterTrack
 
 		var nearestBeatCountKey;
 		var currentIndex;
-
+		// sequenceInfo.postln;
 		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
 
 		currentIndex = sequenceInfo.indices.indexOfNearest( beats );

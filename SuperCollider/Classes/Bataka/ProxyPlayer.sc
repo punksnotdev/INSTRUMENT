@@ -1,0 +1,4 @@
+ProxyPlayer : Instrument
+{
+
+}
