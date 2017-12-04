@@ -44,11 +44,17 @@ SynthPlayer : Instrument
 
 	trigger {|parameter,value|
 
-		if( parameter == \note, {
-			synth.set(\t_trig,1,\note,(octave*12)+value);
-		}, {
-			synth.set(parameter.asSymbol,value);
-		});
+		switch( parameter,
+
+			\octave, { octave = value },
+			\note, { synth.set(\t_trig,1,\note,(octave*12)+value); },
+			\chord, {
+				// synth.set(\t_trig,1,\note,(octave*12)+value);
+			},
+			{ // default:
+				synth.set(parameter.asSymbol,value);
+			}
+		);
 
 
 	}

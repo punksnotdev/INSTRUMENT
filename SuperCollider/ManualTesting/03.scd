@@ -7,6 +7,7 @@
 	~x[3] = \filter -> {|in| (in * LFNoise2.kr(LFNoise2.kr(1/4,5,18),33,33.1)).tanh / 1.5 };
 	~x[4] = \filter -> {|in| FreeVerb.ar(in,1/3,1/3) };
 
+	~x.play;
 
 
 	INSTRUMENT.new.play;
@@ -18,6 +19,6 @@
 	i.seq(P(\note,[0,2,3,5]));
 	i.seq(P(\note,7+[0,2,3,5].pyramid),[\speed,4]);
 
-	i.octave = 5;
+	i.octave = 4;
 
 )

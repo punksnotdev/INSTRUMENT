@@ -1,4 +1,5 @@
 (
+	p = ProxySpace.push(s);
 
 	~bmb = {|t_trig|
 	// ~btk[0] = {|t_trig|
@@ -12,6 +13,8 @@
 	};
 
 	~mix = ~bmb+~hhc+~snr;
+
+	~mix.play;
 
 	i = INSTRUMENT.new.play;
 

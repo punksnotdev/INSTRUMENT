@@ -35,12 +35,26 @@ Proxy : Instrument
 	}
 
 	trigger {|parameter,value|
+        //
+		// if( parameter == \note, {
+		// 	proxy.set(\t_trig,1,\note,(octave*12)+value);
+		// }, {
+		// 	proxy.set(parameter.asSymbol,value);
+		// });
 
-		if( parameter == \note, {
-			proxy.set(\t_trig,1,\note,(octave*12)+value);
-		}, {
-			proxy.set(parameter.asSymbol,value);
-		});
+		switch( parameter,
+
+			\octave, { octave = value },
+			\note, {
+				proxy.set(\t_trig,1,\note,((octave*12)+value).postln);
+				},
+			\chord, {
+				proxy.set(\t_trig,1,\note,value[0]+this.chord(value[1]));
+			},
+			{ // default:
+				proxy.set(parameter.asSymbol,value);
+			}
+		);
 
 
 	}

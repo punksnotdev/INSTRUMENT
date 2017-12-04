@@ -17,6 +17,8 @@
 	i.seq(P(\note,[5,7,5]),[\speed,8]);
 	i.seq(P(\note,[0,2,3,5].pyramid.mirror),[\speed,8]);
 
+	i.seq(P(\octave,[4,5,6]),[\speed,0.125]);
+
 
 	j.removePattern(P(\note,[5,7,5],[\speed,0.5]));
 	j.seq(P(\note,[0,2,3,5].pyramid.mirror,[\speed,0.5]));

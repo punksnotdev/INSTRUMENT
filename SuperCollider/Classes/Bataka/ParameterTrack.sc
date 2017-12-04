@@ -49,6 +49,7 @@ ParameterTrack
 
 				// name.postln;
 
+
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
@@ -302,9 +303,9 @@ ParameterTrack
 		var nearestBeatCountKey;
 		var currentIndex;
 		// sequenceInfo.postln;
-		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
+		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats + 1 );
 
-		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
+		currentIndex = sequenceInfo.indices.indexOfNearest( beats + 1 );
 
 
 		if( nearestBeatCountKey == nil, {
