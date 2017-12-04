@@ -30,3 +30,4 @@
 )
 
 i.seq(P(\cutoff,[2,4,6,1,1]*100),0);
+i.sequenceInfo(\cutoff)

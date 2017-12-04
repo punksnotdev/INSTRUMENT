@@ -133,12 +133,10 @@ ParameterTrack
 
 		patternEvents[key].add(newEvent);
 
-		[key,patternEvents[key]].postln;
-
 		this.updateSequenceInfo();
 
 		patterns[ key ] = pattern;
-
+		
 		// sequenceInfo.postln;
 
 	}
@@ -289,6 +287,7 @@ ParameterTrack
 
 			});
 		});
+
 
 	}
 

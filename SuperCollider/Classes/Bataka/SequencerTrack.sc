@@ -78,7 +78,12 @@ SequencerTrack
 		if( parameterTracks[ pattern.target ] == nil, {
 			parameterTracks[ pattern.target ] = ParameterTrack.new( this, pattern.target );
 		});
-		parameterTracks[ pattern.target ].addPattern(key,pattern,parameters)
+		parameterTracks[ pattern.target ].addPattern(key,pattern,parameters);
+
+		if( playing == true, {
+			parameterTracks[ pattern.target ].play;
+		});
+
 	}
 
 	removePattern {|key|
