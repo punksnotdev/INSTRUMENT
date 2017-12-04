@@ -3,7 +3,7 @@ t = Tests.new;
 
 t.tests["Node Graph Nodes is Dictionary"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	g.nodes.class == Dictionary;
 
@@ -11,7 +11,7 @@ t.tests["Node Graph Nodes is Dictionary"] = {
 
 t.tests["Node Graph Root Node Registered"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	g.rootNode.nodeGraph == g
 
@@ -19,7 +19,7 @@ t.tests["Node Graph Root Node Registered"] = {
 
 t.tests["Node Graph Root not in Nodes"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 
 	g.nodes[g.rootNode.name] == nil;
@@ -28,7 +28,7 @@ t.tests["Node Graph Root not in Nodes"] = {
 
 t.tests["Instrument is in Node Graph"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -40,7 +40,7 @@ t.tests["Instrument is in Node Graph"] = {
 
 t.tests["Instrument is removed from Node Graph"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -54,7 +54,7 @@ t.tests["Instrument is removed from Node Graph"] = {
 
 t.tests["Node Graph Instruments Communication"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var h = Instrument.new(\testInstrument1);
 	var i = Instrument.new(\testInstrument2);
@@ -79,7 +79,7 @@ t.tests["Node Graph Instruments Communication"] = {
 
 t.tests["Graph has Sequencer"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -90,7 +90,7 @@ t.tests["Graph has Sequencer"] = {
 
 t.tests["Instrument has Patterns & Sequence references"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -103,7 +103,7 @@ t.tests["Instrument has Patterns & Sequence references"] = {
 
 t.tests["Instrument has Sequencer Track"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -113,7 +113,7 @@ t.tests["Instrument has Sequencer Track"] = {
 
 t.tests["Deleting Node removes corresponding Sequencer Track"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -138,7 +138,7 @@ t.tests["Events with Parameters call Listeners"] = {
 		});
 	};
 
-	g = NodeGraph.new;
+	g = INSTRUMENT.new;
 
 	listener = I8Tnode.new(\testListener);
 
@@ -168,7 +168,7 @@ t.tests["SequencerEvents call Listeners"] = {
 		});
 	};
 
-	g = NodeGraph.new;
+	g = INSTRUMENT.new;
 
 	listener = I8Tnode.new(\testListener);
 
@@ -187,7 +187,7 @@ t.tests["SequencerEvents call Listeners"] = {
 
 t.tests["Sequencer stores Patterns"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -236,7 +236,7 @@ t.tests["Sequencer stores Patterns"] = {
 
 t.tests["Sequencer stores Patterns in Sequence in chronological order when key and value equal"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -273,7 +273,7 @@ t.tests["Sequencer stores Patterns in Sequence in chronological order when key a
 
 t.tests["Sequencer removes Patterns"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -319,7 +319,7 @@ t.tests["Sequencer removes Patterns"] = {
 
 t.tests["Sequencer removes Patterns from Sequence in reverse chronological order when value equal"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -368,7 +368,7 @@ t.tests["Sequencer removes Patterns from Sequence in reverse chronological order
 
 t.tests["Instrument adds Pattern to Sequencer"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -383,7 +383,8 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 	i.seq(newPattern2,1,\newPattern2);
 
-	// patterns with no keys get added even when identical
+	// patterns with no keys dont added o 'patterns' when identical,
+	// but to sequence yes.
 	i.seq(newPattern3,[\repeat,4]);
 	i.seq(newPattern3,[\repeat,4]);
 
@@ -391,11 +392,11 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 	patterns = g.sequencer.instruments[i.name].parameterTracks[\test].patterns;
 	sequence = g.sequencer.instruments[i.name].parameterTracks[\test].sequence;
 
-
 	sequence[0].pattern == newPattern1 &&
 	sequence[1].pattern == newPattern2 &&
-	sequence[2].pattern == newPattern3 &&
-	patterns.size == 4 &&
+	sequence[2].pattern == newPattern3
+	&&
+	patterns.size == 3 &&
 	sequence.size == 4;
 
 
@@ -404,7 +405,7 @@ t.tests["Instrument adds Pattern to Sequencer"] = {
 
 t.tests["Instrument removes Patterns from Sequencer"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -434,7 +435,7 @@ t.tests["Instrument removes Patterns from Sequencer"] = {
 
 t.tests["Sequencer stores Repetitions"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -454,7 +455,7 @@ t.tests["Sequencer stores Repetitions"] = {
 
 t.tests["Instrument triggers play/stop in Sequencer"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -476,7 +477,7 @@ t.tests["Instrument triggers play/stop in Sequencer"] = {
 
 t.tests["Instrument sets SequencerTrack speed"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var i = Instrument.new(\testInstrument);
 
@@ -490,7 +491,7 @@ t.tests["Instrument sets SequencerTrack speed"] = {
 
 t.tests["Sequencer plays Instrument"] = {
 
-	var g = NodeGraph.new;
+	var g = INSTRUMENT.new;
 
 	var s = g.sequencer;
 
@@ -503,7 +504,7 @@ t.tests["Sequencer plays Instrument"] = {
 
 t.tests["SequencerTrack calculates totalBeats"] = {
 
-	g = NodeGraph.new;
+	g = INSTRUMENT.new;
 
 	i = Instrument.new("test1");
 

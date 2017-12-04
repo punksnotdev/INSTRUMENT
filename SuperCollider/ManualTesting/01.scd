@@ -14,7 +14,7 @@
 		Out.ar(0, Pan2.ar( sig, 0 ));
 	}).store;
 
-	g = NodeGraph.new;
+	g = INSTRUMENT.new;
 
 	q = g.sequencer;
 	q.play;
@@ -68,7 +68,7 @@
 
 // (
 //
-// 	g = NodeGraph.new;
+// 	g = INSTRUMENT.new;
 //
 // 	g.sequencer.play;
 //

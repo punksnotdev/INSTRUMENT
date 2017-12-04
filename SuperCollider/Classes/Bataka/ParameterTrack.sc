@@ -57,7 +57,11 @@ ParameterTrack
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
-					track.instrument.trigger( currentPattern, beatValue );
+					if( beatValue != \r, {
+
+						track.instrument.trigger( currentPattern.target, beatValue );
+
+					});
 
 					if( this.currentEvent().parameters[\speed] != nil, {
 						currentSpeed = this.currentEvent().parameters[\speed];
@@ -136,7 +140,7 @@ ParameterTrack
 		this.updateSequenceInfo();
 
 		patterns[ key ] = pattern;
-		
+
 		// sequenceInfo.postln;
 
 	}
@@ -190,6 +194,8 @@ ParameterTrack
 	}
 
 	setPattern{|key,parameters,pattern|
+		// this.removePattern(pattern);
+		// this.seq(pattern,parameters);
 	}
 
 	removePatterns {|pattern|

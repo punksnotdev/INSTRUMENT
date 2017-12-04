@@ -48,11 +48,9 @@ SequencerTrack
 	fwd{|i|
 
 		if( playing == true, {
-
 			parameterTracks.collect({|p|
 				p.fwd(i)
 			});
-
 		});
 
 	}
@@ -98,7 +96,12 @@ SequencerTrack
 
 	}
 
-	setPattern{|key,parameters,pattern|
+	setPattern{|key,parameters|
+		// if( key.isArray, {}, {
+		// 	[]
+		// })
+		"TO-DO: implement set pattern!"
+
 	}
 
 	removePatterns {|pattern|

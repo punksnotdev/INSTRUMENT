@@ -1,4 +1,4 @@
-NodeGraph
+INSTRUMENT
 {
 
 	var <nodes;
@@ -28,7 +28,7 @@ NodeGraph
 				node.sequencer = sequencer;
 				sequencer.registerInstrument(node);
 			})
-			
+
 		})
 	}
 
@@ -39,4 +39,8 @@ NodeGraph
 		nodes[node.name] = nil;
 	}
 
+
+	play {
+		sequencer.play;
+	}
 }

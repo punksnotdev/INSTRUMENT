@@ -13,6 +13,15 @@ Sequenceable : I8Tnode
 		speed = 1;
 	}
 
+
+	addPattern {|key,pattern,parameters|
+		sequencer.addPattern(name,key,pattern,parameters);
+	}
+	removePattern {|key|
+		sequencer.removePattern(name,key);
+	}
+
+
 	seq {|pattern,key,parameters|
 		if( key.isArray, {
 			this.addPattern(nil,pattern,key);
@@ -20,11 +29,12 @@ Sequenceable : I8Tnode
 			this.addPattern(key,pattern,parameters);
 		});
 	}
-	addPattern {|key,pattern,parameters|
-		sequencer.addPattern(name,key,pattern,parameters);
+	rm {|key|
+		this.removePattern(key);
 	}
-	removePattern {|key|
-		sequencer.removePattern(name,key);
+	set {|pattern,parameters|
+		this.removePattern(pattern);
+		this.seq(pattern,parameters);
 	}
 
 
@@ -35,6 +45,7 @@ Sequenceable : I8Tnode
 		^sequencer.setPattern(name,key,parameters,pattern);
 	}
 
+
 	play {|position|
 		^sequencer.playInstrument( this, position );
 	}
@@ -42,14 +53,16 @@ Sequenceable : I8Tnode
 		^sequencer.stopInstrument( this );
 	}
 
+	trigger {
+		// do something
+	}
+
+
 	speed_{|sp_|
 		speed = sp_;
 		sequencer.setSpeed(name,speed);
 	}
 
-	trigger {
-		// do something
-	}
 
 
 	patterns{|parameter|
