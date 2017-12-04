@@ -1,6 +1,9 @@
 (
 	var bpm = 160;
 	p = ProxySpace.push(s);
+	TempoClock.tempo = (144/120);
+	p.makeTempoClock(144/120);
+	p.quant = 4;
 
 	~z= { Silent.ar ! 2 };
 	~mix = ~z;
@@ -16,7 +19,7 @@
 
 	~out.play;
 
-	p.makeTempoClock( bpm / 60 );
+	// p.makeTempoClock( bpm / 60 );
 
 	~z.fadeTime = 5;
 

@@ -42,14 +42,19 @@ Proxy : Instrument
 		// 	proxy.set(parameter.asSymbol,value);
 		// });
 
-		switch( parameter,
+		switch( parameter.asSymbol,
 
 			\octave, { octave = value },
 			\note, {
-				proxy.set(\t_trig,1,\note,((octave*12)+value).postln);
-				},
+				proxy.set(\t_trig,1,\note,((octave*12)+value));
+			},
+			\ampTrig, {
+				proxy.set(\t_trig,1,\amp,value);
+			},
 			\chord, {
-				proxy.set(\t_trig,1,\note,value[0]+this.chord(value[1]));
+				proxy.setn(\notes,(octave*12)+value.chord,\t_trig,1);
+				// proxy.setn(\notes,value.chord);
+				// proxy.set(\t_trig,1);
 			},
 			{ // default:
 				proxy.set(parameter.asSymbol,value);
