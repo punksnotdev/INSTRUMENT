@@ -95,30 +95,34 @@ ParameterTrack
 
 		var eventName;
 		var newEvent;
+		var newKey;
 
 		if( key == nil, {
 
 			var found = -1;
 			block{|break|
-				patterns.keysValuesDo({|key,item|
+				patterns.keysValuesDo({|key_,item|
 					if( item.pattern == pattern.pattern, {
-						found = key;
+						found = key_;
 						break.value;
 					});
 				});
 			};
 
-			key = patterns.size;
 
 			if( found >= 0, {
 				if( patterns[found] != nil, {
 					key = found;
 				});
+			}, {
+				key = patterns.size;
 			});
 
 		});
 
-		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key).toLower;
+		// ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key.asString).postln;
+
+		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key.asString).toLower;
 
 		newEvent = PatternEvent.new( pattern, eventName);
 
@@ -134,13 +138,28 @@ ParameterTrack
 			patternEvents[key] = List.new;
 		});
 
-		sequence.add( newEvent );
+		// /*
+		if(sequence[key].notNil,{
+			sequence[key] = newEvent;
+			//patternEvents[key](newEvent);
+
+		},{
+			var key_ = sequence.size;
+			[key,key_].postln;
+			// ("keys match: "++key==key_++": "++key++","++key_).postln;
+			sequence.add( newEvent );
+		});
+
+
+		patternEvents[key].add(newEvent);
+		patterns[ key ] = pattern;
+
+		// sequence.add( newEvent );
 
 		patternEvents[key].add(newEvent);
 
 		this.updateSequenceInfo();
 
-		patterns[ key ] = pattern;
 
 		// sequenceInfo.postln;
 
@@ -288,7 +307,7 @@ ParameterTrack
 				});
 
 				numBeats = e.pattern.pattern.size * repetitions;
-
+("totalSequenceEventBeats:"++totalSequenceEventBeats).postln;
 				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 

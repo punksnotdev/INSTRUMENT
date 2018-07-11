@@ -75,19 +75,22 @@ Sequencer : I8Tnode
 
 
 	seq {|track,key,pattern,parameters|
+		"seq in sequencer called".postln;
 		this.addPattern(track,key,pattern,parameters);
 	}
+
 	addPattern {|track,key,pattern,parameters|
-		this.createTrack(track);
 		instruments[ track ].addPattern(key,pattern,parameters);
 	}
 
 	removePattern {|track,key|
 		instruments[ track ].removePattern(key);
 	}
+
 	getPattern {|track,key|
 		^instruments[ track ].getPattern(key);
 	}
+
 	setPattern {|track,key,parameters|
 		^instruments[ track ].setPattern(key,parameters);
 	}
@@ -109,8 +112,8 @@ Sequencer : I8Tnode
 			});
 
 		});
-
 	}
+
 	deleteTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {

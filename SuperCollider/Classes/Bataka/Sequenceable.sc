@@ -22,12 +22,13 @@ Sequenceable : I8Tnode
 	}
 
 
-	seq {|pattern,key,parameters|
-		if( key.isArray, {
-			this.addPattern(nil,pattern,key);
-		}, {
+	seq {|key,pattern,parameters|
+		// if( key.isArray, {
+		// 	this.addPattern(nil,pattern,key);
+		// }, {
+		pattern.postln;
 			this.addPattern(key,pattern,parameters);
-		});
+		// });
 	}
 	rm {|key|
 		this.removePattern(key);

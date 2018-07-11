@@ -52,7 +52,7 @@ Proxy : Instrument
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {
-				proxy.setn(\notes,(octave*12)+value.chord,\t_trig,1);
+				proxy.setn(\notes,(octave*12)+value.chord(value.type),\t_trig,1);
 				// proxy.setn(\notes,value.chord);
 				// proxy.set(\t_trig,1);
 			},
