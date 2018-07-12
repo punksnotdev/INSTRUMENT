@@ -6,14 +6,14 @@
       sig = SinOsc.ar(60,pi/2) ;
       sig = sig+(Saw.ar(Line.kr(12000,40,1/23),pi/2) / 12);
       /*sig = sig + SinOsc.ar([14,24,60,120,444,699,999],0,3).tanh/4;*/
-      sig = sig * EnvGen.kr( Env.perc(1/20,1/3), doneAction: 2);
+      sig = sig * EnvGen.kr( Env.perc(1/20,1/3), doneAction: 1);
 
       /*sig = (sig*8).tanh * EnvGen.kr( Env.perc(1/20,1/6));*/
       sig = sig+((RLPF.ar((sig)+WhiteNoise.ar(1),Array.geom(7,90,43),0.5)).tanh/8 * EnvGen.kr( Env.perc(1/20,1/4) ))/8;
 
       sig = sig.tanh!2;
 
-      /*sig = sig * EnvGen.kr( Env.perc(0.01,1/6), doneAction: 2 ) * 1;*/
+      /*sig = sig * EnvGen.kr( Env.perc(0.01,1/6), doneAction: 1 ) * 1;*/
 
       Out.ar( 0, Pan2.ar(sig,0) );
 
@@ -24,7 +24,7 @@
       var subosc, subenv, suboutput, clickosc, clickenv, clickoutput;
 
       subosc = {SinOsc.ar(60)};
-      subenv = {Line.ar(1, 0, 0.3, doneAction: 2)};
+      subenv = {Line.ar(1, 0, 0.3, doneAction: 1)};
 
       clickosc = {LPF.ar(WhiteNoise.ar(1),1500)};
       clickenv = {Line.ar(1, 0, 0.02)};
@@ -48,14 +48,14 @@
 
      daOsc=LPF.ar(SinOsc.ar(EnvGen.kr(env3)+20),200);
 
-     Out.ar(0,Pan2.ar(Mix.ar([daNoise,daOsc]), 0, EnvGen.kr(env2,doneAction: 2)));
+     Out.ar(0,Pan2.ar(Mix.ar([daNoise,daOsc]), 0, EnvGen.kr(env2,doneAction: 1)));
 
    }).writeDefFile;
 
    SynthDef(\kickSimple, {
       var sig,cmp;
       sig = LPF.ar( SinOsc.ar( 60, pi/2 ) * 8, 500 );
-      sig = sig * EnvGen.kr(Env.perc(1/20,1/2),doneAction: 2);
+      sig = sig * EnvGen.kr(Env.perc(1/20,1/2),doneAction: 1);
       cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08);
       Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0)) ! 2;
 
@@ -85,7 +85,7 @@
 
        // body starts midrange, quickly drops down to low freqs, and trails off
        bodyFreq = EnvGen.ar(Env([261, 120, 51], [0.035, 0.08], curve: \exp));
-       bodyAmp = EnvGen.ar(Env.linen(0.005, 0.1, 0.3), doneAction: 2);
+       bodyAmp = EnvGen.ar(Env.linen(0.005, 0.1, 0.3), doneAction: 1);
        body = SinOsc.ar(bodyFreq) * bodyAmp;
        // pop sweeps over the midrange
        popFreq = XLine.kr(750, 261, 0.02);
@@ -136,8 +136,8 @@
 
    SynthDef(\kickHard, { |basefreq = 50, envratio = 3, freqdecay = 0.02, ampdecay = 0.5, outbus = 0|
       var   fenv = EnvGen.kr(Env([envratio, 1], [freqdecay], \exp), 1) * basefreq,
-         aenv = EnvGen.kr(Env.perc(0.005, ampdecay), 1, doneAction:2);
+         aenv = EnvGen.kr(Env.perc(0.005, ampdecay), 1, doneAction: 1);
       Out.ar(outbus, SinOsc.ar(fenv, 0.5pi, aenv));
-   }).send(s);
+   }).writeDefFile;
 
 )

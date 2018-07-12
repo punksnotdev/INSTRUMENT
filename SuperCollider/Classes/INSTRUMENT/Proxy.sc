@@ -16,7 +16,7 @@ Proxy : Instrument
 			super.init(proxy_.key,graph_);
 		},{
 			"input not a nodeproxy".postln;
-			
+
 			});
 
 	}
@@ -57,8 +57,6 @@ Proxy : Instrument
 			},
 			\chord, {
 				proxy.setn(\notes,(octave*12)+value.chord(value.type),\t_trig,1);
-				// proxy.setn(\notes,value.chord);
-				// proxy.set(\t_trig,1);
 			},
 			{ // default:
 				proxy.set(parameter.asSymbol,value);

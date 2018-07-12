@@ -55,8 +55,11 @@ SynthPlayer : Instrument
 				// synth.set(\t_trig,1,\note,(octave*12)+value);
 			},
 			{ // default:
-				if( value.isNil || value == 0, {}, { this.createSynth(); });
-			}
+
+				if( value.isNil || value == 0, {}, { this.createSynth(); synth.set([parameter,value]) });
+			},
+
+
 		);
 
 
