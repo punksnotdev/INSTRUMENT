@@ -85,7 +85,7 @@ SequencerTrack
 	}
 
 	removePattern {|parameter,key|
-		parameterTracks[parameter].removePattern(parameter,key);
+		parameterTracks[parameter].removePattern(key);
 	}
 
 	getPattern{|parameter,key|

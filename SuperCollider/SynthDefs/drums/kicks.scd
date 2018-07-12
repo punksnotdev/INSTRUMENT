@@ -17,7 +17,7 @@
 
       Out.ar( 0, Pan2.ar(sig,0) );
 
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickFull, {
 
@@ -34,7 +34,7 @@
 
       Out.ar(0, Pan2.ar(suboutput + clickoutput, 0));
 
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickDeep, {
 
@@ -50,7 +50,7 @@
 
      Out.ar(0,Pan2.ar(Mix.ar([daNoise,daOsc]), 0, EnvGen.kr(env2,doneAction: 2)));
 
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickSimple, {
       var sig,cmp;
@@ -59,7 +59,7 @@
       cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08);
       Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0)) ! 2;
 
-   }).add;
+   }).writeDefFile;
 
 
    SynthDef(\kickGabber, {
@@ -74,7 +74,7 @@
        snd = snd * Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]).ar(2);
        snd = (snd * 0.6).clip(-1, 1);
        Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickElectro, {
        |out = 0, pan = 0, amp = 0.3|
@@ -100,7 +100,7 @@
        snd = snd.tanh;
 
        Out.ar(out, Pan2.ar(snd, pan, amp));
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickSyn1, {
        var snd;
@@ -110,7 +110,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(172, 50, 0.01)) * Env.perc(0.0001, 0.3, 1, \lin).delay(0.005).ar(2));
        snd = snd.tanh;
        Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickSyn2, {
        var snd;
@@ -120,7 +120,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * Env.perc(0.0005, 0.3).ar(2));
        snd = snd.tanh;
        Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
-   }).add;
+   }).writeDefFile;
 
    SynthDef(\kickSyn3, {
        var snd;
@@ -131,7 +131,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * Env.perc(0.0001, 0.3, curve: \lin).delay(0.005).ar(2));
        snd = snd.tanh;
        Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
-   }).add;
+   }).writeDefFile;
 
 
    SynthDef(\kickHard, { |basefreq = 50, envratio = 3, freqdecay = 0.02, ampdecay = 0.5, outbus = 0|
