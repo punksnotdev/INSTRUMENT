@@ -32,7 +32,7 @@ SynthPlayer : Instrument
 
 	}
 
-	createSynth{
+	createSynth{|parameters|
 
 		if(synth.notNil, {
 			synth.free;
@@ -47,12 +47,19 @@ SynthPlayer : Instrument
 		switch( parameter,
 
 			\octave, { octave = value },
-			\note, { synth.set(\t_trig,1,\note,(octave*12)+value); },
+			\note, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
+			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
 			\chord, {
 				// synth.set(\t_trig,1,\note,(octave*12)+value);
 			},
 			{ // default:
-				synth.set(parameter.asSymbol,value);
+				value.postln;
+				if( value.isNil || value == 0, {
+				}, {
+					"peform".postln;
+					this.createSynth();
+
+					});
 			}
 		);
 
