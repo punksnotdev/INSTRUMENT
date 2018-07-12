@@ -3,11 +3,11 @@ SynthPlayer : Instrument
 
 	var <synthdef;
 
-	*new{|name_,synthdef_|
-		^super.new.init(name_,synthdef_,this.graph);
+	*new{|synthdef_|
+		^super.new.init(synthdef_,this.graph);
 	}
 
-	init{|name_,synthdef_,graph_|
+	init{|synthdef_,graph_|
 
 		if(synthdef_.isKindOf(Symbol), {
 			synthdef = synthdef_;
@@ -17,7 +17,7 @@ SynthPlayer : Instrument
 
 		this.createSynth();
 
-		super.init(name_,graph_);
+		super.init(synthdef_,graph_);
 
 	}
 
@@ -38,7 +38,7 @@ SynthPlayer : Instrument
 			synth.free;
 		});
 
-		synth = Synth( synthdef.asSymbol );
+		synth = Synth( synthdef.asSymbol, parameters );
 
 	}
 
@@ -46,20 +46,16 @@ SynthPlayer : Instrument
 
 		switch( parameter,
 
+			\synthdef, { synthdef = value },
 			\octave, { octave = value },
 			\note, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
+			\amp_trig, { this.createSynth([\t_trig,1,\amp,value]); },
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
 			\chord, {
 				// synth.set(\t_trig,1,\note,(octave*12)+value);
 			},
 			{ // default:
-				value.postln;
-				if( value.isNil || value == 0, {
-				}, {
-					"peform".postln;
-					this.createSynth();
-
-					});
+				if( value.isNil || value == 0, {}, { this.createSynth(); });
 			}
 		);
 
