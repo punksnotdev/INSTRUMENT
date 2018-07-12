@@ -14,36 +14,35 @@ Sequenceable : I8Tnode
 	}
 
 
-	addPattern {|key,pattern,parameters|
-		sequencer.addPattern(name,key,pattern,parameters);
-	}
-	removePattern {|key|
-		sequencer.removePattern(name,key);
-	}
 
 
-	seq {|key,pattern,parameters|
+	seq {|parameter,key,pattern,play_parameters|
 		// if( key.isArray, {
 		// 	this.addPattern(nil,pattern,key);
 		// }, {
-		pattern.postln;
-			this.addPattern(key,pattern,parameters);
-		// });
+		sequencer.addPattern(
+			name,
+			parameter,
+			key,
+			pattern,
+			play_parameters
+		);
+
 	}
-	rm {|key|
-		this.removePattern(key);
+	rm {|parameter,key|
+		sequencer.removePattern(name,parameter,key);
 	}
-	set {|pattern,parameters|
-		this.removePattern(pattern);
-		this.seq(pattern,parameters);
-	}
+	// set {|pattern,parameters|
+	// 	this.removePattern(pattern);
+	// 	this.seq(pattern,parameters);
+	// }
 
 
-	getPattern {|key|
-		^sequencer.getPattern(name,key);
+	get {|parameter,key|
+		^sequencer.getPattern(name,parameter,key);
 	}
-	setPattern {|key,parameters,pattern|
-		^sequencer.setPattern(name,key,parameters,pattern);
+	set {|parameter,key,parameters|
+		^sequencer.setPatternParameters(name,parameter,key,parameters);
 	}
 
 

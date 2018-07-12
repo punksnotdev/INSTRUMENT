@@ -1,80 +1,89 @@
 (
 s.boot;
-
-
 s.doWhenBooted({
 	().play;
 	s.scope;
+});
+)
+
+// s.doWhenBooted({ç
+(
+	var bpm = 160;
+	p = ProxySpace.push(s);
+	~bpm=160;
+	// ().play;
 	b = Tdef(\boot,{
 
 		1.do {
-			var bpm = 160;
-
-			2.wait;
-
-			TempoClock.tempo = (bpm/120);
-			p = ProxySpace.push(s);
-			p.makeTempoClock(144/120);
-
-			["set proxyspace",p].postln;
 
 			1.wait;
 
+
+			4.wait;
+
+			TempoClock.tempo = (bpm/120);
+			p.makeTempoClock(bpm/120);
+[\bpm,~bpm].postln;
+			1.wait;
 
 			p.quant = 4;
 			//
-			// ~o=NodeProxy.audio(s,2);
-			// ~z=NodeProxy.audio(s,2);
-			// ~m=NodeProxy.audio(s,2);
+			~out=NodeProxy.audio(s,2);
+			~x=NodeProxy.audio(s,2);
+			~mix=NodeProxy.audio(s,2);
+
+			3.wait;
 
 			~amp = 0.25;
-			~z= { Silent.ar ! 2 };
-			~m = ~z;
-			~o = {
-				Pan2.ar(Limiter.ar(CompanderD.ar(Mix.new(HPF.ar(~m.ar,30)))*~amp),0);
+			~mix = ~x;
+
+			~out = {
+				Pan2.ar(Limiter.ar(CompanderD.ar(Mix.new(HPF.ar(~mix.ar,30)))*~amp),0);
 			};
-			1.wait;
 
-			~o.play;
-			("~o"++~o).postln;
+			3.wait;
 
-			1.wait;
+			~out.play;
+			("~out"++~out).postln;
+
+			// 1.wait;
 
 
 			p.quant=4;
-			~o.quant=4;
-			// ~z.quant_(4);
+			~out.quant=4;
+			// ~x.quant_(4);
 
-			1.wait;
+			3.wait;
 
 
 
 			// p.makeTempoClock( bpm / 60 );
 
 
-			~z.fadeTime = 5;
-			~z = { WhiteNoise.ar(1/4) ! 2 };
-			// [~m,~z].postln;
+			~x= { Silent.ar ! 2 };
+			~x.fadeTime = 5;
+			~x = { WhiteNoise.ar(1/2) ! 2 };
+			// [~mix,~x].postln;ix
 
 
-			["play",~z,~o,p].postln;
+			["play",~x,~out,p].postln;
 
-			1.wait;
+			// 1.wait;
 
 			"INSTRUMENT v.0.1".postln;
 
-			1.wait;
+			5.wait;
 
-			~z = { Silent.ar ! 2 };
+			~x = { Silent.ar ! 2 };
 
 		}
 
 	});
 
-	// ~z = { Silent.ar ! 2 };
+	// ~x = { Silent.ar ! 2 };
 
 	b.play;
-
+)
 });
 
 

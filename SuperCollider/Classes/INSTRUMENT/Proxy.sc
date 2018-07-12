@@ -3,17 +3,21 @@ Proxy : Instrument
 
 	var <proxy;
 
-	*new{|name_,proxy_|
-		^super.new.init(name_,proxy_,this.graph);
+	*new{|proxy_|
+		^super.new.init(proxy_,this.graph);
 	}
 
-	init{|name_,proxy_,graph_|
+	init{|proxy_,graph_|
+
 		if( proxy_.isKindOf(NodeProxy), {
 			proxy = proxy_;
+			("proxy.key"++proxy_.key).postln;
 			this.createSynth();
-		});
-
-		super.init(name_,graph_);
+			super.init(proxy_.key,graph_);
+		},{
+			"input not a nodeproxy".postln;
+			
+			});
 
 	}
 

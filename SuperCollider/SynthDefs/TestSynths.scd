@@ -22,3 +22,6 @@ SynthDef(\bassTest,{|note=60,t_trig=0,decay=0.3,distortion=2.3,cutoff=1500|
 
 	Out.ar(0, Pan2.ar( sig, 0 ));
 }).store;
+
+
+~x = { Silent.ar ! 2 }
