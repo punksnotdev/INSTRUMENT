@@ -3,6 +3,10 @@ SynthPlayer : Instrument
 
 	var <synthdef;
 
+	var synth_parameters;
+
+	var <currentFx;
+
 	*new{|synthdef_|
 		^super.new.init(synthdef_,this.graph);
 	}
@@ -17,10 +21,14 @@ SynthPlayer : Instrument
 
 		this.createSynth();
 
+		synth_parameters = IdentityDictionary.new;
 		super.init(synthdef_,graph_);
 
 	}
 
+	currentFx_{|synthdef_|
+		this.createFx(synthdef_);
+	}
 
 	synthdef_{|synthdef_|
 
@@ -36,9 +44,14 @@ SynthPlayer : Instrument
 
 		if(synth.notNil, {
 			synth.free;
-		});
+		}, {});
 
-		synth = Synth( synthdef.asSymbol, parameters );
+		if( currentFx.notNil, {
+			// [currentFx,"synthfx"].postln;
+			synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
+		}, {
+			synth = Synth( synthdef.asSymbol, parameters );
+		});
 
 	}
 
@@ -48,6 +61,14 @@ SynthPlayer : Instrument
 
 			\synthdef, { synthdef = value },
 			\octave, { octave = value },
+			\fx, {
+
+				this.createFx(value);
+
+			},
+			\setFx, {
+				currentFx.set(parameter,value);
+			},
 			\note, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
 			\amp_trig, { this.createSynth([\t_trig,1,\amp,value]); },
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
@@ -55,13 +76,37 @@ SynthPlayer : Instrument
 				// synth.set(\t_trig,1,\note,(octave*12)+value);
 			},
 			{ // default:
-
-				if( value.isNil || value == 0, {}, { this.createSynth(); synth.set([parameter,value]) });
+				synth_parameters[parameter.asSymbol]=value;
+				if( value.isNil || value == 0, {}, { synth.set(parameter.asSymbol,value) });
 			},
 
 
 		);
 
+
+	}
+
+	createFx {|synthdef_|
+
+		var fx;
+
+		if( currentFx.notNil, {
+			currentFx.free;
+		});
+
+		if( synthdef_.notNil,{
+
+			fx = Synth(synthdef_);
+
+			if( fx.isKindOf(Synth), {
+				currentFx=fx;
+			}, {
+				currentFx = nil;
+			});
+			currentFx.postln;
+		}, {
+			currentFx = nil;
+		});
 
 	}
 
