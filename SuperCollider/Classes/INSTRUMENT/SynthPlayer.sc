@@ -33,6 +33,7 @@ SynthPlayer : Instrument
 	synthdef_{|synthdef_|
 
 		synthdef = synthdef_;
+		synth_parameters=IdentityDictionary.new;
 
 		this.createSynth();
 
@@ -55,11 +56,25 @@ SynthPlayer : Instrument
 
 	}
 
+	synth_parameters_array{
+		var parameters_array = List.new;
+
+		synth_parameters.keysValuesDo({|key,value|
+			parameters_array.add(key.asSymbol);
+			parameters_array.add(value);
+		})
+
+		^parameters_array
+	}
+
 	trigger {|parameter,value|
 
 		switch( parameter,
 
-			\synthdef, { synthdef = value },
+			\synthdef, {
+				synthdef = value;
+				synth_parameters = IdentityDictionary.new;
+			},
 			\octave, { octave = value },
 			\fx, {
 
@@ -67,10 +82,16 @@ SynthPlayer : Instrument
 
 			},
 			\setFx, {
-				currentFx.set(parameter,value);
+				value.keysValuesDo({|k,v|
+					currentFx.set(k,v);
+				});
 			},
-			\note, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
-			\amp_trig, { this.createSynth([\t_trig,1,\amp,value]); },
+			\note, {
+				this.createSynth([\t_trig,1,\note,(octave*12)+value]++this.synth_parameters_array());
+			},
+			\amp_trig, {
+				this.createSynth([\t_trig,1,\amp,value]++this.synth_parameters_array());
+			},
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
 			\chord, {
 				// synth.set(\t_trig,1,\note,(octave*12)+value);
@@ -91,7 +112,7 @@ SynthPlayer : Instrument
 		var fx;
 
 		if( currentFx.notNil, {
-			currentFx.free;
+			currentFx.release;
 		});
 
 		if( synthdef_.notNil,{
