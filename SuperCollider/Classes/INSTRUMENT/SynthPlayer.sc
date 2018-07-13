@@ -111,20 +111,13 @@ SynthPlayer : Instrument
 
 		var fx;
 
-		if( currentFx.notNil, {
-			currentFx.release;
-		});
 
 		if( synthdef_.notNil,{
-
-			fx = Synth(synthdef_);
-
-			if( fx.isKindOf(Synth), {
-				currentFx=fx;
+			if( currentFx.notNil, {
+				currentFx = Synth.replace(currentFx,synthdef_);
 			}, {
-				currentFx = nil;
+				currentFx = Synth.new(synthdef_);
 			});
-			currentFx.postln;
 		}, {
 			currentFx = nil;
 		});
