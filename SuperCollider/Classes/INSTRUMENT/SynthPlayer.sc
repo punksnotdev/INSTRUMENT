@@ -4,6 +4,7 @@ SynthPlayer : Instrument
 	var <synthdef;
 
 	var synth_parameters;
+	var fx_parameters;
 
 	var <currentFx;
 
@@ -20,14 +21,12 @@ SynthPlayer : Instrument
 		});
 
 		this.createSynth();
+		currentFx = nil;
 
 		synth_parameters = IdentityDictionary.new;
+		fx_parameters = IdentityDictionary.new;
 		super.init(synthdef_,graph_);
 
-	}
-
-	currentFx_{|synthdef_|
-		this.createFx(synthdef_);
 	}
 
 	synthdef_{|synthdef_|
@@ -47,7 +46,8 @@ SynthPlayer : Instrument
 			synth.free;
 		}, {});
 
-		if( currentFx.notNil, {
+		if( currentFx.isKindOf(Synth), {
+
 			// [currentFx,"synthfx"].postln;
 			synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
 		}, {
@@ -56,10 +56,10 @@ SynthPlayer : Instrument
 
 	}
 
-	synth_parameters_array{
+	parameters_array{|array|
 		var parameters_array = List.new;
 
-		synth_parameters.keysValuesDo({|key,value|
+		array.keysValuesDo({|key,value|
 			parameters_array.add(key.asSymbol);
 			parameters_array.add(value);
 		})
@@ -83,14 +83,17 @@ SynthPlayer : Instrument
 			},
 			\setFx, {
 				value.keysValuesDo({|k,v|
+					fx_parameters[k]=v;
 					currentFx.set(k,v);
 				});
 			},
 			\note, {
-				this.createSynth([\t_trig,1,\note,(octave*12)+value]++this.synth_parameters_array());
+				this.createSynth([\t_trig,1,\note,(octave*12)+value]++this.parameters_array(synth_parameters));
 			},
 			\amp_trig, {
-				this.createSynth([\t_trig,1,\amp,value]++this.synth_parameters_array());
+				if( value > 0 ) {
+					this.createSynth([\t_trig,1,\amp,value]++this.parameters_array(synth_parameters));
+				}
 			},
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
 			\chord, {
@@ -114,14 +117,35 @@ SynthPlayer : Instrument
 
 		if( synthdef_.notNil,{
 			if( currentFx.notNil, {
-				currentFx = Synth.replace(currentFx,synthdef_);
+				currentFx.free;
+				// currentFx = Synth.replace(currentFx,synthdef_);
 			}, {
-				currentFx = Synth.new(synthdef_);
+				// currentFx = Synth.new(synthdef_);
 			});
+			fx_parameters.postln;
+			currentFx = Synth.new(synthdef_,this.parameters_array(fx_parameters));
+
 		}, {
+			"clear currentFX".postln;
 			currentFx = nil;
 		});
 
 	}
+
+
+
+	currentFx_{|synthdef_|
+		this.createFx(synthdef_);
+	}
+
+	setFx{|parameter,value|
+		fx_parameters[parameter] = value;
+		currentFx.set(parameter,value);
+	}
+
+	set {|parameter,value|
+		synth_parameters[parameter] = value;
+	}
+
 
 }

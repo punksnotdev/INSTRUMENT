@@ -11,12 +11,12 @@ SynthDef(\test,{|note=60,t_trig=0,decay=0.3,distortion=1.3,cutoff=1500|
 }).store;
 
 
-SynthDef(\bassTest,{|note=60,t_trig=0,decay=0.3,distortion=2.3,cutoff=1500,q=0.1|
+SynthDef(\bass,{|amp=0.5,note=60,t_trig=0,decay=0.3,distortion=2.3,cutoff=1500,q=0.1|
 	var sig, env;
 	sig = SinOsc.ar( (note-[24,12]).midicps ) * 0.1;
 	env = EnvGen.kr(Env.perc(1/100,decay),t_trig);
-	sig = sig * env;
-	sig = (sig * distortion).tanh/4;
+	sig = sig * env* amp;
+	sig = (sig * distortion).tanh;
 
 	sig = RLPF.ar( sig, cutoff, q );
 
@@ -24,14 +24,14 @@ SynthDef(\bassTest,{|note=60,t_trig=0,decay=0.3,distortion=2.3,cutoff=1500,q=0.1
 }).store;
 
 
-SynthDef(\bassTest2,{|note=60,t_trig=0,decay=0.3,distortion=2.3,cutoff=1500|
+SynthDef(\bassHard,{|amp=0.5,note=60,t_trig=0,decay=0.3,distortion=12.3,cutoff=1500,q=0.01|
 	var sig, env;
-	sig = SinOsc.ar( (note-[24,12]).midicps ) * 0.3;
+	sig = SinOsc.ar( (note-[24,12]).midicps ) * 0.1;
 	env = EnvGen.kr(Env.perc(1/100,decay),t_trig);
-	sig = sig * env;
+	sig = sig * env* amp;
 	sig = (sig * distortion).tanh;
 
-	sig = RLPF.ar( sig, cutoff, 0.3 );
+	sig = RLPF.ar( sig, cutoff, q );
 
 	Out.ar(0, Pan2.ar( sig, 0 ));
 }).store;
@@ -68,16 +68,8 @@ SynthDef(\delay1, { arg delay = 0.25;
 }).store;
 
 
-SynthDef(\delay2, { arg delay = 5;
-    ReplaceOut.ar(
-        1,
-        CombC.ar(
-			In.ar(0, 1), 8, LFNoise2.kr(0.3).range(0.1, delay), 1
-		);
-    )
-}).store;
 
-SynthDef(\delay3, { arg delay=0.25;
+SynthDef(\delay2, { arg delay=0.25;
 	var sig = In.ar(0, 1);
 	sig = Mix.arFill(7, { CombC.ar(
 		sig, 8, delay, 1
@@ -86,5 +78,52 @@ SynthDef(\delay3, { arg delay=0.25;
     ReplaceOut.ar(
         1,
         sig;
+    )
+}).store;
+
+SynthDef(\delay3, { arg delay = 5;
+    ReplaceOut.ar(
+        1,
+        CombC.ar(
+			In.ar(0, 1), 8, LFNoise2.kr(0.3).range(0.1, delay), 1
+		);
+    )
+}).store;
+
+
+
+SynthDef(\lpf, { arg cutoff=1500,q=0.3;
+    ReplaceOut.ar(
+        1,
+        RLPF.ar(
+			In.ar(0, 1), cutoff, q
+		);
+    )
+}).store;
+
+SynthDef(\hpf, { arg cutoff=70,q=0.3;
+    ReplaceOut.ar(
+        1,
+        RHPF.ar(
+			In.ar(0, 1), cutoff, q
+		);
+    )
+}).store;
+
+SynthDef(\resonz, { arg cutoff=1500,q=0.3;
+    ReplaceOut.ar(
+        1,
+        (Resonz.ar(
+			In.ar(0, 1), cutoff, q
+		)*4).tanh*0.75;
+    )
+}).store;
+
+SynthDef(\moogFF, { arg cutoff=1500,q=0.5;
+    ReplaceOut.ar(
+        1,
+        (MoogFF.ar(
+			In.ar(0, 1), cutoff,3.5+q
+		)).tanh*0.75;
     )
 }).store;

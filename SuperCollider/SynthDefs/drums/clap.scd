@@ -1,5 +1,5 @@
 (
-   SynthDef(\clapElectro, {
+   SynthDef(\clap1, {
        |out = 0, amp = 0.5, pan = 0, dur = 1|
        var env1, env2, snd, noise1, noise2;
 
@@ -18,7 +18,7 @@
        noise1 = BPF.ar(noise1, 1620, 3);
 
        // noise 2 - 1 longer single
-       env2 = EnvGen.ar(Env.new([0, 1, 0], [0.02, 0.18], [0, -4]), doneAction:2);
+       env2 = EnvGen.ar(Env.new([0, 1, 0], [0.02, 0.18], [0, -4]), doneAction:1);
 
        noise2 = WhiteNoise.ar(env2);
        noise2 = HPF.ar(noise2, 1000);
@@ -30,14 +30,14 @@
        snd = snd.softclip;
 
        Out.ar(out, Pan2.ar(snd,pan,amp));
-   }).add;
+   }).store;
 
-   SynthDef(\clapNoise, {
+   SynthDef(\clap2, {
 
       var claposc, clapenv, clapnoise, clapoutput;
 
       clapnoise = {BPF.ar(LPF.ar(WhiteNoise.ar(1),7500),1500)};
-      clapenv = {Line.ar(1, 0, 0.6, doneAction: 2)};
+      clapenv = {Line.ar(1, 0, 0.6, doneAction: 1)};
 
       clapoutput = {Mix.arFill(7,
       {arg i;
@@ -52,5 +52,5 @@
 
       Out.ar(0,Pan2.ar(clapoutput * clapenv, 0));
 
-   }).add;
+   }).store;
 )
