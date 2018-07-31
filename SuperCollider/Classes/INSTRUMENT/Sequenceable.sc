@@ -54,6 +54,14 @@ Sequenceable : I8Tnode
 		^sequencer.stopInstrument( this );
 	}
 
+	go{ |time|
+		sequencer.postln;
+		^sequencer.instrument_tracks[name].parameterTracks.collect{|track|
+			track.go(time)
+		};
+	}
+
+
 	trigger {
 		// do something
 	}
@@ -67,14 +75,15 @@ Sequenceable : I8Tnode
 
 
 	patterns{|parameter|
-		^sequencer.instruments[name].parameterTracks[parameter].patterns;
+		^sequencer.instrument_tracks[name].parameterTracks[parameter].patterns;
 	}
 	sequence{|parameter|
-		^sequencer.instruments[name].parameterTracks[parameter].sequence;
+		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequence;
 	}
 	sequenceInfo{|parameter|
-		^sequencer.instruments[name].parameterTracks[parameter].sequenceInfo;
+		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
 	}
+
 
 
 }
