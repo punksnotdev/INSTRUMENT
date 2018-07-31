@@ -18,6 +18,8 @@ INSTRUMENT
 
 		rootNode = I8Tnode.new("rootNode",this);
 
+		this.play;
+
 	}
 
 	addNode {|node|
@@ -42,5 +44,17 @@ INSTRUMENT
 
 	play {
 		sequencer.play;
+	}
+	pause {
+		sequencer.pause;
+	}
+	stop {
+		sequencer.stop;
+	}
+
+	go {|time=0|
+
+		sequencer.go(time);
+
 	}
 }

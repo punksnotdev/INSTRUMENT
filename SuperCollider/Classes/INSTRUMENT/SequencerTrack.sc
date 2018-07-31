@@ -117,4 +117,10 @@ SequencerTrack
 		});
 	}
 
+	go {|time|
+		parameterTracks.collect({|t|
+			t.go(time);
+		});
+	}
+
 }

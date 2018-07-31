@@ -91,6 +91,10 @@ ParameterTrack
 		^playing = false;
 	}
 
+	go {|time|
+		beats = time;
+	}
+
 	addPattern {|key,pattern,play_parameters|
 
 		var eventName;

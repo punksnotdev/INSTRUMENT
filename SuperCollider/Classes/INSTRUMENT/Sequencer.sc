@@ -14,6 +14,9 @@ Sequencer : I8Tnode
 
 	var tdef;
 
+	var clock;
+	var playing;
+
 	*new {
 		// SequencerEvent instances need to have a reference to 'this' (sequencer):
 
@@ -31,21 +34,28 @@ Sequencer : I8Tnode
 		speed = 1;
 		repeat = 4;
 
+		clock = 0;
+		playing = true;
 	}
 
 	play {
 
-		tdef = Tdef(\sequencer,{
+		playing = true;
 
-			var beat = 0;
+		tdef = Tdef(\sequencer,{
 
 			inf.do{|i|
 
-				instrument_tracks.collect({|track|
-					track.fwd(i);
+				if( playing, {
+
+					instrument_tracks.collect({|track|
+						track.fwd( i );
+					});
+
 				});
 
 				(1/32).wait;
+
 			}
 
 
@@ -53,8 +63,25 @@ Sequencer : I8Tnode
 
 	}
 
+	pause {
+		playing = false;
+	}
+
 	stop {
 		tdef.stop;
+	}
+
+	rewind {
+		clock = 0;
+	}
+
+
+	go {|time|
+
+		instrument_tracks.collect({|track|
+			track.go( time );
+		});
+
 	}
 
 

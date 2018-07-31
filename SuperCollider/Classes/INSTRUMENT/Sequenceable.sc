@@ -11,6 +11,7 @@ Sequenceable : I8Tnode
 	init{|name_,graph_|
 		super.init(name_,graph_);
 		speed = 1;
+		this.play;
 	}
 
 
