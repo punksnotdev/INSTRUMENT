@@ -55,7 +55,7 @@ ParameterTrack
 					currentPattern = this.currentEvent().pattern;
 
 					beatPatternIndex = beats % currentPattern.pattern.size;
-beatValue.postln;
+
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
 					if( beatValue != \r, {

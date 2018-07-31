@@ -56,7 +56,6 @@ Proxy : Instrument
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {
-				value.postln;
 				proxy.setn(\notes,(octave*12)+value.chord(value.type),\t_trig,1);
 			},
 			{ // default:

@@ -13,14 +13,13 @@ s.doWhenBooted({
 
 ProxySpace.clearAll;
 	p = ProxySpace.push(s);
-		  TempoClock.tempo = (166/120);
+		  TempoClock.tempo = ((166/2)/120);
 		  p.makeTempoClock(1,'instrument',TempoClock.default);
 
 
 
 		  p.quant = 4;
-		  //
-~mix.stop;
+
 		  ~out=NodeProxy.audio(s,2);
 		  ~z=NodeProxy(s,\audio,2);
 

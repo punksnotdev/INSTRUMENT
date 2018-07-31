@@ -15,6 +15,15 @@ Kick
 		})
 	}
 
+	*ar {|t_trig=1|
+
+		var sig,cmp;
+        sig = LPF.ar( SinOsc.ar( 60, pi/2 ) * 8, 500 );
+        sig = sig * EnvGen.kr(Env.perc(1/20,1/2),t_trig,doneAction: 1);
+        cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08) ! 2;
+        ^Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0));
+
+	}
 	// *play
 	*caos {|att=0.01, rel=0.5, modFreq=1, modbw=0.1, freq1=60, freq2=66, lowcutfreq=50,  t_trig=0, amp1=0.75, amp2=0.75|
 			var kick,env;
