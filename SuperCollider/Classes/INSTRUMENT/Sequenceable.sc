@@ -14,7 +14,13 @@ Sequenceable : I8Tnode
 		this.play;
 	}
 
+	remove{
+		this.sequencer.unregisterInstrument(this);
+	}
 
+	kill{
+		this.remove(this);
+	}
 
 
 	seq {|parameter,key,pattern,play_parameters|
