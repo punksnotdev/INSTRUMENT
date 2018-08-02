@@ -15,7 +15,7 @@
 
       /*sig = sig * EnvGen.kr( Env.perc(0.01,1/6), doneAction: 1 ) * 1;*/
 
-      Out.ar( 0, Pan2.ar(sig,0) );
+      Out.ar( 0, Pan2.ar(sig,0)  / 4);
 
    }).store;
 
@@ -32,7 +32,7 @@
       suboutput = (subosc * subenv);
       clickoutput = (clickosc * clickenv);
 
-      Out.ar(0, Pan2.ar(suboutput + clickoutput, 0));
+      Out.ar(0, Pan2.ar(suboutput + clickoutput, 0) / 4);
 
    }).store;
 
@@ -48,7 +48,7 @@
 
      daOsc=LPF.ar(SinOsc.ar(EnvGen.kr(env3)+20),200);
 
-     Out.ar(0,Pan2.ar(Mix.ar([daNoise,daOsc]), 0, EnvGen.kr(env2,doneAction: 1)));
+     Out.ar(0,Pan2.ar(Mix.ar([daNoise,daOsc]), 0, EnvGen.kr(env2,doneAction: 1)) / 4);
 
    }).store;
 
@@ -57,7 +57,7 @@
       sig = LPF.ar( SinOsc.ar( 60, pi/2 ) * 8, 500 );
       sig = sig * EnvGen.kr(Env.perc(1/20,1/2),doneAction: 1);
       cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08);
-      Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0)) ! 2;
+      Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0) / 4 ) !  2;
 
    }).store;
 
@@ -66,7 +66,7 @@
   SynthDef(\kickHard, { |basefreq = 50, envratio = 3, freqdecay = 0.02, ampdecay = 0.5, outbus = 0|
      var   fenv = EnvGen.kr(Env([envratio, 1], [freqdecay], \exp), 1) * basefreq,
         aenv = EnvGen.kr(Env.perc(0.005, ampdecay), 1, doneAction: 1);
-     Out.ar(outbus, SinOsc.ar(fenv, 0.5pi, aenv));
+     Out.ar(outbus, SinOsc.ar(fenv, 0.5pi, aenv) / 4);
   }).store;
 
   SynthDef(\kickElectro, {
@@ -92,7 +92,7 @@
       snd = body + pop + click;
       snd = snd.tanh;
 
-      Out.ar(out, Pan2.ar(snd, pan, amp));
+      Out.ar(out, Pan2.ar(snd, pan, amp) / 4);
   }).store;
 
 
@@ -108,7 +108,7 @@
        snd = RLPF.ar(snd, 8000, 0.7);
        snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction:1);
        snd = (snd * 0.6).clip(-1, 1);
-       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
+       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)) / 4);
    }).store;
 
 
@@ -119,7 +119,7 @@
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), XLine.ar(800, 100, 0.01), 0.6) * Env.perc(0.001, 0.02).delay(0.001).ar);
        snd = snd + (SinOsc.ar(XLine.ar(172, 50, 0.01)) * EnvGen.kr(Env.perc(0.0001, 0.3, 1, \lin).delay(0.005),doneAction:1));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
+       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)) / 4);
    }).store;
 
    SynthDef(\kickSyn2, {
@@ -129,7 +129,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(750, 161, 0.02)) * Env.perc(0.0005, 0.02).ar);
        snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * EnvGen.kr(Env.perc(0.0005, 0.3),doneAction:2));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
+       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)) / 4);
    }).store;
 
    SynthDef(\kickSyn3, {
@@ -140,7 +140,7 @@
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), 300, 0.9) * Env.perc(0.001, 0.02).ar);
        snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * EnvGen.kr(Env.perc(0.0001, 0.3, curve: \lin).delay(0.005),doneAction:2));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)));
+       Out.ar(\out.kr(0), Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1)) / 4);
    }).store;
 
 

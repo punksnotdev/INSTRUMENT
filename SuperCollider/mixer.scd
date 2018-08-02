@@ -3,6 +3,8 @@ s.options.memSize=2048*1024;
 s.boot;
 )
 (
+
+
 s.doWhenBooted({
 
 	().play;
@@ -67,7 +69,7 @@ ProxySpace.clearAll;
 		  "INSTRUMENT v.0.1".postln;
 
 
-		  // ~x = { Silent.ar ! 2 };
+		  // ~z = { Silent.ar ! 2 };
 
 
 

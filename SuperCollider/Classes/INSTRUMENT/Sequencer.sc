@@ -97,7 +97,7 @@ Sequencer : I8Tnode
 		this.createTrack(instrument);
 	}
 	unregisterInstrument {|instrument|
-
+		this.deleteTrack(instrument);
 	}
 
 

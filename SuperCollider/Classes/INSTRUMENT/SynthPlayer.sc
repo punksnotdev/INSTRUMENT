@@ -8,25 +8,28 @@ SynthPlayer : Instrument
 
 	var <currentFx;
 
-	*new{|synthdef_|
-		^super.new.init(synthdef_,this.graph);
+	*new{|name_,synthdef_|
+		^super.new.init(name_,this.graph,synthdef_);
 	}
 
-	init{|synthdef_,graph_|
+	init{|name_,graph_,synthdef_|
+		if( name_.notNil && synthdef_.notNil, {
+			[name_,synthdef_].postln;
 
-		if(synthdef_.isKindOf(Symbol), {
-			synthdef = synthdef_;
-		},{
-			synthdef = \test;
+			if(synthdef_.isKindOf(Symbol), {
+				synthdef = synthdef_;
+			},{
+				synthdef = \test;
+			});
+
+			this.createSynth();
+			currentFx = nil;
+
+			synth_parameters = IdentityDictionary.new;
+			fx_parameters = IdentityDictionary.new;
+			super.init(name_,graph_);
+
 		});
-
-		this.createSynth();
-		currentFx = nil;
-
-		synth_parameters = IdentityDictionary.new;
-		fx_parameters = IdentityDictionary.new;
-		super.init(synthdef_,graph_);
-
 	}
 
 	synthdef_{|synthdef_|
@@ -90,7 +93,7 @@ SynthPlayer : Instrument
 			\note, {
 				this.createSynth([\t_trig,1,\note,(octave*12)+value]++this.parameters_array(synth_parameters));
 			},
-			\amp_trig, {
+			\ampTrig, {
 				if( value > 0 ) {
 					this.createSynth([\t_trig,1,\amp,value]++this.parameters_array(synth_parameters));
 				}

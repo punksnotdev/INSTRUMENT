@@ -17,7 +17,7 @@
 
        snd = (pop + noise) * 1.3;
 
-       Out.ar(out, Pan2.ar(snd, pan, amp));
+       Out.ar(out, Pan2.ar(snd, pan, amp) / 4);
    }).store;
 
 SynthDef(\snare2, {
@@ -34,7 +34,7 @@ SynthDef(\snare2, {
    fulloutput = (drumoutput * volenv) + (snaposc * snapenv);
    //fulloutput = (drumoutput * volenv);
 
-   Out.ar(0,Pan2.ar(fulloutput, 0));
+   Out.ar(0,Pan2.ar(fulloutput, 0) / 4);
 
 }).store
 )

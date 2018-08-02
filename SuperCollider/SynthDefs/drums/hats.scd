@@ -13,7 +13,7 @@ SynthDef(\hh2, {
 
     snd = noise;
 
-    Out.ar(out, Pan2.ar(snd, pan, amp));
+    Out.ar(out, Pan2.ar(snd, pan, amp) / 4);
 }).store;
 
 
@@ -30,6 +30,7 @@ SynthDef(\hhOpen, {
 
     Out.ar(0,
     Pan2.ar(hatoutput, 0)
+    / 4
     )
 
 }).store;
@@ -47,6 +48,7 @@ SynthDef(\hhClosed, {
 
     Out.ar(0,
     Pan2.ar(hatoutput, 0)
+    / 4
     )
 
 }).store;
