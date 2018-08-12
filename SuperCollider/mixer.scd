@@ -12,11 +12,10 @@ s.doWhenBooted({
 
 
 
-
-ProxySpace.clearAll;
+	TempoClock.default.tempo=166/120;
+	ProxySpace.clearAll;
 	p = ProxySpace.push(s);
-		  TempoClock.tempo = ((166/2)/120);
-		  p.makeTempoClock(1,'instrument',TempoClock.default);
+	p.makeTempoClock(166/120);
 
 
 

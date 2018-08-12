@@ -1,7 +1,7 @@
 (
 
    SynthDef(\snare1, {
-       |out = 0, pan = 0, amp = 0.3|
+       |out = 0, pan = 0, amp = 0.5|
        var pop, popAmp, popFreq;
        var noise, noiseAmp;
        var snd;
@@ -17,10 +17,10 @@
 
        snd = (pop + noise) * 1.3;
 
-       Out.ar(out, Pan2.ar(snd, pan, amp) / 4);
+       Out.ar(out, Pan2.ar(snd, pan, amp));
    }).store;
 
-SynthDef(\snare2, {
+SynthDef(\snare2, {|amp=0.5|
    var drumosc, filterenv, volenv, drumoutput, snaposc, snapenv, fulloutput;
 
    drumosc = {((Pulse.ar(100)+WhiteNoise.ar)*3).tanh};
@@ -34,7 +34,7 @@ SynthDef(\snare2, {
    fulloutput = (drumoutput * volenv) + (snaposc * snapenv);
    //fulloutput = (drumoutput * volenv);
 
-   Out.ar(0,Pan2.ar(fulloutput, 0) / 4);
+   Out.ar(0,Pan2.ar(fulloutput*amp, 0));
 
 }).store
 )

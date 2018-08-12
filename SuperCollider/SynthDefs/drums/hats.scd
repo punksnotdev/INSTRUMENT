@@ -2,7 +2,7 @@
 
 
 SynthDef(\hh2, {
-    |out = 0, pan = 0, amp = 0.3|
+    |out = 0, pan = 0, amp = 0.5|
     var click, clickAmp;
     var noise, noiseAmp;
     var snd;
@@ -13,11 +13,11 @@ SynthDef(\hh2, {
 
     snd = noise;
 
-    Out.ar(out, Pan2.ar(snd, pan, amp) / 4);
+    Out.ar(out, Pan2.ar(snd, pan, amp) );
 }).store;
 
 
-SynthDef(\hhOpen, {
+SynthDef(\hhOpen, {|amp=0.5|
 
     var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -29,13 +29,13 @@ SynthDef(\hhOpen, {
     hatoutput = (hatosc * hatenv);
 
     Out.ar(0,
-    Pan2.ar(hatoutput, 0)
-    / 4
+    Pan2.ar(hatoutput*amp, 0)
+
     )
 
 }).store;
 
-SynthDef(\hhClosed, {
+SynthDef(\hhClosed, {|amp=0.5|
 
     var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -47,8 +47,8 @@ SynthDef(\hhClosed, {
     hatoutput = (hatosc * hatenv);
 
     Out.ar(0,
-    Pan2.ar(hatoutput, 0)
-    / 4
+    Pan2.ar(hatoutput*amp, 0)
+
     )
 
 }).store;
