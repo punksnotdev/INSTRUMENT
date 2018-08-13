@@ -21,7 +21,7 @@ I8Tpattern
 				if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
 			};
 
-			amplitudes = amplitudes.normalize(0.1,1);
+			// amplitudes = amplitudes.normalize(0.1,1);
 
 			events.collect({|e,i|
 				var newPatternEvent = ();
@@ -175,7 +175,7 @@ I8Tpattern
 
 		group.chars.collect({|c| str = str ++ c });
 
-		
+
 		if( str.find(":").notNil, {
 
 			splitStr = str.split($:);
