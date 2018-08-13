@@ -45,6 +45,9 @@ SynthPlayer : Instrument
 
 	createSynth{|parameters|
 
+		"synth".postln;
+		synth.postln;
+
 		if(synth.notNil, {
 			synth.free;
 		}, {});
@@ -91,7 +94,8 @@ SynthPlayer : Instrument
 				});
 			},
 			\note, {
-				this.createSynth([\t_trig,1,\note,(octave*12)+value]++this.parameters_array(synth_parameters));
+				this.createSynth([\t_trig,1,\freq,((octave*12)+value).midicps,\note,(octave*12)+value]++this.parameters_array(synth_parameters));
+				synth.postln;
 			},
 			\ampTrig, {
 				if( value > 0 ) {

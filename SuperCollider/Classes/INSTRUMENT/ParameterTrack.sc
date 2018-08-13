@@ -128,9 +128,18 @@ ParameterTrack
 
 		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).toLower;
 
-		newEvent = PatternEvent.new( pattern, eventName);
+		if( pattern.isKindOf(P), {
 
-		newEvent.pattern = pattern;
+			newEvent = PatternEvent.new( pattern, eventName);
+			newEvent.pattern = pattern;
+
+		}, {
+
+			newEvent = PatternEvent.new( P(pattern), eventName);
+			newEvent.pattern = P(pattern);
+
+		});
+
 
 		if( play_parameters.isArray, {
 			var paramDict = play_parameters.asDict;

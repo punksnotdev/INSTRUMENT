@@ -48,15 +48,18 @@ Proxy : Instrument
 
 		switch( parameter.asSymbol,
 
+		\ampTrig, {
+			proxy.set(\t_trig,1,\amp,value);
+		},
 			\octave, { octave = value },
 			\note, {
-				proxy.set(\t_trig,1,\note,((octave*12)+value));
+				proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
 			},
 			\ampTrig, {
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {
-				proxy.setn(\notes,(octave*12)+value.chord(value.type),\t_trig,1);
+				proxy.setn(\notes,(octave*12)+value.chord(value.type),\freqs,((octave*12)+value.chord(value.type)).midicps,\t_trig,1);
 			},
 			{ // default:
 				proxy.set(parameter.asSymbol,value);
