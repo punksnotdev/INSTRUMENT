@@ -18,13 +18,12 @@ I8Tpattern
 			pattern = values;
 
 		}, {
+
 			if( pattern_.isArray, {
 
 				pattern = pattern_;
 
 			}, {
-
-
 
 				["!!Pattern not recognized",pattern].postln;
 
@@ -139,17 +138,84 @@ I8Tpattern
 
 		group.chars.collect({|c| str = str ++ c });
 		if( str.find(":").notNil, {
+
 			splitStr = str.split($:);
 
 			newGroup.val = splitStr[0].asFloat;
 			newGroup.duration = splitStr[1].asFloat;
+
+			if( this.getRepetitions( splitStr[0] ) > 1, {
+				newGroup.repetitions = this.getRepetitions( splitStr[0] );
+			});
+
 		}, {
+
 			newGroup.val = str.asFloat;
+
+			if( this.getRepetitions( str ) > 1, {
+				newGroup.repetitions = this.getRepetitions( str );
+			});
+
 		});
+
 
 		newGroup.postln;
 
 		^newGroup;
+
+	}
+
+	getRepetitions{|string|
+
+		var repetitions = 0;
+
+		if( string.find("x").notNil, {
+
+			var indexes = string.findAll("x");
+
+
+			if( indexes.maxItem == (string.size - 1), {
+
+				if(this.areIndexesSequential(indexes),{
+					repetitions = indexes.size;
+				});
+
+			}, {
+				var repetitionStr = "";
+
+				((string.size-1) - indexes.maxItem).do{|index|
+					repetitionStr = repetitionStr ++ string[(string.size-1)-index];
+				};
+
+				repetitions = repetitionStr.reverse.asInteger;
+
+			});
+
+		});
+
+		^repetitions;
+
+	}
+
+	areIndexesSequential {|indexes|
+
+		var sequential=true;
+
+		var lastIndex = indexes[0];
+
+		indexes.collect({|i|
+			if( (i.asInteger - lastIndex.asInteger) > 1, {
+				sequential=false;
+			}, {
+				lastIndex = i;
+			});
+		});
+
+		if( sequential == false, {
+			"invalid Pattern: x's must be sequential".postln;
+		});
+
+		^sequential;
 
 	}
 
