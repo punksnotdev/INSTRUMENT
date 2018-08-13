@@ -152,7 +152,21 @@ I8Tpattern
 			splitStr = str.split($:);
 
 			newGroup.val = splitStr[0].asFloat;
-			newGroup.duration = splitStr[1].asFloat;
+
+
+			if( splitStr[1].find("/").notNil, {
+
+				var fraction1, fraction2;
+				fraction1 = splitStr[1].split($/)[0];
+				fraction2 = splitStr[1].split($/)[1];
+
+				newGroup.duration = fraction1.asFloat / fraction2.asFloat;
+
+			}, {
+
+				newGroup.duration = splitStr[1].asFloat;
+
+			});
 
 			if( this.getRepetitions( splitStr[0] ) > 1, {
 				newGroup.repetitions = this.getRepetitions( splitStr[0] );
