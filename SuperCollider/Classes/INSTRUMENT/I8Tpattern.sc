@@ -50,11 +50,14 @@ I8Tpattern
         spaces = input.findAll(" ");
 
         input.size.do({|i|
-
             var char = input[i];
-            if( currentGroup == nil, {
+
+	        if( currentGroup == nil, {
 
                 if( char.asString.compare(" ") == 0, {
+[i,"add rest"].postln;
+					events.add( ( val: \r ) );
+
                 },
                 {
                     // not a space
@@ -72,25 +75,57 @@ I8Tpattern
             }, {
 
                 // if currentGroup not Nil,
-                if( (char.asString.compare(" ") == 0) || ( i == (input.size - 1)), {
+                if( ( i == (input.size - 1)), {
 
-                    if( i == (input.size - 1) && (char.asString.compare(" ") != 0 ),  {
-                        currentGroup.chars.add( char );
-                    });
+					if( char.asString.compare(" ") != 0,  {
+						currentGroup.chars.add( char );
+					});
 
 					events.add( this.closeEventGroup(currentGroup) );
 					currentGroup = nil;
+
+					if( char.asString.compare(" ") == 0,  {
+						events.add( ( val: \r ) );
+						[i,"add last rest"].postln;
+                    });
+
+
                 }, {
 
-                    // not a space
-                    currentGroup.chars.add( char );
+					if(char.asString.compare(" ") == 0, {
 
+						events.add( this.closeEventGroup(currentGroup) );
+						currentGroup = nil;
+
+						if( input[i+1].asString.compare(" ") == 0, {
+
+							var areAllNextCharsSpaces = true;
+
+
+							(input.size - (i+1)).do{|j|
+								if( input[ (input.size-1) - j].asString.compare(" ") != 0, {
+									areAllNextCharsSpaces = false;
+								})
+							};
+
+							if( areAllNextCharsSpaces, {
+								[i,"add rest"].postln;
+								events.add( ( val: \r ) );
+							})
+
+						})
+
+					}, {
+
+						// not a space
+						currentGroup.chars.add( char );
+
+					});
                 });
 
             })
 
         });
-
         ^events;
 
     }
