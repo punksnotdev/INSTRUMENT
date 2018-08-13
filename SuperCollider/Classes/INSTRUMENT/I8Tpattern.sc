@@ -13,9 +13,19 @@ I8Tpattern
 
 			var events = this.parseEventString(pattern_);
 
-			var values = events.collect({|e| e.val });
+			var values = List.new;
 
-			pattern = values;
+			events.collect({|e|
+				if(e.repetitions.notNil, {
+					e.repetitions.do{
+						values.add(e.val);
+					}
+				}, {
+					values.add(e.val);
+				});
+			});
+
+			pattern = values.asArray;
 
 		}, {
 
