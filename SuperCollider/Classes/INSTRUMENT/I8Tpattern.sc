@@ -11,9 +11,10 @@ I8Tpattern
 
 		if( pattern_.isString, {
 
+
 			var events = this.parseEventString(pattern_);
 
-			var values = List.new;
+			// var values = List.new;
 			var patternEvents = List.new;
 
 			var amplitudes = events.collect{|e|
@@ -35,24 +36,31 @@ I8Tpattern
 
 				if(e.repetitions.notNil, {
 					e.repetitions.do{
-						values.add(e.val);
+						// values.add(e.val);
 						patternEvents.add(newPatternEvent);
 					}
 				}, {
-					values.add(e.val);
+					// values.add(e.val);
 					patternEvents.add(newPatternEvent);
 				});
 
 			});
 
-			pattern = values.asArray;
+			// pattern = values.asArray;
+			pattern = patternEvents.asArray;
 			patternEvents.postln;
 
 		}, {
 
 			if( pattern_.isArray, {
 
-				pattern = pattern_;
+				pattern = pattern_.collect({|patternValue|
+					if( patternValue.isKindOf(Event), {
+						patternValue;
+					}, {
+						( val: patternValue );
+					});
+				});
 
 			}, {
 
@@ -166,6 +174,8 @@ I8Tpattern
 
 
 		group.chars.collect({|c| str = str ++ c });
+
+		
 		if( str.find(":").notNil, {
 
 			splitStr = str.split($:);

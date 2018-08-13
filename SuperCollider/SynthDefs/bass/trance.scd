@@ -1,6 +1,6 @@
 
 SynthDef(\tranceBazz, {
-|freq=1.0, decayTime=0.5, amp=0.75, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.2|
+|freq=1.0, decayTime=0.5, amp=0.5, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.2|
 
 	var sig, env;
 
@@ -14,13 +14,13 @@ SynthDef(\tranceBazz, {
 
 	sig = sig * env;
 
-	Out.ar( out, sig );
+	Out.ar( out, Pan2.ar(sig * amp / 4, pan) );
 
 }).store;
 
 
 SynthDef(\tranceBazz2, {
-|freq=1.0, decayTime=0.5, amp=0.75, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.2|
+|freq=1.0, decayTime=0.5, amp=0.5, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.2|
 
 	var sig, env;
 
@@ -34,6 +34,6 @@ SynthDef(\tranceBazz2, {
 
 	sig = sig * env;
 
-	Out.ar( out, sig );
+	Out.ar( out, Pan2.ar(sig * amp / 4, pan) );
 
 }).store;

@@ -75,40 +75,46 @@ SynthPlayer : Instrument
 
 	trigger {|parameter,value|
 
+		if( value.isKindOf(Event) == false, {
+			value = ( val: value, amplitude: 0.5 );
+		});
+
 		switch( parameter,
 
 			\synthdef, {
-				synthdef = value;
+				synthdef = value.val;
 				synth_parameters = IdentityDictionary.new;
 			},
-			\octave, { octave = value },
+			\octave, { octave = value.val },
 			\fx, {
 
-				this.createFx(value);
+				this.createFx(value.val);
 
 			},
 			\setFx, {
-				value.keysValuesDo({|k,v|
+				value.val.keysValuesDo({|k,v|
 					fx_parameters[k]=v;
 					currentFx.set(k,v);
 				});
 			},
 			\note, {
-				this.createSynth([\t_trig,1,\freq,((octave*12)+value).midicps,\note,(octave*12)+value]++this.parameters_array(synth_parameters));
-				synth.postln;
+				// if is Event, get params
+				var event = value;
+				this.createSynth([\t_trig,1,\freq,((octave*12)+event.val).midicps,\note,(octave*12)+event.val,\amp,event.amplitude]++this.parameters_array(synth_parameters));
+
 			},
 			\ampTrig, {
-				if( value > 0 ) {
-					this.createSynth([\t_trig,1,\amp,value]++this.parameters_array(synth_parameters));
+				if( value.val > 0 ) {
+					this.createSynth([\t_trig,1,\amp,value.val]++this.parameters_array(synth_parameters));
 				}
 			},
-			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value]); },
+			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
 			\chord, {
-				// synth.set(\t_trig,1,\note,(octave*12)+value);
+				// synth.set(\t_trig,1,\note,(octave*12)+value.val);
 			},
 			{ // default:
-				synth_parameters[parameter.asSymbol]=value;
-				if( value.isNil || value == 0, {}, { synth.set(parameter.asSymbol,value) });
+				synth_parameters[parameter.asSymbol]=value.val;
+				if( value.val.isNil || value.val == 0, {}, { synth.set(parameter.asSymbol,value.val) });
 			},
 
 

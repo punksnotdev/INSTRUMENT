@@ -58,11 +58,9 @@ ParameterTrack
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
-					if( beatValue != \r, {
 
-						track.instrument.trigger( name, beatValue );
+					track.instrument.trigger( name, beatValue );
 
-					});
 
 					if( this.currentEvent().parameters[\speed] != nil, {
 						currentSpeed = this.currentEvent().parameters[\speed] * speed;
