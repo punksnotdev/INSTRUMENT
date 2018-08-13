@@ -3,17 +3,21 @@ Proxy : Instrument
 
 	var <proxy;
 
-	*new{|name_,proxy_|
-		^super.new.init(name_,proxy_,this.graph);
+	*new{|proxy_|
+		^super.new.init(proxy_,this.graph);
 	}
 
-	init{|name_,proxy_,graph_|
+	init{|proxy_,graph_|
+
 		if( proxy_.isKindOf(NodeProxy), {
 			proxy = proxy_;
+			("proxy.key"++proxy_.key).postln;
 			this.createSynth();
-		});
+			super.init(proxy_.key,graph_);
+		},{
+			"input not a nodeproxy".postln;
 
-		super.init(name_,graph_);
+			});
 
 	}
 
@@ -44,17 +48,18 @@ Proxy : Instrument
 
 		switch( parameter.asSymbol,
 
+		\ampTrig, {
+			proxy.set(\t_trig,1,\amp,value);
+		},
 			\octave, { octave = value },
 			\note, {
-				proxy.set(\t_trig,1,\note,((octave*12)+value));
+				proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
 			},
 			\ampTrig, {
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {
-				proxy.setn(\notes,(octave*12)+value.chord(value.type),\t_trig,1);
-				// proxy.setn(\notes,value.chord);
-				// proxy.set(\t_trig,1);
+				proxy.setn(\notes,(octave*12)+value.chord(value.type),\freqs,((octave*12)+value.chord(value.type)).midicps,\t_trig,1);
 			},
 			{ // default:
 				proxy.set(parameter.asSymbol,value);

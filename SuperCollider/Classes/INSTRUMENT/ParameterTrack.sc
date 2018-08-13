@@ -58,14 +58,12 @@ ParameterTrack
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
-					if( beatValue != \r, {
 
-						track.instrument.trigger( currentPattern.target, beatValue );
+					track.instrument.trigger( name, beatValue );
 
-					});
 
 					if( this.currentEvent().parameters[\speed] != nil, {
-						currentSpeed = this.currentEvent().parameters[\speed];
+						currentSpeed = this.currentEvent().parameters[\speed] * speed;
 					}, {
 						currentSpeed = speed;
 					});
@@ -91,7 +89,11 @@ ParameterTrack
 		^playing = false;
 	}
 
-	addPattern {|key,pattern,parameters|
+	go {|time|
+		beats = time;
+	}
+
+	addPattern {|key,pattern,play_parameters|
 
 		var eventName;
 		var newEvent;
@@ -120,16 +122,25 @@ ParameterTrack
 
 		});
 
-		// ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key.asString).postln;
+		// ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).postln;
 
-		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ pattern.target.asString ++ "-" ++ key.asString).toLower;
+		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).toLower;
 
-		newEvent = PatternEvent.new( pattern, eventName);
+		if( pattern.isKindOf(P), {
 
-		newEvent.pattern = pattern;
+			newEvent = PatternEvent.new( pattern, eventName);
+			newEvent.pattern = pattern;
 
-		if( parameters.isArray, {
-			var paramDict = parameters.asDict;
+		}, {
+
+			newEvent = PatternEvent.new( P(pattern), eventName);
+			newEvent.pattern = P(pattern);
+
+		});
+
+
+		if( play_parameters.isArray, {
+			var paramDict = play_parameters.asDict;
 			newEvent.parameters[\repeat] = paramDict[\repeat];
 			newEvent.parameters[\speed] = paramDict[\speed];
 		});
@@ -213,9 +224,9 @@ ParameterTrack
 		});
 	}
 
-	setPattern{|key,parameters,pattern|
+	setPattern{|key,play_parameters,pattern|
 		// this.removePattern(pattern);
-		// this.seq(pattern,parameters);
+		// this.seq(pattern,play_parameters);
 	}
 
 	removePatterns {|pattern|

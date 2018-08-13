@@ -71,42 +71,42 @@ SequencerTrack
 		^playing = false;
 	}
 
-	addPattern {|key,pattern,parameters|
+	addPattern {|parameter,key,pattern,play_parameters|
 
-		if( parameterTracks[ pattern.target ] == nil, {
-			parameterTracks[ pattern.target ] = ParameterTrack.new( this, pattern.target );
+		if( parameterTracks[ parameter ] == nil, {
+			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter );
 		});
-		parameterTracks[ pattern.target ].addPattern(key,pattern,parameters);
+		parameterTracks[ parameter ].addPattern(key,pattern,play_parameters);
 
 		if( playing == true, {
-			parameterTracks[ pattern.target ].play;
+			parameterTracks[ parameter ].play;
 		});
 
 	}
 
-	removePattern {|key|
-		parameterTracks.collect({|t|
-			t.removePattern(key);
-		});
+	removePattern {|parameter,key|
+		parameterTracks[parameter].removePattern(key);
 	}
 
-	getPattern{|key|
+	getPattern{|parameter,key|
 
-		// parameterTracks[pattern.target].removePatterns(pattern);
+		parameterTracks[parameter].getPattern(key);
 
 	}
 
-	setPattern{|key,parameters|
+	setPatternParameters{|parameter,key,play_parameters|
 		// if( key.isArray, {}, {
 		// 	[]
 		// })
+		parameterTracks[parameter].setPatternParameters(key,play_parameters);
+
 		"TO-DO: implement set pattern!"
 
 	}
 
-	removePatterns {|pattern|
+	removePatterns {|parameter,pattern|
 
-		parameterTracks[pattern.target].removePatterns(pattern);
+		parameterTracks[parameter].removePatterns(pattern);
 
 	}
 
@@ -114,6 +114,12 @@ SequencerTrack
 		speed = sp_;
 		parameterTracks.collect({|t|
 			t.speed = speed;
+		});
+	}
+
+	go {|time|
+		parameterTracks.collect({|t|
+			t.go(time);
 		});
 	}
 

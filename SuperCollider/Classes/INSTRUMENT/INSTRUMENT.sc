@@ -18,6 +18,8 @@ INSTRUMENT
 
 		rootNode = I8Tnode.new("rootNode",this);
 
+		this.play;
+
 	}
 
 	addNode {|node|
@@ -27,6 +29,18 @@ INSTRUMENT
 			if( node.isKindOf(Sequenceable), {
 				node.sequencer = sequencer;
 				sequencer.registerInstrument(node);
+			})
+
+		})
+	}
+
+	removeNode {|node|
+		if( node.name != "rootNode", {
+			nodes[node.name] = node;
+
+			if( node.isKindOf(Sequenceable), {
+				node.sequencer = sequencer;
+				sequencer.unregisterInstrument(node);
 			})
 
 		})
@@ -42,5 +56,17 @@ INSTRUMENT
 
 	play {
 		sequencer.play;
+	}
+	pause {
+		sequencer.pause;
+	}
+	stop {
+		sequencer.stop;
+	}
+
+	go {|time=0|
+
+		sequencer.go(time);
+
 	}
 }
