@@ -55,7 +55,7 @@ I8Tpattern
 	        if( currentGroup == nil, {
 
                 if( char.asString.compare(" ") == 0, {
-[i,"add rest"].postln;
+
 					events.add( ( val: \r ) );
 
                 },
@@ -133,12 +133,21 @@ I8Tpattern
 	closeEventGroup{|group|
 
 		var str = "";
+		var splitStr;
 		var newGroup = ();
+
+
 		group.chars.collect({|c| str = str ++ c });
-		group = nil;
+		if( str.find(":").notNil, {
+			splitStr = str.split($:);
 
-		newGroup.val = str.asFloat;
+			newGroup.val = splitStr[0].asFloat;
+			newGroup.duration = splitStr[1].asFloat;
+		}, {
+			newGroup.val = str.asFloat;
+		});
 
+		newGroup.postln;
 
 		^newGroup;
 
