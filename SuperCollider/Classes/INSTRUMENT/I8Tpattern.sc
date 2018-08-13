@@ -14,18 +14,39 @@ I8Tpattern
 			var events = this.parseEventString(pattern_);
 
 			var values = List.new;
+			var patternEvents = List.new;
 
-			events.collect({|e|
+			var amplitudes = events.collect{|e|
+				if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
+			};
+
+			amplitudes = amplitudes.normalize(0.1,1);
+
+			events.collect({|e,i|
+				var newPatternEvent = ();
+
+				newPatternEvent.val = e.val;
+				newPatternEvent.duration = e.duration;
+
+				if( e.val != \r, {
+					newPatternEvent.amplitude = amplitudes[i];
+				});
+
+
 				if(e.repetitions.notNil, {
 					e.repetitions.do{
 						values.add(e.val);
+						patternEvents.add(newPatternEvent);
 					}
 				}, {
 					values.add(e.val);
+					patternEvents.add(newPatternEvent);
 				});
+
 			});
 
 			pattern = values.asArray;
+			patternEvents.postln;
 
 		}, {
 
@@ -95,7 +116,6 @@ I8Tpattern
 
 					if( char.asString.compare(" ") == 0,  {
 						events.add( ( val: \r ) );
-						[i,"add last rest"].postln;
                     });
 
 
@@ -118,7 +138,6 @@ I8Tpattern
 							};
 
 							if( areAllNextCharsSpaces, {
-								[i,"add rest"].postln;
 								events.add( ( val: \r ) );
 							})
 
@@ -165,12 +184,15 @@ I8Tpattern
 			}, {
 
 				newGroup.duration = splitStr[1].asFloat;
+				newGroup.amplitude = this.getAmplitude( splitStr[1] );
 
 			});
 
 			if( this.getRepetitions( splitStr[0] ) > 1, {
 				newGroup.repetitions = this.getRepetitions( splitStr[0] );
+				newGroup.amplitude = this.getAmplitude( splitStr[0] );
 			});
+
 
 		}, {
 
@@ -180,12 +202,38 @@ I8Tpattern
 				newGroup.repetitions = this.getRepetitions( str );
 			});
 
+			newGroup.amplitude = this.getAmplitude( str );
+
 		});
 
-
-		newGroup.postln;
-
 		^newGroup;
+
+	}
+
+	getAmplitude{|string|
+
+		var amplitude = 0.5;
+		var factor = 0.1;
+
+		if( string.find("*").notNil, {
+			amplitude = this.getOperatorParameter(string, "*")
+			},
+		{
+
+			if( string.find("p").notNil, {
+
+				amplitude = amplitude - (factor * this.getOperatorValue(string, "p"));
+
+			});
+			if( string.find("f").notNil, {
+
+				amplitude = amplitude + (factor * this.getOperatorValue(string, "f"));
+
+			});
+		});
+
+		^amplitude.asFloat;
+
 
 	}
 
@@ -194,32 +242,60 @@ I8Tpattern
 		var repetitions = 0;
 
 		if( string.find("x").notNil, {
-
-			var indexes = string.findAll("x");
-
-
-			if( indexes.maxItem == (string.size - 1), {
-
-				if(this.areIndexesSequential(indexes),{
-					repetitions = indexes.size;
-				});
-
-			}, {
-				var repetitionStr = "";
-
-				((string.size-1) - indexes.maxItem).do{|index|
-					repetitionStr = repetitionStr ++ string[(string.size-1)-index];
-				};
-
-				repetitions = repetitionStr.reverse.asInteger;
-
-			});
-
+			repetitions = this.getOperatorValue(string,"x");
 		});
 
-		^repetitions;
+		^repetitions.asInteger;
 
 	}
+
+	getOperatorValue {|string,char|
+		var operatorValue = 0;
+
+		if(
+			(
+				string.findBackwards(char) == (string.size - 1)
+				||
+				this.isBeforeOtherOperator(string,string.findBackwards(char))
+			)
+		, {
+			operatorValue = this.getOperatorRepetitions(string, char);
+		}, {
+			operatorValue = this.getOperatorParameter(string,char);
+		});
+
+		^operatorValue;
+
+	}
+	getOperatorRepetitions {|string,char|
+
+		var indexes = string.findAll( char );
+
+		var operatorValue = 0;
+
+		if(this.areIndexesSequential(indexes),{
+			operatorValue = indexes.size;
+		});
+
+		^operatorValue
+	}
+	getOperatorParameter {|string,char|
+
+		var indexes = string.findAll( char );
+
+		var operatorValue = 0;
+
+		var operatorValueStr = "";
+
+		((string.size-1) - indexes.maxItem).do{|index|
+			operatorValueStr = operatorValueStr ++ string[(string.size-1)-index];
+		};
+
+		operatorValue = operatorValueStr.reverse.asInteger;
+
+		^operatorValue
+	}
+
 
 	areIndexesSequential {|indexes|
 
@@ -243,5 +319,19 @@ I8Tpattern
 
 	}
 
+	isBeforeOtherOperator {|string,index|
+
+		var isBefore = false;
+
+		var operators = ["p","f","x",":","*"];
+
+		operators.collect({|o|
+			if( string[ index + 1 ].asString.compare(o) == 0, {
+				isBefore = true;
+			});
+		});
+
+		^isBefore;
+	}
 
 }
