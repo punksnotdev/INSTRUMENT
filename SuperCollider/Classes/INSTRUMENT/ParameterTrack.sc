@@ -15,6 +15,9 @@ ParameterTrack
 	var currentSpeed;
 	var <>beats;
 
+
+	var durationSequencer;
+
 	var <sequenceInfo;
 
 	*new{|track_,name_|
@@ -33,6 +36,74 @@ ParameterTrack
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
+
+
+		durationSequencer = Tdef(\durationSequencer, {
+			inf.do {|i|
+
+				var dur = 1;
+
+
+				var beatPatternIndex;
+				var beatValue;
+				var currentPattern;
+
+				"duration beat".postln;
+
+
+				if( this.currentEvent().notNil, {
+
+					currentPattern = this.currentEvent().pattern;
+["currentPattern.hasDurations", currentPattern.hasDurations].postln;
+					beatPatternIndex = beats % currentPattern.pattern.size;
+
+					beatValue = currentPattern.pattern[ beatPatternIndex ];
+
+
+
+					track.instrument.trigger( name, beatValue );
+
+					if( beatValue.duration.notNil, {
+
+
+						dur = beatValue.duration.asFloat;
+						["beatValue.duration", beatValue.duration, dur].postln;
+
+					});
+
+					if( this.currentEvent().parameters[\speed] != nil, {
+						currentSpeed = this.currentEvent().parameters[\speed] * speed;
+						currentSpeed = currentSpeed.max(0.001);
+					}, {
+						currentSpeed = speed;
+					});
+
+					dur = dur / currentSpeed;
+
+
+					// if( currentPattern.hasDurations == true, {
+					//
+					// }, {
+					//
+					// });
+
+				});
+
+				// var currentEvent = this.currentEvent();
+				//
+				//
+				// currentEvent.postln;
+				//
+
+				beats = beats + 1;
+				beats = beats % this.totalBeats();
+
+				["dur", dur, beats].postln;
+
+				dur.wait;
+
+			}
+		});
 
 	}
 
@@ -53,32 +124,46 @@ ParameterTrack
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
+
+					["currentPattern",currentPattern.hasDurations].postln;
+
+					// ["currentPattern",currentPattern].postln;
 					if( currentPattern.hasDurations == true, {
 
-					("-------------------------").postln;
-					("should change current seq mode. has durations:"++currentPattern.hasDurations).postln;
-					("-------------------------").postln;
-
-					});
-
-					beatPatternIndex = beats % currentPattern.pattern.size;
-
-					beatValue = currentPattern.pattern[ beatPatternIndex ];
+						if( durationSequencer.isPlaying == false, {
+							durationSequencer.play;
+							("-------------------------").postln;
+							("start sequencer:"++currentPattern.hasDurations).postln;
+							("-------------------------").postln;
+						});
 
 
-					track.instrument.trigger( name, beatValue );
-
-
-					if( this.currentEvent().parameters[\speed] != nil, {
-						currentSpeed = this.currentEvent().parameters[\speed] * speed;
 					}, {
-						currentSpeed = speed;
-					});
 
+						if( durationSequencer.isPlaying == false, {
+							durationSequencer.stop;
+						});
+
+						beatPatternIndex = beats % currentPattern.pattern.size;
+
+						beatValue = currentPattern.pattern[ beatPatternIndex ];
+
+
+						track.instrument.trigger( name, beatValue );
+
+
+						if( this.currentEvent().parameters[\speed] != nil, {
+							currentSpeed = this.currentEvent().parameters[\speed] * speed;
+						}, {
+							currentSpeed = speed;
+						});
+
+						beats = beats + 1;
+						beats = beats % this.totalBeats();
+
+					});
 				});
 
-				beats = beats + 1;
-				beats = beats % this.totalBeats();
 
 			});
 

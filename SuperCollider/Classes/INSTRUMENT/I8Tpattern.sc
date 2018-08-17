@@ -32,6 +32,7 @@ I8Tpattern
 				var newPatternEvent = ();
 
 				if( e.hasDurations == true, {
+					["has durations", e].postln;
 					hasDurations = true;
 				});
 
