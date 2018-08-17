@@ -53,6 +53,13 @@ ParameterTrack
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
+					if( currentPattern.hasDurations == true, {
+
+					("-------------------------").postln;
+					("should change current seq mode. has durations:"++currentPattern.hasDurations).postln;
+					("-------------------------").postln;
+
+					});
 
 					beatPatternIndex = beats % currentPattern.pattern.size;
 
@@ -129,12 +136,12 @@ ParameterTrack
 		if( pattern.isKindOf(P), {
 
 			newEvent = PatternEvent.new( pattern, eventName);
-			newEvent.pattern = pattern;
+			// newEvent.pattern = pattern;
 
 		}, {
 
 			newEvent = PatternEvent.new( P(pattern), eventName);
-			newEvent.pattern = P(pattern);
+			// newEvent.pattern = P(pattern);
 
 		});
 
