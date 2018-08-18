@@ -102,7 +102,6 @@ Sequencer : I8Tnode
 
 
 	seq {|track,parameter,key,pattern,play_parameters|
-		"seq in sequencer called".postln;
 		this.addPattern(track,parameter,key,pattern,play_parameters);
 	}
 

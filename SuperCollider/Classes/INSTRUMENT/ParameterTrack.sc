@@ -45,6 +45,7 @@ ParameterTrack
 		durationSequencer = Tdef(("durationSequencer_"++name++"_"++track.instrument.name).asSymbol, {
 			inf.do {|i|
 
+
 				var dur = 1;
 
 
@@ -52,7 +53,12 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
-				"duration beat".postln;
+				if( this.currentEvent().initialWait.isNil, {
+					(name+"-"++track.instrument.name++" wait: "++this.currentEvent().parameters[\waitBefore]).postln;
+					this.currentEvent().parameters[\waitBefore].wait;
+					this.currentEvent().initialWait = true;
+				});
+				// "duration beat".postln;
 
 
 				if( this.currentEvent().notNil, {
@@ -64,18 +70,18 @@ ParameterTrack
 					beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
-					channel = ("/"++name++"/"++track.instrument.name).asString;
 
-					[channel+beatValue.val].postln;
+					channel = ("/"++name++"/"++track.instrument.name).asString;
 
 					netAddr.sendMsg( channel, beatValue.val );
 
+
 					track.instrument.trigger( name, beatValue );
+
 
 					if( beatValue.duration.notNil, {
 
 						dur = beatValue.duration.asFloat;
-						["beatValue.duration", beatValue.duration, dur].postln;
 
 					});
 
@@ -106,8 +112,6 @@ ParameterTrack
 				beats = beats + 1;
 				beats = beats % this.totalBeats();
 
-				["dur", dur, beats].postln;
-
 				dur.wait;
 
 			}
@@ -132,8 +136,6 @@ ParameterTrack
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
-
-					["currentPattern",currentPattern.hasDurations].postln;
 
 					// ["currentPattern",currentPattern].postln;
 					if( currentPattern.hasDurations == true, {
@@ -243,6 +245,7 @@ ParameterTrack
 			var paramDict = play_parameters.asDict;
 			newEvent.parameters[\repeat] = paramDict[\repeat];
 			newEvent.parameters[\speed] = paramDict[\speed];
+			newEvent.parameters[\waitBefore] = paramDict[\waitBefore];
 		});
 
 		if(patternEvents[key]==nil,{
@@ -256,7 +259,6 @@ ParameterTrack
 
 		},{
 			var key_ = sequence.size;
-			[key,key_].postln;
 			// ("keys match: "++key==key_++": "++key++","++key_).postln;
 			sequence.add( newEvent );
 		});
@@ -418,7 +420,7 @@ ParameterTrack
 				});
 
 				numBeats = e.pattern.pattern.size * repetitions;
-("totalSequenceEventBeats:"++totalSequenceEventBeats).postln;
+				// ("totalSequenceEventBeats:"++totalSequenceEventBeats).postln;
 				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 

@@ -32,7 +32,6 @@ I8Tpattern
 				var newPatternEvent = ();
 
 				if( e.hasDurations == true, {
-					["has durations", e].postln;
 					hasDurations = true;
 				});
 
@@ -58,7 +57,6 @@ I8Tpattern
 
 			// pattern = values.asArray;
 			pattern = patternEvents.asArray;
-			patternEvents.postln;
 
 		}, {
 
