@@ -49,7 +49,8 @@ SynthPlayer : Instrument
 		synth.postln;
 
 		if(synth.notNil, {
-			synth.free;
+			// synth.free;
+			synth = nil;
 		}, {});
 
 		if( currentFx.isKindOf(Synth), {

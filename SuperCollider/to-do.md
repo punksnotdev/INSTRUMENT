@@ -1,5 +1,9 @@
 # to do
 
+[ ] seq canons
+[ ] z.loop(start, end)
+
+
 [·] kick!
 
 

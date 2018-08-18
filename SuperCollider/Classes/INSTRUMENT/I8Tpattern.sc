@@ -4,6 +4,8 @@ I8Tpattern
 	var <>parameters;
 	var <>pattern;
 
+	var <hasDurations;
+
 	*new{|pattern_,parameters_|
 		^super.new.init(pattern_,parameters_);
 	}
@@ -21,10 +23,18 @@ I8Tpattern
 				if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
 			};
 
-			amplitudes = amplitudes.normalize(0.1,1);
+
+			hasDurations = false;
+
 
 			events.collect({|e,i|
+
 				var newPatternEvent = ();
+
+				if( e.hasDurations == true, {
+					["has durations", e].postln;
+					hasDurations = true;
+				});
 
 				newPatternEvent.val = e.val;
 				newPatternEvent.duration = e.duration;
@@ -175,7 +185,7 @@ I8Tpattern
 
 		group.chars.collect({|c| str = str ++ c });
 
-		
+
 		if( str.find(":").notNil, {
 
 			splitStr = str.split($:);
@@ -203,7 +213,7 @@ I8Tpattern
 				newGroup.amplitude = this.getAmplitude( splitStr[0] );
 			});
 
-
+			newGroup.hasDurations = true;
 		}, {
 
 			newGroup.val = str.asFloat;

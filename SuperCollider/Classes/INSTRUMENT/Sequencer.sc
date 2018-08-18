@@ -135,7 +135,7 @@ Sequencer : I8Tnode
 		},{
 
 			if( instrument_tracks[instrument] == nil, {
-				instrument_tracks[instrument] = SequencerTrack.new();
+				instrument_tracks[instrument] = SequencerTrack.new(instrument);
 			});
 
 		});
@@ -156,4 +156,19 @@ Sequencer : I8Tnode
 	}
 
 
+	makeCanonVoice {|voice|
+
+		var voiceStr = "";
+
+	    voice.notes.do({|n,i|
+			voiceStr = voiceStr ++ n.asString;
+			if( voice.durs[i] > 0, {
+				voiceStr = voiceStr ++ ":"++voice.durs[i].asString
+			});
+			voiceStr = voiceStr ++ " "
+	    });
+
+		^voiceStr
+
+	}
 }
