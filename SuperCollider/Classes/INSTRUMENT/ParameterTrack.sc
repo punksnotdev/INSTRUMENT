@@ -15,6 +15,7 @@ ParameterTrack
 	var currentSpeed;
 	var <>beats;
 
+	var netAddr;
 
 	var durationSequencer;
 
@@ -24,6 +25,9 @@ ParameterTrack
 		^super.new.init(track_,name_);
 	}
 	init{|track_,name_|
+
+		netAddr = NetAddr("192.168.1.116",4567);
+
 		track = track_;
 		name = name_;
 
@@ -38,7 +42,7 @@ ParameterTrack
 		sequence = List.new();
 
 
-		durationSequencer = Tdef(\durationSequencer, {
+		durationSequencer = Tdef(("durationSequencer_"++name++"_"++track.instrument.name).asSymbol, {
 			inf.do {|i|
 
 				var dur = 1;
@@ -53,18 +57,22 @@ ParameterTrack
 
 				if( this.currentEvent().notNil, {
 
+					var channel;
+
 					currentPattern = this.currentEvent().pattern;
-["currentPattern.hasDurations", currentPattern.hasDurations].postln;
+
 					beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
+					channel = ("/"++name++"/"++track.instrument.name).asString;
 
+					[channel+beatValue.val].postln;
 
+					netAddr.sendMsg( channel, beatValue.val );
 
 					track.instrument.trigger( name, beatValue );
 
 					if( beatValue.duration.notNil, {
-
 
 						dur = beatValue.duration.asFloat;
 						["beatValue.duration", beatValue.duration, dur].postln;
