@@ -14,7 +14,7 @@ SynthPlayer : Instrument
 
 	init{|name_,graph_,synthdef_|
 		if( name_.notNil && synthdef_.notNil, {
-			[name_,synthdef_].postln;
+			// [name_,synthdef_].postln;
 
 			if(synthdef_.isKindOf(Symbol), {
 				synthdef = synthdef_;
@@ -45,21 +45,22 @@ SynthPlayer : Instrument
 
 	createSynth{|parameters|
 
-		"synth".postln;
-		synth.postln;
+		if( synthdef != \r, {
+			if(synth.notNil, {
+				// synth.free;
+				synth = nil;
+			}, {});
 
-		if(synth.notNil, {
-			// synth.free;
-			synth = nil;
-		}, {});
+			if( currentFx.isKindOf(Synth), {
 
-		if( currentFx.isKindOf(Synth), {
+				// [currentFx,"synthfx"].postln;
+				synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
+			}, {
+				synth = Synth( synthdef.asSymbol, parameters );
+			});
 
-			// [currentFx,"synthfx"].postln;
-			synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
-		}, {
-			synth = Synth( synthdef.asSymbol, parameters );
 		});
+
 
 	}
 
@@ -136,7 +137,7 @@ SynthPlayer : Instrument
 			}, {
 				// currentFx = Synth.new(synthdef_);
 			});
-			fx_parameters.postln;
+
 			currentFx = Synth.new(synthdef_,this.parameters_array(fx_parameters));
 
 		}, {

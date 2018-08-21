@@ -11,6 +11,8 @@ I8Tpattern
 	}
 	init{|pattern_,parameters_|
 
+		pattern_.postln;
+
 		if( pattern_.isString, {
 
 
@@ -19,10 +21,12 @@ I8Tpattern
 			// var values = List.new;
 			var patternEvents = List.new;
 
+
 			var amplitudes = events.collect{|e|
 				if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
 			};
 
+			"pattern_".postln;
 
 			hasDurations = false;
 

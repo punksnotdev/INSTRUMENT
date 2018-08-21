@@ -26,7 +26,7 @@ ParameterTrack
 	}
 	init{|track_,name_|
 
-		netAddr = NetAddr("192.168.1.116",4567);
+				netAddr = NetAddr("192.168.1.116",4567);
 
 		track = track_;
 		name = name_;
@@ -55,7 +55,9 @@ ParameterTrack
 
 				if( this.currentEvent().initialWait.isNil, {
 					(name+"-"++track.instrument.name++" wait: "++this.currentEvent().parameters[\waitBefore]).postln;
-					this.currentEvent().parameters[\waitBefore].wait;
+					if(this.currentEvent().parameters[\waitBefore].notNil, {
+						(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
+					});
 					this.currentEvent().initialWait = true;
 				});
 				// "duration beat".postln;
@@ -76,6 +78,8 @@ ParameterTrack
 					netAddr.sendMsg( channel, beatValue.val );
 
 
+					[beatValue,"track.instrument.trigger( name, beatValue );"].postln;
+					
 					track.instrument.trigger( name, beatValue );
 
 
@@ -94,20 +98,7 @@ ParameterTrack
 
 					dur = dur / currentSpeed;
 
-
-					// if( currentPattern.hasDurations == true, {
-					//
-					// }, {
-					//
-					// });
-
 				});
-
-				// var currentEvent = this.currentEvent();
-				//
-				//
-				// currentEvent.postln;
-				//
 
 				beats = beats + 1;
 				beats = beats % this.totalBeats();

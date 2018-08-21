@@ -51,7 +51,7 @@ SynthDef(\reverb, { arg rv1 = 0.7, rv2=0.8;
 SynthDef(\distortion, { arg gain = 3,cutoff=8000,q=0.1;
     ReplaceOut.ar(
         1,
-        (RLPF.ar(In.ar(0, 1),cutoff,q)*gain).tanh/2
+        (RLPF.ar(In.ar(0, 1),cutoff,q)*gain).tanh/3
     )
 }).store;
 
@@ -63,7 +63,7 @@ SynthDef(\delay1, { arg delay = 0.25;
             In.ar(0, 1),
             8,
             delay
-        )
+        )/2
     )
 }).store;
 
@@ -73,7 +73,7 @@ SynthDef(\delay2, { arg delay=0.25;
 	var sig = In.ar(0, 1);
 	sig = Mix.arFill(7, { CombC.ar(
 		sig, 8, delay, 1
-		);
+		)/4;
  	});
     ReplaceOut.ar(
         1,
@@ -85,11 +85,21 @@ SynthDef(\delay3, { arg delay = 5;
     ReplaceOut.ar(
         1,
         CombC.ar(
-			In.ar(0, 1), 8, LFNoise2.kr(0.3).range(0.1, delay), 1
-		);
+			In.ar(0, 1), 8, LFNoise2.kr(0.3,0.4,0.5).range(0.1, delay), 1
+		)/4;
     )
 }).store;
 
+
+
+SynthDef(\revlpf, { arg cutoff=1500,q=0.1, r1=0.4,r2=0.6;
+    ReplaceOut.ar(
+        1,
+        RLPF.ar(
+			FreeVerb.ar(In.ar(0, 1),r1,r2), cutoff, q
+		)/2;
+    )
+}).store;
 
 
 SynthDef(\lpf, { arg cutoff=1500,q=0.1;

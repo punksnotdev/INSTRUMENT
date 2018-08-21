@@ -76,6 +76,7 @@ SequencerTrack
 		if( parameterTracks[ parameter ] == nil, {
 			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter );
 		});
+
 		parameterTracks[ parameter ].addPattern(key,pattern,play_parameters);
 
 		if( playing == true, {
@@ -89,9 +90,7 @@ SequencerTrack
 	}
 
 	getPattern{|parameter,key|
-
 		parameterTracks[parameter].getPattern(key);
-
 	}
 
 	setPatternParameters{|parameter,key,play_parameters|
