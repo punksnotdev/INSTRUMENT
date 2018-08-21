@@ -47,7 +47,7 @@ SynthPlayer : Instrument
 
 		if( synthdef != \r, {
 			if(synth.notNil, {
-				// synth.free;
+				synth.free;
 				synth = nil;
 			}, {});
 
