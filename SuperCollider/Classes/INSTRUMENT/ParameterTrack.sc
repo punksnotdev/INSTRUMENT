@@ -77,10 +77,11 @@ ParameterTrack
 
 					netAddr.sendMsg( channel, beatValue.val );
 
+					if( beatValue != \r, {
 
-					[beatValue,"track.instrument.trigger( name, beatValue );"].postln;
-					
-					track.instrument.trigger( name, beatValue );
+						track.instrument.trigger( name, beatValue );
+
+					});
 
 
 					if( beatValue.duration.notNil, {
@@ -149,8 +150,12 @@ ParameterTrack
 
 						beatValue = currentPattern.pattern[ beatPatternIndex ];
 
+						if( beatValue.val != \r, {
 
-						track.instrument.trigger( name, beatValue );
+							track.instrument.trigger( name, beatValue.val );
+
+						});
+
 
 
 						if( this.currentEvent().parameters[\speed] != nil, {
@@ -179,6 +184,10 @@ ParameterTrack
 	}
 	stop {|position|
 		if( position != nil, { beats = position; });
+		if( durationSequencer.isPlaying, {
+			durationSequencer.stop;
+		});
+		
 		^playing = false;
 	}
 

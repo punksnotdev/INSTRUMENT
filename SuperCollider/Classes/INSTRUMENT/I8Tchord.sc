@@ -44,7 +44,7 @@ I8Tchord
 			},
 		);
 
-		chordNames=[\M, \m, \M7, \m7, \Mmaj7, \mmaj7, \M9, \M9m, \m9, \m9m,\sus2,\sus4];
+		chordNames=[\M, \m, \M7, \m7, \dim, \aug, \Mmaj7, \mmaj7, \M9, \M9m, \m9, \m9m,\sus2,\sus4];
 
 		intervals = [
 		  [
@@ -60,13 +60,23 @@ I8Tchord
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  7+inversionOctave3
+		  10+inversionOctave3
 		  ], //M7
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave2,
-		  7+inversionOctave3
+		  10+inversionOctave3
 		  ], //m7
+		  [
+		  0+inversionOctave1,
+		  4+inversionOctave2,
+		  8+inversionOctave3
+		  ], //aug
+		  [
+		  0+inversionOctave1,
+		  3+inversionOctave2,
+		  6+inversionOctave3
+		  ], //dim
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave2,
