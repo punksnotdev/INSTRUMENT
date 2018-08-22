@@ -108,7 +108,7 @@
        snd = RLPF.ar(snd, 8000, 0.7);
        snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction:1);
        snd = (snd * 0.6).clip(-1, 1);
-       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.1)) / 2);
+       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.5)) / 2);
    }).store;
 
 
@@ -119,17 +119,17 @@
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), XLine.ar(800, 100, 0.01), 0.6) * Env.perc(0.001, 0.02).delay(0.001).ar);
        snd = snd + (SinOsc.ar(XLine.ar(172, 50, 0.01)) * EnvGen.kr(Env.perc(0.0001, 0.3, 1, \lin).delay(0.005),doneAction:1));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.1)) / 2);
+       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.5)));
    }).store;
 
    SynthDef(\kickSyn2, {|amp=0.5|
        var snd;
        snd = DC.ar(0);
-       snd = snd + (HPF.ar(Hasher.ar(Sweep.ar), 1320) * Env.perc(0.003, 0.03).ar * 0.5);
+       snd = snd + (HPF.ar(Hasher.ar(Sweep.ar), 1320) * Env.perc(0.003, 0.03).ar);
        snd = snd + (SinOsc.ar(XLine.ar(750, 161, 0.02)) * Env.perc(0.0005, 0.02).ar);
        snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * EnvGen.kr(Env.perc(0.0005, 0.3),doneAction:2));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.1)) / 2);
+       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.5)));
    }).store;
 
    SynthDef(\kickSyn3, {|amp=0.5|
@@ -140,7 +140,7 @@
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), 300, 0.9) * Env.perc(0.001, 0.02).ar);
        snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * EnvGen.kr(Env.perc(0.0001, 0.3, curve: \lin).delay(0.005),doneAction:2));
        snd = snd.tanh;
-       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.1)) / 2);
+       Out.ar(\out.kr(0), Pan2.ar(snd * amp, \pan.kr(0), \amp.kr(0.5)) / 2);
    }).store;
 
 

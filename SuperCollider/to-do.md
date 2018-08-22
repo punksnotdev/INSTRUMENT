@@ -1,10 +1,10 @@
 # to do
 
-[ ] seq canons
+[ ] midi ctl in
 [ ] z.loop(start, end)
+[ ] osc send
 
 
-[·] kick!
 
 
 [ ] libreria
@@ -12,6 +12,7 @@
 
 # Listos
 
+[x] seq canons
 [x] secuenciar distintos parametros paralelamente
 [x] integrar con proxyspace
 [x] integrar con ~mixer
