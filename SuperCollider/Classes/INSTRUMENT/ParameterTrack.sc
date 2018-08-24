@@ -26,7 +26,7 @@ ParameterTrack
 	}
 	init{|track_,name_|
 
-				netAddr = NetAddr("192.168.1.116",4567);
+				// netAddr = NetAddr("192.168.1.116",4567);
 
 		track = track_;
 		name = name_;
@@ -75,7 +75,7 @@ ParameterTrack
 
 					channel = ("/"++name++"/"++track.instrument.name).asString;
 
-					netAddr.sendMsg( channel, beatValue.val );
+					// netAddr.sendMsg( channel, beatValue.val );
 
 					if( beatValue != \r, {
 
@@ -187,7 +187,7 @@ ParameterTrack
 		if( durationSequencer.isPlaying, {
 			durationSequencer.stop;
 		});
-		
+
 		^playing = false;
 	}
 

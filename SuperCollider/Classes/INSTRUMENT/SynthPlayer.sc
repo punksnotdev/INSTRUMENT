@@ -52,8 +52,6 @@ SynthPlayer : Instrument
 			}, {});
 
 			if( currentFx.isKindOf(Synth), {
-
-				// [currentFx,"synthfx"].postln;
 				synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
 			}, {
 				synth = Synth( synthdef.asSymbol, parameters );
@@ -102,12 +100,34 @@ SynthPlayer : Instrument
 			\note, {
 				// if is Event, get params
 				var event = value;
-				this.createSynth([\t_trig,1,\freq,((octave*12)+event.val).midicps,\note,(octave*12)+event.val,\amp,event.amplitude]++this.parameters_array(synth_parameters));
+				var amp = event.amplitude * synth_parameters[\amp];
+				[amp,event.amplitude, synth_parameters[\amp]].postln;
+				this.createSynth([
+					\t_trig,1,
+					\freq,((octave*12)+event.val).midicps,
+					\note,(octave*12)+event.val,
+					\amp, amp
+					]++this.parameters_array(synth_parameters));
 
 			},
 			\ampTrig, {
 				if( value.val > 0 ) {
-					this.createSynth([\t_trig,1,\amp,value.val]++this.parameters_array(synth_parameters));
+
+					var amp = value.val;
+
+					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+						var computed_params;
+						amp = amp * synth_parameters[\amp];
+
+						computed_params = synth_parameters.copy;
+						computed_params.removeAt(\amp);
+
+						this.createSynth([\t_trig,1,\amp,amp]++computed_params);
+
+					}, {
+						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(synth_parameters));
+					});
+
 				}
 			},
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
@@ -160,6 +180,7 @@ SynthPlayer : Instrument
 
 	set {|parameter,value|
 		synth_parameters[parameter] = value;
+		synth.set( parameter, value );
 	}
 
 
