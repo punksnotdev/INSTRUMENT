@@ -17,7 +17,7 @@ SynthDef(\hh2, {
 }).store;
 
 
-SynthDef(\hhOpen, {|amp=0.5|
+SynthDef(\hhOpen, {|amp=0.5,out=0|
 
     var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -28,14 +28,14 @@ SynthDef(\hhOpen, {|amp=0.5|
 
     hatoutput = (hatosc * hatenv);
 
-    Out.ar(0,
+    Out.ar(out,
     Pan2.ar(hatoutput*amp, 0)
 
     )
 
 }).store;
 
-SynthDef(\hhClosed, {|amp=0.5|
+SynthDef(\hhClosed, {|amp=0.5,out=0|
 
     var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -46,7 +46,7 @@ SynthDef(\hhClosed, {|amp=0.5|
 
     hatoutput = (hatosc * hatenv);
 
-    Out.ar(0,
+    Out.ar(out,
     Pan2.ar(hatoutput*amp, 0)
 
     )

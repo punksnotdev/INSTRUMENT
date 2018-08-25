@@ -32,7 +32,7 @@
        Out.ar(out, Pan2.ar(snd,pan,amp) / 2);
    }).store;
 
-   SynthDef(\clap2, {
+   SynthDef(\clap2, {|amp=0.5,out=0|
 
       var claposc, clapenv, clapnoise, clapoutput;
 
@@ -50,7 +50,7 @@
       }
       )};
 
-      Out.ar(0,Pan2.ar(clapoutput * clapenv, 0) / 2);
+      Out.ar(out,Pan2.ar((clapoutput*amp) * clapenv, 0) / 2);
 
    }).store;
 )

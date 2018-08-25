@@ -8,6 +8,7 @@ SynthPlayer : Instrument
 
 	var <fxSynth;
 	var <fx;
+	var fxBus;
 
 	*new{|name_,synthdef_|
 		^super.new.init(name_,this.graph,synthdef_);
@@ -25,7 +26,7 @@ SynthPlayer : Instrument
 
 			// this.createSynth();
 			fxSynth = nil;
-
+			fxBus = Bus.audio(Server.local,2);
 			synth_parameters = IdentityDictionary.new;
 			fx_parameters = IdentityDictionary.new;
 			super.init(name_,graph_);
@@ -53,7 +54,7 @@ SynthPlayer : Instrument
 			}, {});
 
 			if( fxSynth.isKindOf(Synth), {
-				synth = Synth.before( fxSynth, synthdef.asSymbol, parameters );
+				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 			}, {
 				synth = Synth( synthdef.asSymbol, parameters );
 			});
@@ -176,7 +177,7 @@ SynthPlayer : Instrument
 				// fxSynth = Synth.new(synthdef_);
 			});
 
-			fxSynth = Synth.new(synthdef_,this.parameters_array(fx_parameters));
+			fxSynth = Synth.new(synthdef_,[\inBus,fxBus]++this.parameters_array(fx_parameters));
 
 		}, {
 			"clear currentFX".postln;
