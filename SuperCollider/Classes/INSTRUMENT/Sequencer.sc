@@ -35,6 +35,7 @@ Sequencer : I8Tnode
 		SequencerEvent.classSequencer = this;
 
 		singleFunctions = IdentityDictionary.new;
+		repeatFunctions = IdentityDictionary.new;
 
 		instrument_tracks = Dictionary.new();
 
@@ -61,6 +62,13 @@ Sequencer : I8Tnode
 						singleFunctions[beats].value();
 					});
 
+					repeatFunctions.collect({|f,k|
+
+						if( beats % k.asInteger == 0, {
+							f.value();
+						});
+
+					});
 				});
 
 				if( playing, {

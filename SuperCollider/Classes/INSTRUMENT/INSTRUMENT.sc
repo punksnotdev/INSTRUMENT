@@ -80,17 +80,28 @@ INSTRUMENT
 	}
 
 	when {|time, function|
-		if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
+		if( time.isInteger, {
 
-			sequencer.singleFunctions[time] = function;
+			if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
 
+				sequencer.singleFunctions[time] = function;
+
+			});
+		}, {
+			"time should be an Integer".postln;
 		});
 	}
 	every {|time, function|
-		if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
+		if( time.isInteger, {
 
-			sequencer.repeatFunctions[time] = function;
+			if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
 
+				sequencer.repeatFunctions[time] = function;
+
+			});
+
+		}, {
+			"time should be an Integer".postln;
 		});
 	}
 
