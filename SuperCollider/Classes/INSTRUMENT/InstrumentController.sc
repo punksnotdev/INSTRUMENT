@@ -18,7 +18,6 @@ InstrumentController {
 			target = t_;
 		}, {
 			target = nil;
-			"Target should be an instance of Instrument".postln;
 		});
 	}
 
@@ -26,10 +25,14 @@ InstrumentController {
 
 		parameters[parameter] = value;
 
-		if( target.isKindOf(Instrument), {
+		if( target.notNil, {
 
 			target.set(parameter,value);
 
+		}, {
+
+			"Target not set".postln;
+			
 		});
 
 	}
