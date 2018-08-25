@@ -91,14 +91,19 @@ INSTRUMENT
 			"time should be an Integer".postln;
 		});
 	}
-	
+
 	every {|time, function|
 		if( time.isInteger, {
-
-			if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
+			if( ((time.notNil) && ( function.isKindOf(Function) )),{
 
 				sequencer.repeatFunctions[time] = function;
 
+			}, {
+
+				if(sequencer.repeatFunctions[time].isKindOf(Function), {
+					sequencer.repeatFunctions.removeAt(time);
+				});
+				
 			});
 
 		}, {
