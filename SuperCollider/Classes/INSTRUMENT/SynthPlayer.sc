@@ -37,7 +37,9 @@ SynthPlayer : Instrument
 	synthdef_{|synthdef_|
 
 		synthdef = synthdef_;
-		synth_parameters=IdentityDictionary.new;
+		// if( synth_parameters.isKindOf(IdentityDictionary) == false, {
+		// 	synth_parameters=IdentityDictionary.new;
+		// });
 
 		this.createSynth();
 
@@ -85,12 +87,12 @@ SynthPlayer : Instrument
 
 			\synthdef, {
 				synthdef = value.val;
-				synth_parameters = IdentityDictionary.new;
+				// synth_parameters = IdentityDictionary.new;
 			},
 			\octave, { octave = value.val },
 			\fx, {
 
-				this.fx(value.val);
+				this.fx = value.val;
 
 			},
 			\setFx, {
@@ -201,6 +203,7 @@ SynthPlayer : Instrument
 	}
 
 	set {|parameter,value|
+		synth_parameters.postln;
 		synth_parameters[parameter] = value;
 		synth.set( parameter, value );
 	}
