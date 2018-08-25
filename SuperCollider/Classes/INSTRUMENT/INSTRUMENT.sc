@@ -6,6 +6,8 @@ INSTRUMENT
 
 	var <>sequencer;
 
+	var <>instrument;
+
 	*new {
 		// rootNode.graph_(this);
 		^super.new.init();
@@ -15,6 +17,7 @@ INSTRUMENT
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
+		instrument = IdentityDictionary.new;
 
 		rootNode = I8Tnode.new("rootNode",this);
 
@@ -71,6 +74,6 @@ INSTRUMENT
 	}
 
 
-	
+
 
 }
