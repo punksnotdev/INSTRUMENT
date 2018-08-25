@@ -17,6 +17,12 @@ Sequencer : I8Tnode
 	var clock;
 	var playing;
 
+	var beats;
+
+	var <singleFunctions;
+	var <repeatFunctions;
+
+
 	*new {
 		// SequencerEvent instances need to have a reference to 'this' (sequencer):
 
@@ -28,9 +34,11 @@ Sequencer : I8Tnode
 		SequencerTrack.classSequencer = this;
 		SequencerEvent.classSequencer = this;
 
+		singleFunctions = IdentityDictionary.new;
+
 		instrument_tracks = Dictionary.new();
 
-
+		beats = 0;
 		speed = 1;
 		repeat = 4;
 
@@ -45,6 +53,15 @@ Sequencer : I8Tnode
 		tdef = Tdef(\sequencer,{
 
 			inf.do{|i|
+
+				if( i % 32 == 0, {
+					beats = beats+1;
+
+					if( singleFunctions[beats].notNil, {
+						singleFunctions[beats].value();
+					});
+
+				});
 
 				if( playing, {
 
@@ -77,6 +94,8 @@ Sequencer : I8Tnode
 
 
 	go {|time|
+
+		beats = time;
 
 		instrument_tracks.collect({|track|
 			track.go( time );

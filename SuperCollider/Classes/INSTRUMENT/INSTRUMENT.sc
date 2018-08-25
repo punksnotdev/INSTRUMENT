@@ -79,7 +79,20 @@ INSTRUMENT
 
 	}
 
+	when {|time, function|
+		if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
 
+			sequencer.singleFunctions[time] = function;
+
+		});
+	}
+	every {|time, function|
+		if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
+
+			sequencer.repeatFunctions[time] = function;
+
+		});
+	}
 
 
 }
