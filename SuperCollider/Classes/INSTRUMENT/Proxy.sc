@@ -16,8 +16,7 @@ Proxy : Instrument
 			super.init(proxy_.key,graph_);
 		},{
 			"input not a nodeproxy".postln;
-
-			});
+		});
 
 	}
 

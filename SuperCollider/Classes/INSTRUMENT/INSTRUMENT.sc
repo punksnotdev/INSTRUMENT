@@ -10,17 +10,19 @@ INSTRUMENT
 
 	var <speed;
 
+	var instrumentChanges;
 
 	*new {
 		// rootNode.graph_(this);
 		^super.new.init();
-	}
 
+	}
 	init {
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
 		instrument = IdentityDictionary.new;
+		instrumentChanges = IdentityDictionary.new;
 
 		rootNode = I8Tnode.new("rootNode",this);
 
@@ -81,12 +83,18 @@ INSTRUMENT
 
 	when {|time, function|
 		if( time.isInteger, {
-
-			if( ((time.notNil) && ( function.notNil ) && ( function.isKindOf(Function) )),{
+			if( ((time.notNil) && ( function.isKindOf(Function) )),{
 
 				sequencer.singleFunctions[time] = function;
 
+			}, {
+
+				if(sequencer.singleFunctions[time].isKindOf(Function), {
+					sequencer.singleFunctions.removeAt(time);
+				});
+
 			});
+
 		}, {
 			"time should be an Integer".postln;
 		});
@@ -103,12 +111,13 @@ INSTRUMENT
 				if(sequencer.repeatFunctions[time].isKindOf(Function), {
 					sequencer.repeatFunctions.removeAt(time);
 				});
-				
+
 			});
 
 		}, {
 			"time should be an Integer".postln;
 		});
+
 	}
 
 
