@@ -54,7 +54,7 @@ Sequencer : I8Tnode
 
 				});
 
-				(1/32).wait;
+				((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
 
 			}
 

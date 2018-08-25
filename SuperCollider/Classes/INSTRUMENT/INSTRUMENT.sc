@@ -8,6 +8,9 @@ INSTRUMENT
 
 	var <>instrument;
 
+	var <speed;
+
+
 	*new {
 		// rootNode.graph_(this);
 		^super.new.init();
@@ -56,6 +59,9 @@ INSTRUMENT
 		nodes[node.name] = nil;
 	}
 
+	speed_ {|speed_|
+		sequencer.speed = speed_;
+	}
 
 	play {
 		sequencer.play;
