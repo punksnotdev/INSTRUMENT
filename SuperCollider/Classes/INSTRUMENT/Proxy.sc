@@ -70,4 +70,10 @@ Proxy : Instrument
 
 	}
 
+
+	set {|parameter,value|
+		proxy.set( parameter, value );
+	}
+
+
 }

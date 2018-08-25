@@ -22,7 +22,7 @@ SynthPlayer : Instrument
 				synthdef = \test;
 			});
 
-			this.createSynth();
+			// this.createSynth();
 			currentFx = nil;
 
 			synth_parameters = IdentityDictionary.new;
@@ -100,14 +100,31 @@ SynthPlayer : Instrument
 			\note, {
 				// if is Event, get params
 				var event = value;
-				var amp = event.amplitude * synth_parameters[\amp];
-				[amp,event.amplitude, synth_parameters[\amp]].postln;
-				this.createSynth([
-					\t_trig,1,
-					\freq,((octave*12)+event.val).midicps,
-					\note,(octave*12)+event.val,
-					\amp, amp
-					]++this.parameters_array(synth_parameters));
+				var amp = event.amplitude;
+
+				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+					var computed_params;
+					amp = amp * synth_parameters[\amp];
+
+					computed_params = synth_parameters.copy;
+					computed_params.removeAt(\amp);
+
+					this.createSynth([
+						\t_trig,1,
+						\freq,((octave*12)+event.val).midicps,
+						\note,(octave*12)+event.val,
+						\amp, amp
+						]++this.parameters_array(computed_params));
+				}, {
+					this.createSynth([
+						\t_trig,1,
+						\freq,((octave*12)+event.val).midicps,
+						\note,(octave*12)+event.val,
+						\amp, amp
+						]++this.parameters_array(synth_parameters));
+				});
+
+
 
 			},
 			\ampTrig, {
@@ -122,7 +139,7 @@ SynthPlayer : Instrument
 						computed_params = synth_parameters.copy;
 						computed_params.removeAt(\amp);
 
-						this.createSynth([\t_trig,1,\amp,amp]++computed_params);
+						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(computed_params));
 
 					}, {
 						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(synth_parameters));
