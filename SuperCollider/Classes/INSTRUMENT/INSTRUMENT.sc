@@ -100,11 +100,16 @@ INSTRUMENT
 		});
 	}
 
-	every {|time, function|
+	every {|time, function, wait|
 		if( time.isInteger, {
-			if( ((time.notNil) && ( function.isKindOf(Function) )),{
-
-				sequencer.repeatFunctions[time] = function;
+			if(function.notNil,{
+			if( ((time.isInteger) && ( function.isKindOf(Function) )),{
+				if( sequencer.repeatFunctions[time].isKindOf(List), {
+					sequencer.repeatFunctions[time].add( ( function:function, offset: wait ));
+				}, {
+					sequencer.repeatFunctions[time] = List.new;
+					sequencer.repeatFunctions[time].add( ( function:function, offset: wait ) );
+				});
 
 			}, {
 
@@ -114,11 +119,47 @@ INSTRUMENT
 
 			});
 
+			}, {
+				sequencer.repeatFunctions[time] = nil;
+
+			});
 		}, {
 			"time should be an Integer".postln;
 		});
 
 	}
 
+	//
+	// dontPlay {|instruments, lengths|
+	//
+	// 	var payload;
+	//
+	// 	payload = ();
+	//
+	// 	if( instruments.notNil, {
+	//
+	// 		payload.instruments = instruments;
+	//
+	// 		if( (instruments.isKindOf(Instrument)), {
+	// 			payload.instruments = [instruments];
+	// 		});
+	//
+	// 	});
+	// 	if( lengths.notNil, {
+	//
+	// 		payload.lengths = lengths;
+	//
+	// 		if( (lengths.isInteger||lengths.isFloat), {
+	// 			payload.lengths = [lengths];
+	// 		});
+	//
+	// 	});
+	//
+	// 	instrumentChanges[time] = payload;
+	//
+	//
+	// }
+	//
+	// for {}
 
 }

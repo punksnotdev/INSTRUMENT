@@ -56,16 +56,25 @@ Sequencer : I8Tnode
 			inf.do{|i|
 
 				if( i % 32 == 0, {
+
 					beats = beats+1;
 
-					if( singleFunctions[beats].notNil, {
+					if( singleFunctions[beats].isKindOf(Function), {
 						singleFunctions[beats].value();
 					});
 
 					repeatFunctions.collect({|f,k|
 
-						if( beats % k.asInteger == 0, {
-							f.value();
+						f.collect({|rf,l|
+							var offset = 0;
+							
+							if(rf.offset.isInteger, {
+								offset = rf.offset;
+							});
+
+							if( (beats - offset) % k.asInteger == 0, {
+								rf.function.value();
+							});
 						});
 
 					});

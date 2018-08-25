@@ -48,7 +48,7 @@ SynthDef(\reverb, { arg rv1 = 0.7, rv2=0.8;
     )
 }).store;
 
-SynthDef(\distortion, { arg gain = 3,cutoff=8000,q=0.1;
+SynthDef(\distortion, { arg gain = 3,cutoff=12000,q=0.1;
     ReplaceOut.ar(
         1,
         (RLPF.ar(In.ar(0, 1),cutoff,q)*gain).tanh/3
