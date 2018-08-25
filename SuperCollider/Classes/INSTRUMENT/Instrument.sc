@@ -22,4 +22,7 @@ Instrument : Sequenceable
 
 	}
 
+	set {|parameter,value|
+
+	}
 }

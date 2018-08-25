@@ -91,6 +91,7 @@ INSTRUMENT
 			"time should be an Integer".postln;
 		});
 	}
+	
 	every {|time, function|
 		if( time.isInteger, {
 
