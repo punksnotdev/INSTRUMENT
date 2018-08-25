@@ -6,7 +6,8 @@ SynthPlayer : Instrument
 	var synth_parameters;
 	var fx_parameters;
 
-	var <currentFx;
+	var <fxSynth;
+	var <fx;
 
 	*new{|name_,synthdef_|
 		^super.new.init(name_,this.graph,synthdef_);
@@ -23,7 +24,7 @@ SynthPlayer : Instrument
 			});
 
 			// this.createSynth();
-			currentFx = nil;
+			fxSynth = nil;
 
 			synth_parameters = IdentityDictionary.new;
 			fx_parameters = IdentityDictionary.new;
@@ -51,8 +52,8 @@ SynthPlayer : Instrument
 				synth = nil;
 			}, {});
 
-			if( currentFx.isKindOf(Synth), {
-				synth = Synth.before( currentFx, synthdef.asSymbol, parameters );
+			if( fxSynth.isKindOf(Synth), {
+				synth = Synth.before( fxSynth, synthdef.asSymbol, parameters );
 			}, {
 				synth = Synth( synthdef.asSymbol, parameters );
 			});
@@ -88,13 +89,13 @@ SynthPlayer : Instrument
 			\octave, { octave = value.val },
 			\fx, {
 
-				this.createFx(value.val);
+				this.fx(value.val);
 
 			},
 			\setFx, {
 				value.val.keysValuesDo({|k,v|
 					fx_parameters[k]=v;
-					currentFx.set(k,v);
+					fxSynth.set(k,v);
 				});
 			},
 			\note, {
@@ -162,37 +163,40 @@ SynthPlayer : Instrument
 
 	}
 
-	createFx {|synthdef_|
+	fx_{|synthdef_|
 
 		var fx;
 
 
 		if( synthdef_.notNil,{
-			if( currentFx.notNil, {
-				currentFx.free;
-				// currentFx = Synth.replace(currentFx,synthdef_);
+			if( fxSynth.notNil, {
+				fxSynth.free;
+				// fxSynth = Synth.replace(fxSynth,synthdef_);
 			}, {
-				// currentFx = Synth.new(synthdef_);
+				// fxSynth = Synth.new(synthdef_);
 			});
 
-			currentFx = Synth.new(synthdef_,this.parameters_array(fx_parameters));
+			fxSynth = Synth.new(synthdef_,this.parameters_array(fx_parameters));
 
 		}, {
 			"clear currentFX".postln;
-			currentFx = nil;
+			fxSynth.free;
+			fxSynth = nil;
 		});
+
+		^fxSynth;
 
 	}
 
 
 
-	currentFx_{|synthdef_|
-		this.createFx(synthdef_);
+	fxSynth_{|synthdef_|
+		this.fx(synthdef_);
 	}
 
 	setFx{|parameter,value|
 		fx_parameters[parameter] = value;
-		currentFx.set(parameter,value);
+		fxSynth.set(parameter,value);
 	}
 
 	set {|parameter,value|
