@@ -1,5 +1,5 @@
 
-SynthDef(\reverb, { arg inBus=0, rv1 = 0.7, rv2=0.8, wet=0.5;
+SynthDef(\reverb, { arg inBus=0, rv1 = 0.7, rv2=0.8, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -11,16 +11,16 @@ SynthDef(\reverb, { arg inBus=0, rv1 = 0.7, rv2=0.8, wet=0.5;
     )
 }).store;
 
-SynthDef(\distortion, { arg inBus=0, gain = 3,cutoff=12000,q=0.1, wet=0.5;
+SynthDef(\distortion, { arg inBus=0, gain = 3,cutoff=12000,q=0.1, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
-        (((RLPF.ar(In.ar(inBus),cutoff,q)*gain).tanh/3))
+        (((RLPF.ar(In.ar(inBus),cutoff,q)*gain).tanh/4))
     )
 }).store;
 
 
-SynthDef(\delay1, { arg inBus=0, delay = 0.25, wet=0.5;
+SynthDef(\delay1, { arg inBus=0, delay = 0.25, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -34,7 +34,7 @@ SynthDef(\delay1, { arg inBus=0, delay = 0.25, wet=0.5;
 
 
 
-SynthDef(\delay2, { arg inBus=0, delay=0.25, wet=0.5;
+SynthDef(\delay2, { arg inBus=0, delay=0.25, wet=0.75;
 	var sig = In.ar(inBus);
 	sig = (In.ar(inBus) * (1-wet))+
     (Mix.arFill(7, { CombC.ar(
@@ -47,7 +47,7 @@ SynthDef(\delay2, { arg inBus=0, delay=0.25, wet=0.5;
     )
 }).store;
 
-SynthDef(\delay3, { arg inBus=0, delay = 5, wet=0.5;
+SynthDef(\delay3, { arg inBus=0, delay = 5, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -59,7 +59,7 @@ SynthDef(\delay3, { arg inBus=0, delay = 5, wet=0.5;
 
 
 
-SynthDef(\revlpf, { arg inBus=0, cutoff=1500,q=0.1, rv1=0.4,rv2=0.6, wet=0.5;
+SynthDef(\revlpf, { arg inBus=0, cutoff=1500,q=0.1, rv1=0.4,rv2=0.6, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -70,7 +70,7 @@ SynthDef(\revlpf, { arg inBus=0, cutoff=1500,q=0.1, rv1=0.4,rv2=0.6, wet=0.5;
 }).store;
 
 
-SynthDef(\lpf, { arg inBus=0, cutoff=1500,q=0.1, wet=0.5;
+SynthDef(\lpf, { arg inBus=0, cutoff=1500,q=0.1, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -80,7 +80,7 @@ SynthDef(\lpf, { arg inBus=0, cutoff=1500,q=0.1, wet=0.5;
     )
 }).store;
 
-SynthDef(\hpf, { arg inBus=0, cutoff=70,q=0.3, wet=0.5;
+SynthDef(\hpf, { arg inBus=0, cutoff=70,q=0.3, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -90,7 +90,7 @@ SynthDef(\hpf, { arg inBus=0, cutoff=70,q=0.3, wet=0.5;
     )
 }).store;
 
-SynthDef(\resonz, { arg inBus=0, cutoff=1500,q=0.3, wet=0.5;
+SynthDef(\resonz, { arg inBus=0, cutoff=1500,q=0.3, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
@@ -100,7 +100,7 @@ SynthDef(\resonz, { arg inBus=0, cutoff=1500,q=0.3, wet=0.5;
     )
 }).store;
 
-SynthDef(\moogFF, { arg inBus=0, cutoff=1500,q=0.5, wet=0.5;
+SynthDef(\moogFF, { arg inBus=0, cutoff=1500,q=0.5, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+

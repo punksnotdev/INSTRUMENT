@@ -52,7 +52,7 @@ SynthPlayer : Instrument
 		if( synthdef != \r, {
 			if(synth.notNil, {
 				synth.free;
-				synth = nil;
+				// synth = nil;
 			}, {});
 
 			if( fxSynth.isKindOf(Synth), {
