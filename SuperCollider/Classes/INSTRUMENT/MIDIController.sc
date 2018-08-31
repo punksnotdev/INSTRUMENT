@@ -2,6 +2,9 @@ MIDIController {
 
 	var < controllers;
 	var <> controllerSource;
+	var <> name;
+
+	var listener;
 
 	var callbacks;
 
@@ -18,15 +21,22 @@ MIDIController {
 	}
 
 	addResponder {|messageType, controllerId, channel|
-
+		["messageType",messageType].postln;
 		switch(messageType,
 			\cc, {
 
+
 				var func = MIDIFunc.cc(
-					{
-						("received: "++messageType).postln;
-					},
-					controllerId, channel, controllerSource
+					{arg ...args;
+						// "cc!!".postln;
+
+						args.postln;
+
+						// ("received: "++messageType).postln;
+
+						this.set( )
+					}//,
+					// controllerId, channel, controllerSource
 				);
 
 				callbacks.add( func );
@@ -39,9 +49,15 @@ MIDIController {
 
 	}
 
-	addController{|key,controller|
 
-		controllers[key] = InstrumentController
+	addListener{|listener_|
+		listener = listener_;
+	}
+
+
+	set {|value|
+
+		listener.set(this, value);
 
 	}
 

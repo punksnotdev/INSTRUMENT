@@ -5,8 +5,10 @@ INSTRUMENT
 	var <rootNode;
 
 	var <>sequencer;
+	var <>controllerManager;
 
 	var <>instrument;
+
 
 	var <speed;
 
@@ -21,6 +23,8 @@ INSTRUMENT
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
+		controllerManager = ControllerManager.new;
+
 		instrument = IdentityDictionary.new;
 		instrumentChanges = IdentityDictionary.new;
 
@@ -161,5 +165,19 @@ INSTRUMENT
 	// }
 	//
 	// for {}
+
+	mapController {|ctlDesc|
+		if(ctlDesc.controllers.isArray, {
+			ctlDesc.controllers.collect({|controller|
+				controller.source.postln;
+
+				controllerManager.map(
+					controller, InstrumentController()
+				);
+
+			});
+		});
+
+	}
 
 }
