@@ -5,8 +5,10 @@ INSTRUMENT
 	var <rootNode;
 
 	var <>sequencer;
+	var <>controllerManager;
 
 	var <>instrument;
+	
 
 	var <speed;
 
@@ -20,6 +22,8 @@ INSTRUMENT
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
+		controllerManager = ControllerManager.new;
+
 		instrument = IdentityDictionary.new;
 
 		rootNode = I8Tnode.new("rootNode",this);
@@ -91,7 +95,7 @@ INSTRUMENT
 			"time should be an Integer".postln;
 		});
 	}
-	
+
 	every {|time, function|
 		if( time.isInteger, {
 
@@ -106,5 +110,19 @@ INSTRUMENT
 		});
 	}
 
+
+	mapController {|ctlDesc|
+		if(ctlDesc.controllers.isArray, {
+			ctlDesc.controllers.collect({|controller|
+				controller.source.postln;
+
+				controllerManager.map(
+					controller, InstrumentController()
+				);
+
+			});
+		});
+
+	}
 
 }
