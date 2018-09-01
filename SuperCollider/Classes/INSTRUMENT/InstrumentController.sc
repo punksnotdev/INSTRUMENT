@@ -32,7 +32,7 @@ InstrumentController {
 		}, {
 
 			"Target not set".postln;
-			
+
 		});
 
 	}

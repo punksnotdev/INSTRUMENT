@@ -41,6 +41,7 @@ INSTRUMENT
 			if( node.isKindOf(Sequenceable), {
 				node.sequencer = sequencer;
 				sequencer.registerInstrument(node);
+				controllerManager.addInstrument( node );
 			})
 
 		})

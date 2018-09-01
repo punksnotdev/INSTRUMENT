@@ -1,42 +1,44 @@
 MIDIController {
 
 	var < controllers;
-	var <> controllerSource;
+	var <> controllerManager;
 	var <> name;
+	var <> type;
+	var <> range;
 
 	var listener;
 
 	var callbacks;
 
-	*new {|source_|
-		^super.new.init(source_);
+	*new {|controllerManager_, type_ |
+		^super.new.init(controllerManager_, type_ );
 	}
 
-	init {|source_|
+	init {|controllerManager_, type_ |
 
-		controllerSource = source_;
+		controllerManager = controllerManager_;
 		controllers = IdentityDictionary.new;
 		callbacks = List.new;
+
+		type = type_;
+
+		this.addListener( controllerManager );
+		this.addResponder( type );
 
 	}
 
 	addResponder {|messageType, controllerId, channel|
-		["messageType",messageType].postln;
+
 		switch(messageType,
 			\cc, {
 
 
 				var func = MIDIFunc.cc(
 					{arg ...args;
-						// "cc!!".postln;
 
-						args.postln;
+						this.set(args[0])
 
-						// ("received: "++messageType).postln;
-
-						this.set( )
-					}//,
-					// controllerId, channel, controllerSource
+					}
 				);
 
 				callbacks.add( func );
