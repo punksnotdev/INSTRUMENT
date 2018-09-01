@@ -100,10 +100,13 @@ ControllerManager {
 		var index = instruments.size;
 		instruments.add( instrument );
 
-		ctlName = controllerNames[ index ];
+		if(controllerNames[ index ].notNil, {
 
-		controllers[ctlName].target.target = instrument;
+			ctlName = controllerNames[ index ];
 
+			controllers[ctlName].target.target = instrument;
+
+		});
 
 	}
 

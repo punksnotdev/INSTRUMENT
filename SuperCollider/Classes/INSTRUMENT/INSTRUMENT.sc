@@ -36,6 +36,7 @@ INSTRUMENT
 
 	addNode {|node|
 		if( node.name != "rootNode", {
+
 			nodes[node.name] = node;
 
 			if( node.isKindOf(Sequenceable), {
