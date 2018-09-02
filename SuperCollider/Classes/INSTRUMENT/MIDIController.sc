@@ -4,31 +4,34 @@ MIDIController {
 	var <> controllerManager;
 	var <> name;
 	var <> type;
+	var <> controllerId;
+	var <> channel;
+	var <> sourceId;
 	var <> range;
 
 	var listener;
 
 	var callbacks;
 
-	*new {|controllerManager_, type_ |
-		^super.new.init(controllerManager_, type_ );
+	*new {|controllerManager_, type_, controllerId_, channel_, sourceId_ |
+		^super.new.init(controllerManager_, type_, controllerId_, channel_, sourceId_ );
 	}
 
-	init {|controllerManager_, type_ |
+	init {|controllerManager_, type_, controllerId_, channel_, sourceId_ |
 
 		controllerManager = controllerManager_;
 		controllers = IdentityDictionary.new;
 		callbacks = List.new;
 
-		type = type_;
+		controllerId = controllerId_;
 
-		this.addListener( controllerManager );
-		this.addResponder( type );
+		this.addListener( controllerManager, controllerId );
+		this.addResponder( type_, controllerId_, channel_, sourceId_ );
 
 	}
 
-	addResponder {|messageType, controllerId, channel|
-
+	addResponder {|messageType, controllerId, channel, sourceId|
+[messageType, controllerId, channel, sourceId].postln;
 		switch(messageType,
 			\cc, {
 
@@ -38,7 +41,7 @@ MIDIController {
 
 						this.set(args[0])
 
-					}
+					}, controllerId, channel, sourceId
 				);
 
 				callbacks.add( func );

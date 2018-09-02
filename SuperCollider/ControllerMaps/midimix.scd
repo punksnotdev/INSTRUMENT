@@ -1,101 +1,96 @@
-(
+b = IdentityDictionary.new;
+n = IdentityDictionary.new;
 
 
-	var cc = IdentityDictionary.new;
-	var note = IdentityDictionary.new;
+b[0] = (target: 0, control: 16);
+b[1] = (target: 0, control: 17);
+b[2] = (target: 0, control: 18);
+b[3] = (target: 0, control: 19);
 
+b[4] = (target: 1, control: 20);
+b[5] = (target: 1, control: 21);
+b[6] = (target: 1, control: 22);
+b[7] = (target: 1, control: 23);
 
-	cc[16] = (target: 0, ctrl: 0);
-	cc[17] = (target: 0, ctrl: 1);
-	cc[18] = (target: 0, ctrl: 2);
-	cc[19] = (target: 0, ctrl: 3);
+b[8] = (target: 2, control: 24);
+b[9] = (target: 2, control: 25);
+b[10] = (target: 2, control: 26);
+b[11] = (target: 2, control: 27);
 
-	cc[20] = (target: 1, ctrl: 0);
-	cc[21] = (target: 1, ctrl: 1);
-	cc[22] = (target: 1, ctrl: 2);
-	cc[23] = (target: 1, ctrl: 3);
-
-	cc[24] = (target: 2, ctrl: 0);
-	cc[25] = (target: 2, ctrl: 1);
-	cc[26] = (target: 2, ctrl: 2);
-	cc[27] = (target: 2, ctrl: 3);
-
-	cc[28] = (target: 3, ctrl: 0);
-	cc[29] = (target: 3, ctrl: 1);
-	cc[30] = (target: 3, ctrl: 2);
-	cc[31] = (target: 3, ctrl: 3);
+b[12] = (target: 3, control: 28);
+b[13] = (target: 3, control: 29);
+b[14] = (target: 3, control: 30);
+b[15] = (target: 3, control: 31);
 
 
 
-	cc[46] = (target: 4, ctrl: 0);
-	cc[47] = (target: 4, ctrl: 1);
-	cc[48] = (target: 4, ctrl: 2);
-	cc[49] = (target: 4, ctrl: 3);
+b[16] = (target: 4, control: 46);
+b[17] = (target: 4, control: 47);
+b[18] = (target: 4, control: 48);
+b[19] = (target: 4, control: 49);
 
-	cc[50] = (target: 5, ctrl: 0);
-	cc[51] = (target: 5, ctrl: 1);
-	cc[52] = (target: 5, ctrl: 2);
-	cc[53] = (target: 5, ctrl: 3);
+b[20] = (target: 5, control: 50);
+b[21] = (target: 5, control: 51);
+b[22] = (target: 5, control: 52);
+b[23] = (target: 5, control: 53);
 
-	cc[54] = (target: 6, ctrl: 0);
-	cc[55] = (target: 6, ctrl: 1);
-	cc[56] = (target: 6, ctrl: 2);
-	cc[57] = (target: 6, ctrl: 3);
+b[24] = (target: 6, control: 54);
+b[25] = (target: 6, control: 55);
+b[26] = (target: 6, control: 56);
+b[27] = (target: 6, control: 57);
 
-	cc[58] = (target: 7, ctrl: 0);
-	cc[59] = (target: 7, ctrl: 1);
-	cc[60] = (target: 7, ctrl: 2);
-	cc[61] = (target: 7, ctrl: 3);
+b[28] = (target: 7, control: 58);
+b[29] = (target: 7, control: 59);
+b[30] = (target: 7, control: 60);
+b[31] = (target: 7, control: 61);
 
-	cc[62] = (target: 8, ctrl: 0);
+b[32] = (target: 8, control: 62);
 
 
 
 
-	note[25] = ( target: 8, note: 0 );
-	note[26] = ( target: 8, note: 1 );
-	note[27] = ( target: 8, note: 2 );
+n[25] = ( target: 8, note: 0 );
+n[26] = ( target: 8, note: 1 );
+n[27] = ( target: 8, note: 2 );
 
-	note[1] = ( target: 0, note: 0 );
-	note[3] = ( target: 0, note: 1 );
+n[1] = ( target: 0, note: 0 );
+n[3] = ( target: 0, note: 1 );
 
-	note[4] = ( target: 1, note: 0 );
-	note[6] = ( target: 1, note: 1 );
+n[4] = ( target: 1, note: 0 );
+n[6] = ( target: 1, note: 1 );
 
-	note[7] = ( target: 2, note: 0 );
-	note[9] = ( target: 2, note: 1 );
+n[7] = ( target: 2, note: 0 );
+n[9] = ( target: 2, note: 1 );
 
-	note[10] = ( target: 3, note: 0 );
-	note[12] = ( target: 3, note: 1 );
+n[10] = ( target: 3, note: 0 );
+n[12] = ( target: 3, note: 1 );
 
-	note[13] = ( target: 4, note: 0 );
-	note[15] = ( target: 4, note: 1 );
+n[13] = ( target: 4, note: 0 );
+n[15] = ( target: 4, note: 1 );
 
-	note[16] = ( target: 5, note: 0 );
-	note[18] = ( target: 5, note: 1 );
+n[16] = ( target: 5, note: 0 );
+n[18] = ( target: 5, note: 1 );
 
-	note[19] = ( target: 6, note: 0 );
-	note[21] = ( target: 6, note: 1 );
+n[19] = ( target: 6, note: 0 );
+n[21] = ( target: 6, note: 1 );
 
-	note[22] = ( target: 7, note: 0 );
-	note[24] = ( target: 7, note: 1 );
-
-
-
-	MIDIIn.connectAll;
-
-	MIDIdef.cc(\cc, {arg ...args;
-		[cc[args[1]].target, cc[args[1]].ctrl, args[0] ].postln;
-	});//, ccNum, chan, srcID, argTemplate, dispatcher)
-
-	MIDIdef.noteOn(\noteOn, {arg ...args;
-		[note[args[1]].target, note[args[1]].note, args[0] ].postln;
-	});
-
-	MIDIdef.noteOff(\noteOff, {arg ...args;
-		[note[args[1]].target, note[args[1]].note, args[0] ].postln;
-	});
+n[22] = ( target: 7, note: 0 );
+n[24] = ( target: 7, note: 1 );
 
 
+//
+// MIDIIn.connectAll;
+//
+// MIDIdef.cc(\cc, {arg ...args;
+// 	[b[args[1]].target, b[args[1]].control, args[0] ].postln;
+// });//, ccNum, chan, srcID, argTemplate, dispatcher)
+//
+// MIDIdef.noteOn(\noteOn, {arg ...args;
+// 	[n[args[1]].target, n[args[1]].note, args[0] ].postln;
+// });
+//
+// MIDIdef.noteOff(\noteOff, {arg ...args;
+// 	[n[args[1]].target, n[args[1]].note, args[0] ].postln;
+// });
 
-)
+"MIDIMIX map loaded".postln;

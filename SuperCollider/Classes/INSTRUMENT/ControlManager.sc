@@ -23,7 +23,6 @@ ControllerManager {
 
 
 	set {|source, value|
-
 		var min, max;
 		var outRange, minOutVal;
 		var normalizedValue;
@@ -50,7 +49,7 @@ ControllerManager {
 			}
 		);
 
-		["set:",key,outValue].postln;
+		["set:",target,key,outValue].postln;
 
 		target.set(
 			key,
@@ -65,9 +64,13 @@ ControllerManager {
 
 		switch( controller.protocol,
 			"midi", {
-				newSource = MIDIController(this,controller.type);
+				newSource = MIDIController(
+					this,
+					controller.type,
+					controller.controllerId,
+					controller.channel,
+				);
 				newSource.name = controller.name;
-				// newSource.range = controller.range;
 			}
 		);
 

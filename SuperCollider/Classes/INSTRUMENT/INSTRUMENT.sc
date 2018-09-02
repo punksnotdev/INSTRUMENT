@@ -171,7 +171,9 @@ INSTRUMENT
 	mapController {|ctlDesc|
 		if(ctlDesc.controllers.isArray, {
 			ctlDesc.controllers.collect({|controller|
-				controller.source.postln;
+				//,index|
+
+				// controller.index = index;
 
 				controllerManager.map(
 					controller, InstrumentController()
