@@ -1,5 +1,7 @@
 ControllerManager {
 
+
+
 	var controllers;
 	var instruments;
 	var controllerNames;
@@ -112,5 +114,13 @@ ControllerManager {
 		});
 
 	}
+
+
+	// addDevice {|id|}
+	// addGroup {|type_,name_|}
+	// addController {|key_,parameter_,range_|}
+
+
+
 
 }
