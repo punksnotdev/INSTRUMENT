@@ -7,18 +7,28 @@ ControllerManager {
 
 	var controlTargetMap;
 
-	*new {
+	var < midi;
 
-		^super.new.init();
+	var instrument;
+
+	*new {|instrument_|
+		^super.new.init(instrument_);
 	}
 
-	init {
+	init {|instrument_|
+
+		instrument = instrument_;
+
 		controllers = IdentityDictionary.new;
 		controllerNames = List.new;
 		instruments = List.new;
 		targets = List.new;
 
 		controlTargetMap = IdentityDictionary.new;
+
+
+
+
 	}
 
 
@@ -110,6 +120,74 @@ ControllerManager {
 			controllers[ctlName].target.target = instrument;
 
 		});
+
+	}
+
+
+	// mapController {|id_,param_,range_|
+	//
+	// 	controllerManager_
+	// 	type_
+	// 	controllerId_
+	// 	channel_
+	// 	sourceId_
+	//
+ 	// 	MIDIController(controllerManager_, type_, controllerId_, channel_, sourceId_);
+	//
+	//
+	//
+	// }
+
+	midi_ {|on=false|
+
+		if( on, {
+
+			var srcNames = List.new;
+
+			midi = ();
+			Tdef(\initMidi, { 1.do{
+			MIDIClient.init();
+
+			3.wait;
+
+			MIDIClient.sources.collect({|src,i|
+				// src.device.postln;
+				srcNames.add( src.device.asSymbol );
+
+				// [i, src.uid, src.device, src.name].postln;
+
+			});
+
+
+			if( instrument.gui.notNil, {
+				srcNames.postln;
+				instrument.gui.setMIDIDevices(srcNames.asArray);
+			});
+
+		 	}}).play;
+
+		}, {});
+
+		^midi
+	}
+
+	connectMIDIDevice{|device|
+
+		var key = device.device.replace(" ", "_").toLower.asSymbol;
+
+		midi[key].key = key;
+		midi[key].device = device.device;
+		midi[key].name = device.name;
+		midi[key].id = device.uid;
+
+		^midi[key];
+
+	}
+
+	initializeMIDI {
+
+		MIDIIn.connect(0,MIDIClient.sources[4]);
+
 
 	}
 

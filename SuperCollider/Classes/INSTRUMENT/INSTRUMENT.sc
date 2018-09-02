@@ -9,6 +9,9 @@ INSTRUMENT
 
 	var <>instrument;
 
+	var midi;
+
+	var <gui;
 
 	var <speed;
 
@@ -23,7 +26,7 @@ INSTRUMENT
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new;
-		controllerManager = ControllerManager.new;
+		controllerManager = ControllerManager.new(this);
 
 		instrument = IdentityDictionary.new;
 		instrumentChanges = IdentityDictionary.new;
@@ -181,6 +184,19 @@ INSTRUMENT
 
 			});
 		});
+
+	}
+
+
+	setupGUI {
+
+		gui = GUII8t();
+
+	}
+
+	midi_ {|on=false|
+		["midi", on].postln;
+		controllerManager.midi_( on );
 
 	}
 
