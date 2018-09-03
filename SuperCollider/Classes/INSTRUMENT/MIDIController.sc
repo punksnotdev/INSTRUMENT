@@ -4,6 +4,7 @@ MIDIController {
 	var <> controllerManager;
 	var <> name;
 	var <> type;
+	var <> key;
 	var <> controllerId;
 	var <> channel;
 	var <> sourceId;

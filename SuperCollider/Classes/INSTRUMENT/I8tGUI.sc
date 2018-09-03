@@ -1,4 +1,4 @@
-GUII8t {
+I8tGUI {
 
 	var <midiDeviceList;
 
@@ -29,10 +29,11 @@ GUII8t {
 	}
 
 
-	setMIDIDevices {|midiDevices|
+	setMIDIDevices {|midiDevices, callback|
 		["set mdi", midiDevices].postln;
 		{
 			midiDeviceList.items = midiDevices;
+			midiDeviceList.callback = callback;
 		}.defer;
 
 	}

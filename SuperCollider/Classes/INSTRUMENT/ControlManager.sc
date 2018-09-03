@@ -144,24 +144,28 @@ ControllerManager {
 
 			var srcNames = List.new;
 
-			midi = ();
+			midi = MIDIManager();
+
 			Tdef(\initMidi, { 1.do{
 			MIDIClient.init();
 
 			3.wait;
 
 			MIDIClient.sources.collect({|src,i|
-				// src.device.postln;
 				srcNames.add( src.device.asSymbol );
-
-				// [i, src.uid, src.device, src.name].postln;
-
 			});
 
-
 			if( instrument.gui.notNil, {
-				srcNames.postln;
-				instrument.gui.setMIDIDevices(srcNames.asArray);
+
+				var callback = {|id|
+					midi.postln;
+					midi.addDevice( MIDIClient.sources[id] );
+				};
+
+				instrument.gui.setMIDIDevices(
+					srcNames.asArray, callback
+				);
+
 			});
 
 		 	}}).play;
@@ -171,18 +175,6 @@ ControllerManager {
 		^midi
 	}
 
-	connectMIDIDevice{|device|
-
-		var key = device.device.replace(" ", "_").toLower.asSymbol;
-
-		midi[key].key = key;
-		midi[key].device = device.device;
-		midi[key].name = device.name;
-		midi[key].id = device.uid;
-
-		^midi[key];
-
-	}
 
 	initializeMIDI {
 
