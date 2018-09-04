@@ -1,37 +1,39 @@
 MIDIController {
 
-	var < controllers;
-	var <> controllerManager;
+	var <> midi;
 	var <> name;
 	var <> type;
+	var <> key;
 	var <> controllerId;
 	var <> channel;
 	var <> sourceId;
 	var <> range;
+	var <> protocol;
 
 	var listener;
 
 	var callbacks;
 
-	*new {|controllerManager_, type_, controllerId_, channel_, sourceId_ |
-		^super.new.init(controllerManager_, type_, controllerId_, channel_, sourceId_ );
+	*new {|midi_, type_, controllerId_, channel_, sourceId_ |
+		^super.new.init(midi_, type_, controllerId_, channel_, sourceId_ );
 	}
 
-	init {|controllerManager_, type_, controllerId_, channel_, sourceId_ |
+	init {|midi_, type_, controllerId_, channel_, sourceId_ |
 
-		controllerManager = controllerManager_;
-		controllers = IdentityDictionary.new;
+		midi = midi_;
+		protocol = "midi";
+
 		callbacks = List.new;
 
 		controllerId = controllerId_;
 
-		this.addListener( controllerManager, controllerId );
+		this.addListener( midi, controllerId );
 		this.addResponder( type_, controllerId_, channel_, sourceId_ );
 
 	}
 
 	addResponder {|messageType, controllerId, channel, sourceId|
-[messageType, controllerId, channel, sourceId].postln;
+
 		switch(messageType,
 			\cc, {
 

@@ -203,7 +203,7 @@ SynthPlayer : Instrument
 	}
 
 	set {|parameter,value|
-		synth_parameters.postln;
+
 		synth_parameters[parameter] = value;
 		synth.set( parameter, value );
 	}

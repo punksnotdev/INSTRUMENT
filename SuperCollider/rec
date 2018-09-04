@@ -1,0 +1,37 @@
+MIDIClient.init();
+
+(
+
+	MIDIIn.connect(0, MIDIClient.sources[3] );
+	m = MIDIManager();
+	m.addDevice( MIDIClient.sources[3] );
+
+	m.devices.midi_mix.addControllerGroup(\channel,\channel1);
+	m.devices.midi_mix.addControllerGroup(\channel,\channel2);
+
+	m.devices.midi_mix.groups.channel1.addControllerGroup(\cc,\fader);
+	m.devices.midi_mix.groups.channel1.addControllerGroup(\cc,\knobs);
+
+	m.devices.midi_mix.groups.channel2.addControllerGroup(\cc,\fader);
+	m.devices.midi_mix.groups.channel2.addControllerGroup(\cc,\knobs);
+
+
+
+	// controller mapping:
+
+	m.devices.midi_mix.groups.channel1.groups.knobs.addController(16,[0,100]);
+	m.devices.midi_mix.groups.channel1.groups.knobs.addController(17,[0,100]);
+	m.devices.midi_mix.groups.channel1.groups.knobs.addController(18,[0,100]);
+
+	m.devices.midi_mix.groups.channel1.groups.fader.addController(19,[0,100]);
+
+	m.devices.midi_mix.groups.channel2.groups.knobs.addController(20,[0,100]);
+	m.devices.midi_mix.groups.channel2.groups.knobs.addController(21,[0,100]);
+	m.devices.midi_mix.groups.channel2.groups.knobs.addController(22,[0,100]);
+
+	m.devices.midi_mix.groups.channel2.groups.fader.addController(23,[0,100]);
+
+
+
+)
+// m.addControllerGroup

@@ -15,6 +15,8 @@ Tdef(\boot, {
 		3.wait;
 
 		i = INSTRUMENT();
+		i.midi_(true);
+		i.setupGUI();
 
 		c = (
 			controllers: [
