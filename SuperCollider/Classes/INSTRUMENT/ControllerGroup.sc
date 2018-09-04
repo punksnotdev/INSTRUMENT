@@ -28,14 +28,16 @@ ControllerGroup {
 		groups[name.asSymbol] = ControllerGroup(type,name,device,this);
 	}
 
-	addController{|id,channel|
-
+	addController{|name,id,channel|
 		var newController;
 		var key = '';
+
 		key = device.slug;
+
 		if( parent.notNil, {
 			key = key ++'_'++ parent.name;
 		});
+
 		key = key ++'_'++name++'_'++controllers.size;
 		key = key.asSymbol;
 
@@ -46,12 +48,14 @@ ControllerGroup {
 			channel,
 		);
 
+		newController.name = name;
 		newController.key = key;
+		newController.protocol = device.protocol;
 
-		device.controllers[ key ] = newController;
-		controllers[key] = newController;
+		device.controllers[name] = newController;
+		controllers[name] = newController;
 
-		^controllers[key]
+		^controllers[name]
 
 	}
 

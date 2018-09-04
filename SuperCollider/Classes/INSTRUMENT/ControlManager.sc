@@ -33,42 +33,57 @@ ControllerManager {
 
 
 	set {|source, value|
+
 		var min, max;
 		var outRange, minOutVal;
 		var normalizedValue;
 		var outValue;
 
-		var target = controllers[source.name].target;
-		var key = controllers[source.name].key;
-		var range = controllers[source.name].range;
-		var protocol = controllers[source.name].protocol;
 
-		switch( protocol,
-			"midi", {
+		var controller = controlTargetMap[source.key.asSymbol];
 
-				min = 0; max = 127;
+		if(controller.notNil, {
 
-				normalizedValue = (value / 127).asFloat;
+			var target = controller.target;
+			var key = controller.key;
+			var parameter = controller.parameter;
+			var range = controller.range;
+			var protocol = controller.protocol;
 
-				outRange = (range[1] - range[0]).abs;
 
-				minOutVal = range[0];
 
-				outValue = minOutVal + outRange*normalizedValue;
+			outRange = (range[1] - range[0]).abs;
 
-			}
-		);
+			minOutVal = range[0];
 
-		["set:",target,key,outValue].postln;
+			outValue = minOutVal + outRange*value;
 
-		target.set(
-			key,
-			outValue
-		);
+			target.set(
+				parameter,
+				outValue
+			);
+
+		});
 
 	}
 
-	map {|controller,target|
+	map {|controller,target,parameter,range|
+
+		controlTargetMap[ controller.key ] = (
+			controller: controller,
+			target: target,
+			parameter: parameter,
+			range: range,
+			key: controller.key,
+			protocol: controller.protocol,
+		);
+
+		^controlTargetMap[ controller.key ];
+
+	}
+
+
+	mapDef {|controller,target|
 
 		var newSource;
 
@@ -84,10 +99,6 @@ ControllerManager {
 			}
 		);
 
-
-
-		// newSource.ç
-		// newSource.ç
 		controllers[controller.name] = (
 			target: target,
 			key: controller.parameter,
@@ -144,7 +155,7 @@ ControllerManager {
 
 			var srcNames = List.new;
 
-			midi = MIDIManager();
+			midi = MIDIManager(this);
 
 			Tdef(\initMidi, { 1.do{
 			MIDIClient.init();
@@ -159,7 +170,7 @@ ControllerManager {
 
 				var callback = {|id|
 					midi.postln;
-					midi.addDevice( MIDIClient.sources[id] );
+					midi.addDevice( midi, MIDIClient.sources[id] );
 				};
 
 				instrument.gui.setMIDIDevices(
@@ -175,12 +186,5 @@ ControllerManager {
 		^midi
 	}
 
-
-	initializeMIDI {
-
-		MIDIIn.connect(0,MIDIClient.sources[4]);
-
-
-	}
 
 }

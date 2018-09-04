@@ -188,6 +188,11 @@ INSTRUMENT
 	}
 
 
+	map {|controller,target,parameter,range|
+		^controllerManager.map(controller,target,parameter,range);
+	}
+
+
 	setupGUI {
 
 		gui = GUII8t();
@@ -198,6 +203,10 @@ INSTRUMENT
 		["midi", on].postln;
 		controllerManager.midi_( on );
 
+	}
+
+	midi {
+		^controllerManager.midi.devices;
 	}
 
 }
