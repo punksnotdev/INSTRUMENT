@@ -71,14 +71,28 @@ ControllerManager {
 
 	map {|controller,target,parameter,range|
 
-		controlTargetMap[ controller.key ] = (
-			controller: controller,
-			target: target,
-			parameter: parameter,
-			range: range,
-			key: controller.key,
-			protocol: controller.protocol,
-		);
+		var mappingAlreadySet = false;
+
+		controlTargetMap.collect({| item, key|
+			if( item.target == target && item.parameter == parameter, {
+				mappingAlreadySet = true;
+			});
+		});
+
+		if( mappingAlreadySet, {
+			"mapping already set!".postln;
+		}, {
+
+			controlTargetMap[ controller.key ] = (
+				controller: controller,
+				target: target,
+				parameter: parameter,
+				range: range,
+				key: controller.key,
+				protocol: controller.protocol,
+			);
+
+		});
 
 		^controlTargetMap[ controller.key ];
 
