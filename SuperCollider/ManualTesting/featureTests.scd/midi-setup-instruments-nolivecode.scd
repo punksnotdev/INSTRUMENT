@@ -27,13 +27,13 @@
 			];
 
 			synths[0].seq(\note,0,"0 3 2 7");
-			synths[1].seq(\note,0,"10 13 12 19",[\speed,2]);
-			synths[2].seq(\note,0,"0 8  13 12  19",[\speed,2]);
-			synths[3].seq(\note,0,"0 8  13 12  19",[\speed,3]);
-			synths[4].seq(\note,0,"0 8  13 12  19",[\speed,4]);
-			synths[5].seq(\note,0,"0 8  13 12  19",[\speed,6]);
-			synths[6].seq(\note,0,"0 8  13 12  19",[\speed,1/2]);
-			synths[7].seq(\note,0,"0 8  13 12  19",[\speed,1]);
+			synths[1].seq(\note,0,"10 13 12 19",[\speed,8]);
+			synths[2].seq(\note,0,"0 8  13 12  19",[\speed,8]);
+			synths[3].seq(\note,0,"0 8  13 12  19",[\speed,6]);
+			synths[4].seq(\note,0,"0 8  13 12  19",[\speed,12]);
+			synths[5].seq(\note,0,"0 8  13 12  19",[\speed,16]);
+			synths[6].seq(\note,0,"0 8  13 12  19",[\speed,12]);
+			synths[7].seq(\note,0,"0 8  13 12  19",[\speed,4]);
 
 			synths[0].octave=4;
 			synths[1].octave=4;
