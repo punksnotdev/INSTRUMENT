@@ -71,7 +71,6 @@ SynthPlayer : Instrument
 						if( synth_.isPlaying == false, {
 							nodeIDs[synth_.nodeID]=false;
 							nodeID=synth_.nodeID;
-							synth_.free;
 							removeKey = key;
 						});
 					});
