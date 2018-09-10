@@ -2,49 +2,49 @@ b = IdentityDictionary.new;
 n = IdentityDictionary.new;
 
 
-b[0] = (target: 0, control: 16);
-b[1] = (target: 0, control: 17);
-b[2] = (target: 0, control: 18);
-b[3] = (target: 0, control: 19);
+b[0] = (target: 0, ctlNum: 16);
+b[1] = (target: 0, ctlNum: 17);
+b[2] = (target: 0, ctlNum: 18);
+b[3] = (target: 0, ctlNum: 19);
 
-b[4] = (target: 1, control: 20);
-b[5] = (target: 1, control: 21);
-b[6] = (target: 1, control: 22);
-b[7] = (target: 1, control: 23);
+b[4] = (target: 1, ctlNum: 20);
+b[5] = (target: 1, ctlNum: 21);
+b[6] = (target: 1, ctlNum: 22);
+b[7] = (target: 1, ctlNum: 23);
 
-b[8] = (target: 2, control: 24);
-b[9] = (target: 2, control: 25);
-b[10] = (target: 2, control: 26);
-b[11] = (target: 2, control: 27);
+b[8] = (target: 2, ctlNum: 24);
+b[9] = (target: 2, ctlNum: 25);
+b[10] = (target: 2, ctlNum: 26);
+b[11] = (target: 2, ctlNum: 27);
 
-b[12] = (target: 3, control: 28);
-b[13] = (target: 3, control: 29);
-b[14] = (target: 3, control: 30);
-b[15] = (target: 3, control: 31);
+b[12] = (target: 3, ctlNum: 28);
+b[13] = (target: 3, ctlNum: 29);
+b[14] = (target: 3, ctlNum: 30);
+b[15] = (target: 3, ctlNum: 31);
 
 
 
-b[16] = (target: 4, control: 46);
-b[17] = (target: 4, control: 47);
-b[18] = (target: 4, control: 48);
-b[19] = (target: 4, control: 49);
+b[16] = (target: 4, ctlNum: 46);
+b[17] = (target: 4, ctlNum: 47);
+b[18] = (target: 4, ctlNum: 48);
+b[19] = (target: 4, ctlNum: 49);
 
-b[20] = (target: 5, control: 50);
-b[21] = (target: 5, control: 51);
-b[22] = (target: 5, control: 52);
-b[23] = (target: 5, control: 53);
+b[20] = (target: 5, ctlNum: 50);
+b[21] = (target: 5, ctlNum: 51);
+b[22] = (target: 5, ctlNum: 52);
+b[23] = (target: 5, ctlNum: 53);
 
-b[24] = (target: 6, control: 54);
-b[25] = (target: 6, control: 55);
-b[26] = (target: 6, control: 56);
-b[27] = (target: 6, control: 57);
+b[24] = (target: 6, ctlNum: 54);
+b[25] = (target: 6, ctlNum: 55);
+b[26] = (target: 6, ctlNum: 56);
+b[27] = (target: 6, ctlNum: 57);
 
-b[28] = (target: 7, control: 58);
-b[29] = (target: 7, control: 59);
-b[30] = (target: 7, control: 60);
-b[31] = (target: 7, control: 61);
+b[28] = (target: 7, ctlNum: 58);
+b[29] = (target: 7, ctlNum: 59);
+b[30] = (target: 7, ctlNum: 60);
+b[31] = (target: 7, ctlNum: 61);
 
-b[32] = (target: 8, control: 62);
+b[32] = (target: 8, ctlNum: 62);
 
 
 

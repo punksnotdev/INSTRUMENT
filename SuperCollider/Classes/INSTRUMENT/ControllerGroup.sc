@@ -25,7 +25,7 @@ ControllerGroup {
 	}
 
 	addControllerGroup {|type, name|
-		groups[name.asSymbol] = ControllerGroup(type,name,device,this);
+		^groups[name.asSymbol] = ControllerGroup(type,name,device,this);
 	}
 
 	addController{|name,id,channel|

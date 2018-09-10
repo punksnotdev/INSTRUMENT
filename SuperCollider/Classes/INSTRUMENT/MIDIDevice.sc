@@ -25,6 +25,7 @@ MIDIDevice {
 
     addControllerGroup {|type, name|
         groups[name] = ControllerGroup(type,name,this);
+        ^groups[name];
     }
 
     removeControllerGroup {|name|
