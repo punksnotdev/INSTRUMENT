@@ -112,8 +112,7 @@ SynthPlayer : Instrument
 
 			});
 			nodeID = synth.nodeID;
-			["nodeID",nodeID].postln;
-
+			
 		});
 
 

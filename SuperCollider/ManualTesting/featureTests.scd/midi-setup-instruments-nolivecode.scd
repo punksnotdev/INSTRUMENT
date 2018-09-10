@@ -19,32 +19,32 @@
 
 			synths = [
 				SynthPlayer(\bass0,\tranceBazz),
-				// SynthPlayer(\bass1,\tranceBazz2),
-				// SynthPlayer(\bass2,\tranceBazz3),
-				// SynthPlayer(\bass3,\tranceBazz2),
-				// SynthPlayer(\bass4,\tranceBazz),
-				// SynthPlayer(\bass5,\tranceBazz2),
-				// SynthPlayer(\bass6,\tranceBazz3),
-				// SynthPlayer(\bass7,\tranceBazz2)
+				SynthPlayer(\bass1,\tranceBazz2),
+				SynthPlayer(\bass2,\tranceBazz3),
+				SynthPlayer(\bass3,\tranceBazz2),
+				SynthPlayer(\bass4,\tranceBazz),
+				SynthPlayer(\bass5,\tranceBazz2),
+				SynthPlayer(\bass6,\tranceBazz3),
+				SynthPlayer(\bass7,\tranceBazz2)
 			];
 
 			synths[0].seq(\note,0,"0 3 2 7");
-			// synths[1].seq(\note,0,"10 13 12 19",[\speed,1/8]);
-			// synths[2].seq(\note,0," 0 8  13 12  19",[\speed,1/8]);
-			// synths[3].seq(\note,0,"  0 8  13 12  19",[\speed,1/6]);
-			// synths[4].seq(\note,0,"   0 8  13 12  19",[\speed,11/2]);
-			// synths[5].seq(\note,0,"    0 8  13 12  19",[\speed,11/6]);
-			// synths[6].seq(\note,0,"     0 8  13 12  19",[\speed,11/2]);
-			// synths[7].seq(\note,0,"      0 8  13 12  19",[\speed,1/4]);
+			synths[1].seq(\note,0,"10 13 12 19",[\speed,1/8]);
+			synths[2].seq(\note,0," 0 8  13 12  19",[\speed,1/8]);
+			synths[3].seq(\note,0,"  0 8  13 12  19",[\speed,1/6]);
+			synths[4].seq(\note,0,"   0 8  13 12  19",[\speed,1/2]);
+			synths[5].seq(\note,0,"    0 8  13 12  19",[\speed,1/6]);
+			synths[6].seq(\note,0,"     0 8  13 12  19",[\speed,1/2]);
+			synths[7].seq(\note,0,"      0 8  13 12  19",[\speed,1/4]);
 			//
-			// synths[0].octave=4;
-			// synths[1].octave=4;
-			// synths[2].octave=4;
-			// synths[3].octave=4;
-			// synths[4].octave=4;
-			// synths[5].octave=3;
-			// synths[6].octave=3;
-			// synths[7].octave=3;
+			synths[0].octave=5;
+			synths[1].octave=4;
+			synths[2].octave=6;
+			synths[3].octave=2;
+			synths[4].octave=4;
+			synths[5].octave=3;
+			synths[6].octave=3;
+			synths[7].octave=3;
 
 
 			MIDIClient.sources.collect({|device|
