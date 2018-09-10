@@ -1,10 +1,12 @@
 (
+
+	var midiDevice;
+	var midiDeviceName = "MIDI Mix";
 	s.boot;
 
 	s.doWhenBooted({
 
 		var synths;
-
 		Tdef(\doTest, { 1.do{
 
 			i=INSTRUMENT();
@@ -13,42 +15,48 @@
 
 			i.midi=true;
 
-			4.wait;
+			2.wait;
 
 			synths = [
 				SynthPlayer(\bass0,\tranceBazz),
-				SynthPlayer(\bass1,\tranceBazz2),
-				SynthPlayer(\bass2,\tranceBazz3),
-				SynthPlayer(\bass3,\tranceBazz2),
-				SynthPlayer(\bass4,\tranceBazz),
-				SynthPlayer(\bass5,\tranceBazz2),
-				SynthPlayer(\bass6,\tranceBazz3),
-				SynthPlayer(\bass7,\tranceBazz2)
+				// SynthPlayer(\bass1,\tranceBazz2),
+				// SynthPlayer(\bass2,\tranceBazz3),
+				// SynthPlayer(\bass3,\tranceBazz2),
+				// SynthPlayer(\bass4,\tranceBazz),
+				// SynthPlayer(\bass5,\tranceBazz2),
+				// SynthPlayer(\bass6,\tranceBazz3),
+				// SynthPlayer(\bass7,\tranceBazz2)
 			];
 
 			synths[0].seq(\note,0,"0 3 2 7");
-			synths[1].seq(\note,0,"10 13 12 19",[\speed,8]);
-			synths[2].seq(\note,0,"0 8  13 12  19",[\speed,8]);
-			synths[3].seq(\note,0,"0 8  13 12  19",[\speed,6]);
-			synths[4].seq(\note,0,"0 8  13 12  19",[\speed,12]);
-			synths[5].seq(\note,0,"0 8  13 12  19",[\speed,16]);
-			synths[6].seq(\note,0,"0 8  13 12  19",[\speed,12]);
-			synths[7].seq(\note,0,"0 8  13 12  19",[\speed,4]);
+			// synths[1].seq(\note,0,"10 13 12 19",[\speed,1/8]);
+			// synths[2].seq(\note,0," 0 8  13 12  19",[\speed,1/8]);
+			// synths[3].seq(\note,0,"  0 8  13 12  19",[\speed,1/6]);
+			// synths[4].seq(\note,0,"   0 8  13 12  19",[\speed,11/2]);
+			// synths[5].seq(\note,0,"    0 8  13 12  19",[\speed,11/6]);
+			// synths[6].seq(\note,0,"     0 8  13 12  19",[\speed,11/2]);
+			// synths[7].seq(\note,0,"      0 8  13 12  19",[\speed,1/4]);
+			//
+			// synths[0].octave=4;
+			// synths[1].octave=4;
+			// synths[2].octave=4;
+			// synths[3].octave=4;
+			// synths[4].octave=4;
+			// synths[5].octave=3;
+			// synths[6].octave=3;
+			// synths[7].octave=3;
 
-			synths[0].octave=4;
-			synths[1].octave=4;
-			synths[2].octave=4;
-			synths[3].octave=4;
-			synths[4].octave=4;
-			synths[5].octave=3;
-			synths[6].octave=3;
-			synths[7].octave=3;
 
+			MIDIClient.sources.collect({|device|
+				if( device.device == midiDeviceName, {
+					midiDevice = device;
+				});
+			});
 
+			MIDIIn.connect(0, midiDevice);
 
-			MIDIIn.connect(0, MIDIClient.sources[3] );
 			m = i.controllerManager.midi;
-			m.addDevice( MIDIClient.sources[3] );
+			m.addDevice( midiDevice );
 
 			m = ();
 

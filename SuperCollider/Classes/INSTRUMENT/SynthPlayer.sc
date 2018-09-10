@@ -1,6 +1,10 @@
 SynthPlayer : Instrument
 {
+	var group;
+	var groupID;
 
+	var nodeID;
+	var nodeIDs;
 	var <synthdef;
 
 	var synth_parameters;
@@ -15,6 +19,13 @@ SynthPlayer : Instrument
 	}
 
 	init{|name_,graph_,synthdef_|
+
+		nodeIDs=IdentityDictionary.new;
+
+		group = Group.new;
+		group.register;
+		groupID = group.nodeID;
+
 		if( name_.notNil && synthdef_.notNil, {
 			// [name_,synthdef_].postln;
 
@@ -50,16 +61,59 @@ SynthPlayer : Instrument
 	createSynth{|parameters|
 
 		if( synthdef != \r, {
-			if(synth.notNil, {
-				synth.release;
-				// synth = nil;
-			}, {});
+
+			var s = Server.local;
+
+				// clean dead synths' id
+				// if( synths.isKindOf(List), {
+					var removeKey;
+					synths.collect({|synth_,key|
+						if( synth_.isPlaying == false, {
+							nodeIDs[synth_.nodeID]=false;
+							nodeID=synth_.nodeID;
+							synth_.free;
+							removeKey = key;
+						});
+					});
+					if( removeKey.notNil,{
+						synths.removeAt( removeKey );
+					}, {
+						nodeID = nil;
+					});
+				// });
+
+				if( nodeID.isNil, {
+
+					var idIndex = nil;
+
+					nodeIDs.collect({|id_set,key|
+						if( id_set==false, { idIndex=key });
+					});
+
+					if(idIndex.notNil, {
+						nodeID = idIndex;
+					}, {
+						nodeID = s.nextNodeID;
+					});
+
+				});
 
 			if( fxSynth.isKindOf(Synth), {
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
+				synth.register;
 			}, {
-				synth = Synth( synthdef.asSymbol, parameters );
+
+				synth = Synth.basicNew( synthdef.asSymbol, s, nodeID );
+				synth.register;
+				synths.add(synth);
+				nodeIDs[nodeID]=true;
+				// [[\out,fxBus]++parameters].postln;
+				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
+				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
+
 			});
+			nodeID = synth.nodeID;
+			["nodeID",nodeID].postln;
 
 		});
 
@@ -205,7 +259,7 @@ SynthPlayer : Instrument
 	set {|parameter,value|
 
 		synth_parameters[parameter] = value;
-		synth.set( parameter, value );
+		// synth.set( parameter, value );
 	}
 
 

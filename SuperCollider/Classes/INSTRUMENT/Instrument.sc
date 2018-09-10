@@ -2,6 +2,7 @@ Instrument : Sequenceable
 {
 
 	var <>synth;
+	var <>synths;
 	var <>volume;
 	var <>octave;
 
@@ -15,6 +16,7 @@ Instrument : Sequenceable
 		super.init(name_,graph_);
 		volume = 1;
 		octave = 4;
+		synths = List.new;
 
 	}
 
