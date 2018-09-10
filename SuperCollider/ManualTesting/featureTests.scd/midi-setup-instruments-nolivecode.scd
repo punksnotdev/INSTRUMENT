@@ -65,7 +65,6 @@
 				];
 
 				var ctlIndex;
-				["channelIndex",channelIndex,key].postln;
 
 				channel = i.midi.midi_mix.addControllerGroup(\channel,key);
 
