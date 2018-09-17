@@ -21,7 +21,7 @@ m = ();
 m.piano=i.midi.usb_axiom_25.groups.piano.controllers.piano;
 //
 //
-z = SynthPlayer(\bass,\tranceBazz);
+z = SynthPlayer(\bass,\bassSmooth, \mono);
 // z.seq(\note,0,"0 3 2 7");
 // y = SynthPlayer(\bass2,\tranceBazz);
 // y.seq(\note,0,"10 13 12 19",[\speed,2]);

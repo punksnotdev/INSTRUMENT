@@ -6,6 +6,7 @@ SynthPlayer : Instrument
 	var nodeID;
 	var nodeIDs;
 	var <synthdef;
+	var <>mode;
 
 	var synth_parameters;
 	var fx_parameters;
@@ -14,17 +15,24 @@ SynthPlayer : Instrument
 	var <fx;
 	var fxBus;
 
-	*new{|name_,synthdef_|
-		^super.new.init(name_,this.graph,synthdef_);
+	var pressedKeys;
+
+	var currentPressedKey;
+	var lastPressedKey;
+
+	*new{|name_,synthdef_,mode_=nil|
+		^super.new.init(name_,this.graph,synthdef_,mode_);
 	}
 
-	init{|name_,graph_,synthdef_|
+	init{|name_,graph_,synthdef_,mode_=nil|
 
 		nodeIDs=IdentityDictionary.new;
 
 		group = Group.new;
 		group.register;
 		groupID = group.nodeID;
+
+		mode = mode_;
 
 		if( name_.notNil && synthdef_.notNil, {
 			// [name_,synthdef_].postln;
@@ -43,6 +51,9 @@ SynthPlayer : Instrument
 			super.init(name_,graph_);
 
 		});
+
+		pressedKeys = IdentityDictionary.new;
+
 	}
 
 	synthdef_{|synthdef_|
@@ -157,27 +168,148 @@ SynthPlayer : Instrument
 				// if is Event, get params
 				var event = value;
 				var amp = event.amplitude;
-
 				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
 					var computed_params;
 					amp = amp * synth_parameters[\amp];
 
 					computed_params = synth_parameters.copy;
 					computed_params.removeAt(\amp);
+					if( amp.asFloat > 0, {
 
-					this.createSynth([
-						\t_trig,1,
-						\freq,((octave*12)+event.val).midicps,
-						\note,(octave*12)+event.val,
-						\amp, amp
-						]++this.parameters_array(computed_params));
+						switch(mode,
+							\poly, {
+
+							this.createSynth([
+								\t_trig,1,
+								\freq,((octave*12)+event.val).midicps,
+								\note,(octave*12)+event.val,
+								\amp, amp
+								]++this.parameters_array(computed_params)
+							);
+
+							},
+							\mono, {
+								pressedKeys[event.val] = amp;
+
+								if( synth.isPlaying, {
+
+									synth.set(\freq,event.val.midicps);
+									synth.set(\amp,amp);
+									synth.set(\gate,1);
+
+								}, {
+
+									this.createSynth([
+										\t_trig,1,
+										\freq,((octave*12)+event.val).midicps,
+										\note,(octave*12)+event.val,
+										\amp, amp
+										]++this.parameters_array(computed_params)
+									);
+
+								});
+
+								if( currentPressedKey.notNil, {
+									lastPressedKey = currentPressedKey;
+								}, {
+									lastPressedKey = nil;
+								});
+
+								currentPressedKey = event.val;
+
+							}
+						);
+
+
+					}, {
+
+						switch( mode,
+							\mono, {
+								pressedKeys.removeAt(event.val);
+
+								if(pressedKeys.size==0, {
+
+									synth.set(\gate,0);
+									lastPressedKey = nil;
+								});
+							}
+						);
+
+					});
+
 				}, {
-					this.createSynth([
-						\t_trig,1,
-						\freq,((octave*12)+event.val).midicps,
-						\note,(octave*12)+event.val,
-						\amp, amp
-						]++this.parameters_array(synth_parameters));
+
+					if( amp.asFloat > 0, {
+
+						switch(mode,
+							\poly, {
+
+							this.createSynth([
+								\t_trig,1,
+								\freq,((octave*12)+event.val).midicps,
+								\note,(octave*12)+event.val,
+								\amp, amp
+								]++this.parameters_array(synth_parameters));
+
+							},
+							\mono, {
+
+								if( synth.isPlaying, {
+
+									pressedKeys[event.val] = amp;
+
+									synth.set(\freq,event.val.midicps);
+									synth.set(\amp,amp);
+
+								}, {
+
+									pressedKeys[event.val] = amp;
+
+									this.createSynth([
+										\t_trig,1,
+										\freq,((octave*12)+event.val).midicps,
+										\note,(octave*12)+event.val,
+										\amp, amp
+									]++this.parameters_array(synth_parameters));
+
+								});
+
+								if( currentPressedKey.notNil, {
+									lastPressedKey = currentPressedKey;
+								}, {
+									lastPressedKey = nil;
+								});
+
+								currentPressedKey = event.val;
+
+							}
+						);
+
+
+					}, {
+
+
+						switch( mode,
+							\mono, {
+								pressedKeys.removeAt(event.val);
+
+								if(pressedKeys.size<=0, {
+
+									synth.release;
+									lastPressedKey = nil;
+
+								}, {
+
+									synth.set(\freq,lastPressedKey.midicps);
+
+								});
+
+							}
+						);
+
+					});
+
+
 				});
 
 
