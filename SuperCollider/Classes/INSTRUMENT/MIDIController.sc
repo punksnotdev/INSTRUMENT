@@ -21,6 +21,7 @@ MIDIController {
 	init {|midi_, type_, controllerId_, channel_, sourceId_ |
 
 		midi = midi_;
+		type = type_;
 		protocol = "midi";
 
 		callbacks = List.new;
@@ -54,8 +55,8 @@ MIDIController {
 
 				func = MIDIFunc.noteOn(
 					{arg ...args;
-						["note value",args[1],args[0]].postln;
-						// this.set(args[0])
+
+						this.set(args[1],args[0]);
 
 					}, controllerId, channel, sourceId
 				);
@@ -64,8 +65,8 @@ MIDIController {
 
 				func = MIDIFunc.noteOff(
 					{arg ...args;
-						["note value",args[1],args[0]].postln;
-						// this.set(0)
+
+						this.set(args[1],args[0]);
 
 					}, controllerId, channel, sourceId
 				);

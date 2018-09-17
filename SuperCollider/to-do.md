@@ -1,17 +1,16 @@
 # to do
 
-[ ] midi ctl in
+[ ] SynthPlayer: Poly vs Mono
+
 [ ] z.loop(start, end)
-[ ] osc send
-
-
-
-
 [ ] libreria
 [ ] seqtrackspeed & paramtrackspeed
 
 # Listos
 
+[x] osc send
+[x] midi note in
+[x] midi ctl in
 [x] seq canons
 [x] secuenciar distintos parametros paralelamente
 [x] integrar con proxyspace

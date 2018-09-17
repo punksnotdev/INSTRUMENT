@@ -52,18 +52,33 @@ ControllerManager {
 			var range = controller.range;
 			var protocol = controller.protocol;
 
-			["controller type:", controller.type].postln;
+			var type = controller.controller.type;
 
-			// outRange = (range[1] - range[0]).abs;
-			//
-			// minOutVal = range[0];
-			//
-			// outValue = minOutVal + outRange*param1, param2 ;
-			//
-			// target.set(
-			// 	parameter,
-			// 	outValue
-			// );
+			[type,param1,param2].postln;
+			
+			switch( type,
+				\cc, {
+					var value = param1 / 127;
+
+					outRange = (range[1] - range[0]).abs;
+
+					minOutVal = range[0];
+
+					outValue = minOutVal + outRange * value;
+
+					target.set(
+						parameter,
+						outValue
+					);
+
+				},
+
+				\note, {
+					target.set(\note,(val:param1, amplitude: param2/127));
+				}
+
+			);
+
 
 		});
 

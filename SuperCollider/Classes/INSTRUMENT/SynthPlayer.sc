@@ -112,7 +112,7 @@ SynthPlayer : Instrument
 
 			});
 			nodeID = synth.nodeID;
-			
+
 		});
 
 
@@ -256,8 +256,12 @@ SynthPlayer : Instrument
 
 	set {|parameter,value|
 
-		synth_parameters[parameter] = value;
-		// synth.set( parameter, value );
+		if( parameter == \note, {
+			this.trigger( parameter, value );
+		}, {
+			synth_parameters[parameter] = value;
+		});
+		synth.set( parameter, value );
 	}
 
 
