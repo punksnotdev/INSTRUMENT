@@ -231,6 +231,7 @@ SynthPlayer : Instrument
 
 									synth.set(\gate,0);
 									lastPressedKey = nil;
+									currentPressedKey = nil;
 								});
 							}
 						);
@@ -296,6 +297,7 @@ SynthPlayer : Instrument
 								if(pressedKeys.size<=0, {
 
 									synth.release;
+									currentPressedKey = nil;
 									lastPressedKey = nil;
 
 								}, {
