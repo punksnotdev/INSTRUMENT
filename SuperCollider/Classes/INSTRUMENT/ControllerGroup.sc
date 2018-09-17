@@ -28,7 +28,7 @@ ControllerGroup {
 		^groups[name.asSymbol] = ControllerGroup(type,name,device,this);
 	}
 
-	addController{|name,id,channel|
+	addController{|name,id=nil,channel=nil|
 		var newController;
 		var key = '';
 

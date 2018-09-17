@@ -36,14 +36,11 @@ MIDIDevice {
 
 
 
-	set {|source, value|
+	set {|source, param1, param2|
+
         var key = source.key;
-		var normalizedValue;
 
-        normalizedValue = (value / 127).asFloat;
-
-
-        ^midi.set(source,normalizedValue);
+        ^midi.set(source,param1,param2);
 
 	}
 

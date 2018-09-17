@@ -27,9 +27,9 @@ MIDIManager {
     }
 
 
-    set {|key,normalizedValue|
+    set {|key,param1,param2|
 
-        ^controllerManager.set(key,normalizedValue);
+        ^controllerManager.set(key,param1,param2);
 
     }
 

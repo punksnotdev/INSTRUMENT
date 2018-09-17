@@ -34,7 +34,7 @@ ControllerManager {
 	}
 
 
-	set {|source, value|
+	set {|source, param1, param2 |
 
 		var min, max;
 		var outRange, minOutVal;
@@ -52,18 +52,18 @@ ControllerManager {
 			var range = controller.range;
 			var protocol = controller.protocol;
 
+			["controller type:", controller.type].postln;
 
-
-			outRange = (range[1] - range[0]).abs;
-
-			minOutVal = range[0];
-
-			outValue = minOutVal + outRange*value;
-
-			target.set(
-				parameter,
-				outValue
-			);
+			// outRange = (range[1] - range[0]).abs;
+			//
+			// minOutVal = range[0];
+			//
+			// outValue = minOutVal + outRange*param1, param2 ;
+			//
+			// target.set(
+			// 	parameter,
+			// 	outValue
+			// );
 
 		});
 

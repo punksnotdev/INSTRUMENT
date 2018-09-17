@@ -37,7 +37,6 @@ MIDIController {
 		switch(messageType,
 			\cc, {
 
-
 				var func = MIDIFunc.cc(
 					{arg ...args;
 
@@ -49,8 +48,32 @@ MIDIController {
 				callbacks.add( func );
 
 			},
-			\noteOn, { ("received: "++messageType).postln; },
-			\noteOff, { ("received: "++messageType).postln; },
+			\note, {
+
+				var func;
+
+				func = MIDIFunc.noteOn(
+					{arg ...args;
+						["note value",args[1],args[0]].postln;
+						// this.set(args[0])
+
+					}, controllerId, channel, sourceId
+				);
+
+				callbacks.add( func );
+
+				func = MIDIFunc.noteOff(
+					{arg ...args;
+						["note value",args[1],args[0]].postln;
+						// this.set(0)
+
+					}, controllerId, channel, sourceId
+				);
+
+				callbacks.add( func );
+
+
+			},
 			{ "message type not recognized".postln; }
 		);
 
@@ -62,9 +85,9 @@ MIDIController {
 	}
 
 
-	set {|value|
+	set {|param1,param2|
 
-		listener.set(this, value);
+		listener.set(this, param1, param2);
 
 	}
 
