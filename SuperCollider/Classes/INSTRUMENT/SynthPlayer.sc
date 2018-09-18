@@ -32,7 +32,12 @@ SynthPlayer : Instrument
 		group.register;
 		groupID = group.nodeID;
 
-		mode = mode_;
+
+		if( mode_.notNil, {
+			mode = mode_;
+		}, {
+			mode = \poly;
+		});
 
 		if( name_.notNil && synthdef_.notNil, {
 			// [name_,synthdef_].postln;
@@ -75,8 +80,8 @@ SynthPlayer : Instrument
 
 			var s = Server.local;
 
+			// if( synths.isKindOf(List), {
 				// clean dead synths' id
-				// if( synths.isKindOf(List), {
 					var removeKey;
 					synths.collect({|synth_,key|
 						if( synth_.isPlaying == false, {
@@ -169,140 +174,139 @@ SynthPlayer : Instrument
 				var event = value;
 				var amp = event.amplitude;
 				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-					var computed_params;
-					amp = amp * synth_parameters[\amp];
-
-					computed_params = synth_parameters.copy;
-					computed_params.removeAt(\amp);
-					if( amp.asFloat > 0, {
-
-						switch(mode,
-							\poly, {
-
-							this.createSynth([
-								\t_trig,1,
-								\freq,((octave*12)+event.val).midicps,
-								\note,(octave*12)+event.val,
-								\amp, amp
-								]++this.parameters_array(computed_params)
-							);
-
-							},
-							\mono, {
-								pressedKeys[event.val] = amp;
-
-								if( synth.isPlaying, {
-
-									synth.set(\freq,event.val.midicps);
-									synth.set(\amp,amp);
-									synth.set(\gate,1);
-
-								}, {
-
-									this.createSynth([
-										\t_trig,1,
-										\freq,((octave*12)+event.val).midicps,
-										\note,(octave*12)+event.val,
-										\amp, amp
-										]++this.parameters_array(computed_params)
-									);
-
-								});
-
-								if( currentPressedKey.notNil, {
-									lastPressedKey = currentPressedKey;
-								}, {
-									lastPressedKey = nil;
-								});
-
-								currentPressedKey = event.val;
-
-							}
-						);
-
-
-					}, {
-
-						switch( mode,
-							\mono, {
-								pressedKeys.removeAt(event.val);
-
-								if(pressedKeys.size==0, {
-
-									synth.set(\gate,0);
-									lastPressedKey = nil;
-									currentPressedKey = nil;
-								});
-							}
-						);
-
-					});
+					// var computed_params;
+					// amp = amp * synth_parameters[\amp];
+					//
+					// computed_params = synth_parameters.copy;
+					// computed_params.removeAt(\amp);
+					// if( amp.asFloat > 0, {
+					//
+					// 	switch(mode,
+					// 		\poly, {
+					//
+					// 		this.createSynth([
+					// 			\t_trig,1,
+					// 			\freq,((octave*12)+event.val).midicps,
+					// 			\note,(octave*12)+event.val,
+					// 			\amp, amp
+					// 			]++this.parameters_array(computed_params)
+					// 		);
+					//
+					// 		},
+					// 		\mono, {
+					// 			pressedKeys[event.val] = amp;
+					//
+					// 			if( synth.isPlaying, {
+					//
+					// 				synth.set(\freq,event.val.midicps);
+					// 				synth.set(\amp,amp);
+					// 				synth.set(\gate,1);
+					//
+					// 			}, {
+					//
+					// 				this.createSynth([
+					// 					\t_trig,1,
+					// 					\freq,((octave*12)+event.val).midicps,
+					// 					\note,(octave*12)+event.val,
+					// 					\amp, amp
+					// 					]++this.parameters_array(computed_params)
+					// 				);
+					//
+					// 			});
+					//
+					// 			if( currentPressedKey.notNil, {
+					// 				lastPressedKey = currentPressedKey;
+					// 			}, {
+					// 				lastPressedKey = nil;
+					// 			});
+					//
+					// 			currentPressedKey = event.val;
+					//
+					// 		}
+					// 	);
+					//
+					//
+					// }, {
+					//
+					// 	switch( mode,
+					// 		\mono, {
+					// 			pressedKeys.removeAt(event.val);
+					//
+					// 			if(pressedKeys.size==0, {
+					//
+					// 				synth.set(\gate,0);
+					// 				lastPressedKey = nil;
+					// 				currentPressedKey = nil;
+					// 			});
+					// 		}
+					// 	);
+					//
+					// });
 
 				}, {
 
 					if( amp.asFloat > 0, {
 
 						switch(mode,
+
 							\poly, {
 
-							this.createSynth([
-								\t_trig,1,
-								\freq,((octave*12)+event.val).midicps,
-								\note,(octave*12)+event.val,
-								\amp, amp
-								]++this.parameters_array(synth_parameters));
+								this.createSynth([
+									\t_trig,1,
+									\freq,((octave*12)+event.val).midicps,
+									\note,(octave*12)+event.val,
+									\amp, amp
+									]++this.parameters_array(synth_parameters)
+								);
 
 							},
+
 							\mono, {
 
-								if( synth.isPlaying, {
+								if( synth.notNil, {
 
-									pressedKeys[event.val] = amp;
+									if( synth.isPlaying == false, {
+										synth = nil;
+									});
+								});
 
-									synth.set(\freq,event.val.midicps);
-									synth.set(\amp,amp);
-
-								}, {
-
-									pressedKeys[event.val] = amp;
+								if( synth.isNil, {
 
 									this.createSynth([
 										\t_trig,1,
 										\freq,((octave*12)+event.val).midicps,
 										\note,(octave*12)+event.val,
 										\amp, amp
-									]++this.parameters_array(synth_parameters));
+										]++this.parameters_array(synth_parameters)
+									);
 
-								});
-
-								if( currentPressedKey.notNil, {
-									lastPressedKey = currentPressedKey;
 								}, {
-									lastPressedKey = nil;
-								});
 
-								currentPressedKey = event.val;
+									pressedKeys[event.val] = amp;
+
+									synth.set(\gate,1);
+									synth.set(\freq,event.val.midicps);
+									synth.set(\amp,amp);
+
+								});
 
 							}
 						);
 
 
-					}, {
+					}, { // note off
 
 
 						switch( mode,
+
 							\mono, {
+
 								pressedKeys.removeAt(event.val);
 
 								if(pressedKeys.size<=0, {
 
-									synth.release;
-									currentPressedKey = nil;
-									lastPressedKey = nil;
-
-								}, {
-
-									synth.set(\freq,lastPressedKey.midicps);
+									synth.set(\gate,0);
+									pressedKeys = IdentityDictionary.new;
 
 								});
 

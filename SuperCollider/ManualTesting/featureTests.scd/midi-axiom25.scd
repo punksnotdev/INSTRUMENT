@@ -1,48 +1,64 @@
 s.boot;
-(
+s.doWhenBooted({
+Tdef(\start, { 1.do {
 	i=INSTRUMENT();
 
 	i.midi=true;
 
-)
-(
+3.wait;
+
 
 MIDIIn.connect(0, MIDIClient.sources[3] );
 m = i.controllerManager.midi;
 m.addDevice( MIDIClient.sources[3] );
 
 i.midi.usb_axiom_25.addControllerGroup(\note,\piano);
+i.midi.usb_axiom_25.groups.piano.addController(\piano,nil,0);
 
-i.midi.usb_axiom_25.groups.piano.addController(\piano);
+i.midi.usb_axiom_25.addControllerGroup(\note,\pads);
+i.midi.usb_axiom_25.groups.pads.addController(\pads,nil,9);
+
+i.midi.usb_axiom_25.addControllerGroup(\cc,\knobsA);
+
+i.midi.usb_axiom_25.groups.knobsA.addController(\knob1,1);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knob2,2);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knob3,3);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knob4,4);
+
+
+i.midi.usb_axiom_25.addControllerGroup(\cc,\knobsB);
+
+i.midi.usb_axiom_25.groups.knobsB.addController(\knob1,1);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knob2,2);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knob3,3);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knob4,4);
+
 //
 //
 m = ();
 //
 m.piano=i.midi.usb_axiom_25.groups.piano.controllers.piano;
+m.pads=i.midi.usb_axiom_25.groups.pads.controllers.pads;
+
+m.knob1=i.midi.usb_axiom_25.groups.knobsA.controllers.knob1;
+m.knob2=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
+m.knob3=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
+m.knob4=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
 //
 //
-z = SynthPlayer(\bass,\bassSmooth, \mono);
-// z.seq(\note,0,"0 3 2 7");
-// y = SynthPlayer(\bass2,\tranceBazz);
-// y.seq(\note,0,"10 13 12 19",[\speed,2]);
-//
-// a=[z,y];
-// p = [ [\att,[0,1]], [\rel,[
-// 0.3,3]], [\rq,[0.05,0.1]] ];
-//
-//
+z = SynthPlayer(\bass,\mono_bassSmooth, \mono);
+y = SynthPlayer(\perc,\dist);
+
 i.map( m.piano, z, \note );
-// i.map( m.channel2.faders[0], a[1], \amp, [0,1] );
-//
-// m.channel1.knobs.collect({|ctl,j|
-// 	i.map(ctl,a[0],p[j][0],p[j][1])
-// });
-//
-// m.channel2.knobs.collect({|ctl,j|
-// 	i.map(ctl,a[1],p[j][0],p[j][1])
-// });
-//
-//
+i.map( m.pads, y, \note );
+
+i.map( m.knob1, z, \att );
+i.map( m.knob2, z, \rel );
+i.map( m.knob3, z, \cutoff );
+i.map( m.knob4, z, \q );
+
 z.octave=0;
 
-)
+} }).play;
+
+});
