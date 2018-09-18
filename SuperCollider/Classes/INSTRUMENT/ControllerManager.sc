@@ -54,17 +54,24 @@ ControllerManager {
 
 			var type = controller.controller.type;
 
-			[type,param1,param2].postln;
-			
+
 			switch( type,
 				\cc, {
+
 					var value = param1 / 127;
+					if( range.notNil, {
 
-					outRange = (range[1] - range[0]).abs;
+						outRange = (range[1] - range[0]).abs;
 
-					minOutVal = range[0];
+						minOutVal = range[0];
 
-					outValue = minOutVal + outRange * value;
+						outValue = minOutVal + outRange * value;
+
+					}, {
+
+						outValue = value;
+
+					});
 
 					target.set(
 						parameter,

@@ -1,6 +1,5 @@
 # to do
 
-[ ] SynthPlayer: Poly vs Mono
 
 [ ] z.loop(start, end)
 [ ] libreria
@@ -8,6 +7,7 @@
 
 # Listos
 
+[x] SynthPlayer: Poly vs Mono
 [x] osc send
 [x] midi note in
 [x] midi ctl in

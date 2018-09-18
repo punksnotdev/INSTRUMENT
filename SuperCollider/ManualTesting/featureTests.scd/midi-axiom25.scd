@@ -20,42 +20,51 @@ i.midi.usb_axiom_25.groups.pads.addController(\pads,nil,9);
 
 i.midi.usb_axiom_25.addControllerGroup(\cc,\knobsA);
 
-i.midi.usb_axiom_25.groups.knobsA.addController(\knob1,1);
-i.midi.usb_axiom_25.groups.knobsA.addController(\knob2,2);
-i.midi.usb_axiom_25.groups.knobsA.addController(\knob3,3);
-i.midi.usb_axiom_25.groups.knobsA.addController(\knob4,4);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knobA1,1);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knobA2,2);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knobA3,3);
+i.midi.usb_axiom_25.groups.knobsA.addController(\knobA4,4);
 
 
 i.midi.usb_axiom_25.addControllerGroup(\cc,\knobsB);
 
-i.midi.usb_axiom_25.groups.knobsB.addController(\knob1,1);
-i.midi.usb_axiom_25.groups.knobsB.addController(\knob2,2);
-i.midi.usb_axiom_25.groups.knobsB.addController(\knob3,3);
-i.midi.usb_axiom_25.groups.knobsB.addController(\knob4,4);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knobB1,5);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knobB2,6);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knobB3,7);
+i.midi.usb_axiom_25.groups.knobsB.addController(\knobB4,8);
 
-//
-//
 m = ();
-//
 m.piano=i.midi.usb_axiom_25.groups.piano.controllers.piano;
 m.pads=i.midi.usb_axiom_25.groups.pads.controllers.pads;
 
-m.knob1=i.midi.usb_axiom_25.groups.knobsA.controllers.knob1;
-m.knob2=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
-m.knob3=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
-m.knob4=i.midi.usb_axiom_25.groups.knobsA.controllers.knob2;
-//
-//
+
+m.knobA1=i.midi.usb_axiom_25.groups.knobsA.controllers.knobA1;
+m.knobA2=i.midi.usb_axiom_25.groups.knobsA.controllers.knobA2;
+m.knobA3=i.midi.usb_axiom_25.groups.knobsA.controllers.knobA3;
+m.knobA4=i.midi.usb_axiom_25.groups.knobsA.controllers.knobA4;
+
+
+m.knobB1=i.midi.usb_axiom_25.groups.knobsB.controllers.knobB1;
+m.knobB2=i.midi.usb_axiom_25.groups.knobsB.controllers.knobB2;
+m.knobB3=i.midi.usb_axiom_25.groups.knobsB.controllers.knobB3;
+m.knobB4=i.midi.usb_axiom_25.groups.knobsB.controllers.knobB4;
+
+
 z = SynthPlayer(\bass,\mono_bassSmooth, \mono);
 y = SynthPlayer(\perc,\dist);
 
 i.map( m.piano, z, \note );
 i.map( m.pads, y, \note );
 
-i.map( m.knob1, z, \att );
-i.map( m.knob2, z, \rel );
-i.map( m.knob3, z, \cutoff );
-i.map( m.knob4, z, \q );
+i.map( m.knobA1, z, \att,[0.01,2] );
+i.map( m.knobA2, z, \rel, [0.1,3] );
+i.map( m.knobA3, z, \q, [0.01,0.1] );
+i.map( m.knobA4, z, \legato, [0,2] );
+
+i.map( m.knobB1, y, \att,[0.01,2] );
+i.map( m.knobB2, y, \rel, [0.1,3] );
+i.map( m.knobB3, y, \q, [0.005,0.1] );
+i.map( m.knobB4, y, \gain, [1,4] );
 
 z.octave=0;
 
