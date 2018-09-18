@@ -54,7 +54,7 @@ ControllerManager {
 
 			var type = controller.controller.type;
 
-
+[type,param1].postln;
 			switch( type,
 				\cc, {
 
@@ -63,9 +63,16 @@ ControllerManager {
 
 						outRange = (range[1] - range[0]).abs;
 
-						minOutVal = range[0];
+						minOutVal = range[0].min(range[1]);
 
-						outValue = minOutVal + outRange * value;
+						if( range[0] > range[1] , {
+
+							outValue = minOutVal + (1 - (outRange * value) );
+
+						}, {
+
+							outValue = minOutVal + outRange * value;
+						});
 
 					}, {
 

@@ -174,82 +174,40 @@ SynthPlayer : Instrument
 				var event = value;
 				var amp = event.amplitude;
 				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-					// var computed_params;
-					// amp = amp * synth_parameters[\amp];
-					//
-					// computed_params = synth_parameters.copy;
-					// computed_params.removeAt(\amp);
-					// if( amp.asFloat > 0, {
-					//
-					// 	switch(mode,
-					// 		\poly, {
-					//
-					// 		this.createSynth([
-					// 			\t_trig,1,
-					// 			\freq,((octave*12)+event.val).midicps,
-					// 			\note,(octave*12)+event.val,
-					// 			\amp, amp
-					// 			]++this.parameters_array(computed_params)
-					// 		);
-					//
-					// 		},
-					// 		\mono, {
-					// 			pressedKeys[event.val] = amp;
-					//
-					// 			if( synth.isPlaying, {
-					//
-					// 				synth.set(\freq,event.val.midicps);
-					// 				synth.set(\amp,amp);
-					// 				synth.set(\gate,1);
-					//
-					// 			}, {
-					//
-					// 				this.createSynth([
-					// 					\t_trig,1,
-					// 					\freq,((octave*12)+event.val).midicps,
-					// 					\note,(octave*12)+event.val,
-					// 					\amp, amp
-					// 					]++this.parameters_array(computed_params)
-					// 				);
-					//
-					// 			});
-					//
-					// 			if( currentPressedKey.notNil, {
-					// 				lastPressedKey = currentPressedKey;
-					// 			}, {
-					// 				lastPressedKey = nil;
-					// 			});
-					//
-					// 			currentPressedKey = event.val;
-					//
-					// 		}
-					// 	);
-					//
-					//
-					// }, {
-					//
-					// 	switch( mode,
-					// 		\mono, {
-					// 			pressedKeys.removeAt(event.val);
-					//
-					// 			if(pressedKeys.size==0, {
-					//
-					// 				synth.set(\gate,0);
-					// 				lastPressedKey = nil;
-					// 				currentPressedKey = nil;
-					// 			});
-					// 		}
-					// 	);
-					//
-					// });
+					var computed_params;
+					amp = amp * synth_parameters[\amp];
 
-				}, {
+					computed_params = synth_parameters.copy;
+					computed_params.removeAt(\amp);
+					synth_parameters = computed_params;
+				});
 
-					if( amp.asFloat > 0, {
+				if( amp.asFloat > 0, {
 
-						switch(mode,
+					switch(mode,
 
-							\poly, {
+						\poly, {
+
+							this.createSynth([
+								\t_trig,1,
+								\freq,((octave*12)+event.val).midicps,
+								\note,(octave*12)+event.val,
+								\amp, amp
+								]++this.parameters_array(synth_parameters)
+							);
+
+						},
+
+						\mono, {
+
+							if( synth.notNil, {
+
+								if( synth.isPlaying == false, {
+									synth = nil;
+								});
+							});
+
+							if( synth.isNil, {
 
 								this.createSynth([
 									\t_trig,1,
@@ -259,64 +217,41 @@ SynthPlayer : Instrument
 									]++this.parameters_array(synth_parameters)
 								);
 
-							},
+							}, {
 
-							\mono, {
+								pressedKeys[event.val] = amp;
 
-								if( synth.notNil, {
+								synth.set(\gate,1);
+								synth.set(\freq,event.val.midicps);
+								synth.set(\amp,amp);
 
-									if( synth.isPlaying == false, {
-										synth = nil;
-									});
-								});
+							});
 
-								if( synth.isNil, {
-
-									this.createSynth([
-										\t_trig,1,
-										\freq,((octave*12)+event.val).midicps,
-										\note,(octave*12)+event.val,
-										\amp, amp
-										]++this.parameters_array(synth_parameters)
-									);
-
-								}, {
-
-									pressedKeys[event.val] = amp;
-
-									synth.set(\gate,1);
-									synth.set(\freq,event.val.midicps);
-									synth.set(\amp,amp);
-
-								});
-
-							}
-						);
+						}
+					);
 
 
-					}, { // note off
+				}, { // note off
 
 
-						switch( mode,
+					switch( mode,
 
-							\mono, {
+						\mono, {
 
-								pressedKeys.removeAt(event.val);
+							pressedKeys.removeAt(event.val);
 
-								if(pressedKeys.size<=0, {
+							if(pressedKeys.size<=0, {
 
-									synth.set(\gate,0);
-									pressedKeys = IdentityDictionary.new;
+								synth.set(\gate,0);
+								pressedKeys = IdentityDictionary.new;
 
-								});
+							});
 
-							}
-						);
-
-					});
-
+						}
+					);
 
 				});
+
 
 
 

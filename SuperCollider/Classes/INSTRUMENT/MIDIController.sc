@@ -35,13 +35,13 @@ MIDIController {
 
 	addResponder {|messageType, controllerId, channel, sourceId|
 
-
+messageType.postln;
 		switch(messageType,
 			\cc, {
 
 				var func = MIDIFunc.cc(
 					{arg ...args;
-args.postln;
+
 						this.set(args[0])
 
 					}, controllerId, channel, sourceId
