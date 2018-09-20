@@ -41,6 +41,9 @@
 	i.midi.usb_axiom_25.groups.ctlPads.addController(\ctlPad4,12);
 
 	m = ();
+
+	
+
 	m.piano=i.midi.usb_axiom_25.groups.piano.controllers.piano;
 	m.pads=i.midi.usb_axiom_25.groups.pads.controllers.pads;
 
@@ -88,7 +91,7 @@
 	// i.map( m.ctlPad4, y, \gain, [1,4] );
 
 	z.octave=0;
-	y.octave=5;
+	y.octave=2;
 
 	} }).play;
 
