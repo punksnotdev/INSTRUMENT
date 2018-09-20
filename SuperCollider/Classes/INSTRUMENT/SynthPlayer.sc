@@ -186,8 +186,6 @@ SynthPlayer : Instrument
 					use_synth_parameters = computed_params;
 				});
 
-["use", use_synth_parameters].postln;
-
 				if( amp.asFloat > 0, {
 
 					switch(mode,
@@ -225,11 +223,11 @@ SynthPlayer : Instrument
 
 							}, {
 
-								pressedKeys[event.val] = amp;
-
+								pressedKeys[event.val] = true;
+								["synth set", amp].postln;
+								synth.set(\amp,amp);
 								synth.set(\gate,1);
 								synth.set(\freq,event.val.midicps);
-								synth.set(\amp,amp);
 
 							});
 
@@ -332,7 +330,7 @@ SynthPlayer : Instrument
 	}
 
 	set {|parameter,value|
-		["Set:", name, parameter, value].postln;
+
 		if( parameter == \note, {
 			this.trigger( parameter, value );
 		}, {

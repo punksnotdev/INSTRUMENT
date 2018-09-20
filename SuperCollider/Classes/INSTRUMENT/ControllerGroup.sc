@@ -34,8 +34,6 @@ ControllerGroup {
 
 		key = device.slug;
 
-		["parent", parent].postln;
-
 		if( parent.notNil, {
 			if( parent.parent.notNil, {
 				key = key ++'_'++ parent.parent.name;
@@ -44,10 +42,10 @@ ControllerGroup {
 			key = key ++'_'++ parent.name;
 		});
 		// group name:
-		key = key ++'_'++name.toLower++'_'++controllers.size;
+		key = key ++'_'++name.asString.toLower++'_'++controllers.size;
 
 		// controller name:
-		key = key ++'_'++name_.toLower++'_'++controllers.size;
+		key = key ++'_'++name_.asString.toLower++'_'++controllers.size;
 
 		// convert to symbol
 		key = key.asSymbol;

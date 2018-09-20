@@ -138,7 +138,6 @@
 		i.map( m.ctlChan1.fader, z, \amp,[0,1]);
 		i.map( m.ctlChan2.fader, y, \amp,[0,1]);
 
-
 		z.octave=0;
 		y.octave=5;
 
