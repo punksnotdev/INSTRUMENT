@@ -120,7 +120,7 @@
 		m.ctlChan1.knobs.ctlGroup = m.ctlChan1.ctlGroup.addControllerGroup(\cc,\knobs);
 
 		m.ctlChan1.knobs.a = m.ctlChan1.knobs.ctlGroup.addController(\knob1,b[0].ctlNum,[0,1]);
-		m.ctlChan1.knobs.c = m.ctlChan1.knobs.ctlGroup.addController(\knob2,b[1].ctlNum,[0,1]);
+		m.ctlChan1.knobs.b = m.ctlChan1.knobs.ctlGroup.addController(\knob2,b[1].ctlNum,[0,1]);
 		m.ctlChan1.knobs.c = m.ctlChan1.knobs.ctlGroup.addController(\knob3,b[2].ctlNum,[0,1]);
 		m.ctlChan1.fader = m.ctlChan1.ctlGroup.addController(\fader,b[3].ctlNum,[0,1]);
 
@@ -131,17 +131,16 @@
 		m.ctlChan2.knobs.ctlGroup = m.ctlChan2.ctlGroup.addControllerGroup(\cc,\knobs);
 
 		m.ctlChan2.knobs.a = m.ctlChan2.knobs.ctlGroup.addController(\knob1,b[4].ctlNum,[0,1]);
-		m.ctlChan2.knobs.c = m.ctlChan2.knobs.ctlGroup.addController(\knob2,b[5].ctlNum,[0,1]);
+		m.ctlChan2.knobs.b = m.ctlChan2.knobs.ctlGroup.addController(\knob2,b[5].ctlNum,[0,1]);
 		m.ctlChan2.knobs.c = m.ctlChan2.knobs.ctlGroup.addController(\knob3,b[6].ctlNum,[0,1]);
 		m.ctlChan2.fader = m.ctlChan2.ctlGroup.addController(\fader,b[7].ctlNum,[0,1]);
-
 
 		i.map( m.ctlChan1.fader, z, \amp,[0,1]);
 		i.map( m.ctlChan2.fader, y, \amp,[0,1]);
 
 
 		z.octave=0;
-		y.octave=2;
+		y.octave=5;
 
 		} }).play;
 

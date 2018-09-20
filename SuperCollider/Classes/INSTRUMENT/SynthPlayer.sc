@@ -173,14 +173,20 @@ SynthPlayer : Instrument
 				// if is Event, get params
 				var event = value;
 				var amp = event.amplitude;
+				var use_synth_parameters;
+
+				use_synth_parameters = synth_parameters;
+
 				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
 					var computed_params;
 					amp = amp * synth_parameters[\amp];
 
 					computed_params = synth_parameters.copy;
 					computed_params.removeAt(\amp);
-					synth_parameters = computed_params;
+					use_synth_parameters = computed_params;
 				});
+
+["use", use_synth_parameters].postln;
 
 				if( amp.asFloat > 0, {
 
@@ -193,7 +199,7 @@ SynthPlayer : Instrument
 								\freq,((octave*12)+event.val).midicps,
 								\note,(octave*12)+event.val,
 								\amp, amp
-								]++this.parameters_array(synth_parameters)
+								]++this.parameters_array(use_synth_parameters)
 							);
 
 						},
@@ -214,7 +220,7 @@ SynthPlayer : Instrument
 									\freq,((octave*12)+event.val).midicps,
 									\note,(octave*12)+event.val,
 									\amp, amp
-									]++this.parameters_array(synth_parameters)
+									]++this.parameters_array(use_synth_parameters)
 								);
 
 							}, {
@@ -260,20 +266,18 @@ SynthPlayer : Instrument
 				if( value.val > 0 ) {
 
 					var amp = value.val;
+					var use_synth_parameters;
+					use_synth_parameters = synth_parameters;
 
 					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
 						var computed_params;
 						amp = amp * synth_parameters[\amp];
-
 						computed_params = synth_parameters.copy;
 						computed_params.removeAt(\amp);
-
-						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(computed_params));
-
-					}, {
-						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(synth_parameters));
+						use_synth_parameters = computed_params;
 					});
 
+					this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(use_synth_parameters));
 				}
 			},
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
@@ -328,12 +332,13 @@ SynthPlayer : Instrument
 	}
 
 	set {|parameter,value|
-
+		["Set:", name, parameter, value].postln;
 		if( parameter == \note, {
 			this.trigger( parameter, value );
 		}, {
 			synth_parameters[parameter] = value;
 		});
+
 		synth.set( parameter, value );
 	}
 

@@ -104,7 +104,6 @@ ControllerManager {
 
 		controlTargetMap.collect({| item, key|
 			if( ( item.target == target && item.parameter == parameter ), {
-				[item.target,item.parameter].postln;
 				mappingAlreadySetKey = key;
 			});
 		});

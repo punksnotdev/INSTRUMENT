@@ -28,34 +28,45 @@ ControllerGroup {
 		^groups[name.asSymbol] = ControllerGroup(type,name,device,this);
 	}
 
-	addController{|name,id=nil,channel=nil|
+	addController{|name_,id_=nil,channel_=nil|
 		var newController;
 		var key = '';
 
 		key = device.slug;
 
+		["parent", parent].postln;
+
 		if( parent.notNil, {
+			if( parent.parent.notNil, {
+				key = key ++'_'++ parent.parent.name;
+			});
+
 			key = key ++'_'++ parent.name;
 		});
+		// group name:
+		key = key ++'_'++name.toLower++'_'++controllers.size;
 
-		key = key ++'_'++name++'_'++controllers.size;
+		// controller name:
+		key = key ++'_'++name_.toLower++'_'++controllers.size;
+
+		// convert to symbol
 		key = key.asSymbol;
 
 		newController = MIDIController(
 			device,
 			type,
-			id,
-			channel,
+			id_,
+			channel_,
 		);
 
-		newController.name = name;
+		newController.name = name_;
 		newController.key = key;
 		newController.protocol = device.protocol;
 
-		device.controllers[name] = newController;
-		controllers[name] = newController;
+		device.controllers[name_] = newController;
+		controllers[name_] = newController;
 
-		^controllers[name]
+		^controllers[name_]
 
 	}
 
