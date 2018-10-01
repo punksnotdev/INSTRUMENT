@@ -14,11 +14,14 @@ MIDIManager {
     }
 
 
-    addDevice{|device|
+    addDevice{|device,spec|
+
         var key = device.device.replace(" ","_").toLower();
+
         key = key.asSymbol;
 
-        devices[key] = MIDIDevice(this,device);
+        devices[key] = MIDIDevice(this,device,spec);
+
         ^devices[key]
     }
 

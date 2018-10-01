@@ -1,6 +1,7 @@
 Device {
 
 	var controllers;
+	var outputs;
 	var <>controllerGroups;
 
 	var key;
@@ -22,11 +23,18 @@ Device {
 		controllers = IdentityDictionary.new;
 		controllerGroups = IdentityDictionary.new;
 
+		outputs = IdentityDictionary.new;
+
 	}
 
+	send{|key,value|
 
+		outputs[key].send(value);
+
+	}
 
 	set {|source, value|
+
 		var min, max;
 		var outRange, minOutVal;
 		var normalizedValue;

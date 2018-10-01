@@ -54,7 +54,6 @@ ControllerManager {
 
 			var type = controller.controller.type;
 
-[type,param1].postln;
 			switch( type,
 				\cc, {
 

@@ -35,7 +35,6 @@ MIDIController {
 
 	addResponder {|messageType, controllerId, channel, sourceId|
 
-messageType.postln;
 		switch(messageType,
 			\cc, {
 
