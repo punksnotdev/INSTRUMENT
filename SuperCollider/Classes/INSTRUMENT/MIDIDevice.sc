@@ -2,6 +2,7 @@ MIDIDevice {
 
     var <controllers;
     var <output;
+    var <inputMap;
     var <outputMap;
     var <groups;
     var device;
@@ -44,7 +45,8 @@ MIDIDevice {
 
             });
 
-            outputMap = spec.map;
+            inputMap = spec.inputMap;
+            outputMap = spec.outputMap;
 
             outputMap.collect({|outputMapping|
                 outputMapping.type=spec.outputType;
@@ -92,8 +94,6 @@ MIDIDevice {
     }
 
 	set {|source, param1, param2|
-
-        var key = source.key;
 
         ^midi.set(source,param1,param2);
 

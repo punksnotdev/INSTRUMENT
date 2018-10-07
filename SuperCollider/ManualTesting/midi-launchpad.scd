@@ -26,7 +26,7 @@
 
 		3.wait;
 
-		midiDevicesNames = ["Launchpad","USB Axiom 25 MIDI 1"];
+		midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
 
 		MIDIClient.sources.collect({|device|
 			midiDevicesNames.collect({|midiDeviceName|
@@ -60,13 +60,19 @@
 		// x.addInput( i.midi.launchpad );
 		// x.addOutput( i.midi.launchpad );
 
-		3.wait;
 
 		72.do{|j|
 			i.midi.launchpad.send(j,90+24.rand+(j%32));
 		};
+		Array.series(8,8,9).collect{|num|
+			i.midi.launchpad.send(num,3);
+		};
 
-		// i.map( i.midi.launchpad.groups.buttons.controllers.buttons, nil );
+		i.map(
+			i.midi.launchpad.groups.buttons.controllers.buttons,
+			ModeMatrix(),
+			\note
+		);
 
 	}}).play;
 

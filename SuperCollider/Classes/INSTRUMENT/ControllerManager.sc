@@ -44,6 +44,10 @@ ControllerManager {
 
 		var controller = controlTargetMap[source.key.asSymbol];
 
+
+
+		source.midiTarget.inputMap[param1].inputNum.postln;
+
 		if(controller.notNil, {
 
 			var target = controller.target;
@@ -166,7 +170,7 @@ ControllerManager {
 			Tdef(\initMidi, { 1.do{
 
 			MIDIClient.init();
-			
+
 			3.wait;
 
 
