@@ -26,19 +26,10 @@ ModeMatrix : ControllerLogic {
 
         // modes.keysValuesDo{|k,v|[k.isKindOf(Integer),v].postln;};
 
-        72.do {|j|
+        64.do {|j|
             currentCallbacks[j]=nil;
-        }
-        8.do{|j|
-
-            modes[j] = ControlMode.new;
-
-            64.do{|k|
-                modes[j].addCallback(k,{ "callback!!!".postln; });
-            };
-
         };
-
+        
         modes[index.asInteger].callbacks.keysValuesDo({|k,v|
             currentCallbacks[k]=(callback:v,parameter: k );
         });
@@ -66,8 +57,10 @@ ModeMatrix : ControllerLogic {
                     modes[j] = ControlMode.new;
 
                     64.do{|k|
-                        modes[j].addCallback(k,{ "callback!!!".postln; });
+                        modes[j].addCallback(k,{|param1,param2| ["callback!!!",param1,param2].postln; });
                     };
+
+
 
                 };
 
@@ -104,15 +97,16 @@ ModeMatrix : ControllerLogic {
 
     set{|source,param1,param2|
 
-        [source,param1,param2].postln;
+        var key = param1.val.asInteger;
 
-        if(currentCallbacks[param1.val].notNil,{
+        if(currentCallbacks[key].notNil,{
 
             if(param1.amplitude==1,{
 
-                currentCallbacks[param1.val].callback(
-                    currentCallbacks[param1.val].parameter
-                );
+            currentCallbacks[key].callback(
+                currentCallbacks[key].parameter,
+                param1.amplitude
+            );
 
             });
 
@@ -133,9 +127,9 @@ ModeMatrix : ControllerLogic {
     }
 
     setupModeNavigation{
-        Array.series(8,8,9).collect({|index|
+        8.do({|index|
 
-            currentCallbacks[index] = (
+            currentCallbacks[64+index] = (
                 callback: functions[\selectMode],
                 parameter: (index/9).floor
             );

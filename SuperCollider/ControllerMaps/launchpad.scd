@@ -93,6 +93,17 @@ o.outputMap[71] = (target: 7, ctlNum: 120);
 
 o.outputMap.keysValuesDo{|k,v|
 
-	o.inputMap[v.ctlNum] = (inputNum: k);
+	var targetKey = k;
 
+	if( k % 9 == 8, {
+		targetKey = 64+(k / 9).floor;
+
+	}, {
+
+		targetKey = k - (k/9).floor;
+
+	});
+
+
+	o.inputMap[v.ctlNum] = (inputNum: targetKey);
 };
