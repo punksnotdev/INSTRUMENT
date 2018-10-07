@@ -44,9 +44,21 @@ ControllerManager {
 
 		var controller = controlTargetMap[source.key.asSymbol];
 
+		var mappedParam1;
+		var inputMap;
 
+		mappedParam1 = param1;
 
-		source.midiTarget.inputMap[param1].inputNum.postln;
+		if( source.midiTarget.isKindOf(MIDIDevice), {
+			inputMap = source.midiTarget.inputMap;
+		});
+
+        if( inputMap.isKindOf(IdentityDictionary), {
+            if( inputMap[param1].notNil, {
+                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
+            });
+        });
+
 
 		if(controller.notNil, {
 
@@ -61,7 +73,7 @@ ControllerManager {
 			switch( type,
 				\cc, {
 
-					var value = param1 / 127;
+					var value = mappedParam1 / 127;
 					if( range.notNil, {
 
 						outRange = (range[1] - range[0]).abs;
@@ -91,7 +103,7 @@ ControllerManager {
 				},
 
 				\note, {
-					target.set(\note,(val:param1, amplitude: param2/127));
+					target.set(\note,(val:mappedParam1, amplitude: param2/127));
 				}
 
 			);
