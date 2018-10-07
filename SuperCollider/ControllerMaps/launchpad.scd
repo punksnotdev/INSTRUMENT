@@ -106,4 +106,5 @@ o.outputMap.keysValuesDo{|k,v|
 
 
 	o.inputMap[v.ctlNum] = (inputNum: targetKey);
+
 };

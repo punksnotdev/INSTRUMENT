@@ -1,10 +1,13 @@
 (
 
-
 	var midi;
 	var midiDevicesNames;
 	var specs;
 
+	var modeMatrix;
+
+
+	modeMatrix = ModeMatrix();
 	specs=IdentityDictionary.new;
 
 
@@ -70,9 +73,11 @@
 
 		i.map(
 			i.midi.launchpad.groups.buttons.controllers.buttons,
-			ModeMatrix(),
+			modeMatrix,
 			\note
 		);
+
+		modeMatrix.midiTarget = i.midi.launchpad;
 
 	}}).play;
 
