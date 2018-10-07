@@ -52,12 +52,11 @@ MIDIController {
 			\note, {
 
 				var func;
-				["MIDIController", "add note on func", controllerId, channel, sourceId].postln;
 
 				func = MIDIFunc.noteOn(
-					{arg ...args;
-
-						["MIDIController", "note on func", controllerId, channel, sourceId, args ].postln;
+					{
+						
+						arg ...args;
 
 						this.set(args[1],args[0]);
 

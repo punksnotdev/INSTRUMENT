@@ -30,15 +30,17 @@
 
 		MIDIClient.sources.collect({|device|
 			midiDevicesNames.collect({|midiDeviceName|
+				var midiDevice;
 				if( device.name == midiDeviceName, {
-					var midiDevice = device;
-					midi.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+					midiDevice = device;
 				}, {
-
 					if( device.device == midiDeviceName, {
-						var midiDevice = device;
-						midi.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+						midiDevice = device;
 					});
+				});
+				if( midiDevice.notNil, {
+
+					midi.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
 
 				});
 			});
@@ -52,17 +54,17 @@
 		i.midi.launchpad.addControllerGroup(\note,\buttons);
 		i.midi.launchpad.groups.buttons.addController(\buttons);
 		i.midi.usb_axiom_25.addControllerGroup(\note,\piano);
-		// i.midi.usb_axiom_25.groups.piano.addController(\piano,nil,0);
 		i.midi.usb_axiom_25.groups.piano.addController(\piano);
 
 
 		// x.addInput( i.midi.launchpad );
 		// x.addOutput( i.midi.launchpad );
 
+		3.wait;
 
-		// 72.do{|j|
-		// 	i.midi.launchpad.send(j,90+24.rand+(j%32));
-		// };
+		72.do{|j|
+			i.midi.launchpad.send(j,90+24.rand+(j%32));
+		};
 
 		// i.map( i.midi.launchpad.groups.buttons.controllers.buttons, nil );
 

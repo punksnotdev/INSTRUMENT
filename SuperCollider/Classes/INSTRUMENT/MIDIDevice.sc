@@ -23,7 +23,7 @@ MIDIDevice {
         protocol = "midi";
         name = device.device;
         id = device.uid;
-        
+
         spec=spec_;
 
         slug = name.replace(" ","_").toLower.asSymbol;
@@ -31,8 +31,7 @@ MIDIDevice {
 
 		controllers = ();
 
-
-        if( spec.notNil, {
+        if( spec_.notNil, {
 
             // if( spec.outputs.isInteger, {
             var port;
@@ -45,16 +44,17 @@ MIDIDevice {
 
             });
 
+            outputMap = spec.map;
+
+            outputMap.collect({|outputMapping|
+                outputMapping.type=spec.outputType;
+            });
+
             if( port.notNil, {
 
+
                 output = MIDIOut.new( port );
-                output.connect( port );
-
-                outputMap = spec.map;
-
-                outputMap.collect({|outputMapping|
-                    outputMapping.type=spec.outputType;
-                });
+                // output.connect( port );
 
             });
 
@@ -77,11 +77,17 @@ MIDIDevice {
 
     send {|key,value|
 
-        switch( outputMap[key].type,
-            \note, {
-                output.noteOn(0,outputMap[key].ctlNum,value)
-            }
-        );
+        if( outputMap.notNil, {
+            if( outputMap[key].notNil, {
+
+                switch( outputMap[key].type,
+                    \note, {
+                        output.noteOn(0,outputMap[key].ctlNum,value)
+                    }
+                );
+
+            });
+        });
 
     }
 
