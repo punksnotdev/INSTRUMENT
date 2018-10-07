@@ -5,6 +5,47 @@ o.outputType=\note;
 
 o.map = IdentityDictionary.new;
 
+
+
+
+o.map[-1] = (target: -1, ctlNum: -1);
+o.map[-2] = (target: -1, ctlNum: -2);
+o.map[-3] = (target: -1, ctlNum: -3);
+o.map[-4] = (target: -1, ctlNum: -4);
+o.map[-5] = (target: -1, ctlNum: -5);
+o.map[-6] = (target: -1, ctlNum: -6);
+o.map[-7] = (target: -1, ctlNum: -7);
+o.map[-8] = (target: -1, ctlNum: -8);
+
+o.map[-9] = (target: -1, ctlNum: -9);
+o.map[-10] = (target: -1, ctlNum: -10);
+o.map[-11] = (target: -1, ctlNum: -11);
+o.map[-12] = (target: -1, ctlNum: -12);
+o.map[-13] = (target: -1, ctlNum: -13);
+o.map[-14] = (target: -1, ctlNum: -14);
+o.map[-15] = (target: -1, ctlNum: -15);
+o.map[-16] = (target: -1, ctlNum: -16);
+
+o.map[-17] = (target: -1, ctlNum: -17);
+o.map[-18] = (target: -1, ctlNum: -18);
+o.map[-19] = (target: -1, ctlNum: -19);
+o.map[-20] = (target: -1, ctlNum: -20);
+o.map[-21] = (target: -1, ctlNum: -21);
+o.map[-22] = (target: -1, ctlNum: -22);
+o.map[-23] = (target: -1, ctlNum: -23);
+o.map[-24] = (target: -1, ctlNum: -24);
+
+o.map[-25] = (target: -1, ctlNum: -25);
+o.map[-26] = (target: -1, ctlNum: -26);
+o.map[-27] = (target: -1, ctlNum: -27);
+o.map[-28] = (target: -1, ctlNum: -28);
+o.map[-29] = (target: -1, ctlNum: -29);
+o.map[-30] = (target: -1, ctlNum: -30);
+o.map[-31] = (target: -1, ctlNum: -31);
+o.map[-32] = (target: -1, ctlNum: -32);
+
+
+
 o.map[0] = (target: 0, ctlNum: 0);
 o.map[1] = (target: 0, ctlNum: 1);
 o.map[2] = (target: 0, ctlNum: 2);

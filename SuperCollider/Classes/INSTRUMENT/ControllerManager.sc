@@ -93,6 +93,10 @@ ControllerManager {
 			);
 
 
+		}, {
+
+			["ControlManager", "no controller set", source, param1, param2].postln;
+
 		});
 
 	}
@@ -108,7 +112,6 @@ ControllerManager {
 		});
 
 		if( mappingAlreadySetKey.notNil, {
-			"mapping already set: replace".postln;
 			controlTargetMap.removeAt(mappingAlreadySetKey);
 		});
 
@@ -126,33 +129,6 @@ ControllerManager {
 	}
 
 
-	mapDef {|controller,target|
-
-		var newSource;
-
-		switch( controller.protocol,
-			"midi", {
-				newSource = MIDIController(
-					this,
-					controller.type,
-					controller.controllerId,
-					controller.channel,
-				);
-				newSource.name = controller.name;
-			}
-		);
-
-		controllers[controller.name] = (
-			target: target,
-			key: controller.parameter,
-			range: controller.range,
-			type: controller.type,
-			protocol: controller.protocol,
-		);
-
-		controllerNames.add( controller.name );
-
-	}
 
 	addTarget {|target|
 
@@ -178,19 +154,6 @@ ControllerManager {
 	}
 
 
-	// mapController {|id_,param_,range_|
-	//
-	// 	controllerManager_
-	// 	type_
-	// 	controllerId_
-	// 	channel_
-	// 	sourceId_
-	//
- 	// 	MIDIController(controllerManager_, type_, controllerId_, channel_, sourceId_);
-	//
-	//
-	//
-	// }
 
 	midi_ {|on=false|
 
@@ -201,9 +164,11 @@ ControllerManager {
 			midi = MIDIManager(this);
 
 			Tdef(\initMidi, { 1.do{
-			MIDIClient.init();
 
+			MIDIClient.init();
+			
 			3.wait;
+
 
 			MIDIClient.sources.collect({|src,i|
 				srcNames.add( src.device.asSymbol );
@@ -212,7 +177,6 @@ ControllerManager {
 			if( instrument.gui.notNil, {
 
 				var callback = {|id|
-					midi.postln;
 					midi.addDevice( midi, MIDIClient.sources[id] );
 				};
 

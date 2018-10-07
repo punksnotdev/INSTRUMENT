@@ -7,6 +7,7 @@ MIDIDevice {
     var device;
     var spec;
     var <>name;
+    var <id;
     var <slug;
     var >midi;
     var <protocol;
@@ -21,6 +22,8 @@ MIDIDevice {
         device = device_;
         protocol = "midi";
         name = device.device;
+        id = device.uid;
+        
         spec=spec_;
 
         slug = name.replace(" ","_").toLower.asSymbol;
@@ -43,7 +46,7 @@ MIDIDevice {
             });
 
             if( port.notNil, {
-                ["port",port].postln;
+
                 output = MIDIOut.new( port );
                 output.connect( port );
 
@@ -52,9 +55,6 @@ MIDIDevice {
                 outputMap.collect({|outputMapping|
                     outputMapping.type=spec.outputType;
                 });
-
-
-                ["outputMap",outputMap].postln;
 
             });
 
@@ -77,13 +77,9 @@ MIDIDevice {
 
     send {|key,value|
 
-        ["send:", key, "to", outputMap[key].ctlNum, value].postln;
-
         switch( outputMap[key].type,
             \note, {
-
                 output.noteOn(0,outputMap[key].ctlNum,value)
-                
             }
         );
 

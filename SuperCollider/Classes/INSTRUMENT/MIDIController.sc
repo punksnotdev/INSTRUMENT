@@ -1,6 +1,6 @@
 MIDIController {
 
-	var <> midi;
+	var <> midiTarget;
 	var <> name;
 	var <> type;
 	var <> key;
@@ -14,13 +14,13 @@ MIDIController {
 
 	var callbacks;
 
-	*new {|midi_, type_, controllerId_, channel_, sourceId_ |
-		^super.new.init(midi_, type_, controllerId_, channel_, sourceId_ );
+	*new {|midiTarget_, type_, controllerId_, channel_, sourceId_ |
+		^super.new.init(midiTarget_, type_, controllerId_, channel_, sourceId_ );
 	}
 
-	init {|midi_, type_, controllerId_, channel_, sourceId_ |
+	init {|midiTarget_, type_, controllerId_, channel_, sourceId_ |
 
-		midi = midi_;
+		midiTarget = midiTarget_;
 		type = type_;
 		protocol = "midi";
 
@@ -28,7 +28,7 @@ MIDIController {
 
 		controllerId = controllerId_;
 
-		this.addListener( midi, controllerId );
+		this.addListener( midiTarget, controllerId );
 		this.addResponder( type_, controllerId_, channel_, sourceId_ );
 
 	}
@@ -52,9 +52,12 @@ MIDIController {
 			\note, {
 
 				var func;
+				["MIDIController", "add note on func", controllerId, channel, sourceId].postln;
 
 				func = MIDIFunc.noteOn(
 					{arg ...args;
+
+						["MIDIController", "note on func", controllerId, channel, sourceId, args ].postln;
 
 						this.set(args[1],args[0]);
 

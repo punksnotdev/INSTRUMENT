@@ -200,7 +200,7 @@ INSTRUMENT
 	}
 
 	midi_ {|on=false|
-		["midi", on].postln;
+
 		controllerManager.midi_( on );
 
 	}

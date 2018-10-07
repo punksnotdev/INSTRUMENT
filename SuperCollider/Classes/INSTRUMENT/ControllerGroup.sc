@@ -55,6 +55,7 @@ ControllerGroup {
 			type,
 			id_,
 			channel_,
+			device.id
 		);
 
 		newController.name = name_;
