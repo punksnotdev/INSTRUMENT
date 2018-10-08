@@ -74,51 +74,14 @@ ModeMatrix : ControllerLogic {
         //     midiTarget.send(targetKey,param2*3);
         //
         // };
-        functions[\test_callback_1] = {|e,param1,param2|
-
-
-
-        };
-        functions[\test_callback_2] = {|e,param1,param2|
-            ["mode", 2, "callback type",2,"functype 3","param",param1,param2].postln;
-        };
-        functions[\test_callback_3] = {|e,param1,param2|
-            ["mode", 3, "callback type",3,"functype 4","param",param1,param2].postln;
-        };
-        functions[\test_callback_4] = {|e,param1,param2|
-            ["mode", 4, "callback type",4,"functype 5","param",param1,param2].postln;
-        };
-        functions[\test_callback_5] = {|e,param1,param2|
-            ["mode", 5, "callback type",5,"functype 6","param",param1,param2].postln;
-        };
-        functions[\test_callback_6] = {|e,param1,param2|
-            ["mode", 6, "callback type",6,"functype 7","param",param1,param2].postln;
-        };
-        functions[\test_callback_7] = {|e,param1,param2|
-            ["mode", 7, "callback type",7,"functype 8","param",param1,param2].postln;
-        };
 
         modes = IdentityDictionary.new;
 
-            // modeMatrix callback Types
-
-            // modeMatrix
-
-                8.do{|j|
-
-                    var mode;
-                    mode="/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests.scd/modeMatrix/modes/mode01.scd".load;
-
-                    modes[j] = mode;
-
-
-                    // 64.do{|k|
-                    //     modes[j].addCallback(k,functions[(\test_callback_++j).asSymbol]);
-                    // };
-
-
-
-                };
+        8.do{|j|
+            var mode;
+            mode=("/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests.scd/modeMatrix/modes/mode0"++(((j)%2)+1).asString++".scd").load;
+            modes[j] = mode;
+        };
 
 
                 this.setupModeNavigation();
