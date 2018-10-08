@@ -26,16 +26,18 @@ ModeMatrix : ControllerLogic {
 
             if( midiTarget.isKindOf(MIDIDevice), {
 
-                72.do{|j|
-                    if(j%9<8){
-                        midiTarget.send(j,127.rand);
-                    }
-                };
 
                 if( currentModeIndex.notNil, {
 
+                    midiTarget.send(((currentModeIndex+1)*9)-1,3);
+
                     if( currentModeIndex>0, {
 
+                        72.do{|j|
+                            if(j%9<8){
+                                midiTarget.send(j,127.rand);
+                            }
+                        };
 
                     }, {
 
@@ -48,7 +50,6 @@ ModeMatrix : ControllerLogic {
                     });
                 });
 
-                midiTarget.send(((currentModeIndex+1)*9)-1,3);
                 midiTarget.send(((index+1)*9)-1,124);
 
             });
@@ -64,15 +65,15 @@ ModeMatrix : ControllerLogic {
 
             offset = (param1/9).floor;
 
-            if(( (param1%9==8)&&(param1 > 7)),{ offset=offset+1; });
-            if(( (param1%9==7)&&(param1 > 15)),{ offset=offset+1; });
-            if(( (param1%9==6)&&(param1 > 23)),{ offset=offset+1; });
-            if(( (param1%9==5)&&(param1 > 31)),{ offset=offset+1; });
-            if(( (param1%9==4)&&(param1 > 39)),{ offset=offset+1; });
-            if(( (param1%9==3)&&(param1 > 47)),{ offset=offset+1; });
-            if(( (param1%9==2)&&(param1 > 55)),{ offset=offset+1; });
-            if(( (param1%9==1)&&(param1 > 62)),{ offset=offset+1; });
-            if(( (param1%9==0)&&(param1 > 70)),{ offset=offset+1; });
+            // if(( (param1%9==8)&&(param1 > 7)),{ offset=offset+1; });
+            // if(( (param1%9==7)&&(param1 > 15)),{ offset=offset+1; });
+            // if(( (param1%9==6)&&(param1 > 23)),{ offset=offset+1; });
+            // if(( (param1%9==5)&&(param1 > 31)),{ offset=offset+1; });
+            // if(( (param1%9==4)&&(param1 > 39)),{ offset=offset+1; });
+            // if(( (param1%9==3)&&(param1 > 47)),{ offset=offset+1; });
+            // if(( (param1%9==2)&&(param1 > 55)),{ offset=offset+1; });
+            // if(( (param1%9==1)&&(param1 > 62)),{ offset=offset+1; });
+            // if(( (param1%9==0)&&(param1 > 70)),{ offset=offset+1; });
 
             targetKey = (param1+offset).asInteger;
             midiTarget.send(targetKey,param2*3);
@@ -158,12 +159,10 @@ ModeMatrix : ControllerLogic {
         var key = param1.val.asInteger;
 
         if(currentCallbacks[key].notNil,{
-
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,
                 param1.amplitude
             );
-
         });
 
 

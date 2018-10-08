@@ -31,23 +31,7 @@
 
 		midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
 
-		MIDIClient.sources.collect({|device|
-			midiDevicesNames.collect({|midiDeviceName|
-				var midiDevice;
-				if( device.name == midiDeviceName, {
-					midiDevice = device;
-				}, {
-					if( device.device == midiDeviceName, {
-						midiDevice = device;
-					});
-				});
-				if( midiDevice.notNil, {
-
-					midi.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
-
-				});
-			});
-		});
+		midi.addDevices( midiDevicesNames, specs );
 
 		1.wait;
 

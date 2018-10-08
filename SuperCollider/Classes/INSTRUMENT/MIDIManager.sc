@@ -13,6 +13,29 @@ MIDIManager {
         devices = ();
     }
 
+    addDevices{|midiDevicesNames,specs|
+
+        MIDIClient.sources.collect({|device|
+            midiDevicesNames.collect({|midiDeviceName|
+                var midiDevice;
+                if( device.name == midiDeviceName, {
+                    midiDevice = device;
+                }, {
+                    if( device.device == midiDeviceName, {
+                        midiDevice = device;
+                    });
+                });
+                if( midiDevice.notNil, {
+
+                    this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+
+                });
+            });
+        });
+
+        ^devices
+
+    }
 
     addDevice{|device,spec|
 
