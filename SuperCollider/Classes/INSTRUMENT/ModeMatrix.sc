@@ -65,7 +65,9 @@ ModeMatrix : ControllerLogic {
 
             offset = (param1/9).floor;
 
-            // if(( (param1%9==8)&&(param1 > 7)),{ offset=offset+1; });
+            9.do{|l|
+                if(( (param1%9==(8-l))&&(param1 > (7+(8*l)))),{ offset=offset+1; });
+            };
             // if(( (param1%9==7)&&(param1 > 15)),{ offset=offset+1; });
             // if(( (param1%9==6)&&(param1 > 23)),{ offset=offset+1; });
             // if(( (param1%9==5)&&(param1 > 31)),{ offset=offset+1; });
