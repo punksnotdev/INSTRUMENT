@@ -27,30 +27,24 @@ ModeMatrix : ControllerLogic {
             if( midiTarget.isKindOf(MIDIDevice), {
 
 
-                if( currentModeIndex.notNil, {
-
-                    midiTarget.send(((currentModeIndex+1)*9)-1,3);
-
-                    if( currentModeIndex>0, {
-
-                        72.do{|j|
-                            if(j%9<8){
-                                midiTarget.send(j,127.rand);
-                            }
-                        };
-
-                    }, {
-
-                        72.do{|j|
-                            if(j%9<8){
-                                midiTarget.send(j,0);
-                            }
-                        };
-
+                8.do{|k|
+                    if(((k+1)*9)!=((index+1)*9),{
+                        midiTarget.send(8+((k)*9),3);
                     });
-                });
+                };
 
                 midiTarget.send(((index+1)*9)-1,124);
+
+                if( currentModeIndex.notNil, {
+
+                    72.do{|j|
+                        if(j%9<8){
+                            midiTarget.send(j,0);
+                        }
+                    };
+
+                });
+
 
             });
 
@@ -78,13 +72,18 @@ ModeMatrix : ControllerLogic {
         modes = IdentityDictionary.new;
 
         8.do{|j|
+
             var mode;
-            mode=("/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests.scd/modeMatrix/modes/mode0"++(((j)%2)+1).asString++".scd").load;
+
+            var modeFiles = "/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests.scd/modeMatrix/modes/mode*.scd".pathMatch;
+
+            mode=modeFiles[j%modeFiles.size].load;
             modes[j] = mode;
+
         };
 
 
-                this.setupModeNavigation();
+        this.setupModeNavigation();
 
     }
 
@@ -111,6 +110,8 @@ ModeMatrix : ControllerLogic {
         currentModeIndex = index.asInteger;
 
         currentMode = modes[currentModeIndex];
+
+        currentMode.setup();
 
     }
 
