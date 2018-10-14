@@ -2,7 +2,6 @@ m = ControlMode.new;
 
 
 m.setup({
-	"setup".postln;
 
 
 	64.do{|index|
@@ -33,7 +32,6 @@ m.setup({
 
 				targetKey = (param1+offset).asInteger;
 
-				targetKey.postln;
 
 				9.do{|l|
 					if(currentValue >= l, {

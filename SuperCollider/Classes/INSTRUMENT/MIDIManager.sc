@@ -26,8 +26,11 @@ MIDIManager {
                     });
                 });
                 if( midiDevice.notNil, {
-
-                    this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+                    if( specs.notNil, {
+                        this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+                    }, {
+                        this.addDevice( midiDevice );
+                    });
 
                 });
             });

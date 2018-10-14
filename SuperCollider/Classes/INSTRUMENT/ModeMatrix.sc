@@ -22,7 +22,10 @@ ModeMatrix : ControllerLogic {
 
         functions = IdentityDictionary.new;
 
+
         functions[\selectMode] = {|e,index|
+
+            ["select mode", index].postln;
 
             if( midiTarget.isKindOf(MIDIDevice), {
 
@@ -122,7 +125,7 @@ ModeMatrix : ControllerLogic {
     set {|source,param1,param2|
 
         var key = param1.val.asInteger;
-
+        [source,param1,param2].postln;
         if(currentCallbacks[key].notNil,{
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,

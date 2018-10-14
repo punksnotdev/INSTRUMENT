@@ -37,28 +37,31 @@ MIDIDevice {
             // if( spec.outputs.isInteger, {
             var port;
 
-            MIDIClient.destinations.collect({|destination, index|
+            // MIDIClient.destinations.collect({|destination, index|
+            //
+            //     if(spec.name == destination.device, {
+            //         port = index;
+            //     });
+            //
+            // });
+            if( spec.isKindOf(Event), {
 
-                if(spec.name == destination.device, {
-                    port = index;
-                });
-
+                inputMap = spec.inputMap;
+                outputMap = spec.outputMap;
             });
-
-            inputMap = spec.inputMap;
-            outputMap = spec.outputMap;
 
             outputMap.collect({|outputMapping|
                 outputMapping.type=spec.outputType;
             });
 
-            if( port.notNil, {
+            // if( port.notNil, {
 
 
-                output = MIDIOut.new( port );
+                output = MIDIOut.new( 0 );
+
                 // output.connect( port );
 
-            });
+            // });
 
         });
 
