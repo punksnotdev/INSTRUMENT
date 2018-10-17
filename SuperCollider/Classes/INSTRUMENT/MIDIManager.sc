@@ -26,8 +26,13 @@ MIDIManager {
                     });
                 });
                 if( midiDevice.notNil, {
-
-                    this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+                    if( specs.isKindOf(Event), {
+                        if( specs[ midiDeviceName.asSymbol ].notNil, {
+                            this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+                        });
+                    }, {
+                        this.addDevice( midiDevice );
+                    });
 
                 });
             });
@@ -42,7 +47,7 @@ MIDIManager {
         var key = device.device.replace(" ","_").toLower();
 
         key = key.asSymbol;
-
+        
         devices[key] = MIDIDevice(this,device,spec);
 
         ^devices[key]

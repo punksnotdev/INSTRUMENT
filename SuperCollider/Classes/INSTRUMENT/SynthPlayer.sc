@@ -119,7 +119,9 @@ SynthPlayer : Instrument
 			}, {
 
 				s.sendBundle(0,["/n_free",nodeID]);
-
+				// if( synth.isPlaying, {
+				// 	synth.free;
+				// });
 				synth = Synth.basicNew( synthdef.asSymbol, s, nodeID );
 				synth.register;
 				synths.add(synth);
@@ -167,12 +169,12 @@ SynthPlayer : Instrument
 			},
 			\setFx, {
 
-				value.postln;
-				value.val.keysValuesDo({|k,v|
-					[k,v].postln;
-					// fx_parameters[k]=v;
-					// fxSynth.set(k,v);
-				});
+				[parameter,value].postln;
+				// value.val.keysValuesDo({|k,v|
+				// 	[k,v].postln;
+				// 	// fx_parameters[k]=v;
+				// 	// fxSynth.set(k,v);
+				// });
 			},
 			\note, {
 				// if is Event, get params
@@ -229,7 +231,7 @@ SynthPlayer : Instrument
 							}, {
 
 								pressedKeys[event.val] = true;
-								["synth set", amp].postln;
+
 								synth.set(\amp,amp);
 								synth.set(\gate,1);
 								synth.set(\freq,event.val.midicps);
@@ -345,5 +347,11 @@ SynthPlayer : Instrument
 		synth.set( parameter, value );
 	}
 
+	stop {
+		if( mode == \mono, {
+			synth.release;
+		});
+		super.stop();
+	}
 
 }
