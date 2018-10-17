@@ -140,7 +140,7 @@ t.tests["Events with Parameters call Listeners"] = {
 
 	g = INSTRUMENT.new;
 
-	listener = I8Tnode.new(\testListener);
+	listener = I8TNode.new(\testListener);
 
 	event = I8Tevent.new( listener, callback, \testEvent );
 
@@ -170,7 +170,7 @@ t.tests["SequencerEvents call Listeners"] = {
 
 	g = INSTRUMENT.new;
 
-	listener = I8Tnode.new(\testListener);
+	listener = I8TNode.new(\testListener);
 
 	event = SequencerEvent.new( [\param, 1], "testEvent" );
 

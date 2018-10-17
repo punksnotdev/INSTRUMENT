@@ -43,7 +43,7 @@ Kick
 						 bw,amp/4),
         		    lowcutfreq,0.5);
         		kick=CompanderD.ar(kick,0.6,0.59,0.8);
-        		env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:2);
+        		env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:1);
     		^Pan2.ar(kick*env,[-1,0.98]);
 		}
 

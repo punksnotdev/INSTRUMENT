@@ -1,4 +1,4 @@
-Sequenceable : I8Tnode
+Sequenceable : I8TNode
 {
 
 	var <>sequencer;

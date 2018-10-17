@@ -8,7 +8,7 @@ SynthDef(\mono_bassSmooth, {
 
   sig = sig+ RLPF.ar((sig*LFNoise2.kr(3, 1, 1.6)).tanh,freq*[2.5,3.3],q)/3;
 
-  env = EnvGen.kr( Env.asr(att,sus,rel), gate, doneAction: 2 );
+  env = EnvGen.kr( Env.asr(att,sus,rel), gate, doneAction: 1 );
   sig = sig * (amp*env);
 
   Out.ar( out, Pan2.ar( sig, pan ));

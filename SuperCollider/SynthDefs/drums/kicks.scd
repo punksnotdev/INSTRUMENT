@@ -105,7 +105,7 @@
        snd = BPeakEQ.ar(snd, XLine.kr(2000, 100, 0.3), 2.0, 8);
        snd = snd + DelayC.ar(snd, 0.01, SinOsc.ar(4).range(0.0, 0.001));
        snd = RLPF.ar(snd, 8000, 0.7);
-       snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction:1);
+       snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction: 1);
        snd = (snd * 0.6).clip(-1, 1);
        Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
    }).store;
@@ -116,7 +116,7 @@
        snd = DC.ar(0);
        snd = snd + (SinOsc.ar(XLine.ar(800, 400, 0.01)) * Env.perc(0.0005, 0.01).ar);
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), XLine.ar(800, 100, 0.01), 0.6) * Env.perc(0.001, 0.02).delay(0.001).ar);
-       snd = snd + (SinOsc.ar(XLine.ar(172, 50, 0.01)) * EnvGen.kr(Env.perc(0.0001, 0.3, 1, \lin).delay(0.005),doneAction:1));
+       snd = snd + (SinOsc.ar(XLine.ar(172, 50, 0.01)) * EnvGen.kr(Env.perc(0.0001, 0.3, 1, \lin).delay(0.005),doneAction: 1));
        snd = snd.tanh;
        Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp));
    }).store;
@@ -126,7 +126,7 @@
        snd = DC.ar(0);
        snd = snd + (HPF.ar(Hasher.ar(Sweep.ar), 1320) * Env.perc(0.003, 0.03).ar);
        snd = snd + (SinOsc.ar(XLine.ar(750, 161, 0.02)) * Env.perc(0.0005, 0.02).ar);
-       snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * EnvGen.kr(Env.perc(0.0005, 0.3),doneAction:2));
+       snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * EnvGen.kr(Env.perc(0.0005, 0.3),doneAction:1));
        snd = snd.tanh;
        Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp));
    }).store;
@@ -137,7 +137,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(1500, 800, 0.01)) * Env.perc(0.0005, 0.01, curve: \lin).ar);
        snd = snd + (BPF.ar(Impulse.ar(0) * SampleRate.ir / 28000, 6100, 1.0) * 3.dbamp);
        snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), 300, 0.9) * Env.perc(0.001, 0.02).ar);
-       snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * EnvGen.kr(Env.perc(0.0001, 0.3, curve: \lin).delay(0.005),doneAction:2));
+       snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * EnvGen.kr(Env.perc(0.0001, 0.3, curve: \lin).delay(0.005),doneAction:1));
        snd = snd.tanh;
        Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
    }).store;

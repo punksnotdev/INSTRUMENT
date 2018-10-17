@@ -7,7 +7,7 @@ INSTRUMENT
 	var <>sequencer;
 	var <>controllerManager;
 
-	var <>instrument;
+	var nodes;
 
 	var midi;
 
@@ -15,7 +15,7 @@ INSTRUMENT
 
 	var <speed;
 
-	var instrumentChanges;
+
 
 	*new {
 		// rootNode.graph_(this);
@@ -28,10 +28,10 @@ INSTRUMENT
 		sequencer = Sequencer.new;
 		controllerManager = ControllerManager.new(this);
 
-		instrument = IdentityDictionary.new;
-		instrumentChanges = IdentityDictionary.new;
+		nodes = IdentityDictionary.new;
 
-		rootNode = I8Tnode.new("rootNode",this);
+
+		rootNode = I8TNode.new("rootNode",this);
 
 		this.play;
 
@@ -164,7 +164,7 @@ INSTRUMENT
 	//
 	// 	});
 	//
-	// 	instrumentChanges[time] = payload;
+
 	//
 	//
 	// }
@@ -207,6 +207,24 @@ INSTRUMENT
 
 	midi {
 		^controllerManager.midi.devices;
+	}
+
+
+	at{|index|
+
+		^nodes[index]
+
+	}
+
+	put{|index,smthng|
+
+		if( smthng.isKindOf(I8TNode), {
+			nodes[index] = smthng;
+			^nodes[index]
+		});
+
+		^nil
+
 	}
 
 }

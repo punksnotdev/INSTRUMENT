@@ -1,4 +1,4 @@
-I8Tnode : I8TeventListener
+I8TNode : I8TeventListener
 {
 
 	classvar <>graph;

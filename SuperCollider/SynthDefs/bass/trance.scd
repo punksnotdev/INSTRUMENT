@@ -10,7 +10,7 @@ SynthDef(\tranceBazz, {
 	sig = RLPF.ar(sig,freq*[1,4],rq).tanh;
 	// sig = (sig * 23.33).tanh;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -30,7 +30,7 @@ SynthDef(\tranceBazz2, {
 	sig = (sig * 23.33).tanh;
 	// sig = (sig * 23.33).tanh;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -50,7 +50,7 @@ SynthDef(\tranceBazz3, {
 	sig = (sig * 3.33).tanh;
 	// sig = (sig * 23.33).tanh;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 

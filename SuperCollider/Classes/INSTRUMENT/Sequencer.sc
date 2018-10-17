@@ -1,7 +1,7 @@
 // instrument_tracks se va a tomar de nodegraph!
 //defaultRepetitions
 
-Sequencer : I8Tnode
+Sequencer : I8TNode
 {
 
 	var <instrument_tracks;

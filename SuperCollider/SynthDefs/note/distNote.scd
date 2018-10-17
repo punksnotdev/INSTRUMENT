@@ -7,7 +7,7 @@ SynthDef(\dist, {
 
 	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * (3.33 * (gain*SinOsc.kr( gain1LFORate,0,0.5,0.5 ))) ).tanh, freq, q2 ).tanh / 2;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -25,7 +25,7 @@ SynthDef(\dist2, {
 
 	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * 1.33 * gain ).tanh, freq, 0.2 ).tanh / 4;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -43,7 +43,7 @@ SynthDef(\dist3, {
 
 	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * 13.33 * gain ).tanh, freq, 0.95 ).tanh / 2;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -60,7 +60,7 @@ SynthDef(\dist4, {
 
 	sig = RLPF.ar(sig + ( SinOsc.ar(freq,pi/2) * 3.33 ).tanh, freq*[2,4], 0.15 ).tanh / 4;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 
@@ -78,7 +78,7 @@ SynthDef(\distRing, {
 
 	sig = RLPF.ar(sig + ( LFSaw.ar(LFNoise2.kr(6,[3,4])+freq) * 3333.33 ).tanh, LFNoise2.kr(6,[3,4])+freq, 0.95 ).tanh / 2;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
 
 	sig = sig * env;
 

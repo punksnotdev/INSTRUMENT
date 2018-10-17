@@ -118,6 +118,8 @@ SynthPlayer : Instrument
 				synth.register;
 			}, {
 
+				s.sendBundle(0,["/n_free",nodeID]);
+
 				synth = Synth.basicNew( synthdef.asSymbol, s, nodeID );
 				synth.register;
 				synths.add(synth);
@@ -164,9 +166,12 @@ SynthPlayer : Instrument
 
 			},
 			\setFx, {
+
+				value.postln;
 				value.val.keysValuesDo({|k,v|
-					fx_parameters[k]=v;
-					fxSynth.set(k,v);
+					[k,v].postln;
+					// fx_parameters[k]=v;
+					// fxSynth.set(k,v);
 				});
 			},
 			\note, {
@@ -260,7 +265,7 @@ SynthPlayer : Instrument
 
 
 			},
-			\ampTrig, {
+			\trigger, {
 				if( value.val > 0 ) {
 
 					var amp = value.val;

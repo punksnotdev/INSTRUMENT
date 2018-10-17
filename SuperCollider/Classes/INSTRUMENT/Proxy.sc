@@ -47,14 +47,14 @@ Proxy : Instrument
 
 		switch( parameter.asSymbol,
 
-		\ampTrig, {
+		\trigger, {
 			proxy.set(\t_trig,1,\amp,value);
 		},
 			\octave, { octave = value },
 			\note, {
 				proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
 			},
-			\ampTrig, {
+			\trigger, {
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {

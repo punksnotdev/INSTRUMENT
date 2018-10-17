@@ -10,7 +10,7 @@
 
 	z = Proxy.new(\ccc,~z);
 	z.play;
-	// z.set(P(\ampTrig,[1,2,3,4]/4));
+	// z.set(P(\trigger,[1,2,3,4]/4));
 	z.set(P(\coin,2*[0.25,0.05,0.1,0.5]),[\speed,1]);
 
 	z.rm(P(\note,[0,\r,\r,\r,3,8,\r]),[\speed,8]);
