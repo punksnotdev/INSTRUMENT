@@ -67,12 +67,13 @@ Sequencer : I8TNode
 
 						f.collect({|rf,l|
 							var offset = 0;
-							
+
 							if(rf.offset.isInteger, {
 								offset = rf.offset;
 							});
 
 							if( (beats - offset) % k.asInteger == 0, {
+
 								rf.function.value();
 							});
 						});
@@ -205,5 +206,9 @@ Sequencer : I8TNode
 
 		^voiceStr
 
+	}
+
+	clearRepeatFunctions {
+		repeatFunctions = IdentityDictionary.new;
 	}
 }

@@ -30,6 +30,7 @@
 		3.wait;
 
 		midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
+		// midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
 
 		midi.addDevices( midiDevicesNames, specs );
 

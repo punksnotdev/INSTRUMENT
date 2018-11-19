@@ -119,9 +119,9 @@ SynthPlayer : Instrument
 			}, {
 
 				s.sendBundle(0,["/n_free",nodeID]);
-				// if( synth.isPlaying, {
-				// 	synth.free;
-				// });
+				if( synth.isPlaying, {
+					synth.free;
+				});
 				synth = Synth.basicNew( synthdef.asSymbol, s, nodeID );
 				synth.register;
 				synths.add(synth);

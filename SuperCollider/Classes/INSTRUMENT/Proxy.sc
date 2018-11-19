@@ -58,7 +58,7 @@ Proxy : Instrument
 				proxy.set(\t_trig,1,\amp,value);
 			},
 			\chord, {
-				["chord",value.chord(value.type)].postln;
+				["chord",value, value.chord(value.type)].postln;
 				proxy.setn(\notes,(octave*12)+value.chord(value.type),\freqs,((octave*12)+value.chord(value.type)).midicps,\t_trig,1);
 			},
 			{ // default:

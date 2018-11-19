@@ -31,7 +31,7 @@ Kick
 				SinOsc.ar(Mix(60,82,280),0,amp2/2)+
 				LFTri.ar(Pulse.ar(modFreq,modbw,freq1,freq2),0,amp2/3),lowcutfreq,0.75);
 			kick=CompanderD.ar(kick,0.5,0.59,0.8,0.01,0.52);
-			env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:0);
+			env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:1);
 			^Pan2.ar(kick*env,[-1,0.98]);
 		}
 

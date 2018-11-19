@@ -109,6 +109,10 @@ INSTRUMENT
 		});
 	}
 
+	clearSequencerFunctions {
+		sequencer.clearRepeatFunctions();
+	}
+
 	every {|time, function, wait|
 		if( time.isInteger, {
 			if(function.notNil,{

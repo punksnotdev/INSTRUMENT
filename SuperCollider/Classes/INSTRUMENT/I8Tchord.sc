@@ -25,6 +25,8 @@ I8Tchord
 		var inversionOctave2;
 		var inversionOctave3;
 
+		["chord make",type].postln;
+
 		inversionOctave1=0;
 		inversionOctave2=0;
 		inversionOctave3=0;
