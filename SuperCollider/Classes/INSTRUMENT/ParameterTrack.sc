@@ -54,7 +54,7 @@ ParameterTrack
 				var currentPattern;
 
 				if( this.currentEvent().initialWait.isNil, {
-					(name+"-"++track.instrument.name++" wait: "++this.currentEvent().parameters[\waitBefore]).postln;
+
 					if(this.currentEvent().parameters[\waitBefore].notNil, {
 						(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
 					});
@@ -87,7 +87,7 @@ ParameterTrack
 					if( beatValue.duration.notNil, {
 
 						dur = beatValue.duration.asFloat;
-
+["dur vaue ahead": dur].postln;
 					});
 
 					if( this.currentEvent().parameters[\speed] != nil, {
