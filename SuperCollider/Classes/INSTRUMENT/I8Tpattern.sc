@@ -11,8 +11,6 @@ I8Tpattern
 	}
 	init{|pattern_,parameters_|
 
-		pattern_.postln;
-
 		if( pattern_.isString, {
 
 
@@ -110,13 +108,15 @@ I8Tpattern
 
                 },
                 {
-                    // not a space
+
+				    // not a space
                     currentGroup = ();
 
                     // currentGroup.index = i;
                     currentGroup.chars = List[char];
 
 					if( i == (input.size - 1), {
+"close end group".postln;
 						events.add( this.closeEventGroup(currentGroup) );
 						currentGroup = nil;
 					});
@@ -132,6 +132,8 @@ I8Tpattern
 					if( char.asString.compare(" ") != 0,  {
 						currentGroup.chars.add( char );
 					});
+
+					["close group end char", cveurrentGroup].postln;
 
 					events.add( this.closeEventGroup(currentGroup) );
 					currentGroup = nil;
@@ -149,8 +151,6 @@ I8Tpattern
 
 					if(char.asString.compare(" ") == 0, {
 
-						events.add( this.closeEventGroup(currentGroup) );
-						currentGroup = nil;
 
 						if( input[i+1].asString.compare(" ") == 0, {
 
@@ -209,7 +209,7 @@ I8Tpattern
 
 									"add space with duration".postln;
 
-									events.add( ( val: \r, duration: durationValue ) );
+							 		events.add( ( val: \r, duration: durationValue ) );
 
 								}, {
 // when ': ' not immediately after current index char group of spaces
@@ -217,7 +217,11 @@ I8Tpattern
 
 "add rest".postln;
 
-									events.add( ( val: \r ) );
+									// events.add( ( val: \r ) );
+
+									events.add( this.closeEventGroup(currentGroup) );
+									currentGroup = nil;
+
 
 								});
 
@@ -239,7 +243,7 @@ I8Tpattern
 								if( areAllNextCharsSpaces, {
 
 									"all next spaces".postln;
-									
+
 									events.add( ( val: \r ) );
 								})
 
@@ -313,6 +317,8 @@ I8Tpattern
 			newGroup.amplitude = this.getAmplitude( str );
 
 		});
+
+		"return new group".postln;
 
 		^newGroup;
 
