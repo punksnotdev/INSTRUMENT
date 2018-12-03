@@ -22,6 +22,7 @@ var parseSeqString = {|input|
 
 			if( char != Char.space ) {
 				buildingGroupChars = buildingGroupChars ++ char;
+
 				groupStrings.add( buildingGroupChars );
 				buildingGroupChars = "";
 			}
@@ -40,7 +41,7 @@ var parseSeqString = {|input|
 
 					if( lastChar == Char.space ) {
 						// start new group with a space
-						buildingGroupChars = buildingGroupChars ++ $r;//char;
+						buildingGroupChars = buildingGroupChars ++ Char.space;//char;
 
 					};
 
@@ -107,7 +108,7 @@ var parseSeqString = {|input|
 var extractOperators = {|input|
 
 
-	var operators = [$p,$f,$x,$:,$*];
+	var operators = [Char.space,$p,$f,$x,$:,$*];
 
 	var foundOperators = List.new;
 
@@ -130,7 +131,7 @@ var extractOperators = {|input|
 
 var extractParameters = {|group|
 
-	var repeatableOperators = [$p,$f,$x];
+	var repeatableOperators = [Char.space,$p,$f,$x];
 
 	var parameters = IdentityDictionary.new;
 
@@ -165,14 +166,12 @@ var extractParameters = {|group|
 
 			repetitions = getOperatorRepetitions.value(group,operator);
 
-			repetitions.do({
-				operatorValue = operatorValue ++ operator;
-			});
-
-
 		};
+
+
 		// if no repetitions, read value after operator:
-		if(repetitions==0) {
+
+		if( repetitions==0, {
 
 			operatorIndexes.collect({|operatorIndex|
 
@@ -211,7 +210,13 @@ var extractParameters = {|group|
 
 			});
 
-		};
+		}, {
+
+			// if there are repetitions
+
+			operatorValue = repetitions;
+
+		});
 
 
 		charsToRead.do({|index|
@@ -224,7 +229,6 @@ var extractParameters = {|group|
 
 
 		});
-
 
 
 		parameters[operator] = operatorValue;
@@ -273,8 +277,8 @@ var areIndexesSequential = {|indexes|
 };
 
 
-// var groups = parseSeqString.value("0xxxx:0.25*3");
-var groups = parseSeqString.value("0xxxx:0.25*3     :0.5   :0.125   3ppp 1fffxxx:0.0625   2 3");
+var groups = parseSeqString.value("0xxxx:0.25*3    :0.5");
+// var groups = parseSeqString.value("0xxxx:0.25*3     :0.5   :0.125   3ppp 1fffxxx:0.0625   2 3:0.125ppppxxx");
 
 
 var parameters = groups.collect({|group|
