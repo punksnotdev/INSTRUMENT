@@ -7,8 +7,6 @@ var parseSeqString = {|input|
 
 	var index = 0;
 
-	input.isKindOf(String).postln;
-
 
 	// input.collect({|char|
 	// 	char.postln;
@@ -16,9 +14,6 @@ var parseSeqString = {|input|
 	input.size.do({|index|
 
 		var char = input[ index ];
-
-		char.postln;
-
 
 
 		// if is last character
@@ -53,7 +48,7 @@ var parseSeqString = {|input|
 					// create group from to current building chars
 
 					if( lastChar != Char.space ) {
-("last --- not a space: "++lastChar).postln;
+// ("last --- not a space: "++lastChar).postln;
 						groupStrings.add( buildingGroupChars );
 						buildingGroupChars = "";
 
@@ -133,6 +128,114 @@ var extractOperators = {|input|
 };
 
 
+var extractParameters = {|group|
+
+	var repeatableOperators = [$p,$f,$x];
+
+	var parameters = IdentityDictionary.new;
+
+	var operators = extractOperators.value( group );
+
+	var operatorIndexes = SortedList.new;
+
+	operators.collect({|operator|
+		var foundIndex = group.find( operator );
+		if( foundIndex.notNil ) {
+			operatorIndexes.add( foundIndex );
+		};
+	});
+
+	operators.collect({|operator|
+
+		var operatorValue = "";
+
+		var parameter = ();
+
+		var nextOperatorIndex;
+
+		var charsToRead = 0;
+
+		var foundIndex;
+
+		var repetitions = 0;
+
+		var currentIndex = group.find( operator );
+
+		if( repeatableOperators.includes( operator ) ) {
+
+			repetitions = getOperatorRepetitions.value(group,operator);
+
+			repetitions.do({
+				operatorValue = operatorValue ++ operator;
+			});
+
+
+		};
+		// if no repetitions, read value after operator:
+		if(repetitions==0) {
+
+			operatorIndexes.collect({|operatorIndex|
+
+				if( nextOperatorIndex.isNil ) {
+
+					var currentOperatorIndex = group.find( operator );
+
+
+					if( currentOperatorIndex != operatorIndex ) {
+						if( operatorIndex > currentOperatorIndex ) {
+							nextOperatorIndex = operatorIndex;
+						}
+					};
+
+
+				}
+
+			});
+
+			if( nextOperatorIndex.isNil ) {
+
+				nextOperatorIndex =  currentIndex;
+
+			};
+
+
+			if( nextOperatorIndex != currentIndex, {
+				charsToRead = nextOperatorIndex - group.find(operator) - 1;
+
+			}, {
+
+				// if nextOperatorIndex is nil :
+
+				charsToRead = group.size - nextOperatorIndex - 1;
+
+
+			});
+
+		};
+
+
+		charsToRead.do({|index|
+
+			if ( index + currentIndex < group.size ) {
+
+				operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
+
+			}
+
+
+		});
+
+
+
+		parameters[operator] = operatorValue;
+
+	});
+
+	parameters;
+
+};
+
+
 
 var getOperatorRepetitions = {|string,char|
 
@@ -170,47 +273,33 @@ var areIndexesSequential = {|indexes|
 };
 
 
-var groups = parseSeqString.value("0xxxx:0.25*3     :0.25   :0.125   3ppp 1fff   2 3");
+// var groups = parseSeqString.value("0xxxx:0.25*3");
+var groups = parseSeqString.value("0xxxx:0.25*3     :0.5   :0.125   3ppp 1fffxxx:0.0625   2 3");
 
 
-groups.postln;
-
-groups.collect({|group|
-
-	var repeatableOperators = [$p,$f,$x];
-
-	var parameters = IdentityDictionary.new;
-
-	var operators = extractOperators.value( group );
-
-
-	operators.collect({|operator|
-
-		var operatorValue = "";
-
-		var parameter = ();
-
-		if( repeatableOperators.includes( operator ) ) {
-
-			var repetitions = getOperatorRepetitions.value(group,operator);
-
-			repetitions.do({
-				operatorValue = operatorValue ++ operator;
-			});
-
-
-		};
-
-		parameters[operator] = operatorValue;
-
-	});
-
-	parameters.postln;
-
+var parameters = groups.collect({|group|
+	extractParameters.value( group );
 });
 
+Tdef(\printall,{
+
+	parameters.size.do({|index|
+		"".postln;
+		index.postln;
+		parameters[index].postln;
+		0.005.wait;
+	});
+
+}).play;
 
 
+
+
+
+"----".postln;
+"done".postln;
+
+""
 
 /*
 
