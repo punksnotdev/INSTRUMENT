@@ -133,7 +133,7 @@ I8Tpattern
 						currentGroup.chars.add( char );
 					});
 
-					["close group end char", cveurrentGroup].postln;
+					["close group end char", currentGroup].postln;
 
 					events.add( this.closeEventGroup(currentGroup) );
 					currentGroup = nil;
@@ -450,6 +450,7 @@ I8Tpattern
 		});
 
 		^isBefore;
+		
 	}
 
 }

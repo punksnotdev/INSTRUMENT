@@ -1,5 +1,4 @@
-// var parseSeqString = {|input|
-f = {|input|
+var parseSeqString = {|input|
 
 	var groupStrings = List.new;
 	var lastChar;
@@ -110,8 +109,105 @@ f = {|input|
 };
 
 
+var extractOperators = {|input|
 
-f.value("1xxxx:0.25     :0.25   :0.125   32 1   2 3");
+
+	var operators = [$p,$f,$x,$:,$*];
+
+	var foundOperators = List.new;
+
+	operators.collect({|operator,index|
+
+		var operatorIndex = input.find(operator);
+
+		if( operatorIndex.notNil ) {
+
+			foundOperators.add( operator );
+
+		};
+
+	});
+
+	foundOperators;
+
+};
+
+
+
+var getOperatorRepetitions = {|string,char|
+
+	var indexes = string.findAll( char );
+
+	var operatorValue = 0;
+
+	if(areIndexesSequential.value(indexes)){
+		operatorValue = indexes.size;
+	};
+
+	operatorValue
+};
+
+var areIndexesSequential = {|indexes|
+
+	var areSequential=true;
+
+	var lastIndex = indexes[0];
+
+	indexes.collect({|i|
+		if( (i.asInteger - lastIndex.asInteger) > 1, {
+			areSequential=false;
+		}, {
+			lastIndex = i;
+		});
+	});
+
+	if( areSequential == false, {
+		"invalid Pattern: x's must be sequential".postln;
+	});
+
+	areSequential;
+
+};
+
+
+var groups = parseSeqString.value("0xxxx:0.25*3     :0.25   :0.125   3ppp 1fff   2 3");
+
+
+groups.postln;
+
+groups.collect({|group|
+
+	var repeatableOperators = [$p,$f,$x];
+
+	var parameters = IdentityDictionary.new;
+
+	var operators = extractOperators.value( group );
+
+
+	operators.collect({|operator|
+
+		var operatorValue = "";
+
+		var parameter = ();
+
+		if( repeatableOperators.includes( operator ) ) {
+
+			var repetitions = getOperatorRepetitions.value(group,operator);
+
+			repetitions.do({
+				operatorValue = operatorValue ++ operator;
+			});
+
+
+		};
+
+		parameters[operator] = operatorValue;
+
+	});
+
+	parameters.postln;
+
+});
 
 
 
