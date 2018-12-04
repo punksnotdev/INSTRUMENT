@@ -154,6 +154,8 @@ I8TParser {
 			this.extractParameters(groupString)
 		});
 
+		parameterGroups.postln;
+
 		^this.getEventsList(parameterGroups);
 
 	}
@@ -361,6 +363,9 @@ I8TParser {
 		var events = List.new;
 		var eventsPost = List.new;
 
+		var nextEventDuration;
+		var nextEventRepetitions;
+		var nextEventAmp;
 
 		parameterGroups.collect({|parameterGroup|
 
@@ -368,6 +373,7 @@ I8TParser {
 
 			parameterGroup.keysValuesDo({|k,v|
 
+				var hasValue = false;
 
 				switch( k,
 
@@ -406,14 +412,51 @@ I8TParser {
 
 				);
 
-				if( event.val.isNil ) {
-					event.val = \r;
-				}
 
 
 			});
 
-			events.add(event)
+			if( event.duration.notNil, {
+				if( nextEventDuration.notNil ) {
+					if( event.val.isNil, {
+						nextEventDuration = event.duration;
+					}, {
+						event.duration = event.duration.asFloat * nextEventDuration.asFloat;
+					});
+				}
+			},{
+				event.duration = nextEventDuration;
+			});
+
+			if( event.val.isNil ) {
+
+				if( event.duration.notNil, {
+					nextEventDuration = event.duration;
+				});
+				// if( event.repetitions.notNil, {
+				// 	nextEventRepetitions = event.repetitions;
+				// });
+				// if( event.amp.notNil, {
+				// 	nextEventAmp = event.amp;
+				// });
+
+			};
+
+
+			event.postln;
+			// if( event.repetitions.notNil, {
+			// 	event.repetitions = event.repetitions * nextEventRepetitions;
+			// },{
+			// 	event.repetitions = nextEventRepetitions;
+			// });
+			// if( event.amp.notNil, {
+			// 	event.amp = event.amp * nextEventAmp;
+			// },{
+			// 	event.amp = nextEventAmp;
+			// });
+			if( event.val.notNil ) {
+				events.add(event)
+			};
 
 		});
 
