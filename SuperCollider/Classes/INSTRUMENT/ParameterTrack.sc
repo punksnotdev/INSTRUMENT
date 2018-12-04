@@ -228,14 +228,14 @@ ParameterTrack
 
 		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).toLower;
 
-		if( pattern.isKindOf(P), {
+		if( pattern.isKindOf(I8Tpattern), {
 
 			newEvent = PatternEvent.new( pattern, eventName);
 			// newEvent.pattern = pattern;
 
 		}, {
 
-			newEvent = PatternEvent.new( P(pattern), eventName);
+			newEvent = PatternEvent.new( I8Tpattern(pattern), eventName);
 			// newEvent.pattern = P(pattern);
 
 		});

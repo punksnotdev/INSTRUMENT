@@ -11,7 +11,7 @@ I8TParser {
 
 	}
 
-	parse {|input|
+	*parse {|input|
 
 		var groupStrings = List.new;
 		var lastChar;
@@ -20,11 +20,9 @@ I8TParser {
 
 		var index = 0;
 
-		var parameters;
+		var parameterGroups;
 
-		// input.collect({|char|
-		// 	char.postln;
-		// });
+
 		input.size.do({|index|
 
 			var char = input[ index ];
@@ -34,17 +32,51 @@ I8TParser {
 
 			if( index >= (input.size - 1) ) {
 
-				if( char != Char.space ) {
-					buildingGroupChars = buildingGroupChars ++ char;
 
-					groupStrings.add( buildingGroupChars );
-					buildingGroupChars = "";
-				}
+
+				if( char != Char.space ) {
+
+					if( lastChar == Char.space ) {
+
+						if( buildingGroupChars.compare("")!=0) {
+
+							groupStrings.add( buildingGroupChars );
+						};
+
+						buildingGroupChars = "";
+
+					};
+
+				};
+
+				if( char == Char.space ) {
+
+
+					if( lastChar != Char.space ) {
+
+						groupStrings.add( buildingGroupChars );
+
+						buildingGroupChars = "";
+
+					};
+
+					if( lastChar == Char.space ) {
+						buildingGroupChars = buildingGroupChars ++ Char.space;
+					}
+
+				};
+
+
+				buildingGroupChars = buildingGroupChars ++ char;
+
+				groupStrings.add( buildingGroupChars );
+
+				buildingGroupChars = "";
 
 			};
 
 			// if is not last character
-			if( index < (input.size-1) ) {
+			if( index < (input.size - 1) ) {
 				// if current char is space
 
 				if( char == Char.space ) {
@@ -63,7 +95,7 @@ I8TParser {
 						// create group from to current building chars
 
 						if( lastChar != Char.space ) {
-	// ("last --- not a space: "++lastChar).postln;
+
 							groupStrings.add( buildingGroupChars );
 							buildingGroupChars = "";
 
@@ -115,17 +147,16 @@ I8TParser {
 		});
 
 
-		parameters = groupStrings.collect({|groupString|
+		parameterGroups = groupStrings.collect({|groupString|
 			this.extractParameters(groupString)
 		});
 
-
-		^parameters
+		^this.getEventsList(parameterGroups);
 
 	}
 
 
-	extractOperators {|input|
+	*extractOperators {|input|
 
 
 		var operators = [Char.space,$p,$f,$x,$:,$*];
@@ -149,7 +180,7 @@ I8TParser {
 	}
 
 
-	extractParameters {|group|
+	*extractParameters {|group|
 
 
 		var repeatableOperators = [Char.space,$p,$f,$x];
@@ -160,104 +191,123 @@ I8TParser {
 
 		var operatorIndexes = SortedList.new;
 
+		var groupValue;
 
-		operators.collect({|operator|
-			var foundIndex = group.find( operator );
-			if( foundIndex.notNil ) {
-				operatorIndexes.add( foundIndex );
-			};
-		});
 
-		operators.collect({|operator|
+		if( operators.size > 0 ) {
 
-			var operatorValue = "";
+			operators.collect({|operator|
+				var foundIndex = group.find( operator );
+				if( foundIndex.notNil ) {
+					operatorIndexes.add( foundIndex );
+				};
+			});
 
-			var parameter = ();
+			if( operatorIndexes.size > 0) {
 
-			var nextOperatorIndex;
-
-			var charsToRead = 0;
-
-			var foundIndex;
-
-			var repetitions = 0;
-
-			var currentIndex = group.find( operator );
-
-			if( repeatableOperators.includes( operator ) ) {
-
-				repetitions = this.getOperatorRepetitions(group,operator);
-
+				if( operatorIndexes[0] > 0 ) {
+					groupValue = group.split( group.at(operatorIndexes[0].asInteger) )[0];
+				}
 			};
 
+			operators.collect({|operator|
 
-			// if no repetitions, read value after operator:
+				var operatorValue = "";
 
-			if( repetitions==0, {
+				var parameter = ();
 
-				operatorIndexes.collect({|operatorIndex|
+				var nextOperatorIndex;
 
-					if( nextOperatorIndex.isNil ) {
+				var charsToRead = 0;
 
-						var currentOperatorIndex = group.find( operator );
+				var foundIndex;
 
+				var repetitions = 0;
 
-						if( currentOperatorIndex != operatorIndex ) {
-							if( operatorIndex > currentOperatorIndex ) {
-								nextOperatorIndex = operatorIndex;
-							}
-						};
+				var currentIndex = group.find( operator );
 
+				if( repeatableOperators.includes( operator ) ) {
 
-					}
-
-				});
-
-				if( nextOperatorIndex.isNil ) {
-
-					nextOperatorIndex =  currentIndex;
+					repetitions = this.getOperatorRepetitions(group,operator);
 
 				};
 
 
-				if( nextOperatorIndex != currentIndex, {
+				// if no repetitions, read value after operator:
 
-					charsToRead = nextOperatorIndex - group.find(operator) - 1;
+				if( repetitions==0, {
+
+					operatorIndexes.collect({|operatorIndex|
+
+						if( nextOperatorIndex.isNil ) {
+
+							var currentOperatorIndex = group.find( operator );
+
+
+							if( currentOperatorIndex != operatorIndex ) {
+								if( operatorIndex > currentOperatorIndex ) {
+									nextOperatorIndex = operatorIndex;
+								}
+							};
+
+
+						}
+
+					});
+
+					if( nextOperatorIndex.isNil ) {
+
+						nextOperatorIndex = currentIndex;
+
+					};
+
+
+					if( nextOperatorIndex != currentIndex, {
+
+						charsToRead = nextOperatorIndex - group.find(operator) - 1;
+
+					}, {
+
+						// if nextOperatorIndex is nil :
+
+						charsToRead = group.size - nextOperatorIndex - 1;
+
+					});
 
 				}, {
 
-					// if nextOperatorIndex is nil :
+					// if there are repetitions
 
-					charsToRead = group.size - nextOperatorIndex - 1;
+					operatorValue = repetitions;
+
+				});
+
+
+				charsToRead.do({|index|
+
+					if ( index + currentIndex < group.size ) {
+
+						operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
+
+					}
 
 
 				});
 
-			}, {
-
-				// if there are repetitions
-
-				operatorValue = repetitions;
-
-			});
 
 
-			charsToRead.do({|index|
-
-				if ( index + currentIndex < group.size ) {
-
-					operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
-
-				}
-
+				parameters[operator] = operatorValue;
+				parameters['val'] = groupValue;
 
 			});
 
+		};
 
-			parameters[operator] = operatorValue;
+		if( operators.size <= 0 ) {
 
-		});
+			parameters['val']=group;
 
+		}
 
 		^parameters;
 
@@ -265,7 +315,7 @@ I8TParser {
 
 
 
-	getOperatorRepetitions {|string,char|
+	*getOperatorRepetitions {|string,char|
 
 		var indexes = string.findAll( char );
 
@@ -278,7 +328,7 @@ I8TParser {
 		^operatorValue
 	}
 
-	areIndexesSequential {|indexes|
+	*areIndexesSequential {|indexes|
 
 		var areSequential=true;
 
@@ -298,6 +348,89 @@ I8TParser {
 
 
 		^areSequential;
+
+	}
+
+
+
+	*getEventsList{|parameterGroups|
+
+		var events = List.new;
+		var eventsPost = List.new;
+
+
+		parameterGroups.collect({|parameterGroup|
+
+			var event = ();
+
+			parameterGroup.keysValuesDo({|k,v|
+
+
+				switch( k,
+
+					Char.space, {
+
+						event.val= \r;
+						event.repetitions = v;
+
+					},
+
+					'val', {
+						event.val= v;
+
+					},
+					$:, {
+
+						event.duration = v;
+
+					},
+					$*, {
+
+						event.amp = v;
+
+					},
+
+					$x, {
+
+						event.repetitions = v;
+
+					},
+					// {
+					//
+					// 	event.val = v;
+					//
+					// }
+
+				);
+
+
+			});
+
+			events.add(event)
+
+		});
+
+
+		events.collect({|event|
+			if( event.repetitions.notNil, {
+				if( event.repetitions.isInteger ) {
+					if( event.repetitions>0 ) {
+
+						event.repetitions.do({
+							var newEvent = event;
+
+							newEvent.repetitions = nil;
+							eventsPost.add( newEvent );
+						});
+
+					}
+				}
+			}, {
+				eventsPost.add( event );
+			});
+		});
+
+		^eventsPost;
 
 	}
 
