@@ -88,6 +88,9 @@ I8TParser {
 						if( lastChar == Char.space ) {
 							// start new group with a space
 							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
+							if( input.findBackwards( Char.space ) <= index ) {
+								buildingGroupChars = buildingGroupChars ++ Char.space;
+							}
 
 						};
 
@@ -119,7 +122,7 @@ I8TParser {
 
 					if( lastChar == Char.space ) {
 
-						if( char != $: ) {
+						if( char != $:, {
 
 							if( buildingGroupChars.size > 0 ) {
 
@@ -128,7 +131,7 @@ I8TParser {
 
 							};
 
-						};
+						});
 
 					};
 
@@ -402,6 +405,10 @@ I8TParser {
 					// }
 
 				);
+
+				if( event.val.isNil ) {
+					event.val = \r;
+				}
 
 
 			});
