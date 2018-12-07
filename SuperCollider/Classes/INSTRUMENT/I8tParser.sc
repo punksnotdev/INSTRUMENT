@@ -1,5 +1,10 @@
 I8TParser {
+/*
 
+- [ ] implementar reset
+- [ ] implementar grupos
+
+*/
 
 	*new {
 
@@ -154,7 +159,7 @@ I8TParser {
 			this.extractParameters(groupString)
 		});
 
-		parameterGroups.postln;
+		// parameterGroups.postln;
 
 		^this.getEventsList(parameterGroups);
 
@@ -395,7 +400,7 @@ I8TParser {
 					},
 					$*, {
 
-						event.amp = v;
+						event.amplitude = v;
 
 					},
 
@@ -443,7 +448,8 @@ I8TParser {
 			};
 
 
-			event.postln;
+			// event.postln;
+
 			// if( event.repetitions.notNil, {
 			// 	event.repetitions = event.repetitions * nextEventRepetitions;
 			// },{

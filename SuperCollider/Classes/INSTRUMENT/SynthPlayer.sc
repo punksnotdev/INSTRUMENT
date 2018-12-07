@@ -182,6 +182,10 @@ SynthPlayer : Instrument
 				var amp = event.amplitude;
 				var use_synth_parameters;
 
+				if( event.amplitude.isNil ) {
+					amp = 0.5;
+				};
+
 				use_synth_parameters = synth_parameters;
 
 				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {

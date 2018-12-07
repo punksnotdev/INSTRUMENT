@@ -11,19 +11,24 @@ I8Tpattern
 	}
 	init{|pattern_,parameters_|
 
+		pattern_.postln;
+
 		if( pattern_.isString, {
 
 
-			var events = this.parseEventString(pattern_);
+			var events = I8TParser.parse( pattern_ );
+			// var events = this.parseEventString(pattern_);
+
 			// var values = List.new;
 			var patternEvents = List.new;
 
 
-			var amplitudes = events.collect{|e|
-				if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
-			};
+			// var amplitudes = events.collect{|e|
+			// 	if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
+			// };
 
-			events.collect({arg event; event.postln; });
+
+			// events.collect({arg event; ["event:", event].postln; });
 
 			hasDurations = false;
 
@@ -40,24 +45,26 @@ I8Tpattern
 				newPatternEvent.duration = e.duration;
 
 				if( e.val != \r, {
-					newPatternEvent.amplitude = amplitudes[i];
+					newPatternEvent.amplitude = e.amplitude;
 				});
 
 
-				if(e.repetitions.notNil, {
-					e.repetitions.do{
-						// values.add(e.val);
-						patternEvents.add(newPatternEvent);
-					}
-				}, {
+				// if(e.repetitions.notNil, {
+				// 	e.repetitions.do{
+				// 		// values.add(e.val);
+				// 		patternEvents.add(newPatternEvent);
+				// 	}
+				// }, {
 					// values.add(e.val);
 					patternEvents.add(newPatternEvent);
-				});
+				// });
 
 			});
 
+
 			// pattern = values.asArray;
 			pattern = patternEvents.asArray;
+			pattern.postln;
 
 		}, {
 
@@ -85,6 +92,7 @@ I8Tpattern
 
 
 
+
     parseEventString {|input|
 
         var spaces;
@@ -93,30 +101,26 @@ I8Tpattern
 
         events = List.new;
 
-        // spaces = input.findAll(" ");
+        spaces = input.findAll(" ");
 
         input.size.do({|i|
             var char = input[i];
 
 	        if( currentGroup == nil, {
 
-// detect if time fraction after rests
-
                 if( char.asString.compare(" ") == 0, {
-"add space rest".postln;
+
 					events.add( ( val: \r ) );
 
                 },
                 {
-
-				    // not a space
+                    // not a space
                     currentGroup = ();
 
                     // currentGroup.index = i;
                     currentGroup.chars = List[char];
 
 					if( i == (input.size - 1), {
-"close end group".postln;
 						events.add( this.closeEventGroup(currentGroup) );
 						currentGroup = nil;
 					});
@@ -125,132 +129,41 @@ I8Tpattern
             }, {
 
                 // if currentGroup not Nil,
-
-				// if last item
                 if( ( i == (input.size - 1)), {
 
 					if( char.asString.compare(" ") != 0,  {
 						currentGroup.chars.add( char );
 					});
 
-					["close group end char", currentGroup].postln;
-
 					events.add( this.closeEventGroup(currentGroup) );
 					currentGroup = nil;
 
 					if( char.asString.compare(" ") == 0,  {
-
-						"add space rest when last".postln;
-
 						events.add( ( val: \r ) );
                     });
 
 
                 }, {
-					// not last item
 
 					if(char.asString.compare(" ") == 0, {
 
+						events.add( this.closeEventGroup(currentGroup) );
+						currentGroup = nil;
 
 						if( input[i+1].asString.compare(" ") == 0, {
 
-
-							var hasRestDuration;
-							var restDurationIndex;
-							var testStringLength;
+							var areAllNextCharsSpaces = true;
 
 
-
-
-							restDurationIndex = input.find(" :");
-
-
-
-							if( restDurationIndex.notNil, {
-								var testString = "";
-
-								restDurationIndex = restDurationIndex + 1;
-
-								testStringLength = restDurationIndex - i;
-
-								testStringLength.do{|a|
-
-									testString = testString ++ " ";
-
-								};
-
-								hasRestDuration = testString.asString.matchRegexp( input, i, restDurationIndex );
-["restDurationIndex",restDurationIndex].postln;
-								if( hasRestDuration, {
-
-									var nextSpace = input.find(" ", offset: restDurationIndex);
-
-									var upperLimit = nextSpace;
-
-									var totalChars;
-
-									var durationValue = "";
-
-
-									if( nextSpace.isNil ) {
-										upperLimit = input.size - 1;
-									};
-
-									totalChars = upperLimit - restDurationIndex;
-
-
-									totalChars.do{|i|
-										durationValue = durationValue ++ input[restDurationIndex+1+i];
-									};
-
-									durationValue = durationValue.asFloat;
-
-									["durationValue",durationValue].postln;
-
-									"add space with duration".postln;
-
-							 		events.add( ( val: \r, duration: durationValue ) );
-
-								}, {
-// when ': ' not immediately after current index char group of spaces
-
-
-"add rest".postln;
-
-									// events.add( ( val: \r ) );
-
-									events.add( this.closeEventGroup(currentGroup) );
-									currentGroup = nil;
-
-
-								});
-
-
-
-
-							}, {
-
-								var areAllNextCharsSpaces = true;
-
-
-								(input.size - (i+1)).do{|j|
-									if( input[ (input.size-1) - j].asString.compare(" ") != 0, {
-										areAllNextCharsSpaces = false;
-									})
-								};
-
-
-								if( areAllNextCharsSpaces, {
-
-									"all next spaces".postln;
-
-									events.add( ( val: \r ) );
+							(input.size - (i+1)).do{|j|
+								if( input[ (input.size-1) - j].asString.compare(" ") != 0, {
+									areAllNextCharsSpaces = false;
 								})
+							};
 
-							});
-
-
-
+							if( areAllNextCharsSpaces, {
+								events.add( ( val: \r ) );
+							})
 
 						})
 
@@ -285,6 +198,7 @@ I8Tpattern
 
 			newGroup.val = splitStr[0].asFloat;
 
+
 			if( splitStr[1].find("/").notNil, {
 
 				var fraction1, fraction2;
@@ -317,8 +231,6 @@ I8Tpattern
 			newGroup.amplitude = this.getAmplitude( str );
 
 		});
-
-		"return new group".postln;
 
 		^newGroup;
 
@@ -381,7 +293,6 @@ I8Tpattern
 		^operatorValue;
 
 	}
-
 	getOperatorRepetitions {|string,char|
 
 		var indexes = string.findAll( char );
@@ -394,7 +305,6 @@ I8Tpattern
 
 		^operatorValue
 	}
-
 	getOperatorParameter {|string,char|
 
 		var indexes = string.findAll( char );
@@ -410,9 +320,7 @@ I8Tpattern
 		operatorValue = operatorValueStr.reverse.asInteger;
 
 		^operatorValue
-
 	}
-
 
 
 	areIndexesSequential {|indexes|
@@ -450,7 +358,6 @@ I8Tpattern
 		});
 
 		^isBefore;
-		
 	}
 
 }
