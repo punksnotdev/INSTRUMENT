@@ -133,9 +133,6 @@ ParameterTrack
 
 						if( durationSequencer.isPlaying == false, {
 							durationSequencer.play;
-							("-------------------------").postln;
-							("start sequencer:"++currentPattern.hasDurations).postln;
-							("-------------------------").postln;
 						});
 
 

@@ -256,9 +256,17 @@ INSTRUMENT
 
 			smthng.collect({
 				arg itemName;
-				if( nodes[itemName].notNil ) {
+
+				// if item name is a node, add it
+				if( nodes[itemName].notNil, {
 					newGroup.add( nodes[itemName] );
-				}
+				}, {
+					// if item name is a group
+					if( groups[itemName].notNil, {
+						// add its items
+						newGroup.add( groups[itemName] );
+					});
+				});
 			});
 
 			groups[key] = newGroup;
