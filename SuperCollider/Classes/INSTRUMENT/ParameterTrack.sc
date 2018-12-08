@@ -150,6 +150,7 @@ ParameterTrack
 
 						beatValue = currentPattern.pattern[ beatPatternIndex ];
 
+
 						if( beatValue.val != \r, {
 
 							track.instrument.trigger( name, beatValue.val );

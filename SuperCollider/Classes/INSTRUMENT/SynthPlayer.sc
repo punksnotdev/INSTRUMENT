@@ -272,11 +272,15 @@ SynthPlayer : Instrument
 
 			},
 			\trigger, {
-				if( value.val > 0 ) {
+				["value",value.val,value.val.isKindOf(String)].postln;
+
+				if( value.val.asFloat > 0 ) {
 
 					var amp = value.val;
 					var use_synth_parameters;
 					use_synth_parameters = synth_parameters;
+					["should create synth", value.val.isKindOf(String),value.val>0].postln;
+
 
 					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
 						var computed_params;
@@ -285,7 +289,6 @@ SynthPlayer : Instrument
 						computed_params.removeAt(\amp);
 						use_synth_parameters = computed_params;
 					});
-
 					this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(use_synth_parameters));
 				}
 			},

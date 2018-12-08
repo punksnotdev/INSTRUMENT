@@ -23,9 +23,9 @@ I8Tpattern
 			var patternEvents = List.new;
 
 
-			// var amplitudes = events.collect{|e|
-			// 	if( e.amplitude.isNil, { 0.5; }, { e.amplitude; });
-			// };
+			events.collect{|e|
+				if( e.amplitude.isNil, { e.amplitude=0.5; });
+			};
 
 
 			// events.collect({arg event; ["event:", event].postln; });
@@ -35,14 +35,21 @@ I8Tpattern
 
 			events.collect({|e,i|
 
+				if( e.duration.notNil) {
+					hasDurations = true;
+					"has Durations".postln;
+				};
+
+			});
+
+			events.collect({|e,i|
+
 				var newPatternEvent = ();
 
-				if( e.hasDurations == true, {
-					hasDurations = true;
-				});
-
 				newPatternEvent.val = e.val;
+				// newPatternEvent.val = ( val: e.val );
 				newPatternEvent.duration = e.duration;
+
 
 				if( e.val != \r, {
 					newPatternEvent.amplitude = e.amplitude;
@@ -64,7 +71,7 @@ I8Tpattern
 
 			// pattern = values.asArray;
 			pattern = patternEvents.asArray;
-			pattern.postln;
+			["new pattern",pattern].postln;
 
 		}, {
 

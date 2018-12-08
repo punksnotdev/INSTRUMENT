@@ -85,6 +85,7 @@ Sequencer : I8TNode
 
 					instrument_tracks.collect({|track|
 						track.fwd( i );
+						
 					});
 
 				});
