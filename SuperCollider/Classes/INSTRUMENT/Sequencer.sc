@@ -149,6 +149,7 @@ Sequencer : I8TNode
 
 
 		^(
+			track: track,
 			beats:patternEvent.pattern.totalDuration,
 			param:parameter,
 			key:key,

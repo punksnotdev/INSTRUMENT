@@ -42,9 +42,9 @@ INSTRUMENT
 
 	addNode {|node|
 		if( node.name.isNil) {
-				node.name = nextKey;
-				["addNode:", node, node.name].postln;
+			node.name = nextKey;
 		};
+
 		if( node.name != "rootNode", {
 
 			nodes[node.name] = node;
@@ -223,21 +223,29 @@ INSTRUMENT
 
 
 	at{|key|
-		nextKey = key;
-		^nodes[key]
+
+		var node;
+
+		if( nodes[key].notNil, {
+			node = nodes[key]
+		});
+
+		^node
 
 	}
 
 	put{|key,smthng|
+		var node;
+
+		nextKey = key;
 
 		if( smthng.isKindOf(I8TNode), {
-			// nextKey = key;
-			this.addNode(smthng);
+			this.addNode(smthng,key);
 			nodes[key] = smthng;
-			^nodes[key]
+			node = nodes[key]
 		});
 
-		^nil
+		^node
 
 	}
 

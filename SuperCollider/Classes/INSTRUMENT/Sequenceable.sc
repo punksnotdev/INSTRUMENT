@@ -42,8 +42,6 @@ Sequenceable : I8TNode
 		};
 
 
-
-
 		^sequencer.addPattern(
 			name,
 			parameter,
@@ -86,9 +84,10 @@ Sequenceable : I8TNode
 	}
 
 	go{ |time|
-		sequencer.postln;
-		^sequencer.instrument_tracks[name].parameterTracks.collect{|track|
-			track.go(time)
+		if( time.isKindOf(Number)) {
+			^sequencer.instrument_tracks[name].parameterTracks.collect{|track|
+				track.go(time)
+			};
 		};
 	}
 
@@ -99,8 +98,10 @@ Sequenceable : I8TNode
 
 
 	speed_{|sp_|
-		speed = sp_;
-		sequencer.setSpeed(name,speed);
+		if( speed.isKindOf(Number)) {
+			speed = sp_;
+			sequencer.setSpeed(name,speed);
+		}
 	}
 
 

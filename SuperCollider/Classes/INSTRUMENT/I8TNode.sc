@@ -39,7 +39,8 @@ I8TNode : I8TeventListener
 		newKey = name_;
 
 		if( name_.isNil && nodeGraph_.notNil ) {
-			newKey = nodeGraph_.nextKey;
+
+			newKey = UniqueID.next//nodeGraph_.nextKey;
 		};
 
 		if( name_.isNil && nodeGraph_.isNil ) {
