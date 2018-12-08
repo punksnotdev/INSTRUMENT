@@ -117,15 +117,17 @@ SynthPlayer : Instrument
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 				synth.register;
 			}, {
+				var initNodeID = nodeID;
+				// s.sendBundle(0,["/n_free",nodeID]);
+				// if( synth.isPlaying, {
+					initNodeID = s.nextNodeID;
+					// synth.release;
+				// });
 
-				s.sendBundle(0,["/n_free",nodeID]);
-				if( synth.isPlaying, {
-					synth.free;
-				});
-				synth = Synth.basicNew( synthdef.asSymbol, s, nodeID );
+				synth = Synth.basicNew( synthdef.asSymbol, s, initNodeID );
 				synth.register;
 				synths.add(synth);
-				nodeIDs[nodeID]=true;
+				nodeIDs[initNodeID]=true;
 				// [[\out,fxBus]++parameters].postln;
 				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
 				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
@@ -279,7 +281,7 @@ SynthPlayer : Instrument
 					var amp = floatValue;
 					var use_synth_parameters;
 					use_synth_parameters = synth_parameters;
-					["should create synth", floatValue.isKindOf(String),floatValue>0].postln;
+					// ["should create synth", floatValue.isKindOf(String),floatValue>0].postln;
 
 
 					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {

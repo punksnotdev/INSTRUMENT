@@ -7,7 +7,7 @@ SynthDef(\distPad, {
 
 	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * 33.33 ).tanh, freq*2, 0.35 ).tanh / 4;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
 
 	sig = sig * env;
 
@@ -26,7 +26,7 @@ SynthDef(\distPad2, {
 
 	sig = (sig*1.3).tanh / 3;
 
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
 
 	sig = sig * env;
 
@@ -47,7 +47,7 @@ SynthDef(\distPad3, {
 	);
 
 	sig = (sig * 1.33).tanh / 4;
-	env = EnvGen.kr( Env.perc(att,rel), doneAction: 1 );
+	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
 
 	sig = sig * env;
 

@@ -420,7 +420,6 @@ I8TParser {
 
 
 			});
-
 			if( event.duration.notNil, {
 				if( nextEventDuration.notNil ) {
 					if( event.val.isNil, {
@@ -430,7 +429,12 @@ I8TParser {
 					});
 				}
 			},{
-				event.duration = nextEventDuration;
+				if( nextEventDuration.notNil, {
+					event.duration = nextEventDuration;
+				}, {
+					event.duration = 1;
+				});
+
 			});
 
 			if( event.val.isNil ) {

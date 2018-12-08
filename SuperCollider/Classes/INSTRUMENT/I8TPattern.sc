@@ -5,20 +5,21 @@ I8TPattern
 	var <>pattern;
 
 	var <hasDurations;
+	var <totalDuration;
 
 	*new{|pattern_,parameters_|
 		^super.new.init(pattern_,parameters_);
 	}
+
 	init{|pattern_,parameters_|
 
-		pattern_.postln;
+		totalDuration = 0;
 
 		if( pattern_.isString, {
 
 
 			var events = I8TParser.parse( pattern_ );
 			// var events = this.parseEventString(pattern_);
-
 			// var values = List.new;
 			var patternEvents = List.new;
 
@@ -37,41 +38,37 @@ I8TPattern
 
 				if( e.duration.notNil) {
 					hasDurations = true;
-					"has Durations".postln;
 				};
 
 			});
 
-			events.collect({|e,i|
+			patternEvents = events.collect({|e,i|
 
 				var newPatternEvent = ();
 
 				newPatternEvent.val = e.val;
 				// newPatternEvent.val = ( val: e.val );
-				newPatternEvent.duration = e.duration.asFloat;
-
-
-				if( e.val != \r, {
-					newPatternEvent.amplitude = e.amplitude.asFloat;
+				if( e.duration.notNil, {
+					newPatternEvent.duration = e.duration.asFloat;
+				}, {
+					newPatternEvent.duration = 1;
 				});
 
 
-				// if(e.repetitions.notNil, {
-				// 	e.repetitions.do{
-				// 		// values.add(e.val);
-				// 		patternEvents.add(newPatternEvent);
-				// 	}
-				// }, {
-					// values.add(e.val);
-					patternEvents.add(newPatternEvent);
-				// });
+				if( e.val != \r, {
+					if( e.amplitude.notNil ) {
+						newPatternEvent.amplitude = e.amplitude.asFloat;
+					};
+				});
+
+
+				newPatternEvent
 
 			});
 
 
 			// pattern = values.asArray;
 			pattern = patternEvents.asArray;
-			["new pattern",pattern].postln;
 
 		}, {
 
@@ -93,7 +90,17 @@ I8TPattern
 
 		});
 
+
 		parameters = parameters_;
+
+		totalDuration = pattern.collect({|event| event.duration }).sum;
+
+		"".postln;
+		"------------------------".postln;
+		("BEATS: "++totalDuration).postln;
+		"------------------------".postln;
+		"".postln;
+
 	}
 
 

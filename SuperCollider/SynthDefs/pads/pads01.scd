@@ -8,7 +8,7 @@ SynthDef(\pad_crickets, {
   sig = sig * LFNoise2.kr(3,4,4.1);
   sig = sig.tanh;
 
-  env = EnvGen.kr( Env.perc(att,rel), gate, doneAction: 1 );
+  env = EnvGen.kr( Env.perc(att,rel), gate, doneAction: 2 );
   sig = sig * (amp*env);
 
   pan = SinOsc.kr(1/8);

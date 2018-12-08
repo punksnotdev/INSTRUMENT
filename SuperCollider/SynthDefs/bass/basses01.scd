@@ -27,7 +27,7 @@ SynthDef(\bass_wobbleRing, {
 
   sig = sig+ (RLPF.ar((WhiteNoise.ar*LFNoise2.kr(3, 1, 1.6)).tanh,freq*[2,3],q)*2.3).tanh;
 
-  env = EnvGen.kr( Env.perc(att,rel), gate, doneAction: 1 );
+  env = EnvGen.kr( Env.perc(att,rel), gate, doneAction: 2 );
   sig = Mix.new(sig) * (amp*env);
 
   Out.ar( out, Pan2.ar( sig/6, pan ));

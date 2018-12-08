@@ -7,7 +7,7 @@ Marimba
 		var env, signal;
 		var rho, theta, b1, b2;
 
-		env = EnvGen.kr(Env.adsr(0.0001, sustain, sustain/2, 0.3), t_trig, doneAction:1);
+		env = EnvGen.kr(Env.adsr(0.0001, sustain, sustain/2, 0.3), t_trig, doneAction: 2);
 
 		b1 = 1.987 * 0.9889999999 * cos(0.09);
 		b2 = 0.998057.neg;

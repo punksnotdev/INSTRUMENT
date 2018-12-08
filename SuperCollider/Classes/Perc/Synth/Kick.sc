@@ -19,7 +19,7 @@ Kick
 
 		var sig,cmp;
         sig = LPF.ar( SinOsc.ar( 60, pi/2 ) * 8, 500 );
-        sig = sig * EnvGen.kr(Env.perc(1/20,1/2),t_trig,doneAction: 1);
+        sig = sig * EnvGen.kr(Env.perc(1/20,1/2),t_trig,doneAction: 2);
         cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08) ! 2;
         ^Out.ar(0,Pan2.ar(cmp * (10.dbamp * 0.25),0));
 
@@ -31,7 +31,7 @@ Kick
 				SinOsc.ar(Mix(60,82,280),0,amp2/2)+
 				LFTri.ar(Pulse.ar(modFreq,modbw,freq1,freq2),0,amp2/3),lowcutfreq,0.75);
 			kick=CompanderD.ar(kick,0.5,0.59,0.8,0.01,0.52);
-			env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:1);
+			env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction: 2);
 			^Pan2.ar(kick*env,[-1,0.98]);
 		}
 
@@ -43,7 +43,7 @@ Kick
 						 bw,amp/4),
         		    lowcutfreq,0.5);
         		kick=CompanderD.ar(kick,0.6,0.59,0.8);
-        		env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction:1);
+        		env=EnvGen.ar(Env.perc(att,rel),t_trig,doneAction: 2);
     		^Pan2.ar(kick*env,[-1,0.98]);
 		}
 

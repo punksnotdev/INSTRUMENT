@@ -8,7 +8,7 @@ SynthDef(\hh2, {
     var snd;
 
     // noise -> resonance -> expodec envelope
-    noiseAmp = EnvGen.ar(Env.perc(0.001, 0.3, curve: -8), doneAction:1);
+    noiseAmp = EnvGen.ar(Env.perc(0.001, 0.3, curve: -8), doneAction: 2);
     noise = Mix(BPF.ar(ClipNoise.ar, [4010, 4151], [0.15, 0.56], [1.0, 0.6])) * 0.7 * noiseAmp;
 
     snd = noise;
@@ -24,7 +24,7 @@ SynthDef(\hhOpen, {|amp=0.5,out=0|
     hatnoise = {LPF.ar(WhiteNoise.ar(1),6000)};
 
     hatosc = {HPF.ar(hatnoise,2000)};
-    hatenv = {Line.ar(1, 0, 0.3,doneAction:1)};
+    hatenv = {Line.ar(1, 0, 0.3,doneAction: 2)};
 
     hatoutput = (hatosc * hatenv);
 
@@ -42,7 +42,7 @@ SynthDef(\hhClosed, {|amp=0.5,out=0|
     hatnoise = {LPF.ar(WhiteNoise.ar(1),6000)};
 
     hatosc = {HPF.ar(hatnoise,2000)};
-    hatenv = {Line.ar(1, 0, 0.1,doneAction:1)};
+    hatenv = {Line.ar(1, 0, 0.1,doneAction: 2)};
 
     hatoutput = (hatosc * hatenv);
 

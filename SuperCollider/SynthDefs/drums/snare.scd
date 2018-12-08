@@ -12,7 +12,7 @@
        popAmp = EnvGen.ar(Env.perc(0.001, 0.11)) * 0.7;
        pop = SinOsc.ar(popFreq) * popAmp;
        // bandpass-filtered white noise
-       noiseAmp = EnvGen.ar(Env.perc(0.001, 0.15), doneAction: 1);
+       noiseAmp = EnvGen.ar(Env.perc(0.001, 0.15), doneAction: 2);
        noise = BPF.ar(WhiteNoise.ar, 810, 1.6) * noiseAmp;
 
        snd = (pop + noise) * 1.3;
@@ -24,12 +24,12 @@ SynthDef(\snare2, {|amp=0.5,out=0|
    var drumosc, filterenv, volenv, drumoutput, snaposc, snapenv, fulloutput;
 
    drumosc = {((Pulse.ar(100)+WhiteNoise.ar)*3).tanh};
-   filterenv = {Line.ar(1, 0, 0.2, doneAction: 1)};
-   volenv = {Line.ar(1, 0, 0.6, doneAction: 1)};
+   filterenv = {Line.ar(1, 0, 0.2, doneAction: 2)};
+   volenv = {Line.ar(1, 0, 0.6, doneAction: 2)};
    drumoutput = {LPF.ar(drumosc,(filterenv *1000) + 30)};
 
    snaposc = {BPF.ar(HPF.ar(WhiteNoise.ar(1),500),1500)};
-   snapenv = {Line.ar(1, 0, 0.2, doneAction: 1)};
+   snapenv = {Line.ar(1, 0, 0.2, doneAction: 2)};
 
    fulloutput = (drumoutput * volenv) + (snaposc * snapenv);
    //fulloutput = (drumoutput * volenv);

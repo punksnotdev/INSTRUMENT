@@ -87,7 +87,6 @@ ParameterTrack
 					if( beatValue.duration.notNil, {
 
 						dur = beatValue.duration.asFloat;
-["dur vaue ahead": dur].postln;
 					});
 
 					if( this.currentEvent().parameters[\speed] != nil, {
