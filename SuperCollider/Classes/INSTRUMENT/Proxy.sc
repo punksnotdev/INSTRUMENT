@@ -2,6 +2,7 @@ Proxy : Instrument
 {
 
 	var <proxy;
+	var amp;
 
 	*new{|proxy_|
 		^super.new.init(this.graph,proxy_);
@@ -76,6 +77,17 @@ Proxy : Instrument
 
 	set {|parameter,value|
 		proxy.set( parameter, value );
+	}
+
+	amp_ {|value|
+		proxy.set( \amp, value );
+	}
+
+	amp {|value|
+		if( value.notNil ) {
+			proxy.set( \amp, value );			
+		};
+		^amp;
 	}
 
 

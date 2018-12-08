@@ -3,6 +3,8 @@ SynthPlayer : Instrument
 	var group;
 	var groupID;
 
+	var amp;
+
 	var nodeID;
 	var nodeIDs;
 	var <synthdef;
@@ -354,6 +356,21 @@ SynthPlayer : Instrument
 		});
 
 		synth.set( parameter, value );
+	}
+
+	amp_ {|value|
+
+		synth_parameters[\amp] = value;
+		synth.set( \amp, value );
+
+	}
+
+	amp {|value|
+		if( value.notNil ) {
+			synth_parameters[\amp] = value;
+			synth.set( \amp, value );
+		};
+		^amp;
 	}
 
 	stop {

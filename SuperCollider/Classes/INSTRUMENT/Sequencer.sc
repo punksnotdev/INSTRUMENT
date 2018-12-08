@@ -167,6 +167,7 @@ Sequencer : I8TNode
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|
+		[track,parameter,key,play_parameters].postln;
 		^instrument_tracks[ track ].setPatternParameters(parameter,key,play_parameters);
 	}
 
