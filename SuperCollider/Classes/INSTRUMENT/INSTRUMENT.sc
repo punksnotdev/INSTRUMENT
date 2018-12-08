@@ -8,6 +8,7 @@ INSTRUMENT
 	var <>controllerManager;
 
 	var nodes;
+	var groups;
 
 	var midi;
 
@@ -31,6 +32,7 @@ INSTRUMENT
 		controllerManager = ControllerManager.new(this);
 
 		nodes = IdentityDictionary.new;
+		groups = IdentityDictionary.new;
 
 		nextKey = 0;
 
@@ -224,28 +226,45 @@ INSTRUMENT
 
 	at{|key|
 
-		var node;
-
 		if( nodes[key].notNil, {
-			node = nodes[key]
+			^nodes[key]
 		});
 
-		^node
+		if( groups[key].notNil, {
+			^groups[key]
+		});
 
 	}
 
 	put{|key,smthng|
-		var node;
 
 		nextKey = key;
 
 		if( smthng.isKindOf(I8TNode), {
+			var node;
 			this.addNode(smthng,key);
 			nodes[key] = smthng;
 			node = nodes[key]
+			^node
+
 		});
 
-		^node
+		if( smthng.isKindOf(Collection)) {
+
+			var newGroup = InstrumentGroup.new;
+
+
+			smthng.collect({
+				arg itemName;
+				if( nodes[itemName].notNil ) {
+					newGroup.add( nodes[itemName] );
+				}
+			});
+
+			groups[key] = newGroup;
+			^groups[key];
+		}
+
 
 	}
 

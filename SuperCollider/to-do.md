@@ -1,9 +1,9 @@
 # to do
 
-
-[ ] z.loop(start, end)
-[ ] libreria
-[ ] seqtrackspeed & paramtrackspeed
+- [ ] synthdef automatic prefix from instrument index
+- [ ] z.loop(start, end)
+- [ ] libreria
+- [ ] seqtrackspeed & paramtrackspeed
 
 # Listos
 
