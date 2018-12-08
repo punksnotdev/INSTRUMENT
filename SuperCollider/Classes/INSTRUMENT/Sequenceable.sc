@@ -4,6 +4,8 @@ Sequenceable : I8TNode
 	var <>sequencer;
 	var <speed;
 
+	var nextIndex;
+
 	*new{|name_,graph_|
 		^super.new.init(name_,this.graph);
 	}
@@ -11,6 +13,7 @@ Sequenceable : I8TNode
 	init{|name_,graph_|
 		super.init(name_,graph_);
 		speed = 1;
+		nextIndex = 0;
 		this.play;
 	}
 
@@ -23,14 +26,18 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter,key,pattern,play_parameters|
-		// if( key.isArray, {
-		// 	this.addPattern(nil,pattern,key);
-		// }, {
+	seq {|parameter,pattern,play_parameters,key|
+
+		var seqKey = key;
+
+		if( key.isNil ) {
+			seqKey = nextIndex;
+		};
+
 		^sequencer.addPattern(
 			name,
 			parameter,
-			key,
+			seqKey,
 			pattern,
 			play_parameters
 		);
@@ -90,6 +97,9 @@ Sequenceable : I8TNode
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
 	}
 
-
+	at{|index|
+		nextIndex = index;
+		^this
+	}
 
 }
