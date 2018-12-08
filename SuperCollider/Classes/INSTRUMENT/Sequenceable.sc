@@ -4,16 +4,16 @@ Sequenceable : I8TNode
 	var <>sequencer;
 	var <speed;
 
-	var nextIndex;
+	var nextKey;
 
-	*new{|name_,graph_|
-		^super.new.init(name_,this.graph);
+	*new{|graph_,name_|
+		^super.new.init(this.graph,name_);
 	}
 
-	init{|name_,graph_|
-		super.init(name_,graph_);
+	init{|graph_,name_|
+		super.init(graph_,name_);
 		speed = 1;
-		nextIndex = 0;
+		nextKey = 0;
 		this.play;
 	}
 
@@ -26,13 +26,23 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter,pattern,play_parameters,key|
+	seq {|parameter_,pattern,play_parameters,key|
 
 		var seqKey = key;
+		var parameter = parameter_;
+		if( pattern.isNil ) {
+			if( parameter.isKindOf(String)||parameter.isKindOf(Array) ) {
+				pattern = parameter;
+			};
+			parameter = \trigger;
+		};
 
 		if( key.isNil ) {
-			seqKey = nextIndex;
+			seqKey = nextKey;
 		};
+
+
+
 
 		^sequencer.addPattern(
 			name,
@@ -61,10 +71,14 @@ Sequenceable : I8TNode
 
 
 	play {|position|
-		^sequencer.playInstrument( this, position );
+		if( sequencer.notNil ) {
+			^sequencer.playInstrument( this, position );
+		}
 	}
 	stop {|position|
-		^sequencer.stopInstrument( this );
+		if( sequencer.notNil ) {
+			^sequencer.stopInstrument( this );
+		}
 	}
 
 	go{ |time|
@@ -97,8 +111,8 @@ Sequenceable : I8TNode
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
 	}
 
-	at{|index|
-		nextIndex = index;
+	at{|key|
+		nextKey = key;
 		^this
 	}
 

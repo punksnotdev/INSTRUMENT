@@ -8,13 +8,20 @@ I8TNode : I8TeventListener
 
 	var inputs;
 
-	*new {|name_,graph_|
+	*new {|graph_,name_|
+
+		var newKey=name_;
 
 		if( graph_ != nil, {
+
 			this.initClass(graph_);
-			^super.new.init(name_,graph_);
+
+			^super.new.init(graph_,newKey);
+
 		}, {
-			^super.new.init(name_,this.graph);
+
+
+			^super.new.init(this.graph,newKey);
 		})
 
 	}
@@ -27,9 +34,20 @@ I8TNode : I8TeventListener
 		graph = graph_;
 	}
 
-	init {|name_,nodeGraph_|
+	init {|nodeGraph_,name_|
+		var newKey;
+		newKey = name_;
 
-		name = name_;
+		if( name_.isNil && nodeGraph_.notNil ) {
+			newKey = nodeGraph_.nextKey;
+		};
+
+		if( name_.isNil && nodeGraph_.isNil ) {
+			newKey = UniqueID.next;
+		};
+
+
+		name = newKey;
 		nodeGraph = nodeGraph_;
 
 		if(nodeGraph!=nil,{ nodeGraph.addNode(this) });

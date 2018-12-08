@@ -15,6 +15,8 @@ INSTRUMENT
 
 	var <speed;
 
+	var <nextKey;
+
 
 
 	*new {
@@ -30,14 +32,19 @@ INSTRUMENT
 
 		nodes = IdentityDictionary.new;
 
+		nextKey = 0;
 
-		rootNode = I8TNode.new("rootNode",this);
+		rootNode = I8TNode.new(this,"rootNode");
 
 		this.play;
 
 	}
 
 	addNode {|node|
+		if( node.name.isNil) {
+				node.name = nextKey;
+				["addNode:", node, node.name].postln;
+		};
 		if( node.name != "rootNode", {
 
 			nodes[node.name] = node;
@@ -48,7 +55,8 @@ INSTRUMENT
 				controllerManager.addInstrument( node );
 			})
 
-		})
+		});
+
 	}
 
 	removeNode {|node|
@@ -214,17 +222,19 @@ INSTRUMENT
 	}
 
 
-	at{|index|
-
-		^nodes[index]
+	at{|key|
+		nextKey = key;
+		^nodes[key]
 
 	}
 
-	put{|index,smthng|
+	put{|key,smthng|
 
 		if( smthng.isKindOf(I8TNode), {
-			nodes[index] = smthng;
-			^nodes[index]
+			// nextKey = key;
+			this.addNode(smthng);
+			nodes[key] = smthng;
+			^nodes[key]
 		});
 
 		^nil

@@ -14,7 +14,6 @@ I8TPattern
 	init{|pattern_,parameters_|
 
 		totalDuration = 0;
-
 		if( pattern_.isString, {
 
 
@@ -71,7 +70,7 @@ I8TPattern
 			pattern = patternEvents.asArray;
 
 			totalDuration = pattern.collect({|event| event.duration }).sum;
-			
+
 		}, {
 
 			if( pattern_.isArray, {

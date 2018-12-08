@@ -148,7 +148,6 @@ Sequencer : I8TNode
 		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern,play_parameters);
 
 
-
 		^(
 			beats:patternEvent.pattern.totalDuration,
 			param:parameter,

@@ -20,11 +20,11 @@ SynthPlayer : Instrument
 	var currentPressedKey;
 	var lastPressedKey;
 
-	*new{|name_,synthdef_,mode_=nil|
-		^super.new.init(name_,this.graph,synthdef_,mode_);
+	*new{|synthdef_,mode_,name_|
+		^super.new.init(this.graph,synthdef_,mode_,name_);
 	}
 
-	init{|name_,graph_,synthdef_,mode_=nil|
+	init{|graph_,synthdef_,mode_,name_|
 
 		nodeIDs=IdentityDictionary.new;
 
@@ -39,7 +39,7 @@ SynthPlayer : Instrument
 			mode = \poly;
 		});
 
-		if( name_.notNil && synthdef_.notNil, {
+		if( synthdef_.notNil, {
 			// [name_,synthdef_].postln;
 
 			if(synthdef_.isKindOf(Symbol), {
@@ -53,7 +53,7 @@ SynthPlayer : Instrument
 			fxBus = Bus.audio(Server.local,2);
 			synth_parameters = IdentityDictionary.new;
 			fx_parameters = IdentityDictionary.new;
-			super.init(name_,graph_);
+			super.init(graph_,name_);
 
 		});
 
