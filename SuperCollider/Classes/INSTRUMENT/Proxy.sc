@@ -4,16 +4,16 @@ Proxy : Instrument
 	var <proxy;
 
 	*new{|proxy_|
-		^super.new.init(proxy_,this.graph);
+		^super.new.init(this.graph,proxy_);
 	}
 
-	init{|proxy_,graph_|
-
+	init{|graph_,proxy_|
 		if( proxy_.isKindOf(NodeProxy), {
+			"input is a nodeproxy".postln;
+			proxy_.postln;
 			proxy = proxy_;
-			("proxy.key"++proxy_.key).postln;
 			this.createSynth();
-			super.init(proxy_.key,graph_);
+			super.init(graph_,proxy_.key,);
 		},{
 			"input not a nodeproxy".postln;
 		});
@@ -37,7 +37,11 @@ Proxy : Instrument
 
 	}
 
-	trigger {|parameter,value|
+	trigger {|parameter,event|
+		var value = event;
+		if( event.isKindOf(Event)) {
+			value = event.val.asFloat;
+		};
         //
 		// if( parameter == \note, {
 		// 	proxy.set(\t_trig,1,\note,(octave*12)+value);

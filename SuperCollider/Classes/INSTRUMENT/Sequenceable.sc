@@ -54,7 +54,11 @@ Sequenceable : I8TNode
 
 	}
 	rm {|parameter,key|
-		sequencer.removePattern(name,parameter,key);
+		var rmKey = key;
+		if( key.isNil ) {
+			rmKey = nextKey;
+		};
+		sequencer.removePattern(name,parameter,rmKey);
 	}
 	// set {|pattern,parameters|
 	// 	this.removePattern(pattern);
