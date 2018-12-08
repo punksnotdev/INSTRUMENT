@@ -1,4 +1,4 @@
-I8Tpattern
+I8TPattern
 {
 
 	var <>parameters;
@@ -48,11 +48,11 @@ I8Tpattern
 
 				newPatternEvent.val = e.val;
 				// newPatternEvent.val = ( val: e.val );
-				newPatternEvent.duration = e.duration;
+				newPatternEvent.duration = e.duration.asFloat;
 
 
 				if( e.val != \r, {
-					newPatternEvent.amplitude = e.amplitude;
+					newPatternEvent.amplitude = e.amplitude.asFloat;
 				});
 
 

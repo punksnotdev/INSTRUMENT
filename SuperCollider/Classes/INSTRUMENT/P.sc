@@ -1,3 +1,3 @@
-P : I8Tpattern
+P : I8TPattern
 {
 }

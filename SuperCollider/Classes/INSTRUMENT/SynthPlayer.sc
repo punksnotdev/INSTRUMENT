@@ -179,6 +179,7 @@ SynthPlayer : Instrument
 			\note, {
 				// if is Event, get params
 				var event = value;
+				var note = event.val.asFloat;
 				var amp = event.amplitude;
 				var use_synth_parameters;
 
@@ -205,8 +206,8 @@ SynthPlayer : Instrument
 
 							this.createSynth([
 								\t_trig,1,
-								\freq,((octave*12)+event.val).midicps,
-								\note,(octave*12)+event.val,
+								\freq,((octave*12)+note).midicps,
+								\note,(octave*12)+note,
 								\amp, amp
 								]++this.parameters_array(use_synth_parameters)
 							);
@@ -226,19 +227,19 @@ SynthPlayer : Instrument
 
 								this.createSynth([
 									\t_trig,1,
-									\freq,((octave*12)+event.val).midicps,
-									\note,(octave*12)+event.val,
+									\freq,((octave*12)+note).midicps,
+									\note,(octave*12)+note,
 									\amp, amp
 									]++this.parameters_array(use_synth_parameters)
 								);
 
 							}, {
 
-								pressedKeys[event.val] = true;
+								pressedKeys[note] = true;
 
 								synth.set(\amp,amp);
 								synth.set(\gate,1);
-								synth.set(\freq,event.val.midicps);
+								synth.set(\freq,note.midicps);
 
 							});
 
@@ -253,7 +254,7 @@ SynthPlayer : Instrument
 
 						\mono, {
 
-							pressedKeys.removeAt(event.val);
+							pressedKeys.removeAt(note);
 
 							if(pressedKeys.size<=0, {
 
@@ -272,14 +273,13 @@ SynthPlayer : Instrument
 
 			},
 			\trigger, {
-				["value",value.val,value.val.isKindOf(String)].postln;
+				var floatValue = value.val.asFloat;
+				if( floatValue.asFloat > 0 ) {
 
-				if( value.val.asFloat > 0 ) {
-
-					var amp = value.val;
+					var amp = floatValue;
 					var use_synth_parameters;
 					use_synth_parameters = synth_parameters;
-					["should create synth", value.val.isKindOf(String),value.val>0].postln;
+					["should create synth", floatValue.isKindOf(String),floatValue>0].postln;
 
 
 					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {

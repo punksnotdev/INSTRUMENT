@@ -229,14 +229,14 @@ ParameterTrack
 
 		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).toLower;
 
-		if( pattern.isKindOf(I8Tpattern), {
+		if( pattern.isKindOf(I8TPattern), {
 
 			newEvent = PatternEvent.new( pattern, eventName);
 			// newEvent.pattern = pattern;
 
 		}, {
 
-			newEvent = PatternEvent.new( I8Tpattern(pattern), eventName);
+			newEvent = PatternEvent.new( I8TPattern(pattern), eventName);
 			// newEvent.pattern = P(pattern);
 
 		});
@@ -283,7 +283,7 @@ ParameterTrack
 
 		var eventKey;
 
-		if(key.isKindOf(I8Tpattern),{
+		if(key.isKindOf(I8TPattern),{
 			var pattern;
 			var k;
 
@@ -334,7 +334,7 @@ ParameterTrack
 
 	removePatterns {|pattern|
 
-		if(pattern.isKindOf(I8Tpattern),{
+		if(pattern.isKindOf(I8TPattern),{
 			patterns.collect({|p,k|
 				if(p==k,{
 					patterns[k] = nil;
