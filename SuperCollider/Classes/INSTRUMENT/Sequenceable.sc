@@ -27,7 +27,7 @@ Sequenceable : I8TNode
 		// if( key.isArray, {
 		// 	this.addPattern(nil,pattern,key);
 		// }, {
-		sequencer.addPattern(
+		^sequencer.addPattern(
 			name,
 			parameter,
 			key,

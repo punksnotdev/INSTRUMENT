@@ -73,15 +73,19 @@ SequencerTrack
 
 	addPattern {|parameter,key,pattern,play_parameters|
 
+		var patternEvent;
+
 		if( parameterTracks[ parameter ] == nil, {
 			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter );
 		});
 
-		parameterTracks[ parameter ].addPattern(key,pattern,play_parameters);
+		patternEvent = parameterTracks[ parameter ].addPattern(key,pattern,play_parameters);
 
 		if( playing == true, {
 			parameterTracks[ parameter ].play;
 		});
+
+		^patternEvent;
 
 	}
 

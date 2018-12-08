@@ -273,7 +273,7 @@ ParameterTrack
 
 		this.updateSequenceInfo();
 
-
+		^newEvent;
 		// sequenceInfo.postln;
 
 	}

@@ -70,6 +70,8 @@ I8TPattern
 			// pattern = values.asArray;
 			pattern = patternEvents.asArray;
 
+			totalDuration = pattern.collect({|event| event.duration }).sum;
+			
 		}, {
 
 			if( pattern_.isArray, {
@@ -93,13 +95,8 @@ I8TPattern
 
 		parameters = parameters_;
 
-		totalDuration = pattern.collect({|event| event.duration }).sum;
 
-		"".postln;
-		"------------------------".postln;
-		("BEATS: "++totalDuration).postln;
-		"------------------------".postln;
-		"".postln;
+
 
 	}
 
