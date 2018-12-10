@@ -18,6 +18,10 @@ INSTRUMENT
 
 	var <nextKey;
 
+	var <>autoMIDI;
+	var nextMIDIController;
+
+	var <midiControllers;
 
 
 	*new {
@@ -34,11 +38,16 @@ INSTRUMENT
 		nodes = IdentityDictionary.new;
 		groups = IdentityDictionary.new;
 
+
 		nextKey = 0;
 
 		rootNode = I8TNode.new(this,"rootNode");
 
 		this.play;
+
+		midiControllers = ();
+		autoMIDI = false;
+		nextMIDIController = 0;
 
 	}
 
@@ -238,14 +247,14 @@ INSTRUMENT
 
 	put{|key,smthng|
 
+		var item;
+
 		nextKey = key;
 
 		if( smthng.isKindOf(I8TNode), {
-			var node;
 			this.addNode(smthng,key);
 			nodes[key] = smthng;
-			node = nodes[key]
-			^node
+			item = nodes[key]
 
 		});
 
@@ -270,9 +279,27 @@ INSTRUMENT
 			});
 
 			groups[key] = newGroup;
-			^groups[key];
-		}
 
+			item = groups[key];
+
+		};
+
+		if( autoMIDI == true,{
+
+			if( item.notNil,{
+				var next = midiControllers.inputs[nextMIDIController];
+
+				if( next.notNil,{
+
+					this.map( next, item, \amp,[0,1]);
+					nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.size;
+				});
+
+			});
+
+		});
+
+		^item;
 
 	}
 

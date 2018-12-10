@@ -20,7 +20,7 @@ s.doWhenBooted({
 	i[\clap][1].seq("0 1xxx");
 
 	i[\hihats]=[\hihat1,\hihat2];
-	i[\hihats].speed=1/2;
+	i[\hihats].speed=16;
 	i[\hihats].amp=4;
 
 	i[\hihats].fx=\reverb;
@@ -28,11 +28,11 @@ s.doWhenBooted({
 
 	i[\drums]=[\kick, \snare, \hihats, \clap];
 
+	i[\drums].speed = 0.125;
 	i[\hihats].amp=2;
 	i[\drums].amp = 0.5;
 	i[\hihats].amp=1;
 	i[\drums].amp = 1;
-	i[\drums].speed = 0.5;
 	i[\drums].speed = 8;
 	i[\drums].speed = 1;
 	i[\drums].speed = 1;
@@ -46,6 +46,7 @@ s.doWhenBooted({
 	i[\drums].amp = 1
 	i[\drums].go(0)
 	i[\drums].fx = \reverb
+	
 	i[\drums].setFx(\wet,0.1)
 	i[\drums].setFx(\wet,0.9)
 	i[\drums].setFx(\wet,0.5)
