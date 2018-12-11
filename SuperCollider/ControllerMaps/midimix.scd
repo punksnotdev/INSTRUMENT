@@ -1,6 +1,7 @@
 b = IdentityDictionary.new;
 n = IdentityDictionary.new;
 
+b[\name] = "MIDI Mix";
 
 b[0] = (target: 0, ctlNum: 16);
 b[1] = (target: 0, ctlNum: 17);

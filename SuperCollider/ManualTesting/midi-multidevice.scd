@@ -2,6 +2,7 @@
 
 	var midi;
 	var midiDevicesNames;
+	var specs = IdentityDictionary.new;
 
 	s.boot;
 
@@ -14,21 +15,28 @@
 		i.midi=true;
 		midi = i.controllerManager.midi;
 
+		"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
+
+
+		specs[ b[\name].asSymbol ] = b;
+
 
 		3.wait;
 
-		midiDevicesNames = ["MIDI Mix","USB Axiom 25"];
+		midiDevicesNames = ["MIDI Mix","USB Axiom 25 MIDI 1"];
+
+		midi.addDevices( midiDevicesNames, specs );
 
 
-		MIDIClient.sources.collect({|device|
-			midiDevicesNames.collect({|midiDeviceName|
-				if( device.device == midiDeviceName, {
-					var midiDevice = device;
-					MIDIIn.connect(0, midiDevice);
-					midi.addDevice( midiDevice );
-				});
-			});
-		});
+		// MIDIClient.sources.collect({|device|
+		// 	midiDevicesNames.collect({|midiDeviceName|
+		// 		if( device.device == midiDeviceName, {
+		// 			var midiDevice = device;
+		// 			// MIDIIn.connect(0, midiDevice);
+		// 			midi.addDevice( midiDevice );
+		// 		});
+		// 	});
+		// });
 
 
 
@@ -62,8 +70,6 @@
 		i.midi.usb_axiom_25.groups.ctlPads.addController(\ctlPad4,12);
 
 		m = ();
-
-		"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
 
 
 		m.piano=i.midi.usb_axiom_25.groups.piano.controllers.piano;

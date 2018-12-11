@@ -49,6 +49,8 @@ ControllerManager {
 
 		mappedParam1 = param1;
 
+if( source.midiTarget.notNil,{
+
 		if( source.midiTarget.isKindOf(MIDIDevice), {
 			inputMap = source.midiTarget.inputMap;
 		});
@@ -58,7 +60,7 @@ ControllerManager {
                 mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
             });
         });
-
+});
 
 		if(controller.notNil, {
 
