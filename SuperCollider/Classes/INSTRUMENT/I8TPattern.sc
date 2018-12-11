@@ -79,7 +79,11 @@ I8TPattern
 					if( patternValue.isKindOf(Event), {
 						patternValue;
 					}, {
-						( val: patternValue );
+						if( patternValue.isKindOf(I8TChord), {
+							(val: patternValue.chord)
+						}, {
+							( val: patternValue );
+						});
 					});
 				});
 

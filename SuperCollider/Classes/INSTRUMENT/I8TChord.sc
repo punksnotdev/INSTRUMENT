@@ -1,4 +1,4 @@
-I8Tchord
+I8TChord
 {
 
 	var <>note;
@@ -6,26 +6,39 @@ I8Tchord
 	var <>inversion;
 	var <>add_intervals;
 	var chord;
+	var chordNames;
 
 	*new{|note_,type_,inversion_=0,add_intervals_|
 		^super.new.init(note_,type_,inversion_,add_intervals_);
 	}
 
 	init{|note_,type_,inversion_=0,add_intervals_|
-		note = note_;
-		type = type_;
-		inversion = inversion_;
-		add_intervals=add_intervals_;
+		if( note_.isKindOf( Number), {
+
+			chordNames=[\M, \m, \M7, \m7, \dim, \aug, \Mmaj7, \mmaj7, \M9, \M9m, \m9, \m9m,\sus2,\sus4];
+
+			if( chordNames.includes( type_),
+			{
+
+				note = note_;
+				type = type_;
+				inversion = inversion_;
+				add_intervals=add_intervals_;
+			}, {
+				"Chord type not valid".postln;
+			});
+		}, {
+			"Chord note must be a Number".postln;
+		});
+
 	}
 
-	chord {|type|
+	chord {
 
-		var chordNames, intervals;
+		var intervals;
 		var inversionOctave1;
 		var inversionOctave2;
 		var inversionOctave3;
-
-		["chord make",type].postln;
 
 		inversionOctave1=0;
 		inversionOctave2=0;
@@ -46,7 +59,7 @@ I8Tchord
 			},
 		);
 
-		chordNames=[\M, \m, \M7, \m7, \dim, \aug, \Mmaj7, \mmaj7, \M9, \M9m, \m9, \m9m,\sus2,\sus4];
+
 
 		intervals = [
 		  [

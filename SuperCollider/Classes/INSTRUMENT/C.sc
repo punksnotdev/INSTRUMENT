@@ -1,4 +1,4 @@
-C : I8Tchord
+C : I8TChord
 {
 
 }
