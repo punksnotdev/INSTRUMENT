@@ -298,7 +298,8 @@ SynthPlayer : Instrument
 			},
 			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
 			\chord, {
-				// synth.set(\t_trig,1,\note,(octave*12)+value.val);
+				// ["chord",value].postln;
+				// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
 			},
 			{ // default:
 				synth_parameters[parameter.asSymbol]=value.val;
