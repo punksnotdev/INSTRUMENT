@@ -124,25 +124,35 @@ if( source.midiTarget.notNil,{
 		var mappingAlreadySetKey = nil;
 
 		controlTargetMap.collect({| item, key|
+
 			if( ( item.target == target && item.parameter == parameter ), {
 				mappingAlreadySetKey = key;
 			});
 		});
 
 		if( mappingAlreadySetKey.notNil, {
+			"mapping already set".postln;
 			controlTargetMap.removeAt(mappingAlreadySetKey);
+
+			^true;
+
+		}, {
+
+			controlTargetMap[ controller.key ] = (
+				controller: controller,
+				target: target,
+				parameter: parameter,
+				range: range,
+				key: controller.key,
+				protocol: controller.protocol,
+			);
+
+			^false;
+			
 		});
 
-		controlTargetMap[ controller.key ] = (
-			controller: controller,
-			target: target,
-			parameter: parameter,
-			range: range,
-			key: controller.key,
-			protocol: controller.protocol,
-		);
 
-		^controlTargetMap[ controller.key ];
+
 
 	}
 

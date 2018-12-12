@@ -94,13 +94,15 @@ I8TChord
 		  ], //dim
 		  [
 		  0+inversionOctave1,
-		  3+inversionOctave2,
-		  7+inversionOctave3
+		  4+inversionOctave2,
+		  7+inversionOctave3,
+		  11+inversionOctave3,
 		  ], //Mmaj7
 		  [
-		  1+inversionOctave1,
-		  4+inversionOctave2,
-		  7+inversionOctave3
+		  0+inversionOctave1,
+		  3+inversionOctave1,
+		  7+inversionOctave2,
+		  11+inversionOctave3
 		  ], //mmaj7
 		  [
 		  1+inversionOctave1,

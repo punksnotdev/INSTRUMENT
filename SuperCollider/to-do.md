@@ -1,12 +1,23 @@
 # to do
 
-- [ ] synthdef automatic prefix from instrument index
+
+- [ ] nombres notas
+- [ ] "pppp fff "
+- [ ] chord strings
+  "IIIbsus4"
+  "3sus4"
+
+  "eb c# dbp"
+
+
+
 - [ ] z.loop(start, end)
 - [ ] libreria
 - [ ] seqtrackspeed & paramtrackspeed
 
 # Listos
 
+- [x] synthdef automatic prefix from instrument index
 [x] SynthPlayer: Poly vs Mono
 [x] osc send
 [x] midi note in
