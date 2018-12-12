@@ -26,13 +26,19 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter_,pattern,play_parameters,key|
+	seq {|parameter_,pattern_,play_parameters_,key|
 
 		var seqKey = key;
 		var parameter = parameter_;
-		if( pattern.isNil ) {
+		var pattern = pattern_;
+		var play_parameters = play_parameters_;
+
+		// if first argument not a symbol, its not a parameter. use default 'trigger'
+
+		if( parameter.isKindOf(Symbol) == false ) {
 			if( parameter.isKindOf(String)||parameter.isKindOf(Array) ) {
 				pattern = parameter;
+				play_parameters = pattern;
 			};
 			parameter = \trigger;
 		};
@@ -51,17 +57,27 @@ Sequenceable : I8TNode
 		);
 
 	}
-	rm {|parameter,key|
-		var rmKey = key;
+
+	rm {|parameter_,key_|
+
+		var key = key_;
+		var parameter = parameter_;
+
 		if( key.isNil ) {
-			rmKey = nextKey;
+
+			if( parameter.isKindOf(Symbol) == false, {
+				key = parameter;
+				parameter=\trigger;
+			}, {
+				key = nextKey;
+			});
+
+
 		};
-		sequencer.removePattern(name,parameter,rmKey);
+
+		sequencer.removePattern(name,parameter,key);
+
 	}
-	// set {|pattern,parameters|
-	// 	this.removePattern(pattern);
-	// 	this.seq(pattern,parameters);
-	// }
 
 
 	get {|parameter,key|
