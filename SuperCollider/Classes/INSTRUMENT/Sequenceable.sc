@@ -27,7 +27,6 @@ Sequenceable : I8TNode
 
 
 	seq {|parameter_,pattern_,play_parameters_,key_|
-
 		var key;
 		var parameter;
 		var pattern;

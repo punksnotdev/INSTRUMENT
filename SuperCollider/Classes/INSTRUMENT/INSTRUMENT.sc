@@ -4,6 +4,7 @@ INSTRUMENT
 	var <nodes;
 	var <rootNode;
 
+	var <playing;
 	var <>sequencer;
 	var <>controllerManager;
 
@@ -42,6 +43,7 @@ INSTRUMENT
 		nextKey = 0;
 
 		rootNode = I8TNode.new(this,"rootNode");
+		this.addNode( rootNode );
 
 		this.play;
 
@@ -51,40 +53,39 @@ INSTRUMENT
 
 	}
 
-	addNode {|node|
-		if( node.name.isNil) {
-			node.name = nextKey;
+	addNode {|node,key|
+
+		if( key.isNil) {
+			key = nextKey;
+		};
+
+		if( nodes[key].notNil ) {
+			nodes.removeAt(key);
 		};
 
 		if( node.name != "rootNode", {
 
-			nodes[node.name] = node;
+			node.name = key;
+
+			nodes[key] = node;
 
 			if( node.isKindOf(Sequenceable), {
 				node.sequencer = sequencer;
 				sequencer.registerInstrument(node);
-				controllerManager.addInstrument( node );
+				controllerManager.addInstrument( node, key );
 			})
 
 		});
 
+		^nodes[key]
+
 	}
 
-	removeNode {|node|
-		if( node.name != "rootNode", {
-			nodes[node.name] = node;
 
-			if( node.isKindOf(Sequenceable), {
-				node.sequencer = sequencer;
-				sequencer.unregisterInstrument(node);
-			})
-
-		})
-	}
 
 	free {|node|
 		if( node.isKindOf(Sequenceable), {
-			sequencer.instruments[node.name] = nil;
+			sequencer.unregisterInstrument(node);
 		});
 		nodes[node.name] = nil;
 	}
@@ -94,6 +95,7 @@ INSTRUMENT
 	}
 
 	play {
+		playing = true;
 		sequencer.play;
 	}
 	pause {
@@ -245,25 +247,26 @@ INSTRUMENT
 
 	}
 
-	put{|key,smthng|
+	put{|key,something|
 
 		var item;
 
 		nextKey = key;
 
-		if( smthng.isKindOf(I8TNode), {
-			this.addNode(smthng,key);
-			nodes[key] = smthng;
-			item = nodes[key]
+
+		if( something.isKindOf(I8TNode), {
+
+			item = this.addNode(something,key);
+			item.play;
 
 		});
 
-		if( smthng.isKindOf(Collection)) {
+		if( something.isKindOf(Collection)) {
 
 			var newGroup = InstrumentGroup.new;
 
 
-			smthng.collect({
+			something.collect({
 				arg itemName;
 
 				// if item name is a node, add it
@@ -296,7 +299,7 @@ INSTRUMENT
 					if( shouldIncrement == true ) {
 						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.size;
 					}
-					
+
 				});
 
 			});

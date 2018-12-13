@@ -46,7 +46,6 @@ SequencerTrack
 
 
 	fwd{|i|
-
 		if( playing == true, {
 			parameterTracks.collect({|p|
 				p.fwd(i)

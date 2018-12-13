@@ -38,20 +38,16 @@ I8TNode : I8TeventListener
 		var newKey;
 		newKey = name_;
 
-		if( name_.isNil && nodeGraph_.notNil ) {
-
-			newKey = UniqueID.next//nodeGraph_.nextKey;
-		};
-
-		if( name_.isNil && nodeGraph_.isNil ) {
-			newKey = UniqueID.next;
-		};
-
+		if(nodeGraph_!=nil,{
+			nodeGraph = nodeGraph_;
+			if( name_.isNil ) {
+				newKey = UniqueID.next;
+				// nodeGraph.addNode(this,newKey)
+			};
+		});
 
 		name = newKey;
-		nodeGraph = nodeGraph_;
 
-		if(nodeGraph!=nil,{ nodeGraph.addNode(this) });
 
 		inputs = ();
 

@@ -82,10 +82,8 @@ Sequencer : I8TNode
 				});
 
 				if( playing, {
-
 					instrument_tracks.collect({|track|
 						track.fwd( i );
-
 					});
 
 				});
@@ -147,14 +145,13 @@ Sequencer : I8TNode
 
 		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern,play_parameters);
 
-
 		^(
 			track: track,
 			beats:patternEvent.pattern.totalDuration,
 			param:parameter,
 			key:key,
 			play_params:play_parameters,
-			// event: patternEvent
+			event: patternEvent
 		);
 	}
 
@@ -181,7 +178,7 @@ Sequencer : I8TNode
 	createTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {
-
+["createTrack", instrument.name].postln;
 			if( instrument_tracks[instrument.name] == nil, {
 				instrument_tracks[instrument.name] = SequencerTrack.new(instrument);
 			}, {

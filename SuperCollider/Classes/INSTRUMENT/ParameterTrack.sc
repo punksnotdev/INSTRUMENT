@@ -115,7 +115,6 @@ ParameterTrack
 
 	fwd{|i|
 
-
 		if( playing == true, {
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
@@ -126,7 +125,7 @@ ParameterTrack
 
 				// name.postln;
 
-
+this.currentEvent().postln;
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;

@@ -22,8 +22,8 @@ ControllerManager {
 		instrument = instrument_;
 
 		controllers = IdentityDictionary.new;
-		controllerNames = List.new;
-		instruments = List.new;
+		controllerNames = IdentityDictionary.new;
+		instruments = IdentityDictionary.new;
 		targets = List.new;
 
 		controlTargetMap = IdentityDictionary.new;
@@ -131,7 +131,9 @@ if( source.midiTarget.notNil,{
 		});
 
 		if( mappingAlreadySetKey.notNil, {
-			"mapping already set".postln;
+
+			"Mapping already set".postln;
+
 			controlTargetMap.removeAt(mappingAlreadySetKey);
 
 			^true;
@@ -148,7 +150,7 @@ if( source.midiTarget.notNil,{
 			);
 
 			^false;
-			
+
 		});
 
 
@@ -165,19 +167,47 @@ if( source.midiTarget.notNil,{
 	}
 
 
-	addInstrument {|instrument|
+	addInstrument {|instrument, key|
 
 		var ctlName;
-		var index = instruments.size;
-		instruments.add( instrument );
 
-		if(controllerNames[ index ].notNil, {
 
-			ctlName = controllerNames[ index ];
+		// if( instruments[key].notNil, {
+		// 	this.removeInstrument( instruments[key] );
+		// });
+
+		instruments[key] = instrument;
+
+		if(controllerNames[ key ].notNil, {
+
+			ctlName = controllerNames[ key ];
 
 			controllers[ctlName].target.target = instrument;
 
 		});
+
+	}
+
+
+	removeInstrument {|instrument|
+
+		var ctlName;
+		var index = instrument.name;
+
+		if( index > - 1 ) {
+
+			instruments.removeAt( index );
+
+			if( controllerNames[ index ].notNil, {
+
+				ctlName = controllerNames[ index ];
+
+				controllers[ctlName].target.target = nil;
+
+			});
+
+		}
+
 
 	}
 
