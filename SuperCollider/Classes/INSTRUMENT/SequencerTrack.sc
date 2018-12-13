@@ -72,7 +72,6 @@ SequencerTrack
 	}
 
 	addPattern {|parameter,key,pattern,play_parameters|
-
 		var patternEvent;
 
 		if( parameterTracks[ parameter ] == nil, {
@@ -85,6 +84,7 @@ SequencerTrack
 			parameterTracks[ parameter ].play;
 		});
 
+
 		^patternEvent;
 
 	}
@@ -93,9 +93,26 @@ SequencerTrack
 		parameterTracks[parameter].removePattern(key);
 	}
 
-	getPattern{|parameter,key|
-		parameterTracks[parameter].getPattern(key);
+	removePatterns {|parameter,pattern|
+
+		parameterTracks[parameter].removePatterns(pattern);
+
 	}
+
+	clearPatterns {|parameter|
+		parameterTracks[parameter].clear;
+	}
+
+
+
+	getPattern{|parameter,key|
+		^parameterTracks[parameter].getPattern(key);
+	}
+
+	getPatterns{|parameter,key|
+		^parameterTracks[parameter].getPatterns();
+	}
+
 
 	setPatternParameters{|parameter,key,play_parameters|
 		// if( key.isArray, {}, {
@@ -107,11 +124,6 @@ SequencerTrack
 
 	}
 
-	removePatterns {|parameter,pattern|
-
-		parameterTracks[parameter].removePatterns(pattern);
-
-	}
 
 	speed_{|sp_|
 		speed = sp_;

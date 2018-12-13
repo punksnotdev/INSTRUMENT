@@ -65,11 +65,10 @@ Sequenceable : I8TNode
 
 		if( key.isNil ) {
 
-			if( parameter.isKindOf(Symbol) == false, {
-				key = parameter;
-				parameter=\trigger;
-			}, {
-				key = nextKey;
+			if( parameter.isKindOf(Symbol) == true, {
+
+				// clear all patterns
+				sequencer.clearPatterns(name,\trigger);
 			});
 
 

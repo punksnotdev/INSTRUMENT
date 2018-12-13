@@ -161,9 +161,16 @@ Sequencer : I8TNode
 	removePattern {|track,parameter,key|
 		instrument_tracks[ track ].removePattern(parameter,key);
 	}
+	clearPatterns {|track,parameter|
+		instrument_tracks[ track ].clearPatterns(parameter);
+	}
 
 	getPattern {|track,parameter,key|
 		^instrument_tracks[ track ].getPattern(parameter,key);
+	}
+
+	getPatterns {|track,parameter|
+		^instrument_tracks[ track ].getPatterns(parameter);
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|

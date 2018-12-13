@@ -53,19 +53,22 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
-				if( this.currentEvent().initialWait.isNil, {
 
-					if(this.currentEvent().parameters[\waitBefore].notNil, {
-						(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
-					});
-					this.currentEvent().initialWait = true;
-				});
 				// "duration beat".postln;
 
 
 				if( this.currentEvent().notNil, {
 
 					var channel;
+
+					if( this.currentEvent().initialWait.isNil, {
+
+						if(this.currentEvent().parameters[\waitBefore].notNil, {
+							(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
+						});
+						this.currentEvent().initialWait = true;
+					});
+
 
 					currentPattern = this.currentEvent().pattern;
 
@@ -302,9 +305,9 @@ ParameterTrack
 				eventKey = key;
 				patterns[key] = nil;
 
-				while({patternEvents[eventKey].size>0},{
+				// while({patternEvents[eventKey].size>0},{
 					this.removePatternEvents(key);
-				});
+				// });
 
 			})
 		});
@@ -312,6 +315,39 @@ ParameterTrack
 		this.updateSequenceInfo();
 
 	}
+
+
+	removePatterns {|pattern|
+
+		if(pattern.isKindOf(I8TPattern),{
+			patterns.collect({|p,k|
+				if(p==k,{
+					patterns[k] = nil;
+					// while({patternEvents[k].size>0},{
+						this.removePatternEvents(k);
+					// });
+				})
+			});
+		});
+
+	}
+
+	clear {
+
+		patterns.collect({|p,k|
+
+			this.removePattern(k);
+
+		});
+
+		patterns = IdentityDictionary.new;
+		patternEvents = IdentityDictionary.new;
+		sequence = List.new;
+
+		[patterns,patternEvents].postln;
+	}
+
+
 
 	getPattern{|key|
 
@@ -323,46 +359,38 @@ ParameterTrack
 		});
 	}
 
+	getPatterns{
+		^patterns
+
+	}
+
 	setPattern{|key,play_parameters,pattern|
 		// this.removePattern(pattern);
 		// this.seq(pattern,play_parameters);
 	}
 
-	removePatterns {|pattern|
-
-		if(pattern.isKindOf(I8TPattern),{
-			patterns.collect({|p,k|
-				if(p==k,{
-					patterns[k] = nil;
-					while({patternEvents[k].size>0},{
-						this.removePatternEvents(k);
-					});
-				})
-			});
-		});
-
-	}
-
-
 	removePatternEvents {|key|
 
-		var seqindex;
-		var pattevent;
+		// pattEvent = patternEvents[key].pop;
+		patternEvents[key].collect({|pattEvent|
 
-		pattevent = patternEvents[key].pop;
+			var seqindex;
 
-		sequence.reverseDo({|se,si|
-			if( se == pattevent, {
-				seqindex = (sequence.size-1)-si;
+			sequence.reverseDo({|se,si|
+
+				if( se == pattEvent, {
+					seqindex = (sequence.size-1)-si;
+				});
 			});
-		});
 
-		if(seqindex!=nil, {
-			if(sequence[seqindex]!=nil, {
-				sequence.removeAt(seqindex);
+			if(seqindex.notNil, {
+
+				if(sequence[seqindex].notNil, {
+					sequence.removeAt(seqindex);
+				});
 			});
-		});
 
+		});
 	}
 
 	totalBeats {
