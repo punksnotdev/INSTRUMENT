@@ -26,32 +26,60 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter_,pattern_,play_parameters_,key|
+	seq {|parameter_,pattern_,play_parameters_,key_|
 
-		var seqKey = key;
-		var parameter = parameter_;
-		var pattern = pattern_;
-		var play_parameters = play_parameters_;
+		var key;
+		var parameter;
+		var pattern;
+		var play_parameters;
 
 		// if first argument not a symbol, its not a parameter. use default 'trigger'
 
-		if( parameter.isKindOf(Symbol) == false ) {
-			if( parameter.isKindOf(String)||parameter.isKindOf(Array) ) {
-				pattern = parameter;
-				play_parameters = pattern;
-			};
-			parameter = \trigger;
-		};
+		if( parameter_.isKindOf(Symbol) == true, {
 
-		if( key.isNil ) {
-			seqKey = nextKey;
+			parameter = parameter_;
+
+			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
+
+				pattern = pattern_;
+
+			}, {
+				^nil;
+			});
+
+			if( play_parameters_.isKindOf(Array) ) {
+				play_parameters = play_parameters_;
+			};
+
+		},
+		{
+			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
+
+				pattern = parameter_;
+
+				if( pattern_.isKindOf(Array) ) {
+					play_parameters = pattern_;
+				};
+
+			}, {
+				^nil
+			});
+
+			parameter = \trigger;
+
+		});
+
+		key = key_;
+
+		if( key_.isNil ) {
+			key = nextKey;
 		};
 
 
 		^sequencer.addPattern(
 			name,
 			parameter,
-			seqKey,
+			key,
 			pattern,
 			play_parameters
 		);
@@ -98,7 +126,7 @@ Sequenceable : I8TNode
 		}
 	}
 
-	go{ |time|
+	go{|time|
 		if( time.isKindOf(Number)) {
 			^sequencer.instrument_tracks[name].parameterTracks.collect{|track|
 				track.go(time)
