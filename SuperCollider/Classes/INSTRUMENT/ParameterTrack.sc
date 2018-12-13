@@ -125,7 +125,7 @@ ParameterTrack
 
 				// name.postln;
 
-this.currentEvent().postln;
+
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
@@ -343,7 +343,7 @@ this.currentEvent().postln;
 		patternEvents = IdentityDictionary.new;
 		sequence = List.new;
 
-		[patterns,patternEvents].postln;
+
 	}
 
 

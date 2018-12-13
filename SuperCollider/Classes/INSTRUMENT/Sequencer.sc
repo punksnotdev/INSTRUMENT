@@ -171,14 +171,14 @@ Sequencer : I8TNode
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|
-		[track,parameter,key,play_parameters].postln;
+
 		^instrument_tracks[ track ].setPatternParameters(parameter,key,play_parameters);
 	}
 
 	createTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {
-["createTrack", instrument.name].postln;
+
 			if( instrument_tracks[instrument.name] == nil, {
 				instrument_tracks[instrument.name] = SequencerTrack.new(instrument);
 			}, {

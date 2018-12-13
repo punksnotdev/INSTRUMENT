@@ -4,18 +4,18 @@
       var sig, env;
 
       sig = SinOsc.ar(60,pi/2) ;
-      sig = sig+(Saw.ar(Line.kr(12000,40,1/23),pi/2) / 12);
+      sig = sig+(Saw.ar(Line.kr(12000,40,1/123),pi/2) / 12);
       /*sig = sig + SinOsc.ar([14,24,60,120,444,699,999],0,3).tanh/4;*/
       sig = sig * EnvGen.kr( Env.perc(1/20,1/3), doneAction: 2);
 
       /*sig = (sig*8).tanh * EnvGen.kr( Env.perc(1/20,1/6));*/
-      sig = sig+((RLPF.ar((sig)+WhiteNoise.ar(1),Array.geom(7,90,43),0.5)).tanh/8 * EnvGen.kr( Env.perc(1/20,1/4) ))/8;
+      sig = sig+((RLPF.ar((sig)+WhiteNoise.ar(1/8),Array.geom(7,90,43),0.5)).tanh/8 * EnvGen.kr( Env.perc(1/20,1/4) ))/8;
 
-      sig = sig.tanh!2;
+      sig = (sig*1.3).tanh!2;
 
       /*sig = sig * EnvGen.kr( Env.perc(0.01,1/6), doneAction: 2 ) * 1;*/
 
-      Out.ar( out, Pan2.ar(sig * amp,0)  / 2);
+      Out.ar( out, Pan2.ar(sig * amp,0)/2 );
 
    }).store;
 
@@ -55,9 +55,9 @@
    SynthDef(\kickSimple, {|amp=0.5, out=0|
       var sig,cmp;
       sig = LPF.ar( SinOsc.ar( 60, pi/2 ) * 8, 500 );
-      sig = sig * EnvGen.kr(Env.perc(1/20,1/2),doneAction: 2);
+      sig = sig * EnvGen.kr(Env.perc(1/20,1/4),doneAction: 2);
       cmp = CompanderD.ar(sig, thresh: -20.dbamp, slopeBelow: 1, slopeAbove: 0.3, clampTime: 0.003, relaxTime: 0.08);
-      Out.ar(out,Pan2.ar((cmp * (10.dbamp)) * amp,0) / 2 ) !  2;
+      Out.ar(out,Pan2.ar((cmp * (10.dbamp)) * amp,0) ) !  2;
 
    }).store;
 
@@ -66,7 +66,7 @@
   SynthDef(\kickHard, { |basefreq = 50, envratio = 3, freqdecay = 0.02, ampdecay = 0.5, amp=0.5, out=0|
      var   fenv = EnvGen.kr(Env([envratio, 1], [freqdecay], \exp), 1) * basefreq,
         aenv = EnvGen.kr(Env.perc(0.005, ampdecay), 1, doneAction: 2);
-     Out.ar(out, (SinOsc.ar(fenv, 0.5pi, aenv)  * amp)/ 2);
+     Out.ar(out, (SinOsc.ar(fenv, 0.5pi, aenv)  * amp*1.4).distort);
   }).store;
 
   SynthDef(\kickElectro, {|pan = 0, amp = 1, out=0|
@@ -107,7 +107,7 @@
        snd = RLPF.ar(snd, 8000, 0.7);
        snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction: 2);
        snd = (snd * 0.6).clip(-1, 1);
-       Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
+       Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 3);
    }).store;
 
 
@@ -128,7 +128,7 @@
        snd = snd + (SinOsc.ar(XLine.ar(750, 161, 0.02)) * Env.perc(0.0005, 0.02).ar);
        snd = snd + (SinOsc.ar(XLine.ar(167, 52, 0.04)) * EnvGen.kr(Env.perc(0.0005, 0.3),doneAction: 2));
        snd = snd.tanh;
-       Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp));
+       Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp/1.5));
    }).store;
 
    SynthDef(\kickSyn3, {|amp=0.5, out=0|
