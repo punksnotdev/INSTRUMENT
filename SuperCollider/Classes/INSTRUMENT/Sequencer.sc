@@ -145,14 +145,19 @@ Sequencer : I8TNode
 
 		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern,play_parameters);
 
-		^(
-			track: track,
-			beats:patternEvent.pattern.totalDuration,
-			param:parameter,
-			key:key,
-			play_params:play_parameters,
-			event: patternEvent
-		);
+		if( patternEvent.pattern.totalDuration > 0 ) {
+
+			^(
+				track: track,
+				beats:patternEvent.pattern.totalDuration,
+				param:parameter,
+				key:key,
+				play_params:play_parameters,
+				event: patternEvent
+			);
+
+		}
+		^nil
 	}
 
 	removePattern {|track,parameter,key|

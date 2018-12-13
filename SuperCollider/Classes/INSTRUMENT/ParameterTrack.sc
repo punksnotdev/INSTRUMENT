@@ -80,26 +80,30 @@ ParameterTrack
 
 					// netAddr.sendMsg( channel, beatValue.val );
 
-					if( beatValue != \r, {
+					if( beatValue.notNil ) {
 
-						track.instrument.trigger( name, beatValue );
+						if( beatValue != \r, {
 
-					});
+							track.instrument.trigger( name, beatValue );
+
+						});
 
 
-					if( beatValue.duration.notNil, {
+						if( beatValue.duration.notNil, {
 
-						dur = beatValue.duration.asFloat;
-					});
+							dur = beatValue.duration.asFloat;
+						});
 
-					if( this.currentEvent().parameters[\speed] != nil, {
-						currentSpeed = this.currentEvent().parameters[\speed] * speed;
-						currentSpeed = currentSpeed.max(0.001);
-					}, {
-						currentSpeed = speed;
-					});
+						if( this.currentEvent().parameters[\speed] != nil, {
+							currentSpeed = this.currentEvent().parameters[\speed] * speed;
+							currentSpeed = currentSpeed.max(0.001);
+						}, {
+							currentSpeed = speed;
+						});
 
-					dur = dur / currentSpeed;
+						dur = dur / currentSpeed;
+
+					};
 
 				});
 
@@ -149,18 +153,21 @@ ParameterTrack
 						beatValue = currentPattern.pattern[ beatPatternIndex ];
 
 
-						if( beatValue.val != \r, {
+						if( beatValue.notNil, {
+							if( beatValue.val != \r, {
 
-							track.instrument.trigger( name, beatValue.val );
+								track.instrument.trigger( name, beatValue.val );
 
-						});
+							});
 
 
 
-						if( this.currentEvent().parameters[\speed] != nil, {
-							currentSpeed = this.currentEvent().parameters[\speed] * speed;
-						}, {
-							currentSpeed = speed;
+							if( this.currentEvent().parameters[\speed] != nil, {
+								currentSpeed = this.currentEvent().parameters[\speed] * speed;
+							}, {
+								currentSpeed = speed;
+							});
+
 						});
 
 						beats = beats + 1;

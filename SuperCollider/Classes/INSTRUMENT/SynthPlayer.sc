@@ -155,79 +155,61 @@ SynthPlayer : Instrument
 
 	trigger {|parameter,value|
 
-		if( value.isKindOf(Event) == false, {
-			value = ( val: value, amplitude: 0.5 );
-		});
+		if( value.notNil ) {
 
-		switch( parameter,
 
-			\synthdef, {
-				synthdef = value.val;
-				// synth_parameters = IdentityDictionary.new;
-			},
-			\octave, { octave = value.val },
-			\fx, {
+			if( value.isKindOf(Event) == false, {
+				value = ( val: value, amplitude: 0.5 );
+			});
 
-				this.fx = value.val;
+			switch( parameter,
 
-			},
-			\setFx, {
+				\synthdef, {
+					synthdef = value.val;
+					// synth_parameters = IdentityDictionary.new;
+				},
+				\octave, { octave = value.val },
+				\fx, {
 
-				[parameter,value].postln;
-				// value.val.keysValuesDo({|k,v|
-				// 	[k,v].postln;
-				// 	// fx_parameters[k]=v;
-				// 	// fxSynth.set(k,v);
-				// });
-			},
-			\note, {
-				// if is Event, get params
-				var event = value;
-				var note = event.val.asFloat;
-				var amp = event.amplitude;
-				var use_synth_parameters;
+					this.fx = value.val;
 
-				if( event.amplitude.isNil ) {
-					amp = 0.5;
-				};
+				},
+				\setFx, {
 
-				use_synth_parameters = synth_parameters;
+					[parameter,value].postln;
+					// value.val.keysValuesDo({|k,v|
+					// 	[k,v].postln;
+					// 	// fx_parameters[k]=v;
+					// 	// fxSynth.set(k,v);
+					// });
+				},
+				\note, {
+					// if is Event, get params
+					var event = value;
+					var note = event.val.asFloat;
+					var amp = event.amplitude;
+					var use_synth_parameters;
 
-				if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-					var computed_params;
-					amp = amp * synth_parameters[\amp];
+					if( event.amplitude.isNil ) {
+						amp = 0.5;
+					};
 
-					computed_params = synth_parameters.copy;
-					computed_params.removeAt(\amp);
-					use_synth_parameters = computed_params;
-				});
+					use_synth_parameters = synth_parameters;
 
-				if( amp.asFloat > 0, {
+					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+						var computed_params;
+						amp = amp * synth_parameters[\amp];
 
-					switch(mode,
+						computed_params = synth_parameters.copy;
+						computed_params.removeAt(\amp);
+						use_synth_parameters = computed_params;
+					});
 
-						\poly, {
+					if( amp.asFloat > 0, {
 
-							this.createSynth([
-								\t_trig,1,
-								\freq,((octave*12)+note).midicps,
-								\note,(octave*12)+note,
-								\amp, amp
-								]++this.parameters_array(use_synth_parameters)
-							);
+						switch(mode,
 
-						},
-
-						\mono, {
-
-							if( synth.notNil, {
-
-								if( synth.isPlaying == false, {
-									synth = nil;
-								});
-							});
-
-							if( synth.isNil, {
+							\poly, {
 
 								this.createSynth([
 									\t_trig,1,
@@ -237,78 +219,101 @@ SynthPlayer : Instrument
 									]++this.parameters_array(use_synth_parameters)
 								);
 
-							}, {
+							},
 
-								pressedKeys[note] = true;
+							\mono, {
 
-								synth.set(\amp,amp);
-								synth.set(\gate,1);
-								synth.set(\freq,note.midicps);
+								if( synth.notNil, {
 
-							});
+									if( synth.isPlaying == false, {
+										synth = nil;
+									});
+								});
 
-						}
-					);
+								if( synth.isNil, {
 
+									this.createSynth([
+										\t_trig,1,
+										\freq,((octave*12)+note).midicps,
+										\note,(octave*12)+note,
+										\amp, amp
+										]++this.parameters_array(use_synth_parameters)
+									);
 
-				}, { // note off
+								}, {
 
+									pressedKeys[note] = true;
 
-					switch( mode,
+									synth.set(\amp,amp);
+									synth.set(\gate,1);
+									synth.set(\freq,note.midicps);
 
-						\mono, {
+								});
 
-							pressedKeys.removeAt(note);
-
-							if(pressedKeys.size<=0, {
-
-								synth.set(\gate,0);
-								pressedKeys = IdentityDictionary.new;
-
-							});
-
-						}
-					);
-
-				});
-
+							}
+						);
 
 
-
-			},
-			\trigger, {
-				var floatValue = value.val.asFloat;
-				if( floatValue.asFloat > 0 ) {
-
-					var amp = floatValue;
-					var use_synth_parameters;
-					use_synth_parameters = synth_parameters;
-					// ["should create synth", floatValue.isKindOf(String),floatValue>0].postln;
+					}, { // note off
 
 
-					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-						var computed_params;
-						amp = amp * synth_parameters[\amp];
-						computed_params = synth_parameters.copy;
-						computed_params.removeAt(\amp);
-						use_synth_parameters = computed_params;
+						switch( mode,
+
+							\mono, {
+
+								pressedKeys.removeAt(note);
+
+								if(pressedKeys.size<=0, {
+
+									synth.set(\gate,0);
+									pressedKeys = IdentityDictionary.new;
+
+								});
+
+							}
+						);
+
 					});
-					this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(use_synth_parameters));
-				}
-			},
-			// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
-			\chord, {
-				// ["chord",value].postln;
-				// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
-			},
-			{ // default:
-				synth_parameters[parameter.asSymbol]=value.val;
-				if( value.val.isNil || value.val == 0, {}, { synth.set(parameter.asSymbol,value.val) });
-			},
 
 
-		);
 
+
+				},
+				\trigger, {
+					var floatValue = value.val.asFloat;
+					if( floatValue.asFloat > 0 ) {
+
+						var amp = floatValue;
+						var use_synth_parameters;
+						use_synth_parameters = synth_parameters;
+						// ["should create synth", floatValue.isKindOf(String),floatValue>0].postln;
+
+
+						if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+							var computed_params;
+							amp = amp * synth_parameters[\amp];
+							computed_params = synth_parameters.copy;
+							computed_params.removeAt(\amp);
+							use_synth_parameters = computed_params;
+						});
+						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(use_synth_parameters));
+					}
+				},
+				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
+				\chord, {
+					// ["chord",value].postln;
+					// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
+				},
+				{ // default:
+					synth_parameters[parameter.asSymbol]=value.val;
+					if( value.val.isNil || value.val == 0, {}, { synth.set(parameter.asSymbol,value.val) });
+				},
+
+
+			);
+
+
+		}
 
 	}
 

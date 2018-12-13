@@ -46,6 +46,7 @@ I8TParser {
 						if( buildingGroupChars.compare("")!=0) {
 
 							groupStrings.add( buildingGroupChars );
+
 						};
 
 						buildingGroupChars = "";
@@ -292,22 +293,27 @@ I8TParser {
 
 				});
 
+				if( group.find(operator) + charsToRead < group.size ) {
+					charsToRead.do({|index|
 
-				charsToRead.do({|index|
+						if ( index + currentIndex < group.size ) {
 
-					if ( index + currentIndex < group.size ) {
+							operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
 
-						operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
+						}
+
+
+					});
+
+
+					if( operatorValue.size > 0 ) {
+
+						parameters[operator] = operatorValue;
+						parameters['val'] = groupValue;
 
 					}
 
-
-				});
-
-
-
-				parameters[operator] = operatorValue;
-				parameters['val'] = groupValue;
+				}
 
 			});
 
@@ -318,6 +324,7 @@ I8TParser {
 			parameters['val']=group;
 
 		}
+
 
 		^parameters;
 
