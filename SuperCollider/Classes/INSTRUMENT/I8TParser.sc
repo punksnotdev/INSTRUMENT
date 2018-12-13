@@ -293,7 +293,6 @@ I8TParser {
 
 				});
 
-				if( group.find(operator) + charsToRead < group.size ) {
 					charsToRead.do({|index|
 
 						if ( index + currentIndex < group.size ) {
@@ -306,24 +305,20 @@ I8TParser {
 					});
 
 
-					if( operatorValue.size > 0 ) {
+					parameters[operator] = operatorValue;
+					parameters['val'] = groupValue;
 
-						parameters[operator] = operatorValue;
-						parameters['val'] = groupValue;
 
-					}
-
-				}
 
 			});
 
 		};
 
-		if( operators.size <= 0 ) {
+		// if( operators.size <= 0 ) {
 
 			parameters['val']=group;
 
-		}
+		// }
 
 
 		^parameters;
