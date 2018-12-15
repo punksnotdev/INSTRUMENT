@@ -164,7 +164,7 @@ SynthPlayer : Instrument
 	}
 
 	trigger {|parameter,value|
-		[parameter,value].postln;
+
 		if( value.notNil ) {
 
 
@@ -180,14 +180,12 @@ SynthPlayer : Instrument
 				},
 				\octave, { octave = value.val },
 				\fx, {
-					[parameter,value].postln;
 					this.fx_( value.val );
 
 				},
 				\setFx, {
 
 					value.keysValuesDo({|k,v|
-						[k,v].postln;
 						fx_parameters[k]=v;
 						fxSynth.set(k,v);
 					});

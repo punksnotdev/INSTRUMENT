@@ -7,7 +7,7 @@ ControllerManager {
 	var controllerNames;
 	var <>targets;
 
-	var controlTargetMap;
+	var <controlTargetMap;
 
 	var < midi;
 
@@ -138,23 +138,16 @@ if( source.midiTarget.notNil,{
 
 			^true;
 
-		}, {
-
-			controlTargetMap[ controller.key ] = (
-				controller: controller,
-				target: target,
-				parameter: parameter,
-				range: range,
-				key: controller.key,
-				protocol: controller.protocol,
-			);
-
-			^false;
-
 		});
 
-
-
+		^controlTargetMap[ controller.key ] = (
+			controller: controller,
+			target: target,
+			parameter: parameter,
+			range: range,
+			key: controller.key,
+			protocol: controller.protocol,
+		);
 
 	}
 
@@ -232,17 +225,17 @@ if( source.midiTarget.notNil,{
 				srcNames.add( src.device.asSymbol );
 			});
 
-			if( instrument.gui.notNil, {
-
-				var callback = {|id|
-					midi.addDevice( midi, MIDIClient.sources[id] );
-				};
-
-				instrument.gui.setMIDIDevices(
-					srcNames.asArray, callback
-				);
-
-			});
+			// if( instrument.gui.notNil, {
+			//
+			// 	var callback = {|id|
+			// 		midi.addDevice( midi, MIDIClient.sources[id] );
+			// 	};
+			//
+			// 	instrument.gui.setMIDIDevices(
+			// 		srcNames.asArray, callback
+			// 	);
+			//
+			// });
 
 		 	}}).play;
 

@@ -85,7 +85,7 @@ I8TPattern
 					});
 				});
 
-				["got pattern",pattern].postln;
+				
 
 			}, {
 

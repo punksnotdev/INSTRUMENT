@@ -26,6 +26,7 @@ INSTRUMENT
 
 	var <synths;
 
+var lastMap;
 
 	*new {
 		// rootNode.graph_(this);
@@ -294,16 +295,56 @@ INSTRUMENT
 		if( autoMIDI == true,{
 
 			if( item.notNil,{
-				var next = midiControllers.inputs[nextMIDIController];
+
+				var nextIndex;
+				var next;
+				var shouldIncrement = true;
+
+				controllerManager.controlTargetMap.collect({
+					|mapping,key|
+
+					if( mapping.target.name == item.name ) {
+						shouldIncrement = false;
+
+						 midiControllers.inputs.collect({|input|
+
+							if(input.isKindOf(MIDIController)){
+
+								if(input.key==key) {
+									next=input
+								}
+							}
+
+						});
+
+					}
+
+				});
+
+				if( shouldIncrement == true ) {
+					nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
+					next = midiControllers.inputs[nextMIDIController];
+				};
 
 				if( next.notNil,{
-
-					// var shouldIncrement =
+// 					var controllerKeySet;
+// 					// var shouldIncrement = lastMap.target =
+//
+// 	controllerKeyAlreadySet=false;
+// 	if( lastMap.notNil, {
+//
+// 		if( lastMap.includesKey(name.asSymbol) ) {
+// 			controllerKeyAlreadySet=true;
+// 		};
+//
+// 	});
+//
+// 	l=e;
+//
+// }
 					this.map( next, item, \amp,[0,1]);
 
-					// if( shouldIncrement == true ) {
-						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
-					// }
+
 
 				});
 
