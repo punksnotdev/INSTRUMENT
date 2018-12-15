@@ -42,6 +42,7 @@ I8TGUI {
 		currentPatternViews=VLayout(v);
 		currentPatternViewsList=IdentityDictionary.new;
 		currentPatternViewsList[\track] = TextView();
+		currentPatternViewsList[\pattern] = TextView();
 		currentPatternViewsList[\beats] = TextView();
 		currentPatternViewsList[\param] = TextView();
 		currentPatternViewsList[\key] = TextView();
@@ -99,6 +100,7 @@ I8TGUI {
 		{
 			currentPatternViewsList[\track].string=
 			"track: " ++ currentPattern.track;
+			currentPatternViewsList[\pattern].string="pattern: " ++ currentPattern.pattern;
 			currentPatternViewsList[\beats].string="beats: " ++ currentPattern.beats;
 			currentPatternViewsList[\param].string="param: " ++ currentPattern.param;
 			currentPatternViewsList[\key].string="key: " ++ currentPattern.key;

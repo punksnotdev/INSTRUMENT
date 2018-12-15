@@ -356,7 +356,11 @@ INSTRUMENT
 
 		var trackNames = List.new;
 
-		sequencer.instrument_tracks.keysValuesDo({|k,track| trackNames.add(track.name) });
+		sequencer.instrument_tracks.keysValuesDo({|k,track|
+			if( track.playing == true ) {
+				trackNames.add(track.name)
+			};
+		});
 
 		( trackNames ).postln;
 

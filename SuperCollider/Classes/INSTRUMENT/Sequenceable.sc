@@ -19,6 +19,7 @@ Sequenceable : I8TNode
 	}
 
 	remove{
+		this.stop;
 		this.sequencer.unregisterInstrument(this);
 	}
 
@@ -139,7 +140,7 @@ Sequenceable : I8TNode
 	stop {|position|
 
 		playing = false;
-		
+
 		if( sequencer.notNil ) {
 			^sequencer.stopInstrument( this );
 		}

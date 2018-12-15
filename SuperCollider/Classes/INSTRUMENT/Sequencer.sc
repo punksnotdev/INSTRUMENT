@@ -125,10 +125,13 @@ Sequencer : I8TNode
 
 
 	playInstrument {|instrument, position|
-		^instrument_tracks[instrument.name].play(position);
+		instrument_tracks[instrument.name].play(position);
+		main.displayCurrentTracks();
 	}
+	
 	stopInstrument {|instrument|
-		^instrument_tracks[instrument.name].stop();
+		instrument_tracks[instrument.name].stop();
+		main.displayCurrentTracks();
 	}
 
 
@@ -151,6 +154,7 @@ Sequencer : I8TNode
 		if( patternEvent.pattern.totalDuration > 0 ) {
 			var patternInfo = (
 				track: track,
+				patterns: patterns,
 				beats:patternEvent.pattern.totalDuration,
 				param:parameter,
 				key:key,
