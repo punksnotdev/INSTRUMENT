@@ -164,7 +164,7 @@ SynthPlayer : Instrument
 	}
 
 	trigger {|parameter,value|
-
+		[parameter,value].postln;
 		if( value.notNil ) {
 
 
@@ -180,18 +180,17 @@ SynthPlayer : Instrument
 				},
 				\octave, { octave = value.val },
 				\fx, {
-
-					this.fx = value.val;
+					[parameter,value].postln;
+					this.fx_( value.val );
 
 				},
 				\setFx, {
 
-					[parameter,value].postln;
-					// value.val.keysValuesDo({|k,v|
-					// 	[k,v].postln;
-					// 	// fx_parameters[k]=v;
-					// 	// fxSynth.set(k,v);
-					// });
+					value.keysValuesDo({|k,v|
+						[k,v].postln;
+						fx_parameters[k]=v;
+						fxSynth.set(k,v);
+					});
 				},
 				\note, {
 					// if is Event, get params
@@ -340,7 +339,7 @@ SynthPlayer : Instrument
 				// fxSynth = Synth.new(synthdef_);
 			});
 
-			fxSynth = Synth.new(synthdef_,[\inBus,fxBus]++this.parameters_array(fx_parameters));
+			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
 
 			if( autostart == true ) {
 

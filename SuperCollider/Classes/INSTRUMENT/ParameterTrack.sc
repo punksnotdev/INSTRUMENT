@@ -154,9 +154,17 @@ ParameterTrack
 
 
 						if( beatValue.notNil, {
-							if( beatValue.val != \r, {
+							var theValue;
 
-								track.instrument.trigger( name, beatValue.val );
+							if( beatValue.isKindOf(Event), {
+								theValue = beatValue;
+							}, {
+								theValue = beatValue.val;
+							});
+
+							if( theValue != \r, {
+
+								track.instrument.trigger( name, theValue );
 
 							});
 

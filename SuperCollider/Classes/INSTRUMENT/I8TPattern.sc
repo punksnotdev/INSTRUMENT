@@ -85,6 +85,8 @@ I8TPattern
 					});
 				});
 
+				["got pattern",pattern].postln;
+
 			}, {
 
 				["!!Pattern not recognized",pattern].postln;
