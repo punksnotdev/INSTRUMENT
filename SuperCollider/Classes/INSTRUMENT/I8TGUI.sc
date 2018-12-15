@@ -7,20 +7,23 @@ I8TGUI {
 	var <currentPatternViews;
 	var <currentPatternViewsList;
 
-	var <currentTracks;
-	var <currentTracksView;
+	var <tracks;
+	var <tracksView;
 
-	var <synthdefsList;
-	var <synthdefsListView;
+	var <synthdefs;
+	var <synthdefsView;
 
-	*new {
-		^super.new.init();
+	var main;
+
+	*new {|main_|
+		^super.new.init(main_);
 	}
 
-	init {
+	init {|main_|
 
 		var w,h,v, k;
 
+		main = main_;
 		w = Window(bounds:Rect(1620,0,300,580),scroll:true);
 		h = HLayout();
 		v = VLayout(h);
@@ -33,11 +36,15 @@ I8TGUI {
 		// 	["midi connect", element.value].postln;
 		// };
 
-		synthdefsListView = ListView(bounds:Rect(10,10,300,100));
-		v.add(synthdefsListView);
+		synthdefsView = ListView(bounds: Rect(10,10,300,100));
+		synthdefsView.selectionMode = \extended;
 
-		currentTracksView = ListView(bounds:Rect(10,10,300,100));
-		v.add(currentTracksView);
+		v.add(synthdefsView);
+
+		tracksView = ListView(bounds: Rect(10,10,300,100));
+		tracksView.selectionMode = \extended;
+
+		v.add(tracksView);
 
 		currentPatternViews=VLayout(v);
 		currentPatternViewsList=IdentityDictionary.new;
@@ -54,8 +61,13 @@ I8TGUI {
 		});
 		v.add(currentPatternViews);
 
-		synthdefsListView.action = {|element|
+		synthdefsView.action = {|element|
 			["synthdef select", element.value].postln;
+		};
+
+		tracksView.selectionAction = {|element|
+			["track select", element.value, element.selection].postln;
+			// main.selectPlayingTracks( element.selection );
 		};
 
 
@@ -67,32 +79,39 @@ I8TGUI {
 	}
 
 
-	synthdefsList_ {|list, callback|
+	synthdefs_ {|list, callback|
 
-		synthdefsList = list;
+		synthdefs = list;
 
 		{
-			synthdefsListView.items = list;
-			synthdefsListView.action = callback;
+			synthdefsView.items = list;
+			synthdefsView.action = callback;
 		}.defer;
 
-		^synthdefsList;
+		^synthdefs;
 
 	}
 
 
-	currentTracks_ {|list, callback|
+	tracks_ {|list, callback|
 
-		currentTracks = list;
+		var names = list.collect({arg item; item.name});
 
+		var selection = list.collect({arg item,index; if(item.playing==true) { index } });
+
+
+		tracks = list;
 		{
-			currentTracksView.items = list;
-			currentTracksView.action = callback;
+
+			tracksView.items = ['']++list.collect({arg item; item.name});
+			tracksView.selection = list.collect({arg item,index; if(item.playing==true) { index + 1 } });
+
 		}.defer;
 
-		^currentTracks;
+		^tracks;
 
 	}
+
 
 
 	currentPattern_ {|currentPattern_|

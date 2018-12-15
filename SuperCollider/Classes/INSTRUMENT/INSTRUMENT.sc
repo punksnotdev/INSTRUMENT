@@ -224,7 +224,7 @@ INSTRUMENT
 
 	setupGUI {
 
-		^gui = I8TGUI();
+		^gui = I8TGUI(this);
 
 	}
 
@@ -343,7 +343,7 @@ INSTRUMENT
 
 
 
-		gui.synthdefsList_(newList.asArray, {
+		gui.synthdefs_(newList.asArray, {
 			arg ...args;
 			"synths gui callback:".postln;
 			args.postln;
@@ -352,19 +352,40 @@ INSTRUMENT
 	}
 
 
-	displayCurrentTracks {
+	displayTracks {
 
-		var trackNames = List.new;
+		var tracks = List.new;
 
-		sequencer.instrument_tracks.keysValuesDo({|k,track|
-			if( track.playing == true ) {
-				trackNames.add(track.name)
+		sequencer.instrument_tracks.keysValuesDo({|k,v|
+			var track = ();
+
+			track.name=v.name;
+
+			if( v.playing == true ) {
+				track.playing=true
 			};
+
+			tracks.add(track);
 		});
 
-		( trackNames ).postln;
+		gui.tracks = tracks.asArray;
 
-		gui.currentTracks = trackNames.asArray;
+	}
+
+	selectPlayingTracks{|selection|
+		[selection].postln;
+		sequencer.instrument_tracks.collect({|track,index|
+			if( selection.indexOf(index).notNil, {
+				"play".postln;
+				track.play;
+			}, {
+				// if(track.playing == true) {
+					"stop".postln;
+					track.stop;
+				// }
+			});
+		})
+
 
 	}
 

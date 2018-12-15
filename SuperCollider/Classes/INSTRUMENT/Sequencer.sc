@@ -126,12 +126,12 @@ Sequencer : I8TNode
 
 	playInstrument {|instrument, position|
 		instrument_tracks[instrument.name].play(position);
-		main.displayCurrentTracks();
+		main.displayTracks();
 	}
-	
+
 	stopInstrument {|instrument|
 		instrument_tracks[instrument.name].stop();
-		main.displayCurrentTracks();
+		main.displayTracks();
 	}
 
 
@@ -154,7 +154,7 @@ Sequencer : I8TNode
 		if( patternEvent.pattern.totalDuration > 0 ) {
 			var patternInfo = (
 				track: track,
-				patterns: patterns,
+				pattern: pattern,
 				beats:patternEvent.pattern.totalDuration,
 				param:parameter,
 				key:key,
@@ -208,7 +208,7 @@ Sequencer : I8TNode
 
 		});
 
-		main.displayCurrentTracks();
+		main.displayTracks();
 
 	}
 
@@ -222,9 +222,7 @@ Sequencer : I8TNode
 			instrument_tracks.removeAt(instrument);
 		});
 
-		instrument_tracks.postln;
-
-		main.displayCurrentTracks();
+		main.displayTracks();
 
 
 	}
