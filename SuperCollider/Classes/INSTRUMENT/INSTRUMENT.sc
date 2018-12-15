@@ -24,7 +24,7 @@ INSTRUMENT
 
 	var <midiControllers;
 
-	var <>synths;
+	var <synths;
 
 
 	*new {
@@ -35,7 +35,7 @@ INSTRUMENT
 	init {
 
 		nodes = Dictionary.new;
-		sequencer = Sequencer.new;
+		sequencer = Sequencer.new(this);
 		controllerManager = ControllerManager.new(this);
 
 		nodes = IdentityDictionary.new;
@@ -52,6 +52,8 @@ INSTRUMENT
 		midiControllers = ();
 		autoMIDI = false;
 		nextMIDIController = 0;
+
+		this.setupGUI();
 
 	}
 
@@ -222,7 +224,7 @@ INSTRUMENT
 
 	setupGUI {
 
-		gui = GUII8t();
+		^gui = I8TGUI();
 
 	}
 
@@ -313,5 +315,59 @@ INSTRUMENT
 
 	}
 
+
+	synths_ {|list|
+
+
+		var newList=List.new;
+		var counter = 0;
+
+		// store synths dictionary
+		synths = list;
+
+
+		// convert to array for displaying in a list
+		synths.keysValuesDo({|k,v|
+
+			if( v.isKindOf(Event)) {
+				counter = counter + 1;
+				newList.add(k);
+				counter = counter + 1;
+
+				v.keysValuesDo({|key,value|
+					newList.add(value);
+					counter = counter + 1;
+				});
+			}
+		});
+
+
+
+		gui.synthdefsList_(newList.asArray, {
+			arg ...args;
+			"synths gui callback:".postln;
+			args.postln;
+		});
+
+	}
+
+
+	displayCurrentTracks {
+
+		var trackNames = List.new;
+
+		sequencer.instrument_tracks.keysValuesDo({|k,track| trackNames.add(track.name) });
+
+		( trackNames ).postln;
+
+		gui.currentTracks = trackNames.asArray;
+
+	}
+
+	displayNextPattern {|nextPattern|
+
+		gui.currentPattern = nextPattern;
+
+	}
 
 }

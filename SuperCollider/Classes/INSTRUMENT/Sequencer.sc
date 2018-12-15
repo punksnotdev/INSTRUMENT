@@ -22,14 +22,17 @@ Sequencer : I8TNode
 	var <singleFunctions;
 	var <repeatFunctions;
 
+	var main;
 
-	*new {
+	*new {|main_|
 		// SequencerEvent instances need to have a reference to 'this' (sequencer):
 
-		^super.new.init();
+		^super.new.init(main_);
 	}
 
-	init {
+	init {|main_|
+
+		main = main_;
 
 		SequencerTrack.classSequencer = this;
 		SequencerEvent.classSequencer = this;
@@ -37,7 +40,7 @@ Sequencer : I8TNode
 		singleFunctions = IdentityDictionary.new;
 		repeatFunctions = IdentityDictionary.new;
 
-		instrument_tracks = Dictionary.new();
+		instrument_tracks = IdentityDictionary.new();
 
 		beats = 0;
 		speed = 1;
@@ -146,8 +149,7 @@ Sequencer : I8TNode
 		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern,play_parameters);
 
 		if( patternEvent.pattern.totalDuration > 0 ) {
-
-			^(
+			var patternInfo = (
 				track: track,
 				beats:patternEvent.pattern.totalDuration,
 				param:parameter,
@@ -155,6 +157,10 @@ Sequencer : I8TNode
 				play_params:play_parameters,
 				event: patternEvent
 			);
+
+			main.displayNextPattern(patternInfo)
+
+			^patternInfo;
 
 		}
 		^nil
@@ -197,15 +203,25 @@ Sequencer : I8TNode
 			});
 
 		});
+
+		main.displayCurrentTracks();
+
 	}
 
 	deleteTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {
-			instrument_tracks[instrument.name] = nil;
+			instrument_tracks[instrument.name].stop;
+			instrument_tracks.removeAt(instrument.name);
 		},{
-			instrument_tracks[instrument] = nil;
+			instrument_tracks[instrument].stop;
+			instrument_tracks.removeAt(instrument);
 		});
+
+		instrument_tracks.postln;
+
+		main.displayCurrentTracks();
+
 
 	}
 
