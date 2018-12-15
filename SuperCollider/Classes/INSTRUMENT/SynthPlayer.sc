@@ -22,11 +22,14 @@ SynthPlayer : Instrument
 	var currentPressedKey;
 	var lastPressedKey;
 
-	*new{|synthdef_,mode_,name_|
-		^super.new.init(this.graph,synthdef_,mode_,name_);
+	var autostart;
+
+
+	*new{|synthdef_,mode_,name_,autostart,fx|
+		^super.new.init(this.graph,synthdef_,mode_,name_,autostart,fx);
 	}
 
-	init{|graph_,synthdef_,mode_,name_|
+	init{|graph_,synthdef_,mode_,name_,autostart_,fx|
 
 		nodeIDs=IdentityDictionary.new;
 
@@ -59,8 +62,14 @@ SynthPlayer : Instrument
 
 		});
 
+
 		pressedKeys = IdentityDictionary.new;
 
+		if( autostart_ == true ) {
+			this.fx_( fx );
+			this.createSynth();
+			autostart=autostart_;
+		};
 	}
 
 	synthdef_{|synthdef_|
@@ -116,6 +125,7 @@ SynthPlayer : Instrument
 				});
 
 			if( fxSynth.isKindOf(Synth), {
+
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 				synth.register;
 			}, {
@@ -317,7 +327,7 @@ SynthPlayer : Instrument
 
 	}
 
-	fx_{|synthdef_|
+	fx_ {|synthdef_|
 
 		var fx;
 
@@ -331,6 +341,16 @@ SynthPlayer : Instrument
 			});
 
 			fxSynth = Synth.new(synthdef_,[\inBus,fxBus]++this.parameters_array(fx_parameters));
+
+			if( autostart == true ) {
+
+				this.createSynth();
+
+				if( synth_parameters[\inBus].notNil ) {
+					this.set(\inBus,synth_parameters[\inBus]);
+				};
+
+			};
 
 		}, {
 			"clear currentFX".postln;

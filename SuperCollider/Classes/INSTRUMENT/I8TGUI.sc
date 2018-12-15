@@ -104,6 +104,7 @@ I8TGUI {
 		{
 
 			tracksView.items = ['']++list.collect({arg item; item.name});
+			
 			tracksView.selection = list.collect({arg item,index; if(item.playing==true) { index + 1 } });
 
 		}.defer;

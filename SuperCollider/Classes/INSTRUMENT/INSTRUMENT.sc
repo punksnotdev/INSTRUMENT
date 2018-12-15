@@ -374,17 +374,17 @@ INSTRUMENT
 
 	selectPlayingTracks{|selection|
 		[selection].postln;
-		sequencer.instrument_tracks.collect({|track,index|
-			if( selection.indexOf(index).notNil, {
-				"play".postln;
-				track.play;
-			}, {
-				// if(track.playing == true) {
-					"stop".postln;
-					track.stop;
-				// }
-			});
-		})
+		// sequencer.instrument_tracks.collect({|track,index|
+		// 	if( selection.indexOf(index).notNil, {
+		// 		"play".postln;
+		// 		track.play;
+		// 	}, {
+		// 		// if(track.playing == true) {
+		// 			"stop".postln;
+		// 			track.stop;
+		// 		// }
+		// 	});
+		// })
 
 
 	}
