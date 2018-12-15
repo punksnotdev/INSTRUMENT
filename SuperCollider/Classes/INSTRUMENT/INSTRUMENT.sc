@@ -294,11 +294,12 @@ INSTRUMENT
 
 				if( next.notNil,{
 
-					var shouldIncrement = this.map( next, item, \amp,[0,1]);
+					// var shouldIncrement =
+					this.map( next, item, \amp,[0,1]);
 
-					if( shouldIncrement == true ) {
-						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.size;
-					}
+					// if( shouldIncrement == true ) {
+						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
+					// }
 
 				});
 

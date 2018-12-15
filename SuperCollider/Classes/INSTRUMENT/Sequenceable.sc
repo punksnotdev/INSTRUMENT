@@ -92,7 +92,7 @@ Sequenceable : I8TNode
 
 		if( parameter_.isNil, {
 
-			sequencer.clearPatterns(name,\trigger);
+			// sequencer.clearPatterns(name,\trigger);
 
 		}, {
 			if( key.isNil ) {
@@ -101,13 +101,20 @@ Sequenceable : I8TNode
 
 					// clear all patterns
 					sequencer.clearPatterns(name,\trigger);
+				}, {
+
+					sequencer.removePattern(name,parameter,key);
+
 				});
 
+			};
+			if( key.notNil ) {
+
+				sequencer.removePattern(name,parameter,key);
 
 			};
 		});
 
-		sequencer.removePattern(name,parameter,key);
 
 	}
 
