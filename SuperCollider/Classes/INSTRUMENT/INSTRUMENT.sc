@@ -24,6 +24,8 @@ INSTRUMENT
 
 	var <midiControllers;
 
+	var <>synths;
+
 
 	*new {
 		// rootNode.graph_(this);
@@ -310,5 +312,6 @@ INSTRUMENT
 		^item;
 
 	}
+
 
 }

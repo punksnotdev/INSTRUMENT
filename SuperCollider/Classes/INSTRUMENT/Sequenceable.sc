@@ -3,6 +3,7 @@ Sequenceable : I8TNode
 
 	var <>sequencer;
 	var <speed;
+	var <playing;
 
 	var nextKey;
 
@@ -128,11 +129,17 @@ Sequenceable : I8TNode
 
 
 	play {|position|
+
+		playing = true;
+
 		if( sequencer.notNil ) {
 			^sequencer.playInstrument( this, position );
 		}
 	}
 	stop {|position|
+
+		playing = false;
+		
 		if( sequencer.notNil ) {
 			^sequencer.stopInstrument( this );
 		}
