@@ -156,11 +156,12 @@ I8TParser {
 		});
 
 
+
 		parameterGroups = groupStrings.collect({|groupString|
 			this.extractParameters(groupString)
 		});
 
-		// parameterGroups.postln;
+		parameterGroups.postln;
 
 		^this.getEventsList(parameterGroups);
 
@@ -204,7 +205,6 @@ I8TParser {
 
 		var groupValue;
 
-
 		if( operators.size > 0 ) {
 
 			operators.collect({|operator|
@@ -216,9 +216,12 @@ I8TParser {
 
 			if( operatorIndexes.size > 0) {
 
-				if( operatorIndexes[0] > 0 ) {
+
+				if( operatorIndexes[0] > 0, {
 					groupValue = group.split( group.at(operatorIndexes[0].asInteger) )[0];
-				}
+				}, {
+					groupValue = nil;
+				});
 			};
 
 			operators.collect({|operator|
@@ -293,20 +296,25 @@ I8TParser {
 
 				});
 
-					charsToRead.do({|index|
+				charsToRead.do({|index|
 
-						if ( index + currentIndex < group.size ) {
+					if ( index + currentIndex < group.size ) {
 
-							operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
+						operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
 
-						}
-
-
-					});
+					}
 
 
-					parameters[operator] = operatorValue;
+				});
+
+
+				parameters[operator] = operatorValue;
+
+				if( groupValue.notNil, {
+
 					parameters['val'] = groupValue;
+
+				});
 
 
 
@@ -314,11 +322,11 @@ I8TParser {
 
 		};
 
-		// if( operators.size <= 0 ) {
+		if( operators.size <= 0 ) {
 
 			parameters['val']=group;
 
-		// }
+		}
 
 
 		^parameters;

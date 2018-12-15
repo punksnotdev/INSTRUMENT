@@ -90,16 +90,22 @@ Sequenceable : I8TNode
 		var key = key_;
 		var parameter = parameter_;
 
-		if( key.isNil ) {
+		if( parameter_.isNil, {
 
-			if( parameter.isKindOf(Symbol) == true, {
+			sequencer.clearPatterns(name,\trigger);
 
-				// clear all patterns
-				sequencer.clearPatterns(name,\trigger);
-			});
+		}, {
+			if( key.isNil ) {
+
+				if( parameter.isKindOf(Symbol) == true, {
+
+					// clear all patterns
+					sequencer.clearPatterns(name,\trigger);
+				});
 
 
-		};
+			};
+		});
 
 		sequencer.removePattern(name,parameter,key);
 

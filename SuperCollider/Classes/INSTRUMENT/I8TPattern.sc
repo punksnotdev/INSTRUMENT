@@ -28,8 +28,6 @@ I8TPattern
 			};
 
 
-			// events.collect({arg event; ["event:", event].postln; });
-
 			hasDurations = false;
 
 
