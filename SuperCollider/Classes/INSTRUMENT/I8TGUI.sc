@@ -9,9 +9,11 @@ I8TGUI {
 
 	var <tracks;
 	var <tracksView;
+	var <trackActionsView;
 
 	var <synthdefs;
 	var <synthdefsView;
+	var <synthdefActionsView;
 
 	var main;
 
@@ -21,14 +23,15 @@ I8TGUI {
 
 	init {|main_|
 
-		var w,h,v, k;
+		var f,w,h,v,k,b,t,tc;
 
 		main = main_;
 		w = Window(bounds:Rect(1620,0,300,580),scroll:true);
 		h = HLayout();
-		v = VLayout(h);
+		v = VLayout(h,33);
 		w.layout =  v;
 
+		w.onClose_({ f.kill });
 
 		// midiDeviceList = PopUpMenu();
 		// v.add(midiDeviceList);
@@ -39,36 +42,62 @@ I8TGUI {
 		synthdefsView = ListView(bounds: Rect(10,10,300,100));
 		synthdefsView.selectionMode = \extended;
 
-		v.add(synthdefsView);
+		v.add(synthdefsView,8);
+
+		synthdefActionsView = HLayout(
+			Button().states_([["New Synth"]]),
+	        [StaticText().string_("BarBarBar"), stretch:4]
+	    );
+
+		v.add(synthdefActionsView);
+
 
 		tracksView = ListView(bounds: Rect(10,10,300,100));
-		tracksView.selectionMode = \extended;
+		v.add(tracksView,8);
 
-		v.add(tracksView);
 
-		currentPatternViews=VLayout(v);
+		trackActionsView = HLayout(
+			Button().states_([["Pause"],["Play"]]),
+			Button().states_([[1]]),
+			Button().states_([[2]]),
+	        Button().states_([[3]]),
+	    );
+		v.add(trackActionsView);
+
+		v.add(nil,3);
+
+
+
+		currentPatternViews=VLayout(v,1);
 		currentPatternViewsList=IdentityDictionary.new;
-		currentPatternViewsList[\track] = TextView();
-		currentPatternViewsList[\pattern] = TextView();
-		currentPatternViewsList[\beats] = TextView();
-		currentPatternViewsList[\param] = TextView();
-		currentPatternViewsList[\key] = TextView();
-		currentPatternViewsList[\play_params] = TextView();
+		currentPatternViewsList[\track] = StaticText();
+		//bounds:Rect(10,10,300,30));
+		currentPatternViewsList[\pattern] = StaticText();
+		//bounds:Rect(10,10,300,30));
+		currentPatternViewsList[\beats] = StaticText();
+		//bounds:Rect(10,10,300,30));
+		currentPatternViewsList[\param] = StaticText();
+		//bounds:Rect(10,10,300,30));
+		// currentPatternViewsList[\key] = TextView(bounds:Rect(10,10,300,30));
+		// currentPatternViewsList[\play_params] = TextView(bounds:Rect(10,10,300,30));
 
 		currentPatternViewsList.collect({
 			arg item;
-			currentPatternViews.add(item);
+			currentPatternViews.add(item,0);
 		});
-		v.add(currentPatternViews);
+		v.add(currentPatternViews,1);
+
+
+
 
 		synthdefsView.action = {|element|
 			["synthdef select", element.value].postln;
 		};
 
-		tracksView.selectionAction = {|element|
-			["track select", element.value, element.selection].postln;
-			// main.selectPlayingTracks( element.selection );
-		};
+		// tracksView.selectionAction = {|element|
+		// 	// ["track select", element.value, element.selection].postln;
+		// 	// main.selectPlayingTracks( element.selection );
+		// };
 
 
 
@@ -104,7 +133,7 @@ I8TGUI {
 		{
 
 			tracksView.items = ['']++list.collect({arg item; item.name});
-			
+
 			tracksView.selection = list.collect({arg item,index; if(item.playing==true) { index + 1 } });
 
 		}.defer;
@@ -123,8 +152,8 @@ I8TGUI {
 			currentPatternViewsList[\pattern].string="pattern: " ++ currentPattern.pattern;
 			currentPatternViewsList[\beats].string="beats: " ++ currentPattern.beats;
 			currentPatternViewsList[\param].string="param: " ++ currentPattern.param;
-			currentPatternViewsList[\key].string="key: " ++ currentPattern.key;
-			currentPatternViewsList[\play_params].string="play_params: " ++ currentPattern.play_params;
+			// currentPatternViewsList[\key].string="key: " ++ currentPattern.key;
+			// currentPatternViewsList[\play_params].string="play_params: " ++ currentPattern.play_params;
 		}.defer;
 
 	}
