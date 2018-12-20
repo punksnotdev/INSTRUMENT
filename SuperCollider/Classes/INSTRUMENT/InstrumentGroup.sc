@@ -3,6 +3,7 @@ InstrumentGroup : List {
 	var <amp;
 	var <speed;
 	var <fx;
+	var <>name;
 
 	play {
 		this.collect({|item|

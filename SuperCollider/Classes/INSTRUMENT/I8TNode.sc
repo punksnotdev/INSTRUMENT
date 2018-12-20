@@ -42,12 +42,10 @@ I8TNode : I8TeventListener
 			nodeGraph = nodeGraph_;
 			if( name_.isNil ) {
 				newKey = UniqueID.next;
-				// nodeGraph.addNode(this,newKey)
 			};
 		});
 
 		name = newKey;
-
 
 		inputs = ();
 

@@ -270,6 +270,8 @@ var lastMap;
 
 			var newGroup = InstrumentGroup.new;
 
+			newGroup.name = key;
+
 
 			something.collect({
 				arg itemName;
@@ -294,61 +296,68 @@ var lastMap;
 
 		if( autoMIDI == true,{
 
-			if( item.notNil,{
 
-				var nextIndex;
-				var next;
-				var shouldIncrement = true;
 
-				controllerManager.controlTargetMap.collect({
-					|mapping,key|
+			if( item.notNil ) {
 
-					if( mapping.target.name == item.name ) {
-						shouldIncrement = false;
+				if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
 
-						 midiControllers.inputs.collect({|input|
+					var nextIndex;
+					var next;
+					var shouldIncrement = true;
 
-							if(input.isKindOf(MIDIController)){
+					controllerManager.controlTargetMap.collect({
+						|mapping,key|
 
-								if(input.key==key) {
-									next=input
+						if( mapping.target.name == item.name ) {
+
+							shouldIncrement = false;
+
+							midiControllers.inputs.collect({|input|
+
+								if(input.isKindOf(MIDIController)){
+
+									if(input.key==key) {
+										next=input
+									}
 								}
-							}
 
-						});
+							});
 
-					}
+						}
 
-				});
+					});
 
-				if( shouldIncrement == true ) {
-					nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
-					next = midiControllers.inputs[nextMIDIController];
-				};
+					if( shouldIncrement == true ) {
+						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
+						next = midiControllers.inputs[nextMIDIController];
+					};
 
-				if( next.notNil,{
-// 					var controllerKeySet;
-// 					// var shouldIncrement = lastMap.target =
-//
-// 	controllerKeyAlreadySet=false;
-// 	if( lastMap.notNil, {
-//
-// 		if( lastMap.includesKey(name.asSymbol) ) {
-// 			controllerKeyAlreadySet=true;
-// 		};
-//
-// 	});
-//
-// 	l=e;
-//
-// }
-					this.map( next, item, \amp,[0,1]);
-
+					if( next.notNil,{
+	// 					var controllerKeySet;
+	// 					// var shouldIncrement = lastMap.target =
+	//
+	// 	controllerKeyAlreadySet=false;
+	// 	if( lastMap.notNil, {
+	//
+	// 		if( lastMap.includesKey(name.asSymbol) ) {
+	// 			controllerKeyAlreadySet=true;
+	// 		};
+	//
+	// 	});
+	//
+	// 	l=e;
+	//
+	// }
+						this.map( next, item, \amp,[0,1]);
 
 
-				});
 
-			});
+					});
+
+				}
+
+			}
 
 		});
 
