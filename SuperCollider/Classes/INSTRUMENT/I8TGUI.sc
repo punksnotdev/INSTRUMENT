@@ -27,6 +27,7 @@ I8TGUI {
 
 		main = main_;
 		w = Window(bounds:Rect(1620,0,300,580),scroll:true);
+		w.alwaysOnTop=true;
 		h = HLayout();
 		v = VLayout(h,33);
 		w.layout =  v;
