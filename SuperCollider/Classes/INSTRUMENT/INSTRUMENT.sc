@@ -52,7 +52,7 @@ var lastMap;
 
 		midiControllers = ();
 		autoMIDI = false;
-		nextMIDIController = 0;
+		nextMIDIController = -1;
 
 		this.setupGUI();
 

@@ -236,7 +236,7 @@ SynthPlayer : Instrument
 
 								\mono, {
 
-									if( synth.notNil, {
+									if( synth.isKindOf(Synth), {
 
 										if( synth.isPlaying == false, {
 											synth = nil;
@@ -257,10 +257,13 @@ SynthPlayer : Instrument
 
 										pressedKeys[note] = true;
 
-										synth.set(\amp,amp);
-										synth.set(\gate,1);
-										synth.set(\freq,note.midicps);
+										if( synth.isKindOf(Synth) ) {
 
+											synth.set(\amp,amp);
+											synth.set(\gate,1);
+											synth.set(\freq,note.midicps);
+
+										}
 									});
 
 								}
@@ -278,8 +281,11 @@ SynthPlayer : Instrument
 
 									if(pressedKeys.size<=0, {
 
-										synth.set(\gate,0);
-										pressedKeys = IdentityDictionary.new;
+										if( synth.isKindOf(Synth) ) {
+
+											synth.set(\gate,0);
+											pressedKeys = IdentityDictionary.new;
+										}
 
 									});
 
@@ -331,7 +337,11 @@ SynthPlayer : Instrument
 				},
 				{ // default:
 					synth_parameters[parameter.asSymbol]=value.val;
-					if( value.val.isNil || value.val == 0, {}, { synth.set(parameter.asSymbol,value.val) });
+					if( value.val.isNil || value.val == 0, {}, {
+						if( synth.isKindOf(Synth) ) {
+							synth.set(parameter.asSymbol,value.val);
+						}
+					});
 				},
 
 
@@ -395,20 +405,28 @@ SynthPlayer : Instrument
 			synth_parameters[parameter] = value;
 		});
 
-		synth.set( parameter, value );
+		if( synth.isKindOf(Synth) ) {
+			if( synth.isPlaying ) {
+				synth.set( parameter, value );
+			}
+		}
+
 	}
 
 	amp_ {|value|
 
 		synth_parameters[\amp] = value;
-		synth.set( \amp, value );
-
+		if( synth.isPlaying ) {
+			synth.set( \amp, value );
+		}
 	}
 
 	amp {|value|
 		if( value.notNil ) {
 			synth_parameters[\amp] = value;
-			synth.set( \amp, value );
+			if( synth.isPlaying ) {
+				synth.set( \amp, value );
+			};
 		};
 		^amp;
 	}
