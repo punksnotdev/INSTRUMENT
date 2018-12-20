@@ -175,7 +175,11 @@ SynthPlayer : Instrument
 			switch( parameter,
 
 				\synthdef, {
-					synthdef = value.val;
+					if( value.val != \r ) {
+
+						synthdef = value.val;
+
+					}
 					// synth_parameters = IdentityDictionary.new;
 				},
 				\octave, { octave = value.val },
@@ -201,43 +205,24 @@ SynthPlayer : Instrument
 						amp = 0.5;
 					};
 
-					use_synth_parameters = synth_parameters;
+					if( event.val != \r ) {
 
-					if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-						var computed_params;
-						amp = amp * synth_parameters[\amp];
+						use_synth_parameters = synth_parameters;
 
-						computed_params = synth_parameters.copy;
-						computed_params.removeAt(\amp);
-						use_synth_parameters = computed_params;
-					});
+						if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+							var computed_params;
+							amp = amp * synth_parameters[\amp];
 
-					if( amp.asFloat > 0, {
+							computed_params = synth_parameters.copy;
+							computed_params.removeAt(\amp);
+							use_synth_parameters = computed_params;
+						});
 
-						switch(mode,
+						if( amp.asFloat > 0, {
 
-							\poly, {
+							switch(mode,
 
-								this.createSynth([
-									\t_trig,1,
-									\freq,((octave*12)+note).midicps,
-									\note,(octave*12)+note,
-									\amp, amp
-									]++this.parameters_array(use_synth_parameters)
-								);
-
-							},
-
-							\mono, {
-
-								if( synth.notNil, {
-
-									if( synth.isPlaying == false, {
-										synth = nil;
-									});
-								});
-
-								if( synth.isNil, {
+								\poly, {
 
 									this.createSynth([
 										\t_trig,1,
@@ -247,43 +232,76 @@ SynthPlayer : Instrument
 										]++this.parameters_array(use_synth_parameters)
 									);
 
-								}, {
+								},
 
-									pressedKeys[note] = true;
+								\mono, {
 
-									synth.set(\amp,amp);
-									synth.set(\gate,1);
-									synth.set(\freq,note.midicps);
+									if( synth.notNil, {
 
-								});
+										if( synth.isPlaying == false, {
+											synth = nil;
+										});
+									});
 
-							}
-						);
+									if( synth.isNil, {
 
+										this.createSynth([
+											\t_trig,1,
+											\freq,((octave*12)+note).midicps,
+											\note,(octave*12)+note,
+											\amp, amp
+											]++this.parameters_array(use_synth_parameters)
+										);
 
-					}, { // note off
+									}, {
 
+										pressedKeys[note] = true;
 
-						switch( mode,
+										synth.set(\amp,amp);
+										synth.set(\gate,1);
+										synth.set(\freq,note.midicps);
 
-							\mono, {
+									});
 
-								pressedKeys.removeAt(note);
-
-								if(pressedKeys.size<=0, {
-
-									synth.set(\gate,0);
-									pressedKeys = IdentityDictionary.new;
-
-								});
-
-							}
-						);
-
-					});
-
+								}
+							);
 
 
+						}, { // note off
+
+
+							switch( mode,
+
+								\mono, {
+
+									pressedKeys.removeAt(note);
+
+									if(pressedKeys.size<=0, {
+
+										synth.set(\gate,0);
+										pressedKeys = IdentityDictionary.new;
+
+									});
+
+								}
+							);
+
+						});
+
+					}
+
+
+
+				},
+				\speed, {
+
+					if(
+						( value.val.asFloat > 0 )
+						&&
+						( value.val.asFloat != \r )
+					) {
+						speed = value.val.asFloat;
+					}
 
 				},
 				\trigger, {
@@ -321,7 +339,6 @@ SynthPlayer : Instrument
 
 
 		}
-
 	}
 
 	fx_ {|synthdef_|
