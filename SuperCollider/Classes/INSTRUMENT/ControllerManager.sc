@@ -216,7 +216,7 @@ if( source.midiTarget.notNil,{
 
 			Tdef(\initMidi, { 1.do{
 
-			MIDIClient.init();
+			MIDIClient.init(verbose:false);
 
 			3.wait;
 
