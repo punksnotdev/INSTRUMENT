@@ -77,9 +77,9 @@ I8TLooper : Instrument
 
 		stopRecording {
 
-			var recDuration;
 
 			if( recSynth.isKindOf(Synth)) {
+				var recDuration;
 				recSynth.free;
 				recDuration = TempoClock.default.beats - lastDuration;
 				// recDuration = recDuration / TempoClock.default.tempo;
@@ -116,7 +116,7 @@ I8TLooper : Instrument
 			}, {
 
 				// if layer exists
-				if( buffers[layer].isKindOf(Buffer) ) {
+				if( buffers[layer].isKindOf(Buffer), {
 					// play it:
 					// first stop it if running
 
@@ -129,8 +129,10 @@ I8TLooper : Instrument
 						\buffer, buffers[layer],
 						\duration, durations[layer]
 					]);
-					["playdur",durations[layer]].postln;
-				};
+
+				}, {
+					"I8TLooper: layer id not found".postln;
+				});
 
 			});
 
