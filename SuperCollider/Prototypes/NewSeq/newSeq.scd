@@ -14,7 +14,7 @@
 var bpmToMs;
 
 
-~bpm = 60.0;
+~bpm = 144.0;
 ~beatsPerBar = 4;
 
 bpmToMs = ((60/~bpm))*1000;
@@ -24,7 +24,9 @@ bpmToMs = ((60/~bpm))*1000;
 (thisProcess.nowExecutingPath.dirname ++ "/track-sequences.scd").load;
 
 
-~playtracks = [~tracks[\bass]];
+// ~playtracks = [~tracks[\bass]];
+~playtracks = [~tracks[\noteSynth]];
+// ~playtracks = ~tracks;
 ~playtracks.collect({|track|
 	var bpmToMs =  ((60/~bpm))*1000;
 
@@ -38,7 +40,7 @@ bpmToMs = ((60/~bpm))*1000;
 
 	// track.totalMs = lastItemBeat * bpmToMs;
 	track.totalMs = (bars * track.beatsPerBar )* bpmToMs;
-	track.msDuration = track.totalMs / track.speed;
+	track.msDuration = floor(track.totalMs / track.speed);
 
 	// ["track.totalMs",track.totalMs].postln;
 	// ["track.msDuration",track.msDuration].postln;

@@ -8,14 +8,14 @@
 			var filterEnv = EnvGen.kr(Env.perc(0,0.2));
 			sig = RLPF.ar(sig,filterEnv.linlin(0,1,200,3000),0.1);
 			sig = (sig*3.3).tanh;
-			Out.ar(0,sig*env*amp);
+			Out.ar(0,Pan2.ar(sig*env*amp));
 		}).add;
 
 		SynthDef(\noteSynth,{
 			arg note=60, amp=1;
-			var sig = SinOsc.ar(note.midicps,pi/2);
+			var sig = SinOsc.ar(note.midicps,pi/2)/3;
 			var env = EnvGen.kr(Env.perc,doneAction: 2);
-			Out.ar(0,sig*env*amp);
+			Out.ar(0,Pan2.ar(sig*env*amp));
 		}).add;
 
 		SynthDef(\kick,{
@@ -25,7 +25,7 @@
 			var env = EnvGen.kr(Env.perc,doneAction: 2);
 			sig = (sig * 3.3).tanh;
 
-			Out.ar(0,sig*env*amp);
+			Out.ar(0,Pan2.ar(sig*env*amp));
 		}).add;
 
 )
