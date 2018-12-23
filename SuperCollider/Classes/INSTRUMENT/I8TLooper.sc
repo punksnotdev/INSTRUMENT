@@ -8,6 +8,8 @@ I8TLooper : Instrument
 
 		var <recSynth;
 		var <playSynths;
+		var <durations;
+		var lastDuration;
 
 		*new{|name_,synthdef_,mode_=nil|
 			^super.new.init(name_,this.graph,synthdef_,mode_);
@@ -17,8 +19,9 @@ I8TLooper : Instrument
 
 			buffers = IdentityDictionary.new;
 			playSynths = IdentityDictionary.new;
+			durations = IdentityDictionary.new;
 
-			maxDuration = 3;
+			maxDuration = 60;
 			numChannels = 1;
 
 			super.init(name_,graph_);
@@ -28,18 +31,17 @@ I8TLooper : Instrument
 
 
 		rec {|layer|
-			["sampleRate", Server.local.sampleRate].postln;
+
 			if( layer.notNil, {
 				// if buffer for layer not allocated,
 				if( buffers[ layer ].isKindOf(Buffer) == false ) {
 					buffers[ layer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
 						{|buffer|
-							["rec",buffer.numFrames].postln;
-
 							recSynth = Synth(\loopWrite, [
 								\inBus, 0,
 								\buffer, buffer
 							]);
+							lastDuration = TempoClock.default.beats;
 						});
 				};
 
@@ -51,12 +53,11 @@ I8TLooper : Instrument
 				// if buffer for layer not allocated,
 				if( buffers[ buffers.size ].isKindOf(Buffer) == false ) {
 					buffers[ buffers.size ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1, {|buffer|
-						["rec",buffer,recSynth].postln;
-
 						recSynth = Synth(\loopWrite, [
 							\inBus, 0,
 							\buffer, buffer
 						]);
+						lastDuration = TempoClock.default.beats;
 					});
 				};
 
@@ -73,11 +74,25 @@ I8TLooper : Instrument
 				// delete it
 		}
 
-		play {|layer|
+
+		stopRecording {
+
+			var recDuration;
 
 			if( recSynth.isKindOf(Synth)) {
 				recSynth.free;
+				recDuration = TempoClock.default.beats - lastDuration;
+				// recDuration = recDuration / TempoClock.default.tempo;
+				durations[buffers.size-1]=recDuration;
+				recSynth = nil;
 			};
+			["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
+
+		}
+
+		play {|layer|
+
+			this.stopRecording();
 
 			// if no layers selected
 			if( layer.isNil, {
@@ -91,7 +106,11 @@ I8TLooper : Instrument
 				// then create new synths:
 				buffers.collect({|buffer,key|
 					if( buffer.isKindOf(Buffer) ) {
-						playSynths[key]=Synth(\loopRead,[\buffer, buffer]);
+						playSynths[key]=Synth(\loopRead,[
+							\buffer, buffer,
+							\duration, durations[key]
+						]);
+						["playdur",key,durations,durations[key]].postln;
 					};
 				});
 			}, {
@@ -106,7 +125,11 @@ I8TLooper : Instrument
 					};
 					// then create new synth:
 
-					playSynths[layer]=Synth(\loopRead,[\buffer, buffers[layer]]);
+					playSynths[layer]=Synth(\loopRead,[
+						\buffer, buffers[layer],
+						\duration, durations[layer]
+					]);
+					["playdur",durations[layer]].postln;
 				};
 
 			});
@@ -115,9 +138,8 @@ I8TLooper : Instrument
 
 		stop {|layer|
 
-			if( recSynth.isKindOf(Synth)) {
-				recSynth.free;
-			};
+
+			this.stopRecording();
 
 
 			// if no layers selected
