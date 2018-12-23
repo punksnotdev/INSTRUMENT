@@ -51,8 +51,7 @@
 	~tracks[\noteSynth].sequence[2] = ( note: 63, amp: 0.5 );
 	~tracks[\noteSynth].sequence[4] = ( note: 62, amp: 0.25 );
 	~tracks[\noteSynth].sequence[6] = ( note: 67, amp: 0.35 );
-	~tracks[\noteSynth].sequence[7.5] = ( note: 68, amp: 0.75 );
-	~tracks[\noteSynth].sequence[21.5] = ( note: 68, amp: 0.75 );
+	~tracks[\noteSynth].sequence[11.5] = ( note: 68, amp: 0.75 );
 
 
 	~tracks[\kick].sequence[0] = ( note: 60, amp: 1 );
