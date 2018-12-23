@@ -25,8 +25,8 @@ bpmToMs = ((60/~bpm))*1000;
 
 
 // ~playtracks = [~tracks[\bass]];
-~playtracks = [~tracks[\noteSynth]];
-// ~playtracks = ~tracks;
+// ~playtracks = [~tracks[\noteSynth]];
+~playtracks = ~tracks;
 ~playtracks.collect({|track|
 	var bpmToMs =  ((60/~bpm))*1000;
 

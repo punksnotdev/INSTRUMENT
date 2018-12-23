@@ -7,7 +7,7 @@
 
 	// values in ms
 	~tracks[\noteSynth] = (
-		speed: 4,
+		speed: 1,
 		beatsPerBar: ~beatsPerBar,
 		synthdef:\noteSynth,
 		currentBeat: nil,
