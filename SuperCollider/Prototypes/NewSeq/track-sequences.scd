@@ -38,39 +38,12 @@
 		loop: true
 	);
 
-	SynthDef(\bassSynth,{
-		arg note=60, amp=1;
-		var sig = Saw.ar(note.midicps/2)+SinOsc.ar(note.midicps,pi/2);
-		var env = EnvGen.kr(Env.perc(0.02,0.3),doneAction: 2);
-		var filterEnv = EnvGen.kr(Env.perc(0,0.2));
-		sig = RLPF.ar(sig,filterEnv.linlin(0,1,200,3000),0.1);
-		sig = (sig*3.3).tanh;
-		Out.ar(0,sig*env*amp);
-	}).add;
+	~tracks[\bass].sequence[0] = ( note: 36, amp: 1 );
+	~tracks[\bass].sequence[2] = ( note: 38, amp: 0.5 );
+	~tracks[\bass].sequence[4] = ( note: 39, amp: 0.65 );
+	~tracks[\bass].sequence[6] = ( note: 43, amp: 0.85 );
+	// ~tracks[\bass].sequence[7] = ( note: 43, amp: 0.85 );
 
-	SynthDef(\noteSynth,{
-		arg note=60, amp=1;
-		var sig = SinOsc.ar(note.midicps,pi/2);
-		var env = EnvGen.kr(Env.perc,doneAction: 2);
-		Out.ar(0,sig*env*amp);
-	}).add;
-
-	SynthDef(\kick,{
-		arg note=60, amp=1;
-		var filterEnv = EnvGen.kr(Env.perc(0,0.03));
-		var sig = SinOsc.ar(60,pi/2)+RLPF.ar(WhiteNoise.ar(1/8),filterEnv.linlin(0,1,64,10000),0.01);
-		var env = EnvGen.kr(Env.perc,doneAction: 2);
-		sig = (sig * 3.3).tanh;
-
-		Out.ar(0,sig*env*amp);
-	}).add;
-
-
-	~tracks[\bass].sequence[0] = ( note: 60-24, amp: 1 );
-	~tracks[\bass].sequence[2] = ( note: 63-24, amp: 0.5 );
-	~tracks[\bass].sequence[4] = ( note: 62-24, amp: 0.25 );
-	~tracks[\bass].sequence[6] = ( note: 67-24, amp: 0.35 );
-	~tracks[\bass].sequence[7.5] = ( note: 68-24, amp: 0.75 );
 
 	~tracks[\noteSynth].sequence[0] = ( note: 60, amp: 1 );
 	~tracks[\noteSynth].sequence[2] = ( note: 63, amp: 0.5 );

@@ -14,11 +14,12 @@
 var bpmToMs;
 
 
-~bpm = 144.0;
+~bpm = 120.0;
 
-bpmToMs = ( ( 60.0 / ~bpm ) )*1000;
+bpmToMs = ( ( ~bpm / 120 ) )*1000;
 
 
+(thisProcess.nowExecutingPath.dirname ++ "/synthdefs.scd").load;
 (thisProcess.nowExecutingPath.dirname ++ "/track-sequences.scd").load;
 
 
@@ -28,7 +29,8 @@ bpmToMs = ( ( 60.0 / ~bpm ) )*1000;
 	track.msSpeed = (track.totalMs / track.speed);
 });
 
-~playtracks = ~tracks;
+// ~playtracks = ~tracks;
+~playtracks = [~tracks[\bass]];
 
 Tdef(\sequencer, {
 
@@ -40,7 +42,8 @@ Tdef(\sequencer, {
 			var nextBeat;
 			var nextMs;
 			var counter;
-
+			var isBeat;
+			var beatDuration;
 
 			if( track.currentBeat.isNil,
 				{
@@ -51,7 +54,14 @@ Tdef(\sequencer, {
 				}
 			);
 
+			beatDuration = floor((( 1/track.speed * bpmToMs )));
+			beatDuration = beatDuration*16;
 
+			isBeat = i%beatDuration;
+
+			if(isBeat==0) {
+				[beatDuration,i/beatDuration,"beat"].postln;
+			};
 
 
 
@@ -76,8 +86,8 @@ Tdef(\sequencer, {
 				// trigger
 				Synth(track.synthdef,[\note,event.note,\amp,event.amp]);
 
-				(track.synthdef).postln;
-				(event).postln;
+				// (track.synthdef).postln;
+				// (event).postln;
 				// set track's currentBeat
 
 				track.currentBeat = nextBeat;
