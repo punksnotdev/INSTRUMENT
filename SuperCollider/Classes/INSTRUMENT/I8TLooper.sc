@@ -85,8 +85,8 @@ I8TLooper : Instrument
 				// recDuration = recDuration / TempoClock.default.tempo;
 				durations[buffers.size-1]=recDuration;
 				recSynth = nil;
+				["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
 			};
-			["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
 
 		}
 
