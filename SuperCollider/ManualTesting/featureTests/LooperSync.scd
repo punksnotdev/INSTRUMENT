@@ -39,12 +39,9 @@ l.stop
 
 
 i=INSTRUMENT()
-i.play;
-i[\kick].play;
-i[\hihat].play;
-i[\kick].stop;
-i[\hihat].stop;
-i[\kick]=SynthPlayer(\kickElectro)
+
+i[\kick]=SynthPlayer(\kickGabber)
 i[\kick].seq(":0.5 0.5")
+
 i[\hihat]=SynthPlayer(\hihatElectroKit)
 i[\hihat].seq(":0.125 0.3 0.3 ")
