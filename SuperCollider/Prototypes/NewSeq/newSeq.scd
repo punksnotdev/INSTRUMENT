@@ -14,7 +14,7 @@
 var bpmToMs;
 
 
-~bpm = 144.0;
+~bpm = 166.0;
 ~beatsPerBar = 4;
 
 bpmToMs = ((60/~bpm))*1000;

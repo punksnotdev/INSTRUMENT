@@ -49,18 +49,19 @@ ControllerManager {
 
 		mappedParam1 = param1;
 
-if( source.midiTarget.notNil,{
+			if( source.midiTarget.notNil,{
 
-		if( source.midiTarget.isKindOf(MIDIDevice), {
-			inputMap = source.midiTarget.inputMap;
+			if( source.midiTarget.isKindOf(MIDIDevice), {
+				inputMap = source.midiTarget.inputMap;
+			});
+
+	        if( inputMap.isKindOf(IdentityDictionary), {
+	            if( inputMap[param1].notNil, {
+	                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
+	            });
+	        });
+			
 		});
-
-        if( inputMap.isKindOf(IdentityDictionary), {
-            if( inputMap[param1].notNil, {
-                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
-            });
-        });
-});
 
 		if(controller.notNil, {
 

@@ -1,4 +1,4 @@
-m = ControlMode.new;
+var m = ControlMode.new;
 
 64.do{|index|
 	m.addCallback(index,{|e,param1,param2,midiTarget|

@@ -82,6 +82,8 @@ MIDIDevice {
 
     send {|key,value|
 
+        ["MidiDevice send:", key, value ].postln;
+        
         if( outputMap.notNil, {
             if( outputMap[key].notNil, {
 
