@@ -392,12 +392,13 @@ var lastMap;
 		});
 
 
-
-		gui.synthdefs_(newList.asArray, {
-			arg ...args;
-			"synths gui callback:".postln;
-			args.postln;
-		});
+		if( gui.notNil ) {
+			gui.synthdefs_(newList.asArray, {
+				arg ...args;
+				"synths gui callback:".postln;
+				args.postln;
+			});
+		};
 
 	}
 
@@ -418,7 +419,9 @@ var lastMap;
 			tracks.add(track);
 		});
 
-		gui.tracks = tracks.asArray;
+		if( gui.notNil ) {
+			gui.tracks = tracks.asArray;
+		}
 
 	}
 
@@ -441,8 +444,9 @@ var lastMap;
 
 	displayNextPattern {|nextPattern|
 
-		gui.currentPattern = nextPattern;
-
+		if( gui.notNil ) {
+			gui.currentPattern = nextPattern;
+		}
 	}
 
 }

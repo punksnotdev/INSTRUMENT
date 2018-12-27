@@ -42,7 +42,7 @@ ControllerManager {
 		var outValue;
 
 
-		var controller = controlTargetMap[source.key.asSymbol];
+		var controllerList = controlTargetMap[source.key.asSymbol];
 
 		var mappedParam1;
 		var inputMap;
@@ -60,88 +60,76 @@ ControllerManager {
 	                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
 	            });
 	        });
-			
+
 		});
 
-		if(controller.notNil, {
+		controllerList.collect({|controller|
 
-			var target = controller.target;
-			var key = controller.key;
-			var parameter = controller.parameter;
-			var range = controller.range;
-			var protocol = controller.protocol;
+			if(controller.notNil, {
 
-			var type = controller.controller.type;
+				var target = controller.target;
+				var key = controller.key;
+				var parameter = controller.parameter;
+				var range = controller.range;
+				var protocol = controller.protocol;
 
-			switch( type,
-				\cc, {
+				var type = controller.controller.type;
 
-					var value = mappedParam1 / 127;
-					if( range.notNil, {
+				switch( type,
+					\cc, {
 
-						outRange = (range[1] - range[0]).abs;
+						var value = mappedParam1 / 127;
+						if( range.notNil, {
 
-						minOutVal = range[0].min(range[1]);
+							outRange = (range[1] - range[0]).abs;
 
-						if( range[0] > range[1] , {
+							minOutVal = range[0].min(range[1]);
 
-							outValue = minOutVal + (1 - (outRange * value) );
+							if( range[0] > range[1] , {
+
+								outValue = minOutVal + (1 - (outRange * value) );
+
+							}, {
+
+								outValue = minOutVal + outRange * value;
+							});
 
 						}, {
 
-							outValue = minOutVal + outRange * value;
+							outValue = value;
+
 						});
 
-					}, {
+						target.set(
+							parameter,
+							outValue
+						);
 
-						outValue = value;
+					},
 
-					});
+					\note, {
+						target.set(\note,(val:mappedParam1, amplitude: param2/127));
+					}
 
-					target.set(
-						parameter,
-						outValue
-					);
-
-				},
-
-				\note, {
-					target.set(\note,(val:mappedParam1, amplitude: param2/127));
-				}
-
-			);
+				);
 
 
-		}, {
+			}, {
 
-			["ControlManager", "no controller set", source, param1, param2].postln;
+				["ControlManager", "no controller set", source, param1, param2].postln;
+
+			});
 
 		});
-
 	}
 
 	map {|controller,target,parameter,range|
 
 		var mappingAlreadySetKey = nil;
+		var mapping;
 
-		controlTargetMap.collect({| item, key|
 
-			if( ( item.target == target && item.parameter == parameter ), {
-				mappingAlreadySetKey = key;
-			});
-		});
-
-		if( mappingAlreadySetKey.notNil, {
-
-			"Mapping already set".postln;
-
-			controlTargetMap.removeAt(mappingAlreadySetKey);
-
-			^true;
-
-		});
-
-		^controlTargetMap[ controller.key ] = (
+		mapping = (
 			controller: controller,
 			target: target,
 			parameter: parameter,
@@ -149,6 +137,30 @@ ControllerManager {
 			key: controller.key,
 			protocol: controller.protocol,
 		);
+
+
+		// var newKey = target.name ++ '-' ++ target.parameter;
+
+		if( controlTargetMap[controller.key].isKindOf(List) == false, {
+			controlTargetMap[controller.key] = List.new;
+			controlTargetMap[controller.key] = controlTargetMap[controller.key];
+		}, {
+
+			controlTargetMap[controller.key].collect({| item, index |
+
+				// check if target + parameter mapping exists
+				if( ( item.target == target && item.parameter == parameter ), {
+					controlTargetMap[controller.key].removeAt( index );
+				});
+
+			});
+
+
+		});
+
+		controlTargetMap[controller.key].add( mapping );
+
+		^mapping
 
 	}
 

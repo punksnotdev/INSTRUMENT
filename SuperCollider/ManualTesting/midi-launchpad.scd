@@ -4,6 +4,7 @@
 	var specs;
 	var midi;
 	var modeMatrix;
+	var spec;
 
 
 	modeMatrix = ModeMatrix.new();
@@ -55,13 +56,17 @@
 
 
 
-		i.map(
-			i.midi.launchpad.groups.buttons.controllers.buttons,
-			modeMatrix,
-			\note
-		);
+		modeMatrix.addInput(i.midi.launchpad.groups.buttons.controllers.buttons);
+		modeMatrix.addOutput(\matrix,i.midi.launchpad,specs[ o[\name].asSymbol ] );
+		modeMatrix.addOutput(\device,i.gui);
 
-		modeMatrix.midiTarget = i.midi.launchpad;
+		// i[\piano] = SynthPlayer(\piano);
+		// i.map(
+		// 	modeMatrix,
+		// 	i[\piano],
+		// 	\note
+		// );
+
 
 	}}).play;
 
