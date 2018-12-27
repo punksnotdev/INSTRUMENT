@@ -218,10 +218,12 @@ var lastMap;
 	}
 
 
-	map {|controller,target,parameter,range|
-		^controllerManager.map(controller,target,parameter,range);
+	map {|controller,target,parameter|
+		^controllerManager.map(controller,target,parameter);
 	}
-
+	unmap {|controller,target,parameter|
+		^controllerManager.unmap(controller,target,parameter);
+	}
 
 	setupGUI {
 

@@ -125,11 +125,7 @@ ControllerManager {
 
 	map {|controller,target,parameter,range|
 
-		var mappingAlreadySetKey = nil;
-		var mapping;
-
-
-		mapping = (
+		var mapping = (
 			controller: controller,
 			target: target,
 			parameter: parameter,
@@ -161,6 +157,29 @@ ControllerManager {
 		controlTargetMap[controller.key].add( mapping );
 
 		^mapping
+
+	}
+
+
+	unmap {|controller,target,parameter|
+
+
+		if( controlTargetMap[controller.key].isKindOf(List) == true, {
+
+			controlTargetMap[controller.key].collect({| item, index |
+
+				// check if target + parameter mapping exists
+				if( ( item.target == target && item.parameter == parameter ), {
+					controlTargetMap[controller.key].removeAt( index );
+				});
+
+			});
+
+
+		});
+
+		^true
+
 
 	}
 
