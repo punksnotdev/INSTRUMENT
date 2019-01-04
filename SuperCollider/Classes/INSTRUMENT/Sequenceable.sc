@@ -197,35 +197,27 @@ Sequenceable : I8TNode
 
 
 	reverse {
-		currentPatternEvent = currentPatternEvent.reverse;
+		currentPatternEvent.reverse;
 		this.closeFunction();
 	}
 
 	mirror {
-		currentPatternEvent = currentPatternEvent.mirror;
+		currentPatternEvent.mirror;
 		this.closeFunction();
 	}
 
 	pyramid {
-		currentPatternEvent = currentPatternEvent.pyramid;
+		currentPatternEvent.pyramid;
 		this.closeFunction();
 	}
 
 	random {
-		currentPatternEvent = currentPatternEvent.random;
+		currentPatternEvent.random;
 		this.closeFunction();
 	}
 
 	maybe {|probability=0.5|
-		currentPatternEvent.pattern.pattern.collect({
-
-			arg patternEvent,index;
-
-			if( 1.0.rand < probability ) {
-				patternEvent.val = \r;
-			};
-
-		});
+		currentPatternEvent.maybe(probability);
 		this.closeFunction();
 	}
 

@@ -45,8 +45,13 @@ PatternEvent : SequencerEvent
 		pattern.pattern = pattern.pattern.scramble;
 	}
 	maybe {|probability=0.5|
-		pattern.pattern.collect({|patternEvent,index|
-			[patternEvent,index].postln;
+		pattern.pattern.collect({
+			arg patternEvent,index;
+
+			if( 1.0.rand > probability ) {
+				patternEvent.val = \r;
+			};
+
 		});
 	}
 
