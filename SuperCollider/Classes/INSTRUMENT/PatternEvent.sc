@@ -22,7 +22,7 @@ PatternEvent : SequencerEvent
 	pyramid {
 		pattern.pattern = pattern.pattern.pyramid.postln;
 	}
-	scramble {
+	random {
 		pattern.pattern = pattern.pattern.scramble.postln;
 	}
 
