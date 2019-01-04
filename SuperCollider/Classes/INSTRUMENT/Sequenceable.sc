@@ -4,6 +4,7 @@ Sequenceable : I8TNode
 	var <>sequencer;
 	var <clock;
 	var <playing;
+	var <>amp;
 
 	var nextPatternKey;
 
@@ -18,6 +19,7 @@ Sequenceable : I8TNode
 	init{|graph_,name_|
 		super.init(graph_,name_);
 		clock = 1;
+		amp = 1;
 		nextPatternKey = 0;
 		this.play;
 	}
@@ -58,6 +60,17 @@ Sequenceable : I8TNode
 
 	}
 
+	/* 'seq' shorthands */
+
+	trigger {|pattern| this.seq(\trigger,pattern); }
+
+	note {|pattern| this.seq(\note,pattern); }
+
+	chord {|pattern| this.seq(\note,pattern); }
+
+	vol {|pattern| this.seq(\amp,pattern); }
+
+	pan {|pattern| this.seq(\pan,pattern); }
 
 
 

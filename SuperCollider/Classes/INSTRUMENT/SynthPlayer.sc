@@ -3,8 +3,6 @@ SynthPlayer : Instrument
 	var group;
 	var groupID;
 
-	var amp;
-
 	var nodeID;
 	var nodeIDs;
 	var <synthdef;
@@ -14,7 +12,7 @@ SynthPlayer : Instrument
 	var fx_parameters;
 
 	var <fxSynth;
-	var <fx;
+	var fx;
 	var fxBus;
 
 	var pressedKeys;
@@ -188,7 +186,7 @@ SynthPlayer : Instrument
 					this.fx_( value.val );
 
 				},
-				\setFx, {
+				\fxSet, {
 
 					value.keysValuesDo({|k,v|
 						fx_parameters[k]=v;
@@ -352,51 +350,7 @@ SynthPlayer : Instrument
 		}
 	}
 
-	fx_ {|synthdef_|
 
-		var fx;
-
-
-		if( synthdef_.notNil,{
-			if( fxSynth.notNil, {
-				fxSynth.free;
-				// fxSynth = Synth.replace(fxSynth,synthdef_);
-			}, {
-				// fxSynth = Synth.new(synthdef_);
-			});
-
-			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
-
-			if( autostart == true ) {
-
-				this.createSynth();
-
-				if( synth_parameters[\inBus].notNil ) {
-					this.set(\inBus,synth_parameters[\inBus]);
-				};
-
-			};
-
-		}, {
-			"clear currentFX".postln;
-			fxSynth.free;
-			fxSynth = nil;
-		});
-
-		^fxSynth;
-
-	}
-
-
-
-	fxSynth_{|synthdef_|
-		this.fx(synthdef_);
-	}
-
-	setFx{|parameter,value|
-		fx_parameters[parameter] = value;
-		fxSynth.set(parameter,value);
-	}
 
 	set {|parameter,value|
 
@@ -438,5 +392,72 @@ SynthPlayer : Instrument
 		});
 		super.stop();
 	}
+
+
+	// seq functions
+
+	fx {|pattern|
+
+		if(pattern.notNil, {
+			^this.seq(\fx,pattern);
+		});
+
+		^this.fx;
+
+	}
+
+
+	fx_ {|synthdef_|
+
+		var fx;
+
+
+		if( synthdef_.notNil,{
+			if( fxSynth.notNil, {
+				fxSynth.free;
+				// fxSynth = Synth.replace(fxSynth,synthdef_);
+			}, {
+				// fxSynth = Synth.new(synthdef_);
+			});
+
+			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
+
+			if( autostart == true ) {
+
+				this.createSynth();
+
+				if( synth_parameters[\inBus].notNil ) {
+					this.set(\inBus,synth_parameters[\inBus]);
+				};
+
+			};
+
+		}, {
+			"clear currentFX".postln;
+			fxSynth.free;
+			fxSynth = nil;
+		});
+
+		^fxSynth;
+
+	}
+
+
+
+	fxSynth_ {|synthdef_|
+		this.fx(synthdef_);
+	}
+
+	fxSet {|parameter,value|
+		if( value.notNil, {
+			fx_parameters[parameter] = value;
+			fxSynth.set(parameter,value);
+		}, {
+			var pattern = parameter;
+			this.seq(\fxSet,pattern);
+		});
+	}
+
+
 
 }

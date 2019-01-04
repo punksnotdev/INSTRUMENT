@@ -47,9 +47,9 @@ s.doWhenBooted({
 	i[\drums].go(0)
 	i[\drums].fx = \reverb
 	
-	i[\drums].setFx(\wet,0.1)
-	i[\drums].setFx(\wet,0.9)
-	i[\drums].setFx(\wet,0.5)
+	i[\drums].fxSet(\wet,0.1)
+	i[\drums].fxSet(\wet,0.9)
+	i[\drums].fxSet(\wet,0.5)
 	i[\drums].fx()
 
 

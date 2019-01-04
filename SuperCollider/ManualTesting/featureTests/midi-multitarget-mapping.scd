@@ -6,11 +6,11 @@ i[\kick]=SynthPlayer(\kickHard);
 i[\piano].seq(\note,"0 3 2");
 i[\kick].seq(\trigger,"1   1");
 i[\kick].fx=\reverb;
-i[\kick].setFx(\wet,1)
-i[\kick].setFx(\rv1,1)
-i[\kick].setFx(\rv2,1)
+i[\kick].fxSet(\wet,1)
+i[\kick].fxSet(\rv1,1)
+i[\kick].fxSet(\rv2,1)
 i[\piano].fx=\reverb;
-i[\piano].setFx(\wet,1)
+i[\piano].fxSet(\wet,1)
 
 i[\kick].fx=nil;
 

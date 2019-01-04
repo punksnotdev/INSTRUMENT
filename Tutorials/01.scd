@@ -160,12 +160,12 @@ i[\hh].seq(\synthdef, [
 
 i[\drums].fx=\reverb;
 
-i[\drums].setFx(\wet,0);
-i[\drums].setFx(\wet,0.5);
-i[\drums].setFx(\wet,1);
+i[\drums].fxSet(\wet,0);
+i[\drums].fxSet(\wet,0.5);
+i[\drums].fxSet(\wet,1);
 
-i[\drums].setFx(\rv1,1);
-i[\drums].setFx(\rv2,1);
+i[\drums].fxSet(\rv1,1);
+i[\drums].fxSet(\rv2,1);
 
-i[\drums].setFx(\rv1,0.1);
-i[\drums].setFx(\rv2,0.1);
+i[\drums].fxSet(\rv1,0.1);
+i[\drums].fxSet(\rv2,0.1);
