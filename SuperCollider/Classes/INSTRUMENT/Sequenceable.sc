@@ -29,63 +29,58 @@ Sequenceable : I8TNode
 
 
 	seq {|parameter_,pattern_,play_parameters_,key_|
-		var key;
-		var parameter;
-		var pattern;
-		var play_parameters;
 
-		// if first argument not a symbol, its not a parameter. use default 'trigger'
+		var parameters;
 
-		if( parameter_.isKindOf(Symbol) == true, {
+		parameters = this.orderPatternParameters(
+			parameter_,
+			pattern_,
+			play_parameters_,
+			key_
+		);
 
-			parameter = parameter_;
-
-			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
-
-				pattern = pattern_;
-
-			}, {
-				^nil;
-			});
-
-			if( play_parameters_.isKindOf(Array) ) {
-				play_parameters = play_parameters_;
-			};
-
-		},
-		{
-			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
-
-				pattern = parameter_;
-
-				if( pattern_.isKindOf(Array) ) {
-					play_parameters = pattern_;
-				};
-
-			}, {
-				^nil
-			});
-
-			parameter = \trigger;
-
-		});
-
-		key = key_;
-
-		if( key_.isNil ) {
-			key = nextKey;
-		};
-
+		parameters.postln;
 
 		^sequencer.addPattern(
 			name,
-			parameter,
-			key,
-			pattern,
-			play_parameters
+			parameters.parameter,
+			parameters.key,
+			parameters.pattern,
+			parameters.play_parameters
 		);
 
 	}
+
+
+
+	one {|parameter_,pattern_,play_parameters_,key_|
+
+		var parameters;
+
+		parameters = this.orderPatternParameters(
+			parameter_,
+			pattern_,
+			play_parameters_,
+			key_
+		);
+
+
+		if( parameters.play_parameters.isKindOf(IdentityDictionary) == false) {
+			parameters.play_parameters = IdentityDictionary.new;
+		};
+parameters.play_parameters.postln;
+		parameters.play_parameters = parameters.play_parameters[\repeat]=1;
+
+
+		this.seq(
+			parameters.parameter,
+			parameters.pattern,
+			parameters.play_parameters,
+			parameters.key
+		);
+
+	}
+
 
 	rm {|parameter_,key_|
 
@@ -169,19 +164,91 @@ Sequenceable : I8TNode
 
 
 
-	patterns{|parameter|
+	patterns {|parameter|
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].patterns;
 	}
-	sequence{|parameter|
+	sequence {|parameter|
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequence;
 	}
+
+	at {|key|
+		nextKey = key;
+		^this
+	}
+
+
+	// utils, helpers
 	sequenceInfo{|parameter|
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
 	}
 
-	at{|key|
-		nextKey = key;
-		^this
+	orderPatternParameters {
+
+		arg
+		parameter_,
+		pattern_,
+		play_parameters_,
+		key_;
+
+		var
+		key,
+		parameter,
+		pattern,
+		play_parameters;
+
+		// if first argument not a symbol, its not a parameter. use default 'trigger'
+
+		if( parameter_.isKindOf(Symbol) == true, {
+
+			parameter = parameter_;
+
+			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
+
+				pattern = pattern_;
+
+			}, {
+
+				^nil;
+
+			});
+
+			if( play_parameters_.isKindOf(Array) ) {
+				play_parameters = play_parameters_;
+			};
+
+		},
+		{
+
+			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
+
+				pattern = parameter_;
+
+				if( pattern_.isKindOf(Array) ) {
+					play_parameters = pattern_;
+				};
+
+			}, {
+				^nil
+			});
+
+			parameter = \trigger;
+
+		});
+
+		key = key_;
+
+		if( key_.isNil ) {
+			key = nextKey;
+		};
+
+
+		^(
+			key: key,
+			parameter: parameter,
+			pattern: pattern,
+			play_parameters: play_parameters
+		)
+
 	}
 
 }

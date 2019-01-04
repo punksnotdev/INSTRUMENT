@@ -11,7 +11,7 @@
 
 		// i=INSTRUMENT();
 
-		5.wait;
+		2.wait;
 
 		"setup midi".postln;
 

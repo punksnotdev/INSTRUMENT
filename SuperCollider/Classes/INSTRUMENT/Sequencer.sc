@@ -162,9 +162,10 @@ Sequencer : I8TNode
 				event: patternEvent
 			);
 
-			main.displayNextPattern(patternInfo)
+			main.displayNextPattern(patternInfo);
 
-			^patternInfo;
+			
+			^patternEvent;
 
 		}
 		^nil

@@ -1,23 +1,14 @@
 (
-/*
+
+var ticksPerSecond;
+var bpmToTicks;
 
 
-- beat based seqs vs millisecond duration
-- each track ~tracks its current beat
-- beats > ms conversion
-
-
-- limit each tracks total duration
-
-
-*/
-var bpmToMs;
-
-
-~bpm = 166.0;
+~bpm = 120.0;
 ~beatsPerBar = 4;
 
-bpmToMs = ((60/~bpm))*10000;
+ticksPerSecond = 10000;
+bpmToTicks = ((60/~bpm))*ticksPerSecond;
 
 
 (thisProcess.nowExecutingPath.dirname ++ "/synthdefs.scd").load;
@@ -33,7 +24,7 @@ bpmToMs = ((60/~bpm))*10000;
 	bars = ceil(bars);
 
 
-	track.totalMs = (bars * track.beatsPerBar )* bpmToMs;
+	track.totalMs = (bars * track.beatsPerBar )* bpmToTicks;
 	track.msDuration = floor(track.totalMs / track.speed);
 
 
@@ -65,7 +56,7 @@ Tdef(\sequencer, {
 				}
 			);
 
-			beatDuration = floor((( 1/track.speed * bpmToMs )));
+			beatDuration = floor((( 1/track.speed * bpmToTicks )));
 			beatDuration = beatDuration*2;
 			barDuration = beatDuration*track.beatsPerBar;
 
@@ -77,7 +68,7 @@ Tdef(\sequencer, {
 
 			nextBeat = nextBeat % track.sequence.size;
 
-			nextMs = (track.sequenceKeys[ nextBeat ] * bpmToMs);
+			nextMs = (track.sequenceKeys[ nextBeat ] * bpmToTicks);
 			nextMs = nextMs / track.speed;
 
 			if(
@@ -101,7 +92,7 @@ Tdef(\sequencer, {
 
 		});
 
-		0.0001.wait;
+		ticksPerSecond.reciprocal.wait;
 
 	}
 
