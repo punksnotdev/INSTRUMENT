@@ -66,7 +66,7 @@ Sequenceable : I8TNode
 
 	note {|pattern| this.seq(\note,pattern); }
 
-	chord {|pattern| this.seq(\note,pattern); }
+	chord {|pattern| this.seq(\chord,pattern); }
 
 	vol {|pattern| this.seq(\amp,pattern); }
 
