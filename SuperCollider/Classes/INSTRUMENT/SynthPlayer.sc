@@ -175,6 +175,7 @@ SynthPlayer : Instrument
 			switch( parameter,
 
 				\synthdef, {
+					
 					if( value.val != \r ) {
 
 						synthdef = value.val;
