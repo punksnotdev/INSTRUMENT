@@ -143,9 +143,6 @@ Sequenceable : I8TNode
 	}
 
 
-	trigger {
-		// do something
-	}
 
 
 	clock_{|sp_|
