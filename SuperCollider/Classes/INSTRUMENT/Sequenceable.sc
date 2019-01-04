@@ -2,10 +2,14 @@ Sequenceable : I8TNode
 {
 
 	var <>sequencer;
-	var <speed;
+	var <clock;
 	var <playing;
 
-	var nextKey;
+	var nextPatternKey;
+
+	var currentPatternEvent;
+	var currentPattern;
+	var currentParameter;
 
 	*new{|graph_,name_|
 		^super.new.init(this.graph,name_);
@@ -13,8 +17,8 @@ Sequenceable : I8TNode
 
 	init{|graph_,name_|
 		super.init(graph_,name_);
-		speed = 1;
-		nextKey = 0;
+		clock = 1;
+		nextPatternKey = 0;
 		this.play;
 	}
 
@@ -28,58 +32,34 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter_,pattern_,play_parameters_,key_|
+	seq {|parameter_,pattern_|
 
 		var parameters;
 
 		parameters = this.orderPatternParameters(
 			parameter_,
-			pattern_,
-			play_parameters_,
-			key_
+			pattern_
 		);
 
-		parameters.postln;
+		currentParameter = parameters.parameter;
 
-		^sequencer.addPattern(
+		currentPatternEvent = sequencer.addPattern(
 			name,
 			parameters.parameter,
-			parameters.key,
+			nextPatternKey,
 			parameters.pattern,
 			parameters.play_parameters
 		);
 
-	}
+		currentPattern = currentPatternEvent.pattern.pattern;
 
 
-
-	one {|parameter_,pattern_,play_parameters_,key_|
-
-		var parameters;
-
-		parameters = this.orderPatternParameters(
-			parameter_,
-			pattern_,
-			play_parameters_,
-			key_
-		);
-
-
-		if( parameters.play_parameters.isKindOf(IdentityDictionary) == false) {
-			parameters.play_parameters = IdentityDictionary.new;
-		};
-parameters.play_parameters.postln;
-		parameters.play_parameters = parameters.play_parameters[\repeat]=1;
-
-
-		this.seq(
-			parameters.parameter,
-			parameters.pattern,
-			parameters.play_parameters,
-			parameters.key
-		);
+		^this;
 
 	}
+
+
+
 
 
 	rm {|parameter_,key_|
@@ -155,11 +135,9 @@ parameters.play_parameters.postln;
 	}
 
 
-	speed_{|sp_|
-		if( speed.isKindOf(Number)) {
-			speed = sp_;
-			sequencer.setSpeed(name,speed);
-		}
+	clock_{|sp_|
+		clock = sp_;
+		sequencer.setSpeed(name,clock);
 	}
 
 
@@ -172,14 +150,82 @@ parameters.play_parameters.postln;
 	}
 
 	at {|key|
-		nextKey = key;
+		nextPatternKey = key;
 		^this
 	}
 
 
+
+	// Pattern Functions:
+
+
+
+	speed {|n|
+		if(n.isKindOf(Number)) {
+			var speed = n.ceil.asInteger;
+			currentPatternEvent.parameters[\speed]=speed;
+		};
+		this.closeFunction();
+	}
+
+
+	repeat {|n|
+		if(n.isKindOf(Number)) {
+			currentPatternEvent.parameters[\repeat]=n.ceil.asInteger;
+		};
+		this.closeFunction();
+	}
+
+	// 'repeat' aliases:
+	do {|n| this.repeat(n); }
+	x {|n| this.repeat(n); }
+	one {|n| this.repeat(1); }
+
+
+
+	// Pattern Transformation:
+
+
+	reverse {
+		currentPatternEvent = currentPatternEvent.reverse;
+		this.closeFunction();
+	}
+
+	mirror {
+		currentPatternEvent = currentPatternEvent.mirror;
+		this.closeFunction();
+	}
+
+	pyramid {
+		currentPatternEvent = currentPatternEvent.pyramid;
+		this.closeFunction();
+	}
+
+	random {
+		currentPatternEvent = currentPatternEvent.random;
+		this.closeFunction();
+	}
+
+	maybe {|probability=0.5|
+		currentPatternEvent.pattern.pattern.collect({
+
+			arg patternEvent,index;
+
+			if( 1.0.rand < probability ) {
+				patternEvent.val = \r;
+			};
+
+		});
+		this.closeFunction();
+	}
+
+
+
 	// utils, helpers
-	sequenceInfo{|parameter|
-		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
+
+	closeFunction {
+		sequencer.updateSequenceInfo( name, currentParameter );
+		^this;
 	}
 
 	orderPatternParameters {
@@ -187,11 +233,9 @@ parameters.play_parameters.postln;
 		arg
 		parameter_,
 		pattern_,
-		play_parameters_,
-		key_;
+		play_parameters_;
 
 		var
-		key,
 		parameter,
 		pattern,
 		play_parameters;
@@ -235,15 +279,7 @@ parameters.play_parameters.postln;
 
 		});
 
-		key = key_;
-
-		if( key_.isNil ) {
-			key = nextKey;
-		};
-
-
 		^(
-			key: key,
 			parameter: parameter,
 			pattern: pattern,
 			play_parameters: play_parameters

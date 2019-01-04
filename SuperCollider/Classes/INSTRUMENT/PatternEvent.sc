@@ -13,42 +13,41 @@ PatternEvent : SequencerEvent
 		^super.init( pattern_, parameters_, name_ );
 	}
 
-	reverse {
-		pattern.pattern = pattern.pattern.reverse.postln;
-	}
-	mirror {
-		pattern.pattern = pattern.pattern.mirror.postln;
-	}
-	pyramid {
-		pattern.pattern = pattern.pattern.pyramid.postln;
-	}
-	random {
-		pattern.pattern = pattern.pattern.scramble.postln;
-	}
 
+	// Play Parameters:
 
 	speed {|n|
 		if(n.isKindOf(Number)) {
 			parameters[\speed]=n.ceil.asInteger;
 		}
 	}
-	// 'speed' alias:
-	x {|n|
-		this.speed(n);
-	}
+
 
 	repeat {|n|
 		if(n.isKindOf(Number)) {
 			parameters[\repeat]=n.ceil.asInteger;
 		}
 	}
-	// 'repeat' alias:
-	do {|n|
-		this.repeat(n);
-	}
 
-	one {|n|
-		this.repeat(1);
+
+	// Pattern Transformation:
+
+	reverse {
+		pattern.pattern = pattern.pattern.reverse;
+	}
+	mirror {
+		pattern.pattern = pattern.pattern.mirror;
+	}
+	pyramid {
+		pattern.pattern = pattern.pattern.pyramid;
+	}
+	random {
+		pattern.pattern = pattern.pattern.scramble;
+	}
+	maybe {|probability=0.5|
+		pattern.pattern.collect({|patternEvent,index|
+			[patternEvent,index].postln;
+		});
 	}
 
 }

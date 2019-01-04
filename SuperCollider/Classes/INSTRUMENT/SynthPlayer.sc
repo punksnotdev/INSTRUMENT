@@ -175,7 +175,7 @@ SynthPlayer : Instrument
 			switch( parameter,
 
 				\synthdef, {
-					
+
 					if( value.val != \r ) {
 
 						synthdef = value.val;
@@ -307,7 +307,7 @@ SynthPlayer : Instrument
 						&&
 						( value.val.asFloat != \r )
 					) {
-						speed = value.val.asFloat;
+						this.clock_( value.val.asFloat );
 					}
 
 				},
