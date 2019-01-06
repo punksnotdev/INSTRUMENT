@@ -164,10 +164,10 @@ Sequencer : I8TNode
 			main.displayNextPattern(patternInfo);
 
 
-			^patternEvent;
 
 		}
-		^nil
+		^patternEvent;
+
 	}
 	updateSequenceInfo {|track,parameter|
 		instrument_tracks[track].parameterTracks[parameter].updateSequenceInfo;
