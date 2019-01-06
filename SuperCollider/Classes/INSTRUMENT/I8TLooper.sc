@@ -22,18 +22,20 @@ I8TLooper : Instrument
 
 			if( bus_.isInteger, {
 				bus = bus_;
-
-
-				buffers = IdentityDictionary.new;
-				playSynths = IdentityDictionary.new;
-				durations = IdentityDictionary.new;
-
-				maxDuration = 60;
-				numChannels = 1;
-
-				super.init(graph_,"looper_"++bus);
-
+			}, {
+				bus = 0;
 			});
+
+
+			buffers = IdentityDictionary.new;
+			playSynths = IdentityDictionary.new;
+			durations = IdentityDictionary.new;
+
+			maxDuration = 60;
+			numChannels = 1;
+
+			super.init(graph_,"looper_"++bus);
+
 
 		}
 
@@ -233,7 +235,7 @@ I8TLooper : Instrument
 		}
 
 		// .seq shorthands:
-		
+
 		amp {|pattern|
 			^this.seq(\amp,pattern);
 		}
