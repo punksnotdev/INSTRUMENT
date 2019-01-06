@@ -14,26 +14,26 @@ I8TLooper : Instrument
 
 		var rate;
 
-		*new{|bus_,synthdef_,mode_=nil|
-			^super.new.init(bus_,this.graph,synthdef_,mode_);
+		*new{|bus_|
+			^super.new.init(this.graph,bus_);
 		}
 
-		init{|bus_,graph_,synthdef_,mode_=nil|
+		init{|graph_,bus_|
 
 			if( bus_.isInteger, {
 				bus = bus_;
-			}, {
-				bus = 0;
+
+
+				buffers = IdentityDictionary.new;
+				playSynths = IdentityDictionary.new;
+				durations = IdentityDictionary.new;
+
+				maxDuration = 60;
+				numChannels = 1;
+
+				super.init(graph_,"looper_"++bus);
+
 			});
-
-			buffers = IdentityDictionary.new;
-			playSynths = IdentityDictionary.new;
-			durations = IdentityDictionary.new;
-
-			maxDuration = 60;
-			numChannels = 1;
-
-			super.init("looper_"++bus_,graph_);
 
 		}
 
@@ -99,7 +99,7 @@ I8TLooper : Instrument
 
 		}
 
-		play {|layer|
+		start {|layer|
 
 			this.stopRecording();
 
@@ -184,40 +184,62 @@ I8TLooper : Instrument
 		}
 
 
-		amp_ {|value|
-			playSynths.collect({|synth|
-					synth.set( \amp, value );
-			});
-			amp = value;
+		trigger {|parameter,value|
+[parameter,value].postln;
+			if( value.notNil ) {
+
+
+				if( value.isKindOf(Event) == false, {
+					value = ( val: value, amplitude: 0.5 );
+				});
+
+				switch( parameter,
+
+					\amp, {
+
+						this.amp_( value.val );
+
+					},
+					\rate, {
+						"set rate".postln;
+						this.rate_( value.val );
+
+					}
+				)
+
+			}
 		}
 
-		amp {|value|
-			if( value.notNil ) {
+
+		amp_ {|value|
+			if( value.notNil && value != \r ) {
+
 				playSynths.collect({|synth|
-						synth.set( \amp, value );
+						synth.set( \amp, value.asFloat );
 				});
 				amp = value;
-
-			};
-			^amp;
+			}
 		}
+
 		rate_ {|value|
+			if( value.notNil && value != \r ) {
+
 			playSynths.collect({|synth|
-					synth.set( \rate, value );
+				synth.postln;
+				synth.set( \rate, value.asFloat );
 			});
 			rate = value;
+			}
 		}
 
-		rate {|value|
-			if( value.notNil ) {
-				playSynths.collect({|synth|
-						synth.set( \rate, value );
-				});
-				rate = value;
-
-			};
-			^rate;
+		// .seq shorthands:
+		
+		amp {|pattern|
+			^this.seq(\amp,pattern);
 		}
 
+		rate {|pattern|
+			^this.seq(\rate,pattern);
+		}
 
 }
