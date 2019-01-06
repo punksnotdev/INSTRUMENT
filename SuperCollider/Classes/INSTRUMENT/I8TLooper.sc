@@ -22,18 +22,22 @@ I8TLooper : SynthInstrument
 
 			if( bus_.isInteger, {
 				bus = bus_;
-
-
-				buffers = IdentityDictionary.new;
-				playSynths = IdentityDictionary.new;
-				durations = IdentityDictionary.new;
-
-				maxDuration = 60;
-				numChannels = 1;
-
-				super.init(graph_,"looper_"++bus);
-
+			}, {
+				bus = 0;
 			});
+
+			rate = 1;
+			amp = 1;
+
+			buffers = IdentityDictionary.new;
+			playSynths = IdentityDictionary.new;
+			durations = IdentityDictionary.new;
+
+			maxDuration = 60;
+			numChannels = 1;
+
+			super.init(graph_,"looper_"++bus);
+
 
 		}
 
@@ -121,7 +125,8 @@ I8TLooper : SynthInstrument
 						if( fxSynth.isKindOf(Synth), {
 
 							synth = Synth.before( fxSynth, \loopRead,
-								[\out,fxBus]++[
+								[
+								\out,fxBus,
 								\buffer, buffer,
 								\duration, durations[key],
 								\amp, amp,
@@ -129,25 +134,8 @@ I8TLooper : SynthInstrument
 							]);
 							synth.register;
 						}, {
+							"no synth".postln;
 
-							/*
-							var initNodeID = nodeID;
-							// s.sendBundle(0,["/n_free",nodeID]);
-							// if( synth.isPlaying, {
-								initNodeID = s.nextNodeID;
-								// synth.release;
-							// });
-
-							synth = Synth.basicNew( synthdef.asSymbol, s, initNodeID );
-							synth.register;
-							synths.add(synth);
-							nodeIDs[initNodeID]=true;
-							// [[\out,fxBus]++parameters].postln;
-							// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
-
-							s.sendBundle(0,synth.addToHeadMsg(group, parameters));
-
-							*/
 
 							synth = Synth.head( group, \loopRead,[
 								\buffer, buffer,
@@ -169,6 +157,10 @@ I8TLooper : SynthInstrument
 
 				// if layer exists
 				if( buffers[layer].isKindOf(Buffer), {
+
+
+					var synth;
+
 					// play it:
 					// first stop it if running
 
@@ -177,10 +169,34 @@ I8TLooper : SynthInstrument
 					};
 					// then create new synth:
 
-					playSynths[layer]=Synth(\loopRead,[
-						\buffer, buffers[layer],
-						\duration, durations[layer]
-					]);
+					if( fxSynth.isKindOf(Synth), {
+
+						synth = Synth.before( fxSynth, \loopRead,
+							[
+							\out,fxBus,
+							\buffer, buffers[layer],
+							\duration, durations[layer],
+							\amp, amp,
+							\rate, rate
+						]);
+
+
+						synth.register;
+					}, {
+
+						synth = Synth.head( group, \loopRead,[
+							\buffer, buffers[layer],
+							\duration, durations[layer],
+							\amp, amp,
+							\rate, rate
+						]);
+
+						synth.register;
+
+					});
+
+					playSynths[layer] = synth;
+
 
 				}, {
 					"I8TLooper: layer id not found".postln;
@@ -228,7 +244,7 @@ I8TLooper : SynthInstrument
 
 
 		trigger {|parameter,value|
-[parameter,value].postln;
+
 			if( value.notNil ) {
 
 
@@ -254,35 +270,88 @@ I8TLooper : SynthInstrument
 		}
 
 
-		amp_ {|value|
+		amp_ {|value,layer|
 			if( value.notNil && value != \r ) {
+				if( layer.isNil, {
 
-				playSynths.collect({|synth|
+					playSynths.collect({|synth|
 						synth.set( \amp, value.asFloat );
+					});
+
+				}, {
+
+					if(playSynths[layer].notNil ) {
+						playSynths[layer].set( \amp, value.asFloat );
+					}
+
 				});
 				amp = value;
 			}
 		}
 
-		rate_ {|value|
+		rate_ {|value,layer|
 			if( value.notNil && value != \r ) {
+				if( layer.isNil, {
 
-			playSynths.collect({|synth|
-				synth.postln;
-				synth.set( \rate, value.asFloat );
-			});
-			rate = value;
+					playSynths.collect({|synth|
+						synth.postln;
+						synth.set( \rate, value.asFloat );
+					});
+
+				}, {
+
+					if(playSynths[layer].notNil ) {
+						playSynths[layer].set( \rate, value.asFloat );
+					}
+
+				});
+				rate = value;
 			}
 		}
 
 		// .seq shorthands:
 
-		amp {|pattern|
-			^this.seq(\amp,pattern);
+		amp  {|pattern,index|
+			var isPattern = (
+				(pattern.isKindOf(String)==true) || (pattern.isKindOf(Array)==true)
+			);
+
+			if( (index.isNil && (isPattern)), {
+				^this.seq(\amp,pattern);
+			}, {
+				var amp = pattern;
+				this.amp_(amp,index);
+			});
 		}
 
-		rate {|pattern|
-			^this.seq(\rate,pattern);
+
+		rate {|pattern,index|
+			var isPattern = (
+				(pattern.isKindOf(String)==true) || (pattern.isKindOf(Array)==true)
+			);
+
+			if( (index.isNil && (isPattern)), {
+				^this.seq(\rate,pattern);
+			}, {
+				var rate = pattern;
+				this.rate_(rate,index);
+			});
+		}
+
+
+
+
+		fx_ {|synthdef|
+
+			super.fx_(synthdef);
+
+			fxSynth.postln;
+			playSynths.collect({|synth|
+				// if( synth.isKindOf(Synth)) {
+					synth.moveBefore(fxSynth);
+					synth.set(\out,fxBus);
+				// }
+			})
 		}
 
 }
