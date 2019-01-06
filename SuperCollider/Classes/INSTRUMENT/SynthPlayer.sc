@@ -5,7 +5,7 @@ SynthPlayer : Instrument
 
 	var nodeID;
 	var nodeIDs;
-	var <synthdef;
+	var synthdef;
 	var <>mode;
 
 	var synth_parameters;
@@ -127,6 +127,7 @@ SynthPlayer : Instrument
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 				synth.register;
 			}, {
+
 				var initNodeID = nodeID;
 				// s.sendBundle(0,["/n_free",nodeID]);
 				// if( synth.isPlaying, {
@@ -138,9 +139,9 @@ SynthPlayer : Instrument
 				synth.register;
 				synths.add(synth);
 				nodeIDs[initNodeID]=true;
-				// [[\out,fxBus]++parameters].postln;
-				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
+
 				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
+
 
 			});
 			nodeID = synth.nodeID;
@@ -298,17 +299,17 @@ SynthPlayer : Instrument
 
 
 				},
-				\speed, {
-
-					if(
-						( value.val.asFloat > 0 )
-						&&
-						( value.val.asFloat != \r )
-					) {
-						this.clock_( value.val.asFloat );
-					}
-
-				},
+				// \speed, {
+				//
+				// 	if(
+				// 		( value.val.asFloat > 0 )
+				// 		&&
+				// 		( value.val.asFloat != \r )
+				// 	) {
+				// 		this.clock_( value.val.asFloat );
+				// 	}
+				//
+				// },
 				\trigger, {
 					var floatValue = value.val.asFloat;
 					if( floatValue.asFloat > 0 ) {
@@ -330,15 +331,17 @@ SynthPlayer : Instrument
 					}
 				},
 				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
-				\chord, {
-					// ["chord",value].postln;
-					// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
-				},
+				// \chord, {
+				// 	// ["chord",value].postln;
+				// 	// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
+				// },
 				{ // default:
+
 					synth_parameters[parameter.asSymbol]=value.val;
+
 					if( value.val.isNil || value.val == 0, {}, {
 						if( synth.isKindOf(Synth) ) {
-							synth.set(parameter.asSymbol,value.val);
+							synth.set(parameter.asSymbol,value.val.asFloat);
 						}
 					});
 				},
@@ -456,6 +459,13 @@ SynthPlayer : Instrument
 			var pattern = parameter;
 			this.seq(\fxSet,pattern);
 		});
+	}
+
+
+	synthdef {|pattern|
+		if(pattern.notNil, {
+			^this.seq(\synthdef,pattern);
+		}, { ^synthdef });
 	}
 
 

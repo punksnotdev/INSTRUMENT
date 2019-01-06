@@ -9,16 +9,16 @@ i=INSTRUMENT();
 
 i[\z]=Proxy(~z)
 
-i[\z].seq(\note, "0 3 7 10 14");
-i[\z].seq(\note, "0 3 7  10   14");
-i[\z].seq(\note, "0 3 7xxxx:0.5  10   14");
-i[\z].seq(\note, "0 3 :0.5 7 7 7 7 :1  10   14");
-i[\z].seq(\note, "0 3 :0.5 7 3 7 5 :1  10   14 23");
-i[\z].seq(\note, "0xxxx:1.5 3xx:0.5 :0.5 7 3xxxxx 7 5 :1  10   14 23 34", [ \speed, 4, \repeat, 2]);
+i[\z].note("0 3 7 10 14");
+i[\z].note("0 3 7  10   14");
+i[\z].note("0 3 7xxxx:0.5  10   14");
+i[\z].note("0 3 :0.5 7 7 7 7 :1  10   14");
+i[\z].note("0 3 :0.5 7 3 7 5 :1  10   14 23");
+i[\z].note("0xxxx:1.5 3xx:0.5 :0.5 7 3xxxxx 7 5 :1  10   14 23 34").speed(4).do(2);
 
 
-i[\z][0].seq(\note, "0 2 3 5 7 8 10", [\repeat, 1]);
-i[\z][1].seq(\note, "12 10 8 7 5 3 2", [\repeat, 1]);
+i[\z][0].note("0 2 3 5 7 8 10").do(1);
+i[\z][1].note("12 10 8 7 5 3 2", [\repeat, 1]);
 
 
 i[\kick]=SynthPlayer(\kickSyn1);

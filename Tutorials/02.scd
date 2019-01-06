@@ -4,7 +4,133 @@
 
 
 - Sounds
+
+  - Types
+    - SynthPlayer
+      - SynthDefs
+        - Loader
+    - Proxy
+
+  - Sequencing
+    - seq
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+      - (Link to Writing Patterns)
+    - rm
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+      - Various possibilities
+    - play
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+      - autoplay
+
+    - stop
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - get
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - set
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - go
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - remove
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - kill
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - set
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - amp
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+    - clock
+
+
+    ```SuperCollider
+
+    i[\piano] = SynthPlayer(\pianoSynth);
+
+    ```    
+
+  - Sound Parameters
+    - basic parameters
+      - trigger
+      - note
+      - chord
+      - vol
+      - pan
+
 - Writing Patterns
+
+  - .seq Function
+    - .seq(\parameter, ...pattern )
+    - shortcuts
+      - basic parameters  
+
+
+
+
 - Pattern Functions
 - Fx
 
