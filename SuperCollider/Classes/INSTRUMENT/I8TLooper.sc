@@ -134,8 +134,6 @@ I8TLooper : SynthInstrument
 							]);
 							synth.register;
 						}, {
-							"no synth".postln;
-
 
 							synth = Synth.head( group, \loopRead,[
 								\buffer, buffer,
@@ -150,7 +148,7 @@ I8TLooper : SynthInstrument
 
 
 						playSynths[key]=synth;
-						["playdur",key,durations,durations[key]].postln;
+
 					};
 				});
 			}, {
@@ -222,11 +220,11 @@ I8TLooper : SynthInstrument
 				});
 			}, {
 
-				// if layer exists
-				if( buffers[layer].isKindOf(Buffer) ) {
-					// stop it
-					playSynths[layer].release;
-				};
+				playSynths.collect({|synth|
+					if(synth.isKindOf(Synth)) {
+						synth.release;
+					};
+				});
 
 			});
 
@@ -345,12 +343,16 @@ I8TLooper : SynthInstrument
 
 			super.fx_(synthdef);
 
-			fxSynth.postln;
 			playSynths.collect({|synth|
-				// if( synth.isKindOf(Synth)) {
-					synth.moveBefore(fxSynth);
-					synth.set(\out,fxBus);
-				// }
+				if( synth.isKindOf(Synth), {
+					if( fxSynth.notNil, {
+						synth.moveBefore(fxSynth);
+						synth.set(\out,fxBus);
+					}, {
+						synth.moveBefore(group);
+						synth.set(\out,0);
+					});
+				});
 			})
 		}
 

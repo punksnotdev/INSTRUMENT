@@ -44,8 +44,6 @@ SynthInstrument : Instrument
 
 	fx_ {|synthdef_|
 
-		var fx;
-
 
 		if( synthdef_.notNil,{
 			if( fxSynth.notNil, {
@@ -64,7 +62,7 @@ SynthInstrument : Instrument
 			fxSynth = nil;
 		});
 
-		^fxSynth;
+		// ^fxSynth;
 
 	}
 
