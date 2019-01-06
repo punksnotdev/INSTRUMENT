@@ -1,4 +1,4 @@
-I8TLooper : Instrument
+I8TLooper : SynthInstrument
 {
 
 
@@ -26,8 +26,8 @@ I8TLooper : Instrument
 				bus = 0;
 			});
 
-			rate  = 1;
-			amp  = 1;
+			rate = 1;
+			amp = 1;
 
 			buffers = IdentityDictionary.new;
 			playSynths = IdentityDictionary.new;
@@ -119,19 +119,46 @@ I8TLooper : Instrument
 				// then create new synths:
 				buffers.collect({|buffer,key|
 					if( buffer.isKindOf(Buffer) ) {
-						playSynths[key]=Synth(\loopRead,[
-							\buffer, buffer,
-							\duration, durations[key],
-							\amp, amp,
-							\rate, rate
-						]);
-						["playdur",key,durations,durations[key]].postln;
+
+						var synth;
+
+						if( fxSynth.isKindOf(Synth), {
+
+							synth = Synth.before( fxSynth, \loopRead,
+								[
+								\out,fxBus,
+								\buffer, buffer,
+								\duration, durations[key],
+								\amp, amp,
+								\rate, rate
+							]);
+							synth.register;
+						}, {
+
+							synth = Synth.head( group, \loopRead,[
+								\buffer, buffer,
+								\duration, durations[key],
+								\amp, amp,
+								\rate, rate
+							]);
+
+							synth.register;
+
+						});
+
+
+						playSynths[key]=synth;
+
 					};
 				});
 			}, {
 
 				// if layer exists
 				if( buffers[layer].isKindOf(Buffer), {
+
+
+					var synth;
+
 					// play it:
 					// first stop it if running
 
@@ -140,12 +167,34 @@ I8TLooper : Instrument
 					};
 					// then create new synth:
 
-					playSynths[layer]=Synth(\loopRead,[
-						\buffer, buffers[layer],
-						\duration, durations[layer],
-						\amp, amp,
-						\rate, rate
-					]);
+					if( fxSynth.isKindOf(Synth), {
+
+						synth = Synth.before( fxSynth, \loopRead,
+							[
+							\out,fxBus,
+							\buffer, buffers[layer],
+							\duration, durations[layer],
+							\amp, amp,
+							\rate, rate
+						]);
+
+
+						synth.register;
+					}, {
+
+						synth = Synth.head( group, \loopRead,[
+							\buffer, buffers[layer],
+							\duration, durations[layer],
+							\amp, amp,
+							\rate, rate
+						]);
+
+						synth.register;
+
+					});
+
+					playSynths[layer] = synth;
+
 
 				}, {
 					"I8TLooper: layer id not found".postln;
@@ -171,11 +220,11 @@ I8TLooper : Instrument
 				});
 			}, {
 
-				// if layer exists
-				if( buffers[layer].isKindOf(Buffer) ) {
-					// stop it
-					playSynths[layer].release;
-				};
+				playSynths.collect({|synth|
+					if(synth.isKindOf(Synth)) {
+						synth.release;
+					};
+				});
 
 			});
 
@@ -193,7 +242,7 @@ I8TLooper : Instrument
 
 
 		trigger {|parameter,value|
-[parameter,value].postln;
+
 			if( value.notNil ) {
 
 
@@ -285,6 +334,26 @@ I8TLooper : Instrument
 				var rate = pattern;
 				this.rate_(rate,index);
 			});
+		}
+
+
+
+
+		fx_ {|synthdef|
+
+			super.fx_(synthdef);
+
+			playSynths.collect({|synth|
+				if( synth.isKindOf(Synth), {
+					if( fxSynth.notNil, {
+						synth.moveBefore(fxSynth);
+						synth.set(\out,fxBus);
+					}, {
+						synth.moveBefore(group);
+						synth.set(\out,0);
+					});
+				});
+			})
 		}
 
 }
