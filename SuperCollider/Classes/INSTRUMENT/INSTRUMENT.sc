@@ -35,6 +35,7 @@ var lastMap;
 	}
 	init {
 
+
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new(this);
 		controllerManager = ControllerManager.new(this);
@@ -336,24 +337,8 @@ var lastMap;
 					};
 
 					if( next.notNil,{
-	// 					var controllerKeySet;
-	// 					// var shouldIncrement = lastMap.target =
-	//
-	// 	controllerKeyAlreadySet=false;
-	// 	if( lastMap.notNil, {
-	//
-	// 		if( lastMap.includesKey(name.asSymbol) ) {
-	// 			controllerKeyAlreadySet=true;
-	// 		};
-	//
-	// 	});
-	//
-	// 	l=e;
-	//
-	// }
+
 						this.map( next, item, \amp,[0,1]);
-
-
 
 					});
 
