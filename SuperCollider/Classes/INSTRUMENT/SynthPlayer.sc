@@ -1,7 +1,5 @@
-SynthPlayer : Instrument
+SynthPlayer : SynthInstrument
 {
-	var group;
-	var groupID;
 
 	var nodeID;
 	var nodeIDs;
@@ -9,31 +7,22 @@ SynthPlayer : Instrument
 	var <>mode;
 
 	var synth_parameters;
-	var fx_parameters;
-
-	var <fxSynth;
-	var fx;
-	var fxBus;
 
 	var pressedKeys;
-
 	var currentPressedKey;
 	var lastPressedKey;
 
 	var autostart;
 
 
-	*new{|synthdef_,mode_,name_,autostart,fx|
-		^super.new.init(this.graph,synthdef_,mode_,name_,autostart,fx);
+	*new{|synthdef_,mode_,name_,autostart|
+		^super.new.init(this.graph,synthdef_,mode_,name_,autostart);
 	}
 
-	init{|graph_,synthdef_,mode_,name_,autostart_,fx|
+	init{|graph_,synthdef_,mode_,name_,autostart_|
 
 		nodeIDs=IdentityDictionary.new;
 
-		group = Group.new;
-		group.register;
-		groupID = group.nodeID;
 
 
 		if( mode_.notNil, {
@@ -52,10 +41,7 @@ SynthPlayer : Instrument
 			});
 
 			// this.createSynth();
-			fxSynth = nil;
-			fxBus = Bus.audio(Server.local,2);
 			synth_parameters = IdentityDictionary.new;
-			fx_parameters = IdentityDictionary.new;
 			super.init(graph_,name_);
 
 		});
@@ -163,16 +149,6 @@ SynthPlayer : Instrument
 
 	}
 
-	parameters_array{|array|
-		var parameters_array = List.new;
-
-		array.keysValuesDo({|key,value|
-			parameters_array.add(key.asSymbol);
-			parameters_array.add(value);
-		})
-
-		^parameters_array
-	}
 
 	trigger {|parameter,value|
 
@@ -405,69 +381,6 @@ SynthPlayer : Instrument
 	}
 
 
-	// seq functions
-
-	fx {|pattern|
-
-		if(pattern.notNil, {
-			^this.seq(\fx,pattern);
-		});
-
-		^this.fx;
-
-	}
-
-
-	fx_ {|synthdef_|
-
-		var fx;
-
-
-		if( synthdef_.notNil,{
-			if( fxSynth.notNil, {
-				fxSynth.free;
-				// fxSynth = Synth.replace(fxSynth,synthdef_);
-			}, {
-				// fxSynth = Synth.new(synthdef_);
-			});
-
-			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
-
-			if( autostart == true ) {
-
-				this.createSynth();
-
-				if( synth_parameters[\inBus].notNil ) {
-					this.set(\inBus,synth_parameters[\inBus]);
-				};
-
-			};
-
-		}, {
-			"clear currentFX".postln;
-			fxSynth.free;
-			fxSynth = nil;
-		});
-
-		^fxSynth;
-
-	}
-
-
-
-	fxSynth_ {|synthdef_|
-		this.fx(synthdef_);
-	}
-
-	fxSet {|parameter,value|
-		if( value.notNil, {
-			fx_parameters[parameter] = value;
-			fxSynth.set(parameter,value);
-		}, {
-			var pattern = parameter;
-			this.seq(\fxSet,pattern);
-		});
-	}
 
 
 	synthdef {|pattern|
