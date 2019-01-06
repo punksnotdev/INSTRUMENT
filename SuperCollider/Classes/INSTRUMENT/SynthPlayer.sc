@@ -128,6 +128,7 @@ SynthPlayer : Instrument
 				synth.register;
 			}, {
 
+				/*
 				var initNodeID = nodeID;
 				// s.sendBundle(0,["/n_free",nodeID]);
 				// if( synth.isPlaying, {
@@ -139,9 +140,16 @@ SynthPlayer : Instrument
 				synth.register;
 				synths.add(synth);
 				nodeIDs[initNodeID]=true;
+				// [[\out,fxBus]++parameters].postln;
+				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
 
 				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
 
+				*/
+
+				synth = Synth.head( group, synthdef.asSymbol, parameters );
+
+				synth.register;
 
 			});
 			nodeID = synth.nodeID;
