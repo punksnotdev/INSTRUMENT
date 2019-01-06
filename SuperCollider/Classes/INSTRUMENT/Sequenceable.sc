@@ -43,7 +43,10 @@ Sequenceable : I8TNode
 			pattern_
 		);
 
+
 		currentParameter = parameters.parameter;
+
+
 
 		currentPatternEvent = sequencer.addPattern(
 			name,
@@ -53,7 +56,11 @@ Sequenceable : I8TNode
 			parameters.play_parameters
 		);
 
-		currentPattern = currentPatternEvent.pattern.pattern;
+		if( currentPatternEvent.notNil, {
+
+			currentPattern = currentPatternEvent.pattern.pattern;
+
+		});
 
 
 		^this;
@@ -71,6 +78,8 @@ Sequenceable : I8TNode
 	vol {|pattern| this.seq(\amp,pattern); }
 
 	pan {|pattern| this.seq(\pan,pattern); }
+
+	fx {|pattern| this.seq(\fx,pattern); }
 
 
 
@@ -173,6 +182,7 @@ Sequenceable : I8TNode
 	speed {|n|
 		if(n.isKindOf(Number)) {
 			var speed = max(n.asFloat,0.01);
+
 			currentPatternEvent.parameters[\speed]=speed;
 		};
 		this.closeFunction();
@@ -244,10 +254,10 @@ Sequenceable : I8TNode
 
 		// if first argument not a symbol, its not a parameter. use default 'trigger'
 
+
 		if( parameter_.isKindOf(Symbol) == true, {
 
 			parameter = parameter_;
-
 			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
 
 				pattern = pattern_;
@@ -269,9 +279,9 @@ Sequenceable : I8TNode
 
 				pattern = parameter_;
 
-				if( pattern_.isKindOf(Array) ) {
-					play_parameters = pattern_;
-				};
+				// if( pattern_.isKindOf(Array) ) {
+				// 	play_parameters = pattern_;
+				// };
 
 			}, {
 				^nil
