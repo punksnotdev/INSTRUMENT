@@ -1,4 +1,4 @@
-I8TLooper : Instrument
+I8TLooper : SynthInstrument
 {
 
 
@@ -115,10 +115,53 @@ I8TLooper : Instrument
 				// then create new synths:
 				buffers.collect({|buffer,key|
 					if( buffer.isKindOf(Buffer) ) {
-						playSynths[key]=Synth(\loopRead,[
-							\buffer, buffer,
-							\duration, durations[key]
-						]);
+
+						var synth;
+
+						if( fxSynth.isKindOf(Synth), {
+
+							synth = Synth.before( fxSynth, \loopRead,
+								[\out,fxBus]++[
+								\buffer, buffer,
+								\duration, durations[key],
+								\amp, amp,
+								\rate, rate
+							]);
+							synth.register;
+						}, {
+
+							/*
+							var initNodeID = nodeID;
+							// s.sendBundle(0,["/n_free",nodeID]);
+							// if( synth.isPlaying, {
+								initNodeID = s.nextNodeID;
+								// synth.release;
+							// });
+
+							synth = Synth.basicNew( synthdef.asSymbol, s, initNodeID );
+							synth.register;
+							synths.add(synth);
+							nodeIDs[initNodeID]=true;
+							// [[\out,fxBus]++parameters].postln;
+							// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
+
+							s.sendBundle(0,synth.addToHeadMsg(group, parameters));
+
+							*/
+
+							synth = Synth.head( group, \loopRead,[
+								\buffer, buffer,
+								\duration, durations[key],
+								\amp, amp,
+								\rate, rate
+							]);
+
+							synth.register;
+
+						});
+
+
+						playSynths[key]=synth;
 						["playdur",key,durations,durations[key]].postln;
 					};
 				});
@@ -233,7 +276,7 @@ I8TLooper : Instrument
 		}
 
 		// .seq shorthands:
-		
+
 		amp {|pattern|
 			^this.seq(\amp,pattern);
 		}

@@ -16,7 +16,6 @@ Instrument : Sequenceable
 		volume = 1;
 		octave = 4;
 		synths = List.new;
-["i7t",graph_,name_].postln;
 		super.init(graph_,name_);
 	}
 
@@ -27,4 +26,16 @@ Instrument : Sequenceable
 	set {|parameter,value|
 
 	}
+
+	parameters_array{|array|
+		var parameters_array = List.new;
+
+		array.keysValuesDo({|key,value|
+			parameters_array.add(key.asSymbol);
+			parameters_array.add(value);
+		})
+
+		^parameters_array
+	}
+
 }
