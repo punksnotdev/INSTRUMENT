@@ -147,9 +147,9 @@ Sequencer : I8TNode
 		^this.addPattern(track,parameter,key,pattern,play_parameters);
 	}
 
-	addPattern {|track,parameter,key,pattern,play_parameters|
+	addPattern {|track,parameter,key,pattern|
 
-		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern,play_parameters);
+		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern);
 
 		if( patternEvent.pattern.totalDuration > 0 ) {
 			var patternInfo = (
@@ -158,18 +158,20 @@ Sequencer : I8TNode
 				beats:patternEvent.pattern.totalDuration,
 				param:parameter,
 				key:key,
-				play_params:play_parameters,
 				event: patternEvent
 			);
 
-			main.displayNextPattern(patternInfo)
+			main.displayNextPattern(patternInfo);
 
-			^patternInfo;
+
 
 		}
-		^nil
-	}
+		^patternEvent;
 
+	}
+	updateSequenceInfo {|track,parameter|
+		instrument_tracks[track].parameterTracks[parameter].updateSequenceInfo;
+	}
 	removePattern {|track,parameter,key|
 		instrument_tracks[ track ].removePattern(parameter,key);
 	}

@@ -54,9 +54,6 @@ ParameterTrack
 				var currentPattern;
 
 
-				// "duration beat".postln;
-
-
 				if( this.currentEvent().notNil, {
 
 					var channel;
@@ -127,15 +124,13 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
-				// name.postln;
-
 
 				if( this.currentEvent().notNil, {
 
 					currentPattern = this.currentEvent().pattern;
 
-					// ["currentPattern",currentPattern].postln;
-					if( currentPattern.hasDurations == true, {
+
+								if( currentPattern.hasDurations == true, {
 
 						if( durationSequencer.isPlaying == false, {
 							durationSequencer.play;
@@ -212,8 +207,8 @@ ParameterTrack
 	addPattern {|key,pattern,play_parameters|
 
 		var eventName;
-		var newEvent;
 		var newKey;
+		var newPatternEvent;
 
 		if( key == nil, {
 
@@ -238,57 +233,55 @@ ParameterTrack
 
 		});
 
-		// ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).postln;
 
-		eventName = ("pattern" ++ "-" ++ track.name ++ "-" ++ name.asString ++ "-" ++ key.asString).toLower;
+		eventName = (
+			"pattern-" ++
+			track.name ++ "-" ++
+			name.asString ++ "-" ++
+			key.asString
+		).toLower;
+
 
 		if( pattern.isKindOf(I8TPattern), {
 
-			newEvent = PatternEvent.new( pattern, eventName);
-			// newEvent.pattern = pattern;
+			newPatternEvent = PatternEvent.new( pattern, eventName);
 
 		}, {
 
-			newEvent = PatternEvent.new( I8TPattern(pattern), eventName);
-			// newEvent.pattern = P(pattern);
+			newPatternEvent = PatternEvent.new( I8TPattern(pattern), eventName);
 
 		});
 
 
 		if( play_parameters.isArray, {
 			var paramDict = play_parameters.asDict;
-			newEvent.parameters[\repeat] = paramDict[\repeat];
-			newEvent.parameters[\speed] = paramDict[\speed];
-			newEvent.parameters[\waitBefore] = paramDict[\waitBefore];
+			newPatternEvent.parameters[\repeat] = paramDict[\repeat];
+			newPatternEvent.parameters[\speed] = paramDict[\speed];
+			newPatternEvent.parameters[\waitBefore] = paramDict[\waitBefore];
 		});
 
 		if(patternEvents[key]==nil,{
 			patternEvents[key] = List.new;
 		});
 
-		// /*
 		if(sequence[key].notNil,{
-			sequence[key] = newEvent;
-			//patternEvents[key](newEvent);
+
+			sequence[key] = newPatternEvent;
 
 		},{
-			var key_ = sequence.size;
-			// ("keys match: "++key==key_++": "++key++","++key_).postln;
-			sequence.add( newEvent );
+			sequence.add( newPatternEvent );
 		});
 
 
-		patternEvents[key].add(newEvent);
+		patternEvents[key].add(newPatternEvent);
 		patterns[ key ] = pattern;
 
-		// sequence.add( newEvent );
 
-		patternEvents[key].add(newEvent);
+		patternEvents[key].add(newPatternEvent);
 
 		this.updateSequenceInfo();
 
-		^newEvent;
-		// sequenceInfo.postln;
+		^newPatternEvent;
 
 	}
 
@@ -319,9 +312,7 @@ ParameterTrack
 				eventKey = key;
 				patterns[key] = nil;
 
-				// while({patternEvents[eventKey].size>0},{
-					this.removePatternEvents(key);
-				// });
+							this.removePatternEvents(key);
 
 			})
 		});
@@ -337,10 +328,8 @@ ParameterTrack
 			patterns.collect({|p,k|
 				if(p==k,{
 					patterns[k] = nil;
-					// while({patternEvents[k].size>0},{
-						this.removePatternEvents(k);
-					// });
-				})
+									this.removePatternEvents(k);
+							})
 			});
 		});
 
@@ -365,7 +354,6 @@ ParameterTrack
 
 	getPattern{|key|
 
-		// [key,patterns.findKey( key )].postln;
 		if( key.isArray, {
 			^patterns[patterns.findKey( key )];
 		}, {
@@ -385,7 +373,6 @@ ParameterTrack
 
 	removePatternEvents {|key|
 
-		// pattEvent = patternEvents[key].pop;
 		patternEvents[key].collect({|pattEvent|
 
 			var seqindex;
@@ -438,32 +425,35 @@ ParameterTrack
 	}
 
 	updateSequenceInfo {
+
 		var totalSequenceEventBeats;
 
 		totalSequenceEventBeats = 0;
 
 		sequenceInfo = Order.new;
 
-		sequence.collect({|e|
+		sequence.collect({|patternEvent|
 
 			var numBeats;
 			var repetitions;
 
 			repetitions = track.sequencer.repeat;
 
-			if( e.pattern.pattern.isArray, {
-				if( e.parameters.isKindOf(Dictionary), {
-					if( e.parameters[\repeat] != nil, {
-						repetitions = e.parameters[\repeat];
+			if( patternEvent.pattern.pattern.isArray, {
+
+				if( patternEvent.parameters.isKindOf(Dictionary), {
+					if( patternEvent.parameters[\repeat] != nil, {
+						repetitions = patternEvent.parameters[\repeat];
 					});
 				});
 
-				numBeats = e.pattern.pattern.size * repetitions;
-				// ("totalSequenceEventBeats:"++totalSequenceEventBeats).postln;
-				sequenceInfo[ totalSequenceEventBeats ] = e.pattern;
+				numBeats = patternEvent.pattern.pattern.size * repetitions;
+
+				sequenceInfo[ totalSequenceEventBeats ] = patternEvent.pattern;
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
 			});
+
 		});
 
 
@@ -473,7 +463,7 @@ ParameterTrack
 
 		var nearestBeatCountKey;
 		var currentIndex;
-		// sequenceInfo.postln;
+
 		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats + 1 );
 
 		currentIndex = sequenceInfo.indices.indexOfNearest( beats + 1 );

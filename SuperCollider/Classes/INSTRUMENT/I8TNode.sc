@@ -6,7 +6,7 @@ I8TNode : I8TeventListener
 	var <>name;
 	var <>nodeGraph;
 
-	var inputs;
+	var inputs, outputs;
 
 	*new {|graph_,name_|
 
@@ -52,18 +52,24 @@ I8TNode : I8TeventListener
 	}
 
 
-	inputs_ {|inputs|
 
-		if( inputs.isArray, {
-
-			inputs.collect({|input,index|
-				this.addInput( input );
-			});
-
-		});
-
-		^this
+	addInput {|input|
+		inputs.push( input );
 	}
+
+	removeInput {|input|
+		inputs.removeAt( inputs.indexOf(input) );
+	}
+
+
+	addOutput {|output|
+		outputs.push( output );
+	}
+
+	removeOutput {|output|
+		outputs.removeAt( outputs.indexOf(output) );
+	}
+
 
 	addParameter {|name,range|
 

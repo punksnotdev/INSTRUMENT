@@ -42,105 +42,90 @@ ControllerManager {
 		var outValue;
 
 
-		var controller = controlTargetMap[source.key.asSymbol];
+		var controllerList = controlTargetMap[source.key.asSymbol];
 
 		var mappedParam1;
 		var inputMap;
 
 		mappedParam1 = param1;
 
-if( source.midiTarget.notNil,{
+			if( source.midiTarget.notNil,{
 
-		if( source.midiTarget.isKindOf(MIDIDevice), {
-			inputMap = source.midiTarget.inputMap;
+			if( source.midiTarget.isKindOf(MIDIDevice), {
+				inputMap = source.midiTarget.inputMap;
+			});
+
+	        if( inputMap.isKindOf(IdentityDictionary), {
+	            if( inputMap[param1].notNil, {
+	                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
+	            });
+	        });
+
 		});
 
-        if( inputMap.isKindOf(IdentityDictionary), {
-            if( inputMap[param1].notNil, {
-                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
-            });
-        });
-});
+		controllerList.collect({|controller|
 
-		if(controller.notNil, {
+			if(controller.notNil, {
 
-			var target = controller.target;
-			var key = controller.key;
-			var parameter = controller.parameter;
-			var range = controller.range;
-			var protocol = controller.protocol;
+				var target = controller.target;
+				var key = controller.key;
+				var parameter = controller.parameter;
+				var range = controller.range;
+				var protocol = controller.protocol;
 
-			var type = controller.controller.type;
+				var type = controller.controller.type;
 
-			switch( type,
-				\cc, {
+				switch( type,
+					\cc, {
 
-					var value = mappedParam1 / 127;
-					if( range.notNil, {
+						var value = mappedParam1 / 127;
+						if( range.notNil, {
 
-						outRange = (range[1] - range[0]).abs;
+							outRange = (range[1] - range[0]).abs;
 
-						minOutVal = range[0].min(range[1]);
+							minOutVal = range[0].min(range[1]);
 
-						if( range[0] > range[1] , {
+							if( range[0] > range[1] , {
 
-							outValue = minOutVal + (1 - (outRange * value) );
+								outValue = minOutVal + (1 - (outRange * value) );
+
+							}, {
+
+								outValue = minOutVal + outRange * value;
+							});
 
 						}, {
 
-							outValue = minOutVal + outRange * value;
+							outValue = value;
+
 						});
 
-					}, {
+						target.set(
+							parameter,
+							outValue
+						);
 
-						outValue = value;
+					},
 
-					});
+					\note, {
+						target.set(\note,(val:mappedParam1, amplitude: param2/127));
+					}
 
-					target.set(
-						parameter,
-						outValue
-					);
-
-				},
-
-				\note, {
-					target.set(\note,(val:mappedParam1, amplitude: param2/127));
-				}
-
-			);
+				);
 
 
-		}, {
+			}, {
 
-			["ControlManager", "no controller set", source, param1, param2].postln;
+				["ControlManager", "no controller set", source, param1, param2].postln;
+
+			});
 
 		});
-
 	}
 
 	map {|controller,target,parameter,range|
 
-		var mappingAlreadySetKey = nil;
-
-		controlTargetMap.collect({| item, key|
-
-			if( ( item.target == target && item.parameter == parameter ), {
-				mappingAlreadySetKey = key;
-			});
-		});
-
-		if( mappingAlreadySetKey.notNil, {
-
-			"Mapping already set".postln;
-
-			controlTargetMap.removeAt(mappingAlreadySetKey);
-
-			^true;
-
-		});
-
-		^controlTargetMap[ controller.key ] = (
+		var mapping = (
 			controller: controller,
 			target: target,
 			parameter: parameter,
@@ -148,6 +133,53 @@ if( source.midiTarget.notNil,{
 			key: controller.key,
 			protocol: controller.protocol,
 		);
+
+
+		// var newKey = target.name ++ '-' ++ target.parameter;
+
+		if( controlTargetMap[controller.key].isKindOf(List) == false, {
+			controlTargetMap[controller.key] = List.new;
+			controlTargetMap[controller.key] = controlTargetMap[controller.key];
+		}, {
+
+			controlTargetMap[controller.key].collect({| item, index |
+
+				// check if target + parameter mapping exists
+				if( ( item.target == target && item.parameter == parameter ), {
+					controlTargetMap[controller.key].removeAt( index );
+				});
+
+			});
+
+
+		});
+
+		controlTargetMap[controller.key].add( mapping );
+
+		^mapping
+
+	}
+
+
+	unmap {|controller,target,parameter|
+
+
+		if( controlTargetMap[controller.key].isKindOf(List) == true, {
+
+			controlTargetMap[controller.key].collect({| item, index |
+
+				// check if target + parameter mapping exists
+				if( ( item.target == target && item.parameter == parameter ), {
+					controlTargetMap[controller.key].removeAt( index );
+				});
+
+			});
+
+
+		});
+
+		^true
+
 
 	}
 

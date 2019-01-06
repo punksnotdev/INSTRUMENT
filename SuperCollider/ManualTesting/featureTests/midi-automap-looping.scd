@@ -40,11 +40,11 @@ i[\kick5][0].seq(":0.25  1");
 i[\kick6] = SynthPlayer(\kickDeep);
 i[\kick6][0].seq(":1  3");
 i[\kick6].fx=\revlpf;
-i[\kick6].setFx(\wet,0.75)
-i[\kick6].setFx(\cutoff,1900)
-i[\kick6].setFx(\q,0.01)
-i[\kick6].setFx(\rv1,1)
-i[\kick6].setFx(\rv2,1)
+i[\kick6].fxSet(\wet,0.75)
+i[\kick6].fxSet(\cutoff,1900)
+i[\kick6].fxSet(\q,0.01)
+i[\kick6].fxSet(\rv1,1)
+i[\kick6].fxSet(\rv2,1)
 
 i[\kick7] = SynthPlayer(\kickSyn2);
 i[\kick7][0].seq(":0.125  1");

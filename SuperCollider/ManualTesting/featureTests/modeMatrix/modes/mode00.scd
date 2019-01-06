@@ -1,4 +1,4 @@
-m = ControlMode.new;
+var m = ControlMode.new;
 
 
 m.setup({

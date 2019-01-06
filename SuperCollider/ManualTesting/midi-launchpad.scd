@@ -2,8 +2,9 @@
 
 	var midiDevicesNames;
 	var specs;
-
+	var midi;
 	var modeMatrix;
+	var spec;
 
 
 	modeMatrix = ModeMatrix.new();
@@ -22,15 +23,18 @@
 
 		i=INSTRUMENT();
 
+		3.wait;
+
 		i.midi=true;
 
+		midi = i.controllerManager.midi;
 
 		3.wait;
 
 		// midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
 		midiDevicesNames = ["Launchpad"];
 
-		i.controllerManager.midi.addDevices( midiDevicesNames, specs );
+		midi.addDevices( midiDevicesNames, specs );
 
 		1.wait;
 
@@ -52,13 +56,17 @@
 
 
 
-		i.map(
-			i.midi.launchpad.groups.buttons.controllers.buttons,
-			modeMatrix,
-			\note
-		);
+		modeMatrix.addInput(i.midi.launchpad.groups.buttons.controllers.buttons);
+		modeMatrix.addOutput(\matrix,i.midi.launchpad,specs[ o[\name].asSymbol ] );
+		modeMatrix.addOutput(\device,i.gui);
 
-		modeMatrix.midiTarget = i.midi.launchpad;
+		// i[\piano] = SynthPlayer(\piano);
+		// i.map(
+		// 	modeMatrix,
+		// 	i[\piano],
+		// 	\note
+		// );
+
 
 	}}).play;
 

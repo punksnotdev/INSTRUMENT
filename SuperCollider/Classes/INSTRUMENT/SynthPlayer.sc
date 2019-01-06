@@ -3,18 +3,16 @@ SynthPlayer : Instrument
 	var group;
 	var groupID;
 
-	var amp;
-
 	var nodeID;
 	var nodeIDs;
-	var <synthdef;
+	var synthdef;
 	var <>mode;
 
 	var synth_parameters;
 	var fx_parameters;
 
 	var <fxSynth;
-	var <fx;
+	var fx;
 	var fxBus;
 
 	var pressedKeys;
@@ -129,6 +127,8 @@ SynthPlayer : Instrument
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 				synth.register;
 			}, {
+
+				/*
 				var initNodeID = nodeID;
 				// s.sendBundle(0,["/n_free",nodeID]);
 				// if( synth.isPlaying, {
@@ -142,7 +142,14 @@ SynthPlayer : Instrument
 				nodeIDs[initNodeID]=true;
 				// [[\out,fxBus]++parameters].postln;
 				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
+
 				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
+
+				*/
+
+				synth = Synth.head( group, synthdef.asSymbol, parameters );
+
+				synth.register;
 
 			});
 			nodeID = synth.nodeID;
@@ -175,6 +182,7 @@ SynthPlayer : Instrument
 			switch( parameter,
 
 				\synthdef, {
+
 					if( value.val != \r ) {
 
 						synthdef = value.val;
@@ -187,7 +195,7 @@ SynthPlayer : Instrument
 					this.fx_( value.val );
 
 				},
-				\setFx, {
+				\fxSet, {
 
 					value.keysValuesDo({|k,v|
 						fx_parameters[k]=v;
@@ -299,17 +307,17 @@ SynthPlayer : Instrument
 
 
 				},
-				\speed, {
-
-					if(
-						( value.val.asFloat > 0 )
-						&&
-						( value.val.asFloat != \r )
-					) {
-						speed = value.val.asFloat;
-					}
-
-				},
+				// \speed, {
+				//
+				// 	if(
+				// 		( value.val.asFloat > 0 )
+				// 		&&
+				// 		( value.val.asFloat != \r )
+				// 	) {
+				// 		this.clock_( value.val.asFloat );
+				// 	}
+				//
+				// },
 				\trigger, {
 					var floatValue = value.val.asFloat;
 					if( floatValue.asFloat > 0 ) {
@@ -331,15 +339,17 @@ SynthPlayer : Instrument
 					}
 				},
 				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
-				\chord, {
-					// ["chord",value].postln;
-					// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
-				},
+				// \chord, {
+				// 	// ["chord",value].postln;
+				// 	// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
+				// },
 				{ // default:
+
 					synth_parameters[parameter.asSymbol]=value.val;
+
 					if( value.val.isNil || value.val == 0, {}, {
 						if( synth.isKindOf(Synth) ) {
-							synth.set(parameter.asSymbol,value.val);
+							synth.set(parameter.asSymbol,value.val.asFloat);
 						}
 					});
 				},
@@ -351,51 +361,7 @@ SynthPlayer : Instrument
 		}
 	}
 
-	fx_ {|synthdef_|
 
-		var fx;
-
-
-		if( synthdef_.notNil,{
-			if( fxSynth.notNil, {
-				fxSynth.free;
-				// fxSynth = Synth.replace(fxSynth,synthdef_);
-			}, {
-				// fxSynth = Synth.new(synthdef_);
-			});
-
-			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
-
-			if( autostart == true ) {
-
-				this.createSynth();
-
-				if( synth_parameters[\inBus].notNil ) {
-					this.set(\inBus,synth_parameters[\inBus]);
-				};
-
-			};
-
-		}, {
-			"clear currentFX".postln;
-			fxSynth.free;
-			fxSynth = nil;
-		});
-
-		^fxSynth;
-
-	}
-
-
-
-	fxSynth_{|synthdef_|
-		this.fx(synthdef_);
-	}
-
-	setFx{|parameter,value|
-		fx_parameters[parameter] = value;
-		fxSynth.set(parameter,value);
-	}
 
 	set {|parameter,value|
 
@@ -437,5 +403,79 @@ SynthPlayer : Instrument
 		});
 		super.stop();
 	}
+
+
+	// seq functions
+
+	fx {|pattern|
+
+		if(pattern.notNil, {
+			^this.seq(\fx,pattern);
+		});
+
+		^this.fx;
+
+	}
+
+
+	fx_ {|synthdef_|
+
+		var fx;
+
+
+		if( synthdef_.notNil,{
+			if( fxSynth.notNil, {
+				fxSynth.free;
+				// fxSynth = Synth.replace(fxSynth,synthdef_);
+			}, {
+				// fxSynth = Synth.new(synthdef_);
+			});
+
+			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
+
+			if( autostart == true ) {
+
+				this.createSynth();
+
+				if( synth_parameters[\inBus].notNil ) {
+					this.set(\inBus,synth_parameters[\inBus]);
+				};
+
+			};
+
+		}, {
+			"clear currentFX".postln;
+			fxSynth.free;
+			fxSynth = nil;
+		});
+
+		^fxSynth;
+
+	}
+
+
+
+	fxSynth_ {|synthdef_|
+		this.fx(synthdef_);
+	}
+
+	fxSet {|parameter,value|
+		if( value.notNil, {
+			fx_parameters[parameter] = value;
+			fxSynth.set(parameter,value);
+		}, {
+			var pattern = parameter;
+			this.seq(\fxSet,pattern);
+		});
+	}
+
+
+	synthdef {|pattern|
+		if(pattern.notNil, {
+			^this.seq(\synthdef,pattern);
+		}, { ^synthdef });
+	}
+
+
 
 }

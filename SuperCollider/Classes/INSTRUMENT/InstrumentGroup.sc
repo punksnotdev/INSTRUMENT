@@ -130,15 +130,15 @@ InstrumentGroup : List {
 	}
 
 
-	setFx{|parameter_,value_|
+	fxSet{|parameter_,value_|
 		this.collect({|item|
 			if( item.isKindOf(Instrument),{
-				item.setFx(parameter_,value_);
+				item.fxSet(parameter_,value_);
 			}, {
 
 				if( item.isKindOf(InstrumentGroup),{
 					item.collect({|subItem|
-						subItem.setFx(parameter_,value_);
+						subItem.fxSet(parameter_,value_);
 					});
 				});
 

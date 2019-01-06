@@ -54,7 +54,7 @@ var lastMap;
 		autoMIDI = false;
 		nextMIDIController = -1;
 
-		this.setupGUI();
+		// this.setupGUI();
 
 	}
 
@@ -218,10 +218,12 @@ var lastMap;
 	}
 
 
-	map {|controller,target,parameter,range|
-		^controllerManager.map(controller,target,parameter,range);
+	map {|controller,target,parameter|
+		^controllerManager.map(controller,target,parameter);
 	}
-
+	unmap {|controller,target,parameter|
+		^controllerManager.unmap(controller,target,parameter);
+	}
 
 	setupGUI {
 
@@ -392,12 +394,13 @@ var lastMap;
 		});
 
 
-
-		gui.synthdefs_(newList.asArray, {
-			arg ...args;
-			"synths gui callback:".postln;
-			args.postln;
-		});
+		if( gui.notNil ) {
+			gui.synthdefs_(newList.asArray, {
+				arg ...args;
+				"synths gui callback:".postln;
+				args.postln;
+			});
+		};
 
 	}
 
@@ -418,7 +421,9 @@ var lastMap;
 			tracks.add(track);
 		});
 
-		gui.tracks = tracks.asArray;
+		if( gui.notNil ) {
+			gui.tracks = tracks.asArray;
+		}
 
 	}
 
@@ -441,8 +446,9 @@ var lastMap;
 
 	displayNextPattern {|nextPattern|
 
-		gui.currentPattern = nextPattern;
-
+		if( gui.notNil ) {
+			gui.currentPattern = nextPattern;
+		}
 	}
 
 }

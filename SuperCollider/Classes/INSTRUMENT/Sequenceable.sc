@@ -2,10 +2,15 @@ Sequenceable : I8TNode
 {
 
 	var <>sequencer;
-	var <speed;
+	var <clock;
 	var <playing;
+	var <>amp;
 
-	var nextKey;
+	var nextPatternKey;
+
+	var currentPatternEvent;
+	var currentPattern;
+	var currentParameter;
 
 	*new{|graph_,name_|
 		^super.new.init(this.graph,name_);
@@ -13,8 +18,9 @@ Sequenceable : I8TNode
 
 	init{|graph_,name_|
 		super.init(graph_,name_);
-		speed = 1;
-		nextKey = 0;
+		clock = 1;
+		amp = 1;
+		nextPatternKey = 0;
 		this.play;
 	}
 
@@ -28,64 +34,55 @@ Sequenceable : I8TNode
 	}
 
 
-	seq {|parameter_,pattern_,play_parameters_,key_|
-		var key;
-		var parameter;
-		var pattern;
-		var play_parameters;
+	seq {|parameter_,pattern_|
 
-		// if first argument not a symbol, its not a parameter. use default 'trigger'
+		var parameters;
 
-		if( parameter_.isKindOf(Symbol) == true, {
+		parameters = this.orderPatternParameters(
+			parameter_,
+			pattern_
+		);
 
-			parameter = parameter_;
 
-			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
+		currentParameter = parameters.parameter;
 
-				pattern = pattern_;
 
-			}, {
-				^nil;
-			});
 
-			if( play_parameters_.isKindOf(Array) ) {
-				play_parameters = play_parameters_;
-			};
+		currentPatternEvent = sequencer.addPattern(
+			name,
+			parameters.parameter,
+			nextPatternKey,
+			parameters.pattern,
+			parameters.play_parameters
+		);
 
-		},
-		{
-			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
+		if( currentPatternEvent.notNil, {
 
-				pattern = parameter_;
-
-				if( pattern_.isKindOf(Array) ) {
-					play_parameters = pattern_;
-				};
-
-			}, {
-				^nil
-			});
-
-			parameter = \trigger;
+			currentPattern = currentPatternEvent.pattern.pattern;
 
 		});
 
-		key = key_;
 
-		if( key_.isNil ) {
-			key = nextKey;
-		};
-
-
-		^sequencer.addPattern(
-			name,
-			parameter,
-			key,
-			pattern,
-			play_parameters
-		);
+		^this;
 
 	}
+
+	/* 'seq' shorthands */
+
+	trigger {|pattern| this.seq(\trigger,pattern); }
+
+	note {|pattern| this.seq(\note,pattern); }
+
+	chord {|pattern| this.seq(\chord,pattern); }
+
+	vol {|pattern| this.seq(\amp,pattern); }
+
+	pan {|pattern| this.seq(\pan,pattern); }
+
+	fx {|pattern| this.seq(\fx,pattern); }
+
+
+
 
 	rm {|parameter_,key_|
 
@@ -155,33 +152,151 @@ Sequenceable : I8TNode
 	}
 
 
-	trigger {
-		// do something
-	}
 
 
-	speed_{|sp_|
-		if( speed.isKindOf(Number)) {
-			speed = sp_;
-			sequencer.setSpeed(name,speed);
-		}
+	clock_{|sp_|
+		clock = sp_;
+		sequencer.setSpeed(name,clock);
 	}
 
 
 
-	patterns{|parameter|
+	patterns {|parameter|
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].patterns;
 	}
-	sequence{|parameter|
+	sequence {|parameter|
 		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequence;
 	}
-	sequenceInfo{|parameter|
-		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequenceInfo;
+
+	at {|key|
+		nextPatternKey = key;
+		^this
 	}
 
-	at{|key|
-		nextKey = key;
-		^this
+
+
+	// Pattern Functions:
+
+
+
+	speed {|n|
+		if(n.isKindOf(Number)) {
+			var speed = max(n.asFloat,0.01);
+
+			currentPatternEvent.parameters[\speed]=speed;
+		};
+		this.closeFunction();
+	}
+
+
+	repeat {|n|
+		if(n.isKindOf(Number)) {
+			currentPatternEvent.parameters[\repeat]=n.ceil.asInteger;
+		};
+		this.closeFunction();
+	}
+
+	// 'repeat' aliases:
+	do {|n| this.repeat(n); }
+	x {|n| this.repeat(n); }
+	one {|n| this.repeat(1); }
+
+
+
+	// Pattern Transformation:
+
+
+	reverse {
+		currentPatternEvent.reverse;
+		this.closeFunction();
+	}
+
+	mirror {
+		currentPatternEvent.mirror;
+		this.closeFunction();
+	}
+
+	pyramid {
+		currentPatternEvent.pyramid;
+		this.closeFunction();
+	}
+
+	random {
+		currentPatternEvent.random;
+		this.closeFunction();
+	}
+
+	maybe {|probability=0.5|
+		currentPatternEvent.maybe(probability);
+		this.closeFunction();
+	}
+
+
+
+	// utils, helpers
+
+	closeFunction {
+		sequencer.updateSequenceInfo( name, currentParameter );
+		^this;
+	}
+
+	orderPatternParameters {
+
+		arg
+		parameter_,
+		pattern_,
+		play_parameters_;
+
+		var
+		parameter,
+		pattern,
+		play_parameters;
+
+		// if first argument not a symbol, its not a parameter. use default 'trigger'
+
+
+		if( parameter_.isKindOf(Symbol) == true, {
+
+			parameter = parameter_;
+			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
+
+				pattern = pattern_;
+
+			}, {
+
+				^nil;
+
+			});
+
+			if( play_parameters_.isKindOf(Array) ) {
+				play_parameters = play_parameters_;
+			};
+
+		},
+		{
+
+			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
+
+				pattern = parameter_;
+
+				// if( pattern_.isKindOf(Array) ) {
+				// 	play_parameters = pattern_;
+				// };
+
+			}, {
+				^nil
+			});
+
+			parameter = \trigger;
+
+		});
+
+		^(
+			parameter: parameter,
+			pattern: pattern,
+			play_parameters: play_parameters
+		)
+
 	}
 
 }
