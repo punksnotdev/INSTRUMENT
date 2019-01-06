@@ -18,7 +18,8 @@ PatternEvent : SequencerEvent
 
 	speed {|n|
 		if(n.isKindOf(Number)) {
-			parameters[\speed]=n.ceil.asInteger;
+			parameters[\speed]= max(n.asFloat,0.01);
+
 		}
 	}
 

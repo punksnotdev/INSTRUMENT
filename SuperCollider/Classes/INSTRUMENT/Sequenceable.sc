@@ -172,7 +172,7 @@ Sequenceable : I8TNode
 
 	speed {|n|
 		if(n.isKindOf(Number)) {
-			var speed = n.ceil.asInteger;
+			var speed = max(n.asFloat,0.01);
 			currentPatternEvent.parameters[\speed]=speed;
 		};
 		this.closeFunction();
