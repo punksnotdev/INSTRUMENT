@@ -11,13 +11,13 @@ Instrument : Sequenceable
 		^super.new.init(name_,this.graph);
 	}
 
-	init{|name_,graph_|
+	init{|graph_,name_|
 
-		super.init(name_,graph_);
 		volume = 1;
 		octave = 4;
 		synths = List.new;
-
+["i7t",graph_,name_].postln;
+		super.init(graph_,name_);
 	}
 
 	trigger {
