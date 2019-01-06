@@ -6,16 +6,25 @@ I8TLooper : Instrument
 		var maxDuration;
 		var numChannels;
 
+		var <>bus;
 		var <recSynth;
 		var <playSynths;
 		var <durations;
 		var lastDuration;
 
-		*new{|name_,synthdef_,mode_=nil|
-			^super.new.init(name_,this.graph,synthdef_,mode_);
+		var rate;
+
+		*new{|bus_,synthdef_,mode_=nil|
+			^super.new.init(bus_,this.graph,synthdef_,mode_);
 		}
 
-		init{|name_,graph_,synthdef_,mode_=nil|
+		init{|bus_,graph_,synthdef_,mode_=nil|
+
+			if( bus_.isInteger, {
+				bus = bus_;
+			}, {
+				bus = 0;
+			});
 
 			buffers = IdentityDictionary.new;
 			playSynths = IdentityDictionary.new;
@@ -24,7 +33,7 @@ I8TLooper : Instrument
 			maxDuration = 60;
 			numChannels = 1;
 
-			super.init(name_,graph_);
+			super.init("looper_"++bus_,graph_);
 
 		}
 
@@ -38,7 +47,7 @@ I8TLooper : Instrument
 					buffers[ layer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
 						{|buffer|
 							recSynth = Synth(\loopWrite, [
-								\inBus, 0,
+								\inBus, bus,
 								\buffer, buffer
 							]);
 							lastDuration = TempoClock.default.beats;
@@ -54,7 +63,7 @@ I8TLooper : Instrument
 				if( buffers[ buffers.size ].isKindOf(Buffer) == false ) {
 					buffers[ buffers.size ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1, {|buffer|
 						recSynth = Synth(\loopWrite, [
-							\inBus, 0,
+							\inBus, bus,
 							\buffer, buffer
 						]);
 						lastDuration = TempoClock.default.beats;
@@ -172,6 +181,42 @@ I8TLooper : Instrument
 				// if layer exists
 				// seek it
 
+		}
+
+
+		amp_ {|value|
+			playSynths.collect({|synth|
+					synth.set( \amp, value );
+			});
+			amp = value;
+		}
+
+		amp {|value|
+			if( value.notNil ) {
+				playSynths.collect({|synth|
+						synth.set( \amp, value );
+				});
+				amp = value;
+
+			};
+			^amp;
+		}
+		rate_ {|value|
+			playSynths.collect({|synth|
+					synth.set( \rate, value );
+			});
+			rate = value;
+		}
+
+		rate {|value|
+			if( value.notNil ) {
+				playSynths.collect({|synth|
+						synth.set( \rate, value );
+				});
+				rate = value;
+
+			};
+			^rate;
 		}
 
 
