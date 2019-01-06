@@ -116,12 +116,13 @@ ControllerManager {
 
 			}, {
 
-				["ControlManager", "no controller set", source, param1, param2].postln;
+				["ControllerManager:", "no controller set", source, param1, param2].postln;
 
 			});
 
 		});
 	}
+
 
 	map {|controller,target,parameter,range|
 
@@ -138,8 +139,9 @@ ControllerManager {
 		// var newKey = target.name ++ '-' ++ target.parameter;
 
 		if( controlTargetMap[controller.key].isKindOf(List) == false, {
+
 			controlTargetMap[controller.key] = List.new;
-			controlTargetMap[controller.key] = controlTargetMap[controller.key];
+
 		}, {
 
 			controlTargetMap[controller.key].collect({| item, index |
@@ -151,10 +153,18 @@ ControllerManager {
 
 			});
 
-
 		});
 
 		controlTargetMap[controller.key].add( mapping );
+
+		[
+			"ControllerManager:",
+			"added mapping:",
+			"source:",mapping.key,
+			"target:",mapping.target,
+			"index:", controlTargetMap[controller.key].size - 1
+		].postln;
+
 
 		^mapping
 
@@ -170,7 +180,17 @@ ControllerManager {
 
 				// check if target + parameter mapping exists
 				if( ( item.target == target && item.parameter == parameter ), {
+
 					controlTargetMap[controller.key].removeAt( index );
+
+					[
+						"ControllerManager:",
+						"removed mapping:",
+						"source:",controller.key,
+						"target:",item.target,
+						"index:", index
+					].postln;
+
 				});
 
 			});
