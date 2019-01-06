@@ -17,6 +17,7 @@ i[\loop1].amp=0.3;
 i[\loop1].amp=1;
 
 i[\loop1].rate([1, 2, -1, \r, 3, \r , 1/2]).speed(1);
+
 i[\loop1].rm(\rate,0)
 
 

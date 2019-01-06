@@ -34,7 +34,9 @@ i[\loop2].rm(\amp,0);
 
 i[\loop1].rate = 1/2;
 i[\loop2].rate = 1/3;
+
 i[\loop1].rate = -1;
+i[\loop2].rate = -1;
 
 
 i[\loop1].rate(1/8);
@@ -52,7 +54,7 @@ i[\loop2].rec;
 i[\loop2].start;
 
 i[\loop2].rate(1,0);
-i[\loop2].rate(2,1);
+i[\loop2].rate(4,1);
 
 
 i[\loop1].rate(3,0);
@@ -63,6 +65,9 @@ i[\loop1].rate(1/2,0);
 
 i[\loop1].rate(1/2,1);
 i[\loop1].rate(1/4,1);
+
+i[\loop2].rate(2/3,1);
+i[\loop2].rate(5/4,1);
 
 
 i[\loop1].fx=\reverb;
@@ -75,7 +80,7 @@ i[\loop1].fxSet(\rv1,1);
 i[\loop1].fxSet(\rv2,1);
 
 i[\loop2].amp(0.01);
-i[\loop2].fxSet(\gain,333.3);
+i[\loop2].fxSet(\gain,33.3);
 i[\loop2].fxSet(\cutoff,1440);
 
 i[\loop1].fx=\revlpf;
@@ -90,6 +95,9 @@ i[\loop1].amp(0.5,1)
 
 i[\loop1].fx=nil
 i[\loop2].fx=nil
+
+i[\loop1].amp(0.5);
+i[\loop2].amp(0.5);
 
 i[\loop1].rate(1);
 i[\loop2].rate(1);
