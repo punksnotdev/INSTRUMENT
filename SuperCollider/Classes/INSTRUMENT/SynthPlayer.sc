@@ -152,7 +152,11 @@ SynthPlayer : Instrument
 				synth.register;
 
 			});
+
 			nodeID = synth.nodeID;
+
+			nodeIDs[nodeID]=true;
+
 
 		});
 
@@ -382,17 +386,13 @@ SynthPlayer : Instrument
 	amp_ {|value|
 
 		synth_parameters[\amp] = value;
-		if( synth.isPlaying ) {
-			synth.set( \amp, value );
-		}
+		synth.set( \amp, value );
 	}
 
 	amp {|value|
 		if( value.notNil ) {
 			synth_parameters[\amp] = value;
-			if( synth.isPlaying ) {
-				synth.set( \amp, value );
-			};
+			synth.set( \amp, value );
 		};
 		^amp;
 	}
