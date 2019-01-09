@@ -154,9 +154,14 @@ Sequenceable : I8TNode
 
 
 
-	clock_{|sp_|
-		clock = sp_;
-		sequencer.setSpeed(name,clock);
+	clock_{|speed_|
+
+		if( speed_.isKindOf(Number) ) {
+			if( speed_>0 && speed_ < 256 ) {
+				clock = speed_;
+				sequencer.setSpeed(name,clock);
+			}
+		}
 	}
 
 
