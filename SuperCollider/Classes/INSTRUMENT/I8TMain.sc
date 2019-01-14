@@ -52,10 +52,13 @@ var lastMap;
 		this.play;
 
 		midiControllers = ();
+		midiControllers.inputs = List.new;
+		midiControllers.outputs = List.new;
+
 		autoMIDI = false;
 		nextMIDIController = -1;
 
-		this.setupGUI();
+		// this.setupGUI();
 
 	}
 
@@ -220,7 +223,18 @@ var lastMap;
 
 
 	map {|controller,target,parameter|
-		^controllerManager.map(controller,target,parameter);
+		if( controller.isKindOf(MIDIController), {
+
+			if( target.isKindOf(Instrument), {
+				^controllerManager.map(controller,target,parameter);
+			}, {
+				"Target not of class 'Instrument'"
+			});
+
+		}, {
+			"Controller not of class 'MIDIController'"
+		});
+
 	}
 	unmap {|controller,target,parameter|
 		^controllerManager.unmap(controller,target,parameter);
@@ -297,56 +311,73 @@ var lastMap;
 
 		};
 
-		if( autoMIDI == true,{
+
+		if( midiControllers.inputs.notNil ) {
+
+			if( (autoMIDI == true) && (midiControllers.inputs.size > 0),{
 
 
 
-			if( item.notNil ) {
+				if( item.notNil ) {
 
-				if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
+					if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
 
-					var nextIndex;
-					var next;
-					var shouldIncrement = true;
+						var nextIndex;
+						var next;
+						var shouldIncrement = true;
 
-					controllerManager.controlTargetMap.collect({
-						|mapping,key|
+						controllerManager.controlTargetMap.collect({
+							|mapping_,key_|
 
-						if( mapping.target.name == item.name ) {
+							var mapping, key;
 
-							shouldIncrement = false;
+							if( mapping_.isKindOf(List) ) {
+								mapping = mapping_[0];
+							};
 
-							midiControllers.inputs.collect({|input|
 
-								if(input.isKindOf(MIDIController)){
+							if( mapping_.isKindOf(Event) ) {
 
-									if(input.key==key) {
-										next=input
-									}
+								mapping = mapping_;
+
+								if( mapping.target.name == item.name ) {
+
+									shouldIncrement = false;
+
+									midiControllers.inputs.collect({|input|
+
+										if(input.isKindOf(MIDIController)){
+
+											if(input.key==key) {
+												next=input
+											}
+										}
+
+									});
+
 								}
+							};
 
-							});
+						});
 
-						}
+						if( shouldIncrement == true ) {
+							nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
+							next = midiControllers.inputs[nextMIDIController];
+						};
 
-					});
+						if( (next.notNil && item.notNil),{
 
-					if( shouldIncrement == true ) {
-						nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
-						next = midiControllers.inputs[nextMIDIController];
-					};
+							this.map( next, item, \amp,[0,1]);
 
-					if( next.notNil,{
+						});
 
-						this.map( next, item, \amp,[0,1]);
-
-					});
+					}
 
 				}
 
-			}
+			});
 
-		});
+		}
 
 		^item;
 

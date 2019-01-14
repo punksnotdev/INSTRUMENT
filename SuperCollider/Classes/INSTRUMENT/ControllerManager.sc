@@ -49,7 +49,7 @@ ControllerManager {
 
 		mappedParam1 = param1;
 
-			if( source.midiTarget.notNil,{
+		if( source.midiTarget.notNil,{
 
 			if( source.midiTarget.isKindOf(MIDIDevice), {
 				inputMap = source.midiTarget.inputMap;
@@ -145,7 +145,6 @@ ControllerManager {
 		}, {
 
 			controlTargetMap[controller.key].collect({| item, index |
-
 				// check if target + parameter mapping exists
 				if( ( item.target == target && item.parameter == parameter ), {
 					controlTargetMap[controller.key].removeAt( index );

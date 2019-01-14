@@ -25,7 +25,19 @@ I8TChord
 				inversion = inversion_;
 				add_intervals=add_intervals_;
 			}, {
-				"Chord type not valid".postln;
+				if( type_.isKindOf(Array), {
+
+					note = note_;
+					type = type_;
+					inversion = inversion_;
+					add_intervals=add_intervals_;
+
+				}, {
+
+					"Chord type not valid".postln;
+
+				});
+
 			});
 		}, {
 			"Chord note must be a Number".postln;
@@ -65,74 +77,85 @@ I8TChord
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  7+inversionOctave3
+		  7+inversionOctave3,
+		  12
 		  ], //M
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave2,
-		  7+inversionOctave3
+		  7+inversionOctave3,
+		  12
 		  ], //m
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  10+inversionOctave3
+		  10+inversionOctave3,
+		  12
 		  ], //M7
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave2,
-		  10+inversionOctave3
+		  10+inversionOctave3,
+		  12
 		  ], //m7
 		  [
 		  0+inversionOctave1,
-		  4+inversionOctave2,
-		  8+inversionOctave3
-		  ], //aug
+		  3+inversionOctave2,
+		  6+inversionOctave3,
+		  12
+		  ], //dim
 		  [
 		  0+inversionOctave1,
-		  3+inversionOctave2,
-		  6+inversionOctave3
-		  ], //dim
+		  4+inversionOctave2,
+		  8+inversionOctave3,
+		  12
+		  ], //aug
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
 		  7+inversionOctave3,
 		  11+inversionOctave3,
+		  12
 		  ], //Mmaj7
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave1,
 		  7+inversionOctave2,
-		  11+inversionOctave3
+		  11+inversionOctave3,
+		  12
 		  ], //mmaj7
 		  [
 		  1+inversionOctave1,
 		  3+inversionOctave2,
-		  7+inversionOctave3
+		  7+inversionOctave3,
+		  12
 		  ], //M9
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  7+inversionOctave3
-		  ,14], //M9m
+		  7+inversionOctave3,
+		  14], //M9m
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  7+inversionOctave3
-		  ,13], //m9
+		  7+inversionOctave3,
+		  13], //m9
 		  [
 		  0+inversionOctave1,
 		  3+inversionOctave2,
-		  7+inversionOctave3
-		  ,14], //m9m
+		  7+inversionOctave3,
+		  14], //m9m
 		  [
 		  0+inversionOctave1,
 		  2+inversionOctave2,
-		  7+inversionOctave3
+		  7+inversionOctave3,
+		  12
 		  ], //sus2
 		  [
 		  0+inversionOctave1,
 		  4+inversionOctave2,
-		  7+inversionOctave3
+		  7+inversionOctave3,
+		  12
 		  ], //sus4
 		];
 
@@ -140,13 +163,24 @@ I8TChord
 			add_intervals = Array.new;
 		});
 
-		if(chordNames.includes(type))
-		{
-			// [type,chordNames.indexOf(type)].postln;
-			// intervals[chordNames.indexOf(type)].rotate(inversion).postln;
-			(note+(intervals[chordNames.indexOf(type)].rotate(inversion)++add_intervals)).postln;
-		  ^(note+(intervals[chordNames.indexOf(type)].rotate(inversion)++add_intervals));
-		}
+		if( type.isKindOf(Array), {
+			(([note]++(note+type)).rotate(inversion)++add_intervals).postln;
+			^(([note]++(note+type)).rotate(inversion)++add_intervals);
+
+		}, {
+			if(chordNames.includes(type))
+			{
+				var chordIntervals = intervals[chordNames.indexOf(type)];
+				var newChord = List.new;
+				(4-add_intervals.size).do({|i|
+					newChord.add( chordIntervals[i] );
+				});
+				(note+(newChord.rotate(inversion)++add_intervals)).postln;
+				^(note+(newChord.rotate(inversion)++add_intervals));
+			}
+		});
+
+
 		{
 			^0;
 		};
