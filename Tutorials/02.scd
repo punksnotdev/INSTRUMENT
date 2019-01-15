@@ -19,7 +19,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
       - (Link to Writing Patterns)
     - rm
 
@@ -28,7 +28,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
       - Various possibilities
     - play
 
@@ -37,7 +37,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
       - autoplay
 
     - stop
@@ -47,7 +47,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - get
 
 
@@ -55,7 +55,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - set
 
 
@@ -63,7 +63,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - go
 
 
@@ -71,7 +71,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - remove
 
 
@@ -79,7 +79,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - kill
 
 
@@ -87,7 +87,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - set
 
 
@@ -95,7 +95,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - amp
 
 
@@ -103,7 +103,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
     - clock
 
 
@@ -111,7 +111,7 @@
 
     i[\piano] = SynthPlayer(\pianoSynth);
 
-    ```    
+    ```
 
   - Sound Parameters
     - basic parameters
@@ -120,13 +120,15 @@
       - chord
       - vol
       - pan
+      - synthdef
+      - fx
 
 - Writing Patterns
 
   - .seq Function
     - .seq(\parameter, ...pattern )
     - shortcuts
-      - basic parameters  
+      - basic parameters
 
 
 

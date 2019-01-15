@@ -1,7 +1,7 @@
 InstrumentGroup : List {
 
 	var <amp;
-	var <speed;
+	var <clock;
 	var <fx;
 	var <>name;
 
@@ -87,21 +87,21 @@ InstrumentGroup : List {
 
 
 
-	speed_ {|value_|
+	clock_ {|value_|
 		this.collect({|item|
 			if( item.isKindOf(Instrument),{
-				item.speed=value_;
+				item.clock=value_;
 			}, {
 
 				if( item.isKindOf(InstrumentGroup),{
 					item.collect({|subItem|
-						subItem.speed=value_ * item.speed;
+						subItem.clock=value_ * item.clock;
 					});
 				});
 
 			});
 		});
-		speed = value_;
+		clock = value_;
 
 	}
 

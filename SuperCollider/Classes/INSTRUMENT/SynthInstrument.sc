@@ -33,11 +33,11 @@ SynthInstrument : Instrument
 
 	fx {|pattern|
 
-		if(pattern.notNil, {
-			^this.seq(\fx,pattern);
+        if(pattern.notNil, {
+        	^this.seq(\fx,pattern);
 		});
 
-		^this.fx;
+		^fx;
 
 	}
 

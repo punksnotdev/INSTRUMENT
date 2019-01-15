@@ -24,6 +24,9 @@ Sequencer : I8TNode
 
 	var main;
 
+
+	var loopers;
+
 	*new {|main_|
 		// SequencerEvent instances need to have a reference to 'this' (sequencer):
 
@@ -41,6 +44,8 @@ Sequencer : I8TNode
 		repeatFunctions = IdentityDictionary.new;
 
 		instrument_tracks = IdentityDictionary.new();
+
+		loopers = IdentityDictionary.new;
 
 		beats = 0;
 		speed = 1;
@@ -60,7 +65,40 @@ Sequencer : I8TNode
 
 				if( i % 32 == 0, {
 
+
+					if( beats % 4 == 0 ) {
+
+						loopers.collect({|state,looper|
+
+							switch( state,
+								\awaitingRec, {
+
+									"Looper: Rec".postln;
+
+									looper.performRec();
+									loopers[looper]=\recording;
+								},
+								\awaitingStart, {
+
+									"Looper: Start".postln;
+
+									looper.performStart();
+									loopers[looper]=\playing;
+								},
+								\awaitingStop, {
+
+									"Looper: Stop".postln;
+
+									looper.performStop();
+									loopers[looper]=\stopped;
+								}
+							);
+
+						});
+					};
+
 					beats = beats+1;
+
 
 					if( singleFunctions[beats].isKindOf(Function), {
 						singleFunctions[beats].value();
@@ -252,5 +290,16 @@ Sequencer : I8TNode
 
 	clearRepeatFunctions {
 		repeatFunctions = IdentityDictionary.new;
+	}
+
+
+	recLooper {|looper|
+		loopers[looper] = \awaitingRec;
+	}
+	startLooper {|looper|
+		loopers[looper] = \awaitingStart;
+	}
+	stopLooper {|looper|
+		loopers[looper] = \awaitingStop;
 	}
 }
