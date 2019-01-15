@@ -15,6 +15,8 @@ I8TLooper : SynthInstrument
 
 		var rate;
 
+		var nextLayer;
+
 		*new{|bus_|
 			^super.new.init(this.graph,bus_);
 		}
@@ -46,15 +48,55 @@ I8TLooper : SynthInstrument
 
 
 		rec {|layer|
-			main.sequencer.postln;
-			this.startRecording(layer);
+
+			main.sequencer.recLooper( this );
+			nextLayer = layer;
+			// this.startRecording(layer);
 		}
 
-		startRecording {|layer|
-			if( layer.notNil, {
-				// if buffer for layer not allocated,
-				if( buffers[ layer ].isKindOf(Buffer) == false ) {
-					buffers[ layer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
+		start {|layer|
+			main.sequencer.startLooper( this );
+			nextLayer = layer;
+
+		}
+
+		stop {|layer|
+			main.sequencer.stopLooper( this );
+			nextLayer = layer;
+		}
+
+
+		// delete {|layer|
+		// 	// if no layers selected
+		// 	// delete all available layers
+		//
+		// 		// if layer exists
+		// 		// delete it
+		// }
+
+
+		stopRecording {
+
+
+			if( recSynth.isKindOf(Synth)) {
+				var recDuration;
+				recSynth.free;
+				recDuration = TempoClock.default.beats - lastDuration;
+				// recDuration = recDuration / TempoClock.default.tempo;
+				durations[buffers.size-1]=recDuration;
+				recSynth = nil;
+				["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
+			};
+
+		}
+
+
+		performRec {
+
+			if( nextLayer.notNil, {
+				// if buffer for nextLayer not allocated,
+				if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
+					buffers[ nextLayer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
 						{|buffer|
 							recSynth = Synth(\loopWrite, [
 								\inBus, bus,
@@ -85,36 +127,14 @@ I8TLooper : SynthInstrument
 			});
 		}
 
-		delete {|layer|
-			// if no layers selected
-			// delete all available layers
-
-				// if layer exists
-				// delete it
-		}
 
 
-		stopRecording {
-
-
-			if( recSynth.isKindOf(Synth)) {
-				var recDuration;
-				recSynth.free;
-				recDuration = TempoClock.default.beats - lastDuration;
-				// recDuration = recDuration / TempoClock.default.tempo;
-				durations[buffers.size-1]=recDuration;
-				recSynth = nil;
-				["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
-			};
-
-		}
-
-		start {|layer|
+		performStart {
 
 			this.stopRecording();
 
 			// if no layers selected
-			if( layer.isNil, {
+			if( nextLayer.isNil, {
 				// play all available layers:
 				// first stop all
 				playSynths.collect({|synth|
@@ -159,8 +179,8 @@ I8TLooper : SynthInstrument
 				});
 			}, {
 
-				// if layer exists
-				if( buffers[layer].isKindOf(Buffer), {
+				// if nextLayer exists
+				if( buffers[nextLayer].isKindOf(Buffer), {
 
 
 					var synth;
@@ -168,8 +188,8 @@ I8TLooper : SynthInstrument
 					// play it:
 					// first stop it if running
 
-					if( playSynths[layer].isKindOf(Synth)) {
-						playSynths[layer].release;
+					if( playSynths[nextLayer].isKindOf(Synth)) {
+						playSynths[nextLayer].release;
 					};
 					// then create new synth:
 
@@ -178,8 +198,8 @@ I8TLooper : SynthInstrument
 						synth = Synth.before( fxSynth, \loopRead,
 							[
 							\out,fxBus,
-							\buffer, buffers[layer],
-							\duration, durations[layer],
+							\buffer, buffers[nextLayer],
+							\duration, durations[nextLayer],
 							\amp, amp,
 							\rate, rate
 						]);
@@ -189,8 +209,8 @@ I8TLooper : SynthInstrument
 					}, {
 
 						synth = Synth.head( group, \loopRead,[
-							\buffer, buffers[layer],
-							\duration, durations[layer],
+							\buffer, buffers[nextLayer],
+							\duration, durations[nextLayer],
 							\amp, amp,
 							\rate, rate
 						]);
@@ -199,7 +219,7 @@ I8TLooper : SynthInstrument
 
 					});
 
-					playSynths[layer] = synth;
+					playSynths[nextLayer] = synth;
 
 
 				}, {
@@ -210,14 +230,13 @@ I8TLooper : SynthInstrument
 
 		}
 
-		stop {|layer|
-
+		performStop {
 
 			this.stopRecording();
 
 
 			// if no layers selected
-			if( layer.isNil, {
+			if( nextLayer.isNil, {
 				// stop all available layers
 				buffers.collect({|buffer,key|
 					if( buffer.isKindOf(Buffer) ) {
