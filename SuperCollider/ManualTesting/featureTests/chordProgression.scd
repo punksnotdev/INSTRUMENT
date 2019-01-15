@@ -1,5 +1,5 @@
 s.boot;
-
+s.meter
 p=ProxySpace.push(s);
 
 

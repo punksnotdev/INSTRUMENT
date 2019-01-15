@@ -11,6 +11,7 @@ I8TLooper : SynthInstrument
 		var <playSynths;
 		var <durations;
 		var lastDuration;
+		var main;
 
 		var rate;
 
@@ -36,15 +37,20 @@ I8TLooper : SynthInstrument
 			maxDuration = 60;
 			numChannels = 1;
 
-			super.init(graph_,"looper_"++bus);
+			main = graph_;
 
+			super.init(graph_,"looper_"++bus);
 
 		}
 
 
 
 		rec {|layer|
+			main.sequencer.postln;
+			this.startRecording(layer);
+		}
 
+		startRecording {|layer|
 			if( layer.notNil, {
 				// if buffer for layer not allocated,
 				if( buffers[ layer ].isKindOf(Buffer) == false ) {

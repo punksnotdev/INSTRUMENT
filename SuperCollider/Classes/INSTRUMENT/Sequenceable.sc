@@ -81,6 +81,8 @@ Sequenceable : I8TNode
 
 	fx {|pattern| this.seq(\fx,pattern); }
 
+	fxSet {|pattern| this.seq(\fxSet,pattern); }
+
 
 
 
