@@ -222,11 +222,11 @@ var lastMap;
 	}
 
 
-	map {|controller,target,parameter|
+	map {|controller,target,parameter,range|
 		if( controller.isKindOf(MIDIController), {
 
 			if( target.isKindOf(Instrument), {
-				^controllerManager.map(controller,target,parameter);
+				^controllerManager.map(controller,target,parameter,range);
 			}, {
 				"Target not of class 'Instrument'"
 			});

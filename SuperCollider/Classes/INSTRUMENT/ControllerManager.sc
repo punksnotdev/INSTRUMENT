@@ -43,7 +43,6 @@ ControllerManager {
 
 
 		var controllerList = controlTargetMap[source.key.asSymbol];
-
 		var mappedParam1;
 		var inputMap;
 
@@ -72,7 +71,6 @@ ControllerManager {
 				var parameter = controller.parameter;
 				var range = controller.range;
 				var protocol = controller.protocol;
-
 				var type = controller.controller.type;
 
 				switch( type,
@@ -125,7 +123,6 @@ ControllerManager {
 
 
 	map {|controller,target,parameter,range|
-
 		var mapping = (
 			controller: controller,
 			target: target,
@@ -154,15 +151,16 @@ ControllerManager {
 
 		});
 
+
 		controlTargetMap[controller.key].add( mapping );
 
-		[
-			"ControllerManager:",
-			"added mapping:",
-			"source:",mapping.key,
-			"target:",mapping.target,
-			"index:", controlTargetMap[controller.key].size - 1
-		].postln;
+		// [
+		// 	"ControllerManager:",
+		// 	"added mapping:",
+		// 	"source:",mapping.key,
+		// 	"target:",mapping.target,
+		// 	"index:", controlTargetMap[controller.key].size - 1
+		// ].postln;
 
 
 		^mapping
@@ -182,13 +180,13 @@ ControllerManager {
 
 					controlTargetMap[controller.key].removeAt( index );
 
-					[
-						"ControllerManager:",
-						"removed mapping:",
-						"source:",controller.key,
-						"target:",item.target,
-						"index:", index
-					].postln;
+					// [
+					// 	"ControllerManager:",
+					// 	"removed mapping:",
+					// 	"source:",controller.key,
+					// 	"target:",item.target,
+					// 	"index:", index
+					// ].postln;
 
 				});
 
