@@ -1,4 +1,4 @@
-I8TLooper : SynthInstrument
+Looper : SynthInstrument
 {
 
 
@@ -290,6 +290,17 @@ I8TLooper : SynthInstrument
 				)
 
 			}
+		}
+
+
+		set {|parameter,value|
+
+			if( parameter == \amp ) {
+				amp = value;
+				this.amp_(amp);
+			};
+
+
 		}
 
 

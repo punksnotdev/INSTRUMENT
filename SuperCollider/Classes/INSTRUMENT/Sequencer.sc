@@ -66,7 +66,7 @@ Sequencer : I8TNode
 				if( i % 32 == 0, {
 
 
-					if( beats % 4 == 0 ) {
+					if( beats % 1 == 0 ) {
 
 						loopers.collect({|state,looper|
 
