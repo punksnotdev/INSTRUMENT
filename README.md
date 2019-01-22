@@ -2,6 +2,9 @@
 
 afterthought
 
+#### Before you start:
+
+- Load SynthDefs by running 'Sounds/load-synths.scd';
 
 
 ```SuperCollider
