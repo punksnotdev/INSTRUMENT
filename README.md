@@ -2,6 +2,12 @@
 
 afterthought
 
+
+### Disclaimer:
+
+Documentation is still a work in progress... more news soon.
+
+
 #### Before you start:
 
 - Load SynthDefs by running 'Sounds/load-synths.scd';
