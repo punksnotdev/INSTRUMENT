@@ -257,6 +257,14 @@ var lastMap;
 	}
 
 
+	tempo {
+		^TempoClock.default.tempo*120;
+	}
+
+	tempo_ {|bpm|
+		TempoClock.default.tempo = bpm/120;
+	}
+
 	at{|key|
 
 		if( nodes[key].notNil, {
