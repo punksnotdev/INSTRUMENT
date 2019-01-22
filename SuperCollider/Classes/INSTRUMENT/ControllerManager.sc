@@ -274,6 +274,9 @@ ControllerManager {
 				srcNames.add( src.device.asSymbol );
 			});
 
+
+			midi.setupMIDIOut();
+
 			// if( instrument.gui.notNil, {
 			//
 			// 	var callback = {|id|

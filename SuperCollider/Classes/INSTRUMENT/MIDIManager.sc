@@ -11,7 +11,6 @@ MIDIManager {
     init {|controllerManager_|
         controllerManager = controllerManager_;
         devices = ();
-        this.setupMIDIOut();
     }
 
     addDevices{|midiDevicesNames,specs|
