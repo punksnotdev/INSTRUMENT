@@ -1,6 +1,7 @@
 # INSTRUMENT
+#### afterthought
+##### v.0.2
 
-##### afterthought
 
 INSTRUMENT is a library for musical live-coding inside of the SuperCollider environment.
 
