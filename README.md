@@ -3,7 +3,7 @@
 ##### v.0.2
 
 
-INSTRUMENT is a library for musical live-coding inside of the SuperCollider environment.
+INSTRUMENT is a library for musical live-coding inside the SuperCollider environment.
 
 It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
 
