@@ -11,6 +11,7 @@ MIDIManager {
     init {|controllerManager_|
         controllerManager = controllerManager_;
         devices = ();
+        this.setupMIDIOut();
     }
 
     addDevices{|midiDevicesNames,specs|
@@ -59,6 +60,31 @@ MIDIManager {
     set {|key,param1,param2|
 
         ^controllerManager.set(key,param1,param2);
+
+    }
+
+
+    setupMIDIOut {
+
+        var midiOut=MIDIOut(0);
+
+        Tdef(\MidiClock).set(\bpm, TempoClock.default.tempo*120);
+
+        Tdef(\MidiClock, { |e|
+        	var period, tick;
+
+        	midiOut.start;
+
+        	inf.do{
+        		period = (60/e.bpm);
+        		tick = period/24;
+        		midiOut.midiClock;
+        		tick.wait;
+        	}
+
+        });
+
+        Tdef(\MidiClock).play;
 
     }
 

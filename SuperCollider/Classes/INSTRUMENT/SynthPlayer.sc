@@ -360,9 +360,11 @@ SynthPlayer : SynthInstrument
 	}
 
 	amp_ {|value|
+		if( value.notNil ) {
 
-		synth_parameters[\amp] = value;
-		synth.set( \amp, value );
+			synth_parameters[\amp] = value;
+			synth.set( \amp, value );
+		}
 	}
 
 	amp {|value|
