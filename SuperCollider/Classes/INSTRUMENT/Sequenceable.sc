@@ -192,7 +192,7 @@ Sequenceable : I8TNode
 
 			currentPatternEvent.parameters[\speed]=speed;
 		};
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 
@@ -200,7 +200,7 @@ Sequenceable : I8TNode
 		if(n.isKindOf(Number)) {
 			currentPatternEvent.parameters[\repeat]=n.ceil.asInteger;
 		};
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 	// 'repeat' aliases:
@@ -209,40 +209,50 @@ Sequenceable : I8TNode
 	one {|n| this.repeat(1); }
 
 
+	waitBefore {|n|
+		if(n.isKindOf(Number)) {
+			var speed = max(n.asFloat,0.01);
+
+			currentPatternEvent.parameters[\waitBefore]=speed;
+		};
+		this.updateSequence();
+	}
+
+
 
 	// Pattern Transformation:
 
 
 	reverse {
 		currentPatternEvent.reverse;
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 	mirror {
 		currentPatternEvent.mirror;
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 	pyramid {
 		currentPatternEvent.pyramid;
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 	random {
 		currentPatternEvent.random;
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 	maybe {|probability=0.5|
 		currentPatternEvent.maybe(probability);
-		this.closeFunction();
+		this.updateSequence();
 	}
 
 
 
 	// utils, helpers
 
-	closeFunction {
+	updateSequence {
 		sequencer.updateSequenceInfo( name, currentParameter );
 		^this;
 	}

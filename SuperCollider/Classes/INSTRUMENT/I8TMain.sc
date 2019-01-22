@@ -58,7 +58,7 @@ var lastMap;
 		autoMIDI = false;
 		nextMIDIController = -1;
 
-		// this.setupGUI();
+		this.setupGUI();
 
 	}
 
@@ -256,6 +256,14 @@ var lastMap;
 		^controllerManager.midi.devices;
 	}
 
+
+	tempo {
+		^TempoClock.default.tempo*120;
+	}
+
+	tempo_ {|bpm|
+		TempoClock.default.tempo = bpm/120;
+	}
 
 	at{|key|
 

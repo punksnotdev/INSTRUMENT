@@ -68,10 +68,6 @@ SynthInstrument : Instrument
 
 
 
-	fxSynth_ {|synthdef_|
-		this.fx(synthdef_);
-	}
-
 	fxSet {|parameter,value|
 		if( value.notNil, {
 			fx_parameters[parameter] = value;
