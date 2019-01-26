@@ -26,6 +26,8 @@ I8TMain
 
 	var <synths;
 
+	var <> data;
+
 var lastMap;
 
 	*new {
@@ -58,7 +60,10 @@ var lastMap;
 		autoMIDI = false;
 		nextMIDIController = -1;
 
-		this.setupGUI();
+		// this.setupGUI();
+
+		// dictionary for placing custom data:
+		data = ();
 
 	}
 
@@ -256,13 +261,24 @@ var lastMap;
 		^controllerManager.midi.devices;
 	}
 
-
+	clock {
+		^TempoClock.default.tempo;
+	}
 	tempo {
 		^TempoClock.default.tempo*120;
 	}
+	bpm {
+		^this.tempo();
+	}
 
+	clock_ {|clock|
+		TempoClock.default.tempo = clock;
+	}
 	tempo_ {|bpm|
 		TempoClock.default.tempo = bpm/120;
+	}
+	bpm_ {|bpm|
+		this.tempo( bpm );
 	}
 
 	at{|key|
