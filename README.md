@@ -262,7 +262,12 @@ i[\hihat]=INSTRUMENT(\hihatElectroKit);
 )
 
 i[\bass].note("0 2 3").pyramid.mirror;
-// random
+
+// randomness
+i[\bass].note("0 2 3 5 7 10 12").random;
+i[\bass].note("0 2 3 5 7 10 12").random;
+
+
 i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.5); // default value
 i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.25);
 i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
