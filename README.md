@@ -7,11 +7,13 @@ INSTRUMENT is a library for musical live-coding inside the SuperCollider environ
 
 It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
 
+One of its main motivations is to easily integrate with the awesome JITLib, that allows musicians to incorporate mutating synthesis onto their live acts.
+
 INSTRUMENT also enables the connection of MIDI controllers with an easy interface that facilitates its mapping to different sound parameters.
 
 It's name is inspired by the famous documentary about Fugazi, furenku's favorite band.
 
-INSTRUMENT is a voluntary independent open source initiative operating from the Mexican live coding underground, outside academia or funding.
+INSTRUMENT is a voluntary independent open source initiative operating from the Mexican live coding underground
 
 For questions, inquiries, help, or fun conversations, please contact me at furenku@gmail.com.
 
@@ -52,9 +54,14 @@ s.boot;
 i=INSTRUMENT();
 i[\kick]=INSTRUMENT(\kickElectroKit);
 i[\kick].seq("1");
+// trigger synths with different amp values:
 i[\kick].seq("1 0.5 0.75");
 
+// this also works
+i[\kick].seq([1, 0.5, 0.75]);
+
 i[\bass]=INSTRUMENT(\tranceBazz);
+// play notes
 i[\bass].note("0 2 3");
 )
 
@@ -66,8 +73,10 @@ i.tempo=120;
 
 // add silences
 i[\kick].seq("1   0.5");
+// array notation equivalent:
+i[\kick].seq([1, \r, \r, \r, 0.5]);
 
-// change instrument params:
+// change instrument parameters:
 
 i[\kick].amp=1/2;
 i[\kick].amp=3/4;
@@ -78,14 +87,15 @@ i[\bass].clock=4;
 
 
 
-// repeats
+// repeat events:
 i[\kick].seq("1   0.5xxxx");
 i[\bass].note("0 2xx 3xxx");
 
 
 // change step duration
-
+// al subsequent events are afected
 i[\kick].seq("1 :0.25 1xxx ");
+i[\kick].seq("1 :0.25 1xxx :0.125 1xxx ");
 
 // sequencing patterns
 
@@ -178,6 +188,44 @@ i[\kick].synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 )
 
 
+
+// setting fx
+i[\clap].fx=\reverb;
+// setting fx parameters
+i[\clap].fxSet(\wet,1);
+i[\clap].fxSet(\rv1,1);
+i[\clap].fxSet(\rv2,1);
+
+i[\clap].fx=nil;
+
+i[\drums].fx = \delay2;
+i[\drums].fx = nil;
+
+// sequencing fx parameters
+(
+	i = INSTRUMENT();
+
+	i[\clap]=INSTRUMENT(\clapElectroKit);
+	i[\clap].seq(" 1  :0.25 1xx").speed(2);
+
+i[\clap].fx = \revlpf;
+i[\clap].fxSet([
+	(cutoff:3000),
+	(cutoff:1000),
+	(cutoff:2000),
+	// more than one parameter:
+	(cutoff:3000,q:0.1),
+	(cutoff:300,q:0.01),
+]).speed(1/2);
+)
+
+
+// sequencing fx
+i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
+
+
+
+
 // grouping INSTRUMENTS
 
 (
@@ -200,38 +248,7 @@ i[\drums].amp=1/2;
 i[\drums].amp=1;
 )
 
-// setting fx
-i[\clap].fx=\reverb;
-// setting fx parameters
-i[\clap].fxSet(\wet,1);
-i[\clap].fxSet(\rv1,1);
-i[\clap].fxSet(\rv2,1);
 
-i[\clap].fx=nil;
-
-i[\drums].fx = \delay2;
-i[\drums].fx = nil;
-
-// sequencing fx
-i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
-
-// sequencing fx parameters
-(
-	i = INSTRUMENT();
-
-	i[\clap]=INSTRUMENT(\clapElectroKit);
-	i[\clap].seq(" 1  :0.25 1xx").speed(2);
-
-i[\clap].fx = \revlpf;
-i[\clap].fxSet([
-	(cutoff:3000),
-	(cutoff:1000),
-	(cutoff:2000),
-	// more than one parameter:
-	(cutoff:3000,q:0.1),
-	(cutoff:300,q:0.01),
-]).speed(1/2);
-)
 
 // array manipulation
 
@@ -270,7 +287,8 @@ i[\notes]=INSTRUMENT(~notes);
 i[\notes].seq(\gain,[3,1,13]).speed(1/2);
 
 
-// CHORD:
+// Chord progressions:
+// Class 'C' is an alias for 'I8TChord':
 
 // C( interval, chordtype/chordarray, inversion, additional );
 (
@@ -307,7 +325,7 @@ i[\notes].chord([
 	]).speed(1/2);
 )
 
-// different progressions:
+// sequencing different progressions:
 
 (
 
