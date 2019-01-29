@@ -37,28 +37,12 @@ before the v.1 release.
 
 Evaluate following code lines or groups one by one:
 
-
-### Synthesizers
-
-INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
-
-You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
-
-##### Convenient parameters
-
-- **amp** - for setting amplitude manually or via a sequence
-- **gate** useful for retriggering and monophonic synths
-
-- **note**
-- **freq**
-
-**NOTE:** you can use note or freq interchangeably. When you sequence notes, both parameters are addressed. **note** must be converted to freq using the **.midicps** method.
-
-
+### First, boot
 
 ```SuperCollider
 
 (
+// useful snippet for increasing default memory
 
 s.options.memSize=2048*1024;
 s.options.maxNodes=128*1024;
@@ -66,8 +50,14 @@ s.boot;
 
 )
 
+```
 
-// basic sequencing:
+
+## Basic sequencing:
+
+```SuperCollider
+
+
 (
 i=INSTRUMENT();
 i[\kick]=INSTRUMENT(\kickElectroKit);
@@ -83,18 +73,35 @@ i[\bass]=INSTRUMENT(\tranceBazz);
 i[\bass].note("0 2 3");
 )
 
-// set tempo
+
+```
+
+## Set tempo
+
+```SuperCollider
+
 
 i.tempo=180;
 i.tempo=140;
 i.tempo=120;
 
-// add silences
+```
+
+## Add silences
+
+```SuperCollider
+
 i[\kick].seq("1   0.5");
 // array notation equivalent:
 i[\kick].seq([1, \r, \r, \r, 0.5]);
 
-// change instrument parameters:
+
+```
+
+## Change instrument parameters:
+
+```SuperCollider
+
 
 i[\kick].amp=1/2;
 i[\kick].amp=3/4;
@@ -103,49 +110,79 @@ i[\kick].amp=1;
 i[\kick].clock=2;
 i[\bass].clock=4;
 
+```
 
+## Repeating events:
 
-// repeat events:
+```SuperCollider
+
 i[\kick].seq("1   0.5xxxx");
 i[\bass].note("0 2xx 3xxx");
 
 
-// change step duration
+```
+## Changing steps duration
+
+```SuperCollider
+
 // al subsequent events are afected
 i[\kick].seq("1 :0.25 1xxx ");
 i[\kick].seq("1 :0.25 1xxx :0.125 1xxx ");
 
-// sequencing patterns
+
+```
+
+## sequencing patterns
+
+```SuperCollider
 
 i[\kick][0].seq("1");
 i[\kick][1].seq("1 ");
 i[\kick][2].seq("1  ");
 
+```
 
-// removing patterns:
+## removing patterns:
+
+```SuperCollider
+
 
 i[\kick].rm(\trigger,0);
 i[\kick].rm(\trigger,1);
 i[\kick].rm(\trigger,2);
 
 
+```
 
-// control pattern speeds
+## control pattern speeds
+
+```SuperCollider
+
 
 i[\kick][0].seq("1").speed(1);
 i[\kick][1].seq("1").speed(2);
 i[\kick][2].seq("1").speed(4);
 
 
-// controlling pattern repetitions
+```
+
+## controlling pattern repetitions
+
+```SuperCollider
 
 i[\kick][0].seq("1").speed(1).repeat(4);
-// different names:
+// different names for the same function:
 i[\kick][1].seq("1").speed(2).do(8);
 i[\kick][2].seq("1").speed(4).x(16);
 
 
-// jump to position
+```
+
+## jump to position
+
+```SuperCollider
+
+
 
 (
 	i = INSTRUMENT();
@@ -157,7 +194,12 @@ i[\hihat].go(0);
 i[\hihat].go(4);
 
 
-// create a basic beat
+```
+
+## create a basic beat
+
+```SuperCollider
+
 (
 i = INSTRUMENT();
 i[\kick]=INSTRUMENT(\kickElectro);
@@ -169,7 +211,13 @@ i[\hihat].seq(" 1").speed(4);
 i[\clap].seq(" 1").speed(2);
 )
 
-// setting parameters
+
+```
+
+## setting parameters
+
+```SuperCollider
+
 
 (
 
@@ -184,10 +232,15 @@ i[\bass].set(\rel,0.2);
 i[\bass].set(\gain,0.1);
 i[\bass].set(\gain,2);
 
+```
+
+
+## Sequencing parameters
+
+```SuperCollider
 
 
 
-// sequencing parameters
 
 i[\bass].seq(\rel,[2,0.2,1]);
 
@@ -196,8 +249,12 @@ i[\bass].seq(\rel,[2,0.2,\r,\r,1]);
 
 
 
+```
 
-// seq synthdefs:
+## Sequencing synthdefs:
+
+```SuperCollider
+
 (
 i=INSTRUMENT();
 i[\kick]=INSTRUMENT(\kickDeep);
@@ -206,8 +263,13 @@ i[\kick].synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 )
 
 
+```
 
-// setting fx
+## Effects (FX)
+
+```SuperCollider
+
+
 i[\clap].fx=\reverb;
 // setting fx parameters
 i[\clap].fxSet(\wet,1);
@@ -217,7 +279,12 @@ i[\clap].fxSet(\rv2,1);
 i[\clap].fx=nil;
 
 
-// sequencing fx parameters
+```
+
+## Sequencing fx parameters
+
+```SuperCollider
+
 (
 	i = INSTRUMENT();
 
@@ -236,13 +303,22 @@ i[\clap].fx=nil;
 )
 
 
-// sequencing fx
+```
+
+## Sequencing fx
+
+```SuperCollider
+
 i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
 
 
 
+```
 
-// grouping INSTRUMENTS
+## Grouping INSTRUMENTS
+
+```SuperCollider
+
 
 (
 i = INSTRUMENT();
@@ -265,11 +341,17 @@ i[\drums].amp=1/2;
 i[\drums].amp=1;
 )
 
-
+// add fx to group
 i[\drums].fx = \delay2;
 i[\drums].fx = nil;
 
-// array manipulation
+
+```
+
+## array manipulation
+
+```SuperCollider
+
 
 (
 
@@ -291,7 +373,12 @@ i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.25);
 i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
 
 
-// sequencing events:
+```
+
+## Sequencing events:
+
+```SuperCollider
+
 i.every(4,{
 
 	i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
@@ -299,22 +386,32 @@ i.every(4,{
 });
 
 
+```
 
-// controlling proxies
+## Controlling NodeProxies
+
+```SuperCollider
+
 
 p=ProxySpace.push(s);
-~notes.play;
-~notes = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 4 ! 2 };
+~sound.play;
+~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 4 ! 2 };
 
 
-i[\notes]=INSTRUMENT(~notes);
+i[\notes]=INSTRUMENT(~sound);
 i[\notes].seq(\gain,[3,1,13]).speed(1/2);
 
 
-// Chord progressions:
-// Class 'C' is an alias for 'I8TChord':
+```
 
+## Chord progressions:
+
+```SuperCollider
+
+
+// Class 'C' is an alias for 'I8TChord':
 // C( interval, chordtype/chordarray, inversion, additional );
+
 (
 
 i[\notes].chord([
@@ -346,15 +443,24 @@ i[\notes].chord([
 		C(0,\sus2),
 		C(0,\sus4),
 
+		// custom chord type
+		C(0,[6,10,15]),
+
 	]).speed(1/2);
 )
 
-// sequencing different progressions:
+
+```
+
+## Sequencing different progressions:
+
+```SuperCollider
+
 
 (
 
 	i[\notes][0].chord([
-		C(7,[6,10,16]),
+		C(0,\m),
 		C(1,\M,0,[16]),
 	]).speed(1/2).do(2);
 
@@ -369,8 +475,14 @@ i[\notes].chord([
 )
 
 
+```
 
-// Loopers:
+## Loopers:
+
+```SuperCollider
+
+
+
 
 i=INSTRUMENT();
 
@@ -495,12 +607,46 @@ i[\loop2].rate(1);
 i[\loop1].stop;
 i[\loop2].stop;
 
+```
+## MIDI Control:
 
-// MIDI Control: Docs coming soon...
+```SuperCollider
 
-
-
-
+//Docs coming soon...
 
 
 ```
+
+
+
+
+
+
+## Synthesizers
+
+INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
+
+You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
+
+Optionally, you can make them add themselves to the server by putting them inside INSTRUMENT's **Sounds/Synthdef** folder
+
+```SuperCollider
+
+Synthdef(\yourSynthdef, {|out=0,amp=1,freq,gate=1|
+
+	//... your synthesis code
+	Out.ar( out, /*...*/ ));
+
+}).store;
+
+```
+
+##### Convenient parameters
+
+- **amp** - for setting amplitude manually or via a sequence
+- **gate** useful for retriggering and monophonic synths
+
+- **note**
+- **freq**
+
+**NOTE:** you can use note or freq interchangeably. When you sequence notes, both parameters are addressed. **note** must be converted to freq using the **.midicps** method.
