@@ -3,10 +3,7 @@
 ##### v.0.2
 
 
-- [INSTRUMENT](#instrument)
-			- [afterthought](#afterthought)
-				- [v.0.2](#v02)
-	- [Disclaimers:](#disclaimers)
+- [Disclaimers:](#disclaimers)
 - [Installation:](#installation)
 - [Quick Tutorial](#tutorial)
 	- [Basic sequencing:](#basic-sequencing)
@@ -36,7 +33,6 @@
 	- [Loopers:](#loopers)
 	- [MIDI Control:](#midi-control)
 	- [Synthesizers](#synthesizers)
-				- [Convenient parameters](#convenient-parameters)
 
 <!-- /TOC -->
 
@@ -71,7 +67,7 @@ before the v.1 release.
 
 - Clone the repo or download the .zip file and place it inside your SuperCollider 'Extensions/' folder. Recompile.
 - Load SynthDefs by running 'Sounds/load-synths.scd';
-
+- You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
 
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
@@ -693,3 +689,5 @@ Synthdef(\yourSynthdef, {|out=0,amp=1,freq,gate=1|
 - **freq**
 
 **NOTE:** you can use note or freq interchangeably. When you sequence notes, both parameters are addressed. **note** must be converted to freq using the **.midicps** method.
+
+You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
