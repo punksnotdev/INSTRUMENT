@@ -3,6 +3,48 @@
 ##### v.0.2
 
 
+- [INSTRUMENT](#instrument)
+			- [afterthought](#afterthought)
+				- [v.0.2](#v02)
+	- [Disclaimers:](#disclaimers)
+- [Installation:](#installation)
+- [Quick Tutorial](#tutorial)
+	- [Basic sequencing:](#basic-sequencing)
+	- [Set tempo](#set-tempo)
+	- [Add silences](#add-silences)
+	- [Change instrument parameters:](#change-instrument-parameters)
+	- [Repeating events:](#repeating-events)
+	- [Changing steps duration](#changing-steps-duration)
+	- [Sequencing patterns](#sequencing-patterns)
+	- [Removing patterns:](#removing-patterns)
+	- [Control pattern speeds](#control-pattern-speeds)
+	- [Controlling pattern repetitions](#controlling-pattern-repetitions)
+	- [Jump to position](#jump-to-position)
+	- [Create a basic beat](#create-a-basic-beat)
+	- [Setting parameters](#setting-parameters)
+	- [Sequencing parameters](#sequencing-parameters)
+	- [Sequencing synthdefs:](#sequencing-synthdefs)
+	- [Effects (FX)](#effects-fx)
+	- [Sequencing fx parameters](#sequencing-fx-parameters)
+	- [Sequencing fx](#sequencing-fx)
+	- [Grouping INSTRUMENTS](#grouping-instruments)
+	- [Array manipulation](#array-manipulation)
+	- [Sequencing events:](#sequencing-events)
+	- [Controlling NodeProxies](#controlling-nodeproxies)
+	- [Chord progressions:](#chord-progressions)
+	- [Sequencing different progressions:](#sequencing-different-progressions)
+	- [Loopers:](#loopers)
+	- [MIDI Control:](#midi-control)
+	- [Synthesizers](#synthesizers)
+				- [Convenient parameters](#convenient-parameters)
+
+<!-- /TOC -->
+
+
+# Quick Tutorial
+
+
+
 INSTRUMENT is a library for musical live-coding inside the SuperCollider environment.
 
 It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
@@ -34,51 +76,14 @@ before the v.1 release.
 
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
-- [INSTRUMENT](#instrument)
-			- [afterthought](#afterthought)
-				- [v.0.2](#v02)
-	- [Disclaimers:](#disclaimers)
-- [Installation:](#installation)
-- ["Tutorial"](#tutorial)
-		- [First, boot](#first-boot)
-	- [Basic sequencing:](#basic-sequencing)
-	- [Set tempo](#set-tempo)
-	- [Add silences](#add-silences)
-	- [Change instrument parameters:](#change-instrument-parameters)
-	- [Repeating events:](#repeating-events)
-	- [Changing steps duration](#changing-steps-duration)
-	- [sequencing patterns](#sequencing-patterns)
-	- [removing patterns:](#removing-patterns)
-	- [control pattern speeds](#control-pattern-speeds)
-	- [controlling pattern repetitions](#controlling-pattern-repetitions)
-	- [jump to position](#jump-to-position)
-	- [create a basic beat](#create-a-basic-beat)
-	- [setting parameters](#setting-parameters)
-	- [Sequencing parameters](#sequencing-parameters)
-	- [Sequencing synthdefs:](#sequencing-synthdefs)
-	- [Effects (FX)](#effects-fx)
-	- [Sequencing fx parameters](#sequencing-fx-parameters)
-	- [Sequencing fx](#sequencing-fx)
-	- [Grouping INSTRUMENTS](#grouping-instruments)
-	- [array manipulation](#array-manipulation)
-	- [Sequencing events:](#sequencing-events)
-	- [Controlling NodeProxies](#controlling-nodeproxies)
-	- [Chord progressions:](#chord-progressions)
-	- [Sequencing different progressions:](#sequencing-different-progressions)
-	- [Loopers:](#loopers)
-	- [MIDI Control:](#midi-control)
-	- [Synthesizers](#synthesizers)
-				- [Convenient parameters](#convenient-parameters)
 
-<!-- /TOC -->
-# "Tutorial"
 
 Evaluate following code lines or groups one by one:
 
-### First, boot
 
 ```SuperCollider
 
+// First, boot
 (
 // useful snippet for increasing default memory
 
@@ -170,7 +175,7 @@ i[\kick].seq("1 :0.25 1xxx :0.125 1xxx ");
 
 ```
 
-## sequencing patterns
+## Sequencing patterns
 
 ```SuperCollider
 
@@ -180,7 +185,7 @@ i[\kick][2].seq("1  ");
 
 ```
 
-## removing patterns:
+## Removing patterns:
 
 ```SuperCollider
 
@@ -192,7 +197,7 @@ i[\kick].rm(\trigger,2);
 
 ```
 
-## control pattern speeds
+## Control pattern speeds
 
 ```SuperCollider
 
@@ -204,7 +209,7 @@ i[\kick][2].seq("1").speed(4);
 
 ```
 
-## controlling pattern repetitions
+## Controlling pattern repetitions
 
 ```SuperCollider
 
@@ -216,7 +221,7 @@ i[\kick][2].seq("1").speed(4).x(16);
 
 ```
 
-## jump to position
+## Jump to position
 
 ```SuperCollider
 
@@ -234,7 +239,7 @@ i[\hihat].go(4);
 
 ```
 
-## create a basic beat
+## Create a basic beat
 
 ```SuperCollider
 
@@ -252,7 +257,7 @@ i[\clap].seq(" 1").speed(2);
 
 ```
 
-## setting parameters
+## Setting parameters
 
 ```SuperCollider
 
@@ -386,7 +391,7 @@ i[\drums].fx = nil;
 
 ```
 
-## array manipulation
+## Array manipulation
 
 ```SuperCollider
 
