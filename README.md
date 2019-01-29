@@ -18,21 +18,59 @@ INSTRUMENT is a voluntary independent open source initiative operating from the 
 For questions, inquiries, help, or fun conversations, please contact me at furenku@gmail.com.
 
 
-### Disclaimers:
+## Disclaimers:
 
 - Documentation is still a work in progress... more news soon.
 - INSTRUMENT is not officially released yet: the API is subject to change in the near future
 before the v.1 release.
 
 
-## Installation:
+# Installation:
 
 - Clone the repo or download the .zip file and place it inside your SuperCollider 'Extensions/' folder. Recompile.
 - Load SynthDefs by running 'Sounds/load-synths.scd';
 
 
 
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
+- [INSTRUMENT](#instrument)
+			- [afterthought](#afterthought)
+				- [v.0.2](#v02)
+	- [Disclaimers:](#disclaimers)
+- [Installation:](#installation)
+- ["Tutorial"](#tutorial)
+		- [First, boot](#first-boot)
+	- [Basic sequencing:](#basic-sequencing)
+	- [Set tempo](#set-tempo)
+	- [Add silences](#add-silences)
+	- [Change instrument parameters:](#change-instrument-parameters)
+	- [Repeating events:](#repeating-events)
+	- [Changing steps duration](#changing-steps-duration)
+	- [sequencing patterns](#sequencing-patterns)
+	- [removing patterns:](#removing-patterns)
+	- [control pattern speeds](#control-pattern-speeds)
+	- [controlling pattern repetitions](#controlling-pattern-repetitions)
+	- [jump to position](#jump-to-position)
+	- [create a basic beat](#create-a-basic-beat)
+	- [setting parameters](#setting-parameters)
+	- [Sequencing parameters](#sequencing-parameters)
+	- [Sequencing synthdefs:](#sequencing-synthdefs)
+	- [Effects (FX)](#effects-fx)
+	- [Sequencing fx parameters](#sequencing-fx-parameters)
+	- [Sequencing fx](#sequencing-fx)
+	- [Grouping INSTRUMENTS](#grouping-instruments)
+	- [array manipulation](#array-manipulation)
+	- [Sequencing events:](#sequencing-events)
+	- [Controlling NodeProxies](#controlling-nodeproxies)
+	- [Chord progressions:](#chord-progressions)
+	- [Sequencing different progressions:](#sequencing-different-progressions)
+	- [Loopers:](#loopers)
+	- [MIDI Control:](#midi-control)
+	- [Synthesizers](#synthesizers)
+				- [Convenient parameters](#convenient-parameters)
+
+<!-- /TOC -->
 # "Tutorial"
 
 Evaluate following code lines or groups one by one:
