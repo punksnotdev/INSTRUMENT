@@ -198,8 +198,6 @@ i[\clap].fxSet(\rv2,1);
 
 i[\clap].fx=nil;
 
-i[\drums].fx = \delay2;
-i[\drums].fx = nil;
 
 // sequencing fx parameters
 (
@@ -208,15 +206,15 @@ i[\drums].fx = nil;
 	i[\clap]=INSTRUMENT(\clapElectroKit);
 	i[\clap].seq(" 1  :0.25 1xx").speed(2);
 
-i[\clap].fx = \revlpf;
-i[\clap].fxSet([
-	(cutoff:3000),
-	(cutoff:1000),
-	(cutoff:2000),
-	// more than one parameter:
-	(cutoff:3000,q:0.1),
-	(cutoff:300,q:0.01),
-]).speed(1/2);
+	i[\clap].fx = \revlpf;
+	i[\clap].fxSet([
+		(cutoff:3000),
+		(cutoff:1000),
+		(cutoff:2000),
+		// more than one parameter:
+		(cutoff:3000,q:0.1),
+		(cutoff:300,q:0.01),
+	]).speed(1/2);
 )
 
 
@@ -230,6 +228,7 @@ i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
 
 (
 i = INSTRUMENT();
+
 i[\kick]=INSTRUMENT(\kickElectro);
 i[\hihat]=INSTRUMENT(\hihatElectroKit);
 i[\clap]=INSTRUMENT(\clapElectroKit);
@@ -249,6 +248,8 @@ i[\drums].amp=1;
 )
 
 
+i[\drums].fx = \delay2;
+i[\drums].fx = nil;
 
 // array manipulation
 
@@ -329,19 +330,17 @@ i[\notes].chord([
 
 (
 
-	i[\notes][0].chord([		
+	i[\notes][0].chord([
 		C(7,[6,10,16]),
 		C(1,\M,0,[16]),
-	]).speed(1/2);
+	]).speed(1/2).do(2);
 
 	i[\notes][1].chord([
 		C(0,\m),
 		C(3,\sus2),
-		C(0,\m,1),
-		C(0,\m,2,[14]),
-		C(7,[6,10,16]),
-		C(1,\M,0,[16]),
-	]).speed(1/2).do(2);
+		C(2,\dim),
+		C(7,\M)
+	]).speed(1/2).do(3);
 
 
 )
@@ -354,8 +353,10 @@ i=INSTRUMENT();
 
 // create looper connected to audio interface's first audio input:
 
+// record looper for the 1st channel:
+i[\loop1]=Looper(0);
 
-i[\loop1]=I8TLooper(0);
+//
 
 i[\loop1].rec;
 
@@ -438,7 +439,7 @@ i[\loop1].rate(1);
 
 // create another separate looper:
 
-i[\loop2]=I8TLooper(1);
+i[\loop2]=Looper(0);
 i[\loop2].rec;
 i[\loop2].start;
 i[\loop2].amp=0.5;

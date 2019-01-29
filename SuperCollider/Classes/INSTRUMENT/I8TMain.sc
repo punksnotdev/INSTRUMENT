@@ -28,7 +28,7 @@ I8TMain
 
 	var <> data;
 
-var lastMap;
+	var lastMap;
 
 	*new {
 		// rootNode.graph_(this);
