@@ -38,6 +38,24 @@ before the v.1 release.
 Evaluate following code lines or groups one by one:
 
 
+### Synthesizers
+
+INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
+
+You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
+
+##### Convenient parameters
+
+- **amp** - for setting amplitude manually or via a sequence
+- **gate** useful for retriggering and monophonic synths
+
+- **note**
+- **freq**
+
+**NOTE:** you can use note or freq interchangeably. When you sequence notes, both parameters are addressed. **note** must be converted to freq using the **.midicps** method.
+
+
+
 ```SuperCollider
 
 (
@@ -479,6 +497,10 @@ i[\loop2].stop;
 
 
 // MIDI Control: Docs coming soon...
+
+
+
+
 
 
 ```
