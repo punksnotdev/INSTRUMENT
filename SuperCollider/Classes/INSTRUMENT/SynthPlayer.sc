@@ -237,27 +237,40 @@ SynthPlayer : SynthInstrument
 										});
 									});
 
+									pressedKeys[note] = true;
+
 									if( synth.isNil, {
 
 										this.createSynth([
 											\t_trig,1,
 											\freq,((octave*12)+note).midicps,
 											\note,(octave*12)+note,
-											\amp, amp
+											\amp, amp,
+											\legato,0
 											]++this.parameters_array(use_synth_parameters)
 										);
 
 									}, {
 
-										pressedKeys[note] = true;
-
 										if( synth.isKindOf(Synth) ) {
 
 											synth.set(\amp,amp);
 											synth.set(\gate,1);
+
+											if(pressedKeys.size==1, {
+
+												synth.set(\legato,0);
+
+											}, {
+
+												synth.set(\legato,use_synth_parameters[\legato]);
+
+											});
+
 											synth.set(\freq,note.midicps);
 
 										}
+
 									});
 
 								}
