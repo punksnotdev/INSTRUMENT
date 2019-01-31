@@ -69,6 +69,8 @@ Sequenceable : I8TNode
 
 	/* 'seq' shorthands */
 
+	test {|pattern| this.seq(\test,pattern); }
+
 	trigger {|pattern| this.seq(\trigger,pattern); }
 
 	note {|pattern| this.seq(\note,pattern); }
@@ -147,7 +149,7 @@ Sequenceable : I8TNode
 
 	go{|time|
 		if( time.isKindOf(Number)) {
-			^sequencer.instrument_tracks[name].parameterTracks.collect{|track|
+			^sequencer.sequencer_tracks[name].parameterTracks.collect{|track|
 				track.go(time)
 			};
 		};
@@ -169,10 +171,10 @@ Sequenceable : I8TNode
 
 
 	patterns {|parameter|
-		^sequencer.instrument_tracks[name].parameterTracks[parameter].patterns;
+		^sequencer.sequencer_tracks[name].parameterTracks[parameter].patterns;
 	}
 	sequence {|parameter|
-		^sequencer.instrument_tracks[name].parameterTracks[parameter].sequence;
+		^sequencer.sequencer_tracks[name].parameterTracks[parameter].sequence;
 	}
 
 	at {|key|

@@ -5,7 +5,8 @@ Instrument : Sequenceable
 	var <>synths;
 	var <>volume;
 	var <>octave;
-
+	var <main;
+	var <clock;
 
 	*new{|name_|
 		^super.new.init(name_,this.graph);
@@ -16,6 +17,7 @@ Instrument : Sequenceable
 		volume = 1;
 		octave = 4;
 		synths = List.new;
+		main = graph_;
 		super.init(graph_,name_);
 	}
 

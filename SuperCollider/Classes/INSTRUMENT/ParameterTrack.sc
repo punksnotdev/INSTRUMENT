@@ -209,7 +209,6 @@ ParameterTrack
 		var eventName;
 		var newKey;
 		var newPatternEvent;
-
 		if( key == nil, {
 
 			var found = -1;

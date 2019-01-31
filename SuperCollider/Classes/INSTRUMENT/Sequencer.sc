@@ -1,10 +1,10 @@
-// instrument_tracks se va a tomar de nodegraph!
+// sequencer_tracks se va a tomar de nodegraph!
 //defaultRepetitions
 
 Sequencer : I8TNode
 {
 
-	var <instrument_tracks;
+	var <sequencer_tracks;
 
 	var <>speed;
 	var <>repeat;
@@ -43,7 +43,7 @@ Sequencer : I8TNode
 		singleFunctions = IdentityDictionary.new;
 		repeatFunctions = IdentityDictionary.new;
 
-		instrument_tracks = IdentityDictionary.new();
+		sequencer_tracks = IdentityDictionary.new();
 
 		loopers = IdentityDictionary.new;
 
@@ -123,7 +123,7 @@ Sequencer : I8TNode
 				});
 
 				if( playing, {
-					instrument_tracks.collect({|track|
+					sequencer_tracks.collect({|track|
 						track.fwd( i );
 					});
 
@@ -155,7 +155,7 @@ Sequencer : I8TNode
 
 		beats = time;
 
-		instrument_tracks.collect({|track|
+		sequencer_tracks.collect({|track|
 			track.go( time );
 		});
 
@@ -163,12 +163,12 @@ Sequencer : I8TNode
 
 
 	playInstrument {|instrument, position|
-		instrument_tracks[instrument.name].play(position);
+		sequencer_tracks[instrument.name].play(position);
 		main.displayTracks();
 	}
 
 	stopInstrument {|instrument|
-		instrument_tracks[instrument.name].stop();
+		sequencer_tracks[instrument.name].stop();
 		main.displayTracks();
 	}
 
@@ -187,7 +187,7 @@ Sequencer : I8TNode
 
 	addPattern {|track,parameter,key,pattern|
 
-		var patternEvent = instrument_tracks[ track ].addPattern(parameter,key,pattern);
+		var patternEvent = sequencer_tracks[ track ].addPattern(parameter,key,pattern);
 
 		if( patternEvent.pattern.totalDuration > 0 ) {
 			var patternInfo = (
@@ -208,42 +208,42 @@ Sequencer : I8TNode
 
 	}
 	updateSequenceInfo {|track,parameter|
-		instrument_tracks[track].parameterTracks[parameter].updateSequenceInfo;
+		sequencer_tracks[track].parameterTracks[parameter].updateSequenceInfo;
 	}
 	removePattern {|track,parameter,key|
-		instrument_tracks[ track ].removePattern(parameter,key);
+		sequencer_tracks[ track ].removePattern(parameter,key);
 	}
 	clearPatterns {|track,parameter|
-		instrument_tracks[ track ].clearPatterns(parameter);
+		sequencer_tracks[ track ].clearPatterns(parameter);
 	}
 
 	getPattern {|track,parameter,key|
-		^instrument_tracks[ track ].getPattern(parameter,key);
+		^sequencer_tracks[ track ].getPattern(parameter,key);
 	}
 
 	getPatterns {|track,parameter|
-		^instrument_tracks[ track ].getPatterns(parameter);
+		^sequencer_tracks[ track ].getPatterns(parameter);
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|
 
-		^instrument_tracks[ track ].setPatternParameters(parameter,key,play_parameters);
+		^sequencer_tracks[ track ].setPatternParameters(parameter,key,play_parameters);
 	}
 
 	createTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {
 
-			if( instrument_tracks[instrument.name] == nil, {
-				instrument_tracks[instrument.name] = SequencerTrack.new(instrument);
+			if( sequencer_tracks[instrument.name] == nil, {
+				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument);
 			}, {
-				instrument_tracks[instrument.name].instrument = instrument;
+				sequencer_tracks[instrument.name].instrument = instrument;
 			});
 
 		},{
 
-			if( instrument_tracks[instrument] == nil, {
-				instrument_tracks[instrument] = SequencerTrack.new(instrument);
+			if( sequencer_tracks[instrument] == nil, {
+				sequencer_tracks[instrument] = SequencerTrack.new(instrument);
 			});
 
 		});
@@ -255,11 +255,11 @@ Sequencer : I8TNode
 	deleteTrack {|instrument|
 
 		if( instrument.isKindOf(Instrument), {
-			instrument_tracks[instrument.name].stop;
-			instrument_tracks.removeAt(instrument.name);
+			sequencer_tracks[instrument.name].stop;
+			sequencer_tracks.removeAt(instrument.name);
 		},{
-			instrument_tracks[instrument].stop;
-			instrument_tracks.removeAt(instrument);
+			sequencer_tracks[instrument].stop;
+			sequencer_tracks.removeAt(instrument);
 		});
 
 		main.displayTracks();
@@ -268,7 +268,7 @@ Sequencer : I8TNode
 	}
 
 	setSpeed{|name_,speed_|
-		instrument_tracks[name_].speed = speed_;
+		sequencer_tracks[name_].speed = speed_;
 	}
 
 

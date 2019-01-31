@@ -449,7 +449,7 @@ I8TMain
 
 		var tracks = List.new;
 
-		sequencer.instrument_tracks.keysValuesDo({|k,v|
+		sequencer.sequencer_tracks.keysValuesDo({|k,v|
 			var track = ();
 
 			track.name=v.name;
@@ -469,7 +469,7 @@ I8TMain
 
 	selectPlayingTracks{|selection|
 		[selection].postln;
-		// sequencer.instrument_tracks.collect({|track,index|
+		// sequencer.sequencer_tracks.collect({|track,index|
 		// 	if( selection.indexOf(index).notNil, {
 		// 		"play".postln;
 		// 		track.play;

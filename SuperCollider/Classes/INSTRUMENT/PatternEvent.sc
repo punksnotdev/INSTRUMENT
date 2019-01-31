@@ -20,14 +20,14 @@ PatternEvent : SequencerEvent
 		if(n.isKindOf(Number)) {
 			parameters[\speed]= max(n.asFloat,0.01);
 
-		}
+		};
 	}
 
 
 	repeat {|n|
 		if(n.isKindOf(Number)) {
 			parameters[\repeat]=n.ceil.asInteger;
-		}
+		};
 	}
 
 

@@ -78,6 +78,7 @@ SynthPlayer : SynthInstrument
 			// if( synths.isKindOf(List), {
 				// clean dead synths' id
 					var removeKey;
+
 					synths.collect({|synth_,key|
 						if( synth_.isPlaying == false, {
 							nodeIDs[synth_.nodeID]=false;
@@ -107,6 +108,11 @@ SynthPlayer : SynthInstrument
 					});
 
 				});
+
+
+				// parameters=parameters++[\clock,main.clock];
+
+
 
 			if( fxSynth.isKindOf(Synth), {
 
