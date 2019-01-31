@@ -190,7 +190,13 @@ ControllerManager {
 
 				});
 
-		
+				if( target.isNil, {
+
+					controlTargetMap[controller.key].removeAt( index );
+
+				});
+
+
 			});
 
 
