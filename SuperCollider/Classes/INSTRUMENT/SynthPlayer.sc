@@ -14,6 +14,8 @@ SynthPlayer : SynthInstrument
 
 	var autostart;
 
+	var creatingSynth;
+
 
 	*new{|synthdef_,mode_,name_,autostart|
 		^super.new.init(this.graph,synthdef_,mode_,name_,autostart);
@@ -22,7 +24,6 @@ SynthPlayer : SynthInstrument
 	init{|graph_,synthdef_,mode_,name_,autostart_|
 
 		nodeIDs=IdentityDictionary.new;
-
 
 
 		if( mode_.notNil, {
@@ -54,6 +55,10 @@ SynthPlayer : SynthInstrument
 			this.createSynth();
 			autostart=autostart_;
 		};
+
+		creatingSynth = false;
+
+
 	}
 
 	synthdef_{|synthdef_|
@@ -152,6 +157,8 @@ SynthPlayer : SynthInstrument
 
 		});
 
+		creatingSynth = false;
+
 
 	}
 
@@ -239,16 +246,22 @@ SynthPlayer : SynthInstrument
 
 									pressedKeys[note] = true;
 
-									if( synth.isNil, {
+									if( synth.isNil , {
+										if( creatingSynth == false, {
 
-										this.createSynth([
-											\t_trig,1,
-											\freq,((octave*12)+note).midicps,
-											\note,(octave*12)+note,
-											\amp, amp,
-											\legato,0
-											]++this.parameters_array(use_synth_parameters)
-										);
+											creatingSynth = true;
+
+											this.createSynth([
+												\t_trig,1,
+												\freq,((octave*12)+note).midicps,
+												\note,(octave*12)+note,
+												\amp, amp,
+												\legato,0
+												]++this.parameters_array(use_synth_parameters)
+											);
+
+										});
+
 
 									}, {
 
@@ -291,6 +304,7 @@ SynthPlayer : SynthInstrument
 										if( synth.isKindOf(Synth) ) {
 
 											synth.set(\gate,0);
+											creatingSynth = false;
 											pressedKeys = IdentityDictionary.new;
 										}
 
