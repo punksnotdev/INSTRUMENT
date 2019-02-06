@@ -201,7 +201,7 @@ Sequencer : I8TNode
 
 			main.displayNextPattern(patternInfo);
 
-
+			("Pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
 
 		}
 		^patternEvent;

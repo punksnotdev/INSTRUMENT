@@ -19,7 +19,8 @@ I8TMain
 
 	var <nextKey;
 
-	var <>autoMIDI;
+	var autoMIDI;
+
 	var nextMIDIController;
 
 	var <midiControllers;
@@ -51,7 +52,7 @@ I8TMain
 		rootNode = I8TNode.new(this,"rootNode");
 		this.addNode( rootNode );
 
-		this.play;
+		// this.play;
 
 		midiControllers = ();
 		midiControllers.inputs = List.new;
@@ -230,7 +231,7 @@ I8TMain
 	map {|controller,target,parameter,range|
 		if( controller.isKindOf(MIDIController), {
 
-			if( target.isKindOf(Instrument), {
+			if( (target.isKindOf(Instrument)||target.isKindOf(InstrumentGroup)), {
 				^controllerManager.map(controller,target,parameter,range);
 			}, {
 				"Target not of class 'Instrument'"
@@ -281,7 +282,7 @@ I8TMain
 		this.tempo( bpm );
 	}
 
-	at{|key|
+	at {|key|
 
 		if( nodes[key].notNil, {
 			^nodes[key]
@@ -293,7 +294,7 @@ I8TMain
 
 	}
 
-	put{|key,something|
+	put {|key,something|
 
 		var item;
 
@@ -397,8 +398,11 @@ I8TMain
 
 					}
 
-				}
+				};
 
+				autoMIDI = false;
+				("Assigned MIDI controller:"++nextMIDIController).postln;
+				"Auto MIDI disabled".postln;
 			});
 
 		}
@@ -491,4 +495,25 @@ I8TMain
 		}
 	}
 
+	autoMIDI {|enabled|
+		if( ( enabled.isKindOf(Number) || enabled.isNil), {
+			if(enabled != false ){
+
+				autoMIDI = true;
+				if( (enabled.isKindOf(Number) )) {
+					if( ( enabled>=0 ) && (enabled < midiControllers.inputs.size )) {
+						nextMIDIController = enabled-1;
+					};
+				};
+				"Auto MIDI enabled".postln;
+			};
+		}, {
+			autoMIDI = false;
+			"Auto MIDI disabled".postln;
+		});
+	}
+
+	autoMIDI_ {|enabled|
+		this.autoMIDI(enabled);
+	}
 }

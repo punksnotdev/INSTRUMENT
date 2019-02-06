@@ -69,13 +69,13 @@ MIDIManager {
 
         Tdef(\MidiClock).set(\bpm, TempoClock.default.tempo*120);
 
-        Tdef(\MidiClock, { |e|
+        Tdef(\MidiClock, {
         	var period, tick;
 
         	midiOut.start;
 
         	inf.do{
-        		period = (60/e.bpm);
+        		period = 1/2;//(60/(TempoClock.default.tempo*120));
         		tick = period/24;
         		midiOut.midiClock;
         		tick.wait;

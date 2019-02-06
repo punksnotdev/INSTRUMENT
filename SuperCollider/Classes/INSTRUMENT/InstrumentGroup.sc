@@ -69,6 +69,7 @@ InstrumentGroup : List {
 	}
 
 	amp_ {|value_|
+
 		this.collect({|item|
 			if( item.isKindOf(Instrument),{
 				item.amp = value_;
