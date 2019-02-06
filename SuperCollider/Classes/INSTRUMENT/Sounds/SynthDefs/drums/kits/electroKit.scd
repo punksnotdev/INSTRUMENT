@@ -1,5 +1,5 @@
 (
-SynthDef(\kickElectroKit, {
+SynthDef(\kickElectro, {
     |out = 0, pan = 0, amp = 0.3|
     var body, bodyFreq, bodyAmp;
     var pop, popFreq, popAmp;
@@ -25,7 +25,7 @@ SynthDef(\kickElectroKit, {
     Out.ar(out, Pan2.ar(snd, pan, amp));
 }).store;
 
-SynthDef(\snareElectroKit, {
+SynthDef(\snareElectro, {
     |out = 0, pan = 0, amp = 0.3|
     var pop, popAmp, popFreq;
     var noise, noiseAmp;
@@ -45,7 +45,7 @@ SynthDef(\snareElectroKit, {
     Out.ar(out, Pan2.ar(snd, pan, amp));
 }).store;
 
-SynthDef(\hihatElectroKit, {
+SynthDef(\hihatElectro, {
     |out = 0, pan = 0, amp = 0.3|
     var click, clickAmp;
     var noise, noiseAmp;
@@ -61,7 +61,7 @@ SynthDef(\hihatElectroKit, {
 }).store;
 
 // adapted from a post by Neil Cosgrove (other three are original)
-SynthDef(\clapElectroKit, {
+SynthDef(\clapElectro, {
     |out = 0, amp = 0.5, pan = 0, dur = 1|
     var env1, env2, snd, noise1, noise2;
 

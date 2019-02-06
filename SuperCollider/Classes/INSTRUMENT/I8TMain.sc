@@ -25,11 +25,14 @@ I8TMain
 
 	var <midiControllers;
 
-	var <synths;
+	var synths;
 
 	var <> data;
 
 	var lastMap;
+
+	var currentFolder;
+
 
 	*new {
 		// rootNode.graph_(this);
@@ -65,6 +68,9 @@ I8TMain
 
 		// dictionary for placing custom data:
 		data = ();
+
+		synths = ();
+		currentFolder = synths;
 
 	}
 
@@ -516,4 +522,100 @@ I8TMain
 	autoMIDI_ {|enabled|
 		this.autoMIDI(enabled);
 	}
+
+	listSynths {|item|
+
+		if( item.isNil ) {
+			this.listSynths(synths);
+		};
+
+		// item.postln;
+		if( item.isKindOf(Collection) ) {
+			item.collect({|value,key|
+				"".postln;
+				"---------------".postln;
+				key.postln;
+				"---------------".postln;
+				value.keysValuesDo({|k,v|
+					v.postln;
+				});
+				// ([value, key, value[key]]).postln;
+				// this.listSynths(value[key]);
+			});
+		};
+
+		if( item.isKindOf(String) ) {
+			item.postln;
+		};
+	}
+
+	synths {
+		^synths
+	}
+
+	loadPath {|path|
+
+
+		var files = path.pathMatch;
+
+
+		files.collect({|fileName, index|
+
+			var pathName = PathName( fileName );
+
+			if( pathName.isFile) {
+
+				if( pathName.extension == "scd" ) {
+					// ("Load: " ++ pathName.fileNameWithoutExtension).postln;
+
+					if( currentFolder.notNil, {
+
+						var synthdefs = fileName.loadPaths[0];
+						if( synthdefs.isKindOf(List) == true, {
+
+							["fileName",pathName.fileNameWithoutExtension,synthdefs].postln;
+							// synthdefs.collect({|synthdef|
+							// 	["synthdef",synthdef.name.asSymbol].postln;
+							// 	currentFolder[synthdef.name.asSymbol]=synthdef.name;
+							// });
+						}, {
+							if( synthdefs.isKindOf(SynthDef), {
+							["synthdef",pathName.fileNameWithoutExtension,synthdefs.name].postln;
+
+							currentFolder[pathName.fileNameWithoutExtension.asSymbol]=synthdefs.name;
+
+							}, {
+								["not a synthdef",synthdefs].postln;
+
+							});
+
+						});
+
+					}, {
+						// synths[pathName.fileNameWithoutExtension]=fileName.loadPaths;
+
+					});
+				}
+
+		 	};
+
+			if( pathName.isFolder ) {
+
+				var folder = ();
+
+				synths[ pathName.folderName.toLower.asSymbol ] = folder;
+["folder",pathName.folderName.toLower.asSymbol].postln;
+				currentFolder = folder;
+
+				this.loadPath(fileName ++ "*");
+
+			};
+
+		});
+
+		// synths = synths;
+		^synths
+	}
+
+
 }
