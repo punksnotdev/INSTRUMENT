@@ -553,68 +553,210 @@ I8TMain
 		^synths
 	}
 
-	loadPath {|path|
+	loadPath {|path, parent, grandparent, greatgrandparent|
+
+		/*
+
+		mysynth.scd
+
+		- [x] i.synths.parentFolder.mysynth
+		- autocompleteeee
+		- [ ] i.synths.grandparentFolder.parentFolder.mysynth
+		- [ ] i.synths.grandparentFolder.mysynth
+		- [ ] i.synths.mysynth
+
+		- [ ] i.synths.parentFolder[z] => synth
+		- [ ] i.synths.grandparentFolder[z] => synth, hermanos o primos
+		- [ ] i.synths.mysynth[z] => variación
+
+
+		---
+
+		folder
+			subfolder
+				mysynth.scd -> SynthDef("customName")
+			another_subfolder
+				mysynth.scd -> SynthDef("mysynth__flavor1")
+
+		folder.mysynth -> first
+		- [ ] i.synths.mysynth -> first
+
+		- [ ] i.synths.mysynth.flavor1 -> second
+		- [ ] i.synths.mysynth[1] -> second
+
+		*/
 
 
 		var files = path.pathMatch;
+		var folder;
+		// var level;
+		var scdFiles = List.new;
+		var folders = List.new;
+
+		var items = ();
+
+
+		if( parent.isNil ) {
+			parent = ();
+		};
+
+		folder = ();
+
+		// level = 0;
+
+		/*
+		// enter directory
+		// assign parent
+		// read all .scd files
+		// add synthdef to parent directory
+		// make a list of all root folders
+		// enter each folder
+		// repeat
+		*/
 
 
 		files.collect({|fileName, index|
 
 			var pathName = PathName( fileName );
 
-			if( pathName.isFile) {
-
-				if( pathName.extension == "scd" ) {
-					// ("Load: " ++ pathName.fileNameWithoutExtension).postln;
-
-					if( currentFolder.notNil, {
-
-						var synthdefs = fileName.loadPaths[0];
-						if( synthdefs.isKindOf(List) == true, {
-
-							["fileName",pathName.fileNameWithoutExtension,synthdefs].postln;
-							// synthdefs.collect({|synthdef|
-							// 	["synthdef",synthdef.name.asSymbol].postln;
-							// 	currentFolder[synthdef.name.asSymbol]=synthdef.name;
-							// });
-						}, {
-							if( synthdefs.isKindOf(SynthDef), {
-							["synthdef",pathName.fileNameWithoutExtension,synthdefs.name].postln;
-
-							currentFolder[pathName.fileNameWithoutExtension.asSymbol]=synthdefs.name;
-
-							}, {
-								["not a synthdef",synthdefs].postln;
-
-							});
-
-						});
-
-					}, {
-						// synths[pathName.fileNameWithoutExtension]=fileName.loadPaths;
-
-					});
-				}
-
-		 	};
+			if( pathName.isFile ) {
+				scdFiles.add( fileName );
+			};
 
 			if( pathName.isFolder ) {
-
-				var folder = ();
-
-				synths[ pathName.folderName.toLower.asSymbol ] = folder;
-["folder",pathName.folderName.toLower.asSymbol].postln;
-				currentFolder = folder;
-
-				this.loadPath(fileName ++ "*");
-
+				folders.add( fileName );
 			};
+
 
 		});
 
+
+		// "".postln;
+		// "-------".postln;
+		// "scdFiles".postln;
+		// "-------".postln;
+		// scdFiles.postln;
+		// "".postln;
+		// "-------".postln;
+		// "folders".postln;
+		// "-------".postln;
+		// files.postln;
+		scdFiles.collect({|fileSrc, index|
+
+			var pathName = PathName( fileSrc );
+
+			var folderName = pathName.fileNameWithoutExtension.toLower.asSymbol;
+
+			fileSrc.postln;
+
+
+		});
+
+
+		folders.collect({|folderSrc, index|
+
+			var pathName = PathName( folderSrc );
+
+			var folderName = pathName.folderName.toLower.asSymbol;
+
+			folderSrc.pathMatch.postln;
+
+			"-------".postln;
+			folderName.postln;
+			"-------".postln;
+
+			items[pathName.folderName]=this.loadPath( folderSrc++"*", folder, parent, grandparent );
+
+		});
+
+		items.keysValuesDo({|k,v|
+
+			folder[k]=v;
+// should check if key exists, then create list!
+			parent[k] = v;
+
+			if( grandparent.notNil ) {
+				grandparent[k] = v;
+			};
+
+			if( greatgrandparent.notNil ) {
+				greatgrandparent[k] = v;
+			};
+		});
+
+
+// 		files.collect({|fileName, index|
+
+//
+// 			var pathName = PathName( fileName );
+//
+// 			if( pathName.isFile) {
+//
+// 				if( pathName.extension == "scd" ) {
+// 					// ("Load: " ++ pathName.fileNameWithoutExtension).postln;
+//
+// 					if( currentFolder.notNil, {
+//
+// 						var synthdefs = fileName.loadPaths[0];
+// 						if( synthdefs.isKindOf(List) == true, {
+//
+// 							["fileName",pathName.fileNameWithoutExtension,synthdefs].postln;
+// 							// synthdefs.collect({|synthdef|
+// 							// 	["synthdef",synthdef.name.asSymbol].postln;
+// 							// 	currentFolder[synthdef.name.asSymbol]=synthdef.name;
+// 							// });
+// 						}, {
+// 							if( synthdefs.isKindOf(SynthDef), {
+// 							["synthdef",pathName.fileNameWithoutExtension,synthdefs.name].postln;
+//
+// 							currentFolder[pathName.fileNameWithoutExtension.asSymbol]=synthdefs.name;
+//
+// 							}, {
+// 								["not a synthdef",synthdefs].postln;
+//
+// 							});
+//
+// 						});
+//
+// 					}, {
+// 						// synths[pathName.fileNameWithoutExtension]=fileName.loadPaths;
+//
+// 					});
+// 				}
+//
+// 		 	};
+//
+// 			if( pathName.isFolder ) {
+//
+// 				var folder = ();
+//
+//
+// 				folderName = pathName.folderName.toLower.asSymbol;
+// // [folderName]
+// 				currentFolder[ folderName ] = folder;
+//
+// 				folder.parent = folderName;
+//
+//
+// 				// store in parent array
+// 				// store in grandParent array
+// 				// store in main synths array
+//
+// 				synths[ folderName ] = folder;
+//
+// 				currentFolder = folder;
+//
+// 				level = level + 1;
+//
+// 				this.loadPath(fileName ++ "*");
+//
+//
+// 			};
+//
+// 		});
+
 		// synths = synths;
-		^synths
+		^folder
 	}
 
 
