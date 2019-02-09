@@ -559,11 +559,6 @@ I8TMain
 
 		mysynth.scd
 
-		- [x] i.synths.parentFolder.mysynth
-		- autocompleteeee
-		- [ ] i.synths.grandparentFolder.parentFolder.mysynth
-		- [ ] i.synths.grandparentFolder.mysynth
-		- [ ] i.synths.mysynth
 
 		- [ ] i.synths.parentFolder[z] => synth
 		- [ ] i.synths.grandparentFolder[z] => synth, hermanos o primos
@@ -631,23 +626,14 @@ I8TMain
 		});
 
 
-		// "".postln;
-		// "-------".postln;
-		// "scdFiles".postln;
-		// "-------".postln;
-		// scdFiles.postln;
-		// "".postln;
-		// "-------".postln;
-		// "folders".postln;
-		// "-------".postln;
-		// files.postln;
+
 		scdFiles.collect({|fileSrc, index|
 
 			var pathName = PathName( fileSrc );
 
-			var folderName = pathName.fileNameWithoutExtension.toLower.asSymbol;
+			var fileName = pathName.fileNameWithoutExtension.toLower;
 
-			fileSrc.postln;
+			items[fileName.toLower.asSymbol]=fileSrc.load;
 
 
 		});
@@ -659,13 +645,11 @@ I8TMain
 
 			var folderName = pathName.folderName.toLower.asSymbol;
 
-			folderSrc.pathMatch.postln;
-
 			"-------".postln;
 			folderName.postln;
 			"-------".postln;
 
-			items[pathName.folderName]=this.loadPath( folderSrc++"*", folder, parent, grandparent );
+			items[folderName]=this.loadPath( folderSrc++"*", folder, parent, grandparent );
 
 		});
 
