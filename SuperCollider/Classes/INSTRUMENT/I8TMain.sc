@@ -559,6 +559,11 @@ I8TMain
 
 		mysynth.scd
 
+		- [x] i.synths.parentFolder.mysynth
+		- autocompleteeee
+		- [x] i.synths.grandparentFolder.parentFolder.mysynth
+		- [x] i.synths.grandparentFolder.mysynth
+		- [x] i.synths.mysynth
 
 		- [ ] i.synths.parentFolder[z] => synth
 		- [ ] i.synths.grandparentFolder[z] => synth, hermanos o primos
@@ -631,9 +636,13 @@ I8TMain
 
 			var pathName = PathName( fileSrc );
 
-			var fileName = pathName.fileNameWithoutExtension.toLower;
+			var fileName = pathName.fileNameWithoutExtension;
 
-			items[fileName.toLower.asSymbol]=fileSrc.load;
+			var synthdef = fileSrc.load;
+
+			if( synthdef.isKindOf(SynthDef)) {
+				items[fileName.asSymbol]=synthdef.name.asSymbol;
+			};
 
 
 		});

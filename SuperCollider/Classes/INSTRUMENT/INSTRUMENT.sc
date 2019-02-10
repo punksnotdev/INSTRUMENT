@@ -11,9 +11,13 @@ INSTRUMENT {
             ^I8TMain();
         };
 
-        if( source.isKindOf(Symbol) ) {
+        if( (source.isKindOf(Symbol) ), {
             ^SynthPlayer(source);
-        };
+        }, {
+            if( source.isKindOf(SynthDef) ) {
+                ^SynthPlayer(source.name.asSymbol);
+            };
+        });
 
         if( source.isKindOf(NodeProxy) ) {
             ^Proxy(source);
