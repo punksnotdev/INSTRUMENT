@@ -1,6 +1,8 @@
 I8TMain
 {
 
+	classvar instance;
+
 	var <nodes;
 	var <rootNode;
 
@@ -35,12 +37,24 @@ I8TMain
 
 
 	*new {
-		// rootNode.graph_(this);
-		^super.new.init();
+
+		if( instance.isNil, {
+
+			^super.new.init();
+
+		}, {
+
+			^instance
+			
+		});
+
 
 	}
 	init {
 
+
+
+		instance = this;
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new(this);
