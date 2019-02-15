@@ -45,7 +45,7 @@ I8TMain
 		}, {
 
 			^instance
-			
+
 		});
 
 
@@ -567,7 +567,7 @@ I8TMain
 		^synths
 	}
 
-	loadPath {|path, parent, grandparent, greatgrandparent|
+	loadSynths {|path, parent, grandparent, greatgrandparent|
 
 		/*
 
@@ -672,7 +672,7 @@ I8TMain
 			folderName.postln;
 			"-------".postln;
 
-			items[folderName]=this.loadPath( folderSrc++"*", folder, parent, grandparent );
+			items[folderName]=this.loadSynths( folderSrc++"*", folder, parent, grandparent );
 
 		});
 

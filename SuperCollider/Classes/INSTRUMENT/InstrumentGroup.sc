@@ -147,5 +147,20 @@ InstrumentGroup : List {
 		});
 	}
 
+	seq {|parameter_,value_|
+		this.collect({|item|
+			if( item.isKindOf(Instrument),{
+				item.seq(parameter_,value_);
+			}, {
+
+				if( item.isKindOf(InstrumentGroup),{
+					item.collect({|subItem|
+						subItem.seq(parameter_,value_);
+					});
+				});
+
+			});
+		});
+	}
 
 }
