@@ -325,7 +325,8 @@ I8TMain
 
 
 		if( something.isKindOf(I8TNode), {
-			if( nodes[key].isNil ) {
+
+			if( nodes[key].isNil, {
 
 				item = this.addNode(something,key);
 
@@ -333,9 +334,12 @@ I8TMain
 					item.play;
 				}
 
-			};
+			}, {
 
-			item = nodes[key];
+				item = nodes[key];
+				item.setContent(something);
+
+			});
 
 		});
 

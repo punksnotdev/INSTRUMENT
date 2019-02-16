@@ -61,6 +61,17 @@ SynthPlayer : SynthInstrument
 
 	}
 
+	setContent {|synthplayer_|
+
+
+		if(synthplayer_.isKindOf(SynthPlayer), {
+			synthdef = synthplayer_.synthdef;
+		},{
+			synthdef = \test;
+		});
+	}
+
+
 	synthdef_{|synthdef_|
 
 		synthdef = synthdef_;

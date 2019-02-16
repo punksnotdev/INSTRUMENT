@@ -51,38 +51,9 @@ I8TNode : I8TeventListener
 
 	}
 
+	setContent {|content_| }
 
 
-	addInput {|input|
-		inputs.push( input );
-	}
-
-	removeInput {|input|
-		inputs.removeAt( inputs.indexOf(input) );
-	}
-
-
-	addOutput {|output|
-		outputs.push( output );
-	}
-
-	removeOutput {|output|
-		outputs.removeAt( outputs.indexOf(output) );
-	}
-
-
-	addParameter {|name,range|
-
-		if( inputs.parameters == nil, {
-			inputs.parameters = ();
-		});
-
-		inputs.parameters[name] = (
-			name: name,
-			range: range
-		);
-
-	}
 
 	play {}
 

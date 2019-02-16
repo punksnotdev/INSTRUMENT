@@ -21,22 +21,21 @@ Proxy : Instrument
 
 	}
 
+	setContent {|proxy_|
+
+		if( proxy_.isKindOf(NodeProxy), {
+			proxy = proxy_.proxy;
+		})
+	}
 
 	proxy_{|proxy_|
 
 		proxy = proxy_;
 
-		this.createSynth();
-
 		^proxy
 
 	}
 
-	createSynth{
-
-		// proxy.play;
-
-	}
 
 	trigger {|parameter,event|
 		var value = event;
@@ -74,7 +73,7 @@ Proxy : Instrument
 			);
 
 		}
-		
+
 	}
 
 
