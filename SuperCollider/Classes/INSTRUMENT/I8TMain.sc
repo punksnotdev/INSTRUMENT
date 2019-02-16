@@ -131,6 +131,9 @@ I8TMain
 
 	play {
 		playing = true;
+		nodes.collect({|node|
+			node.play;
+		});
 		sequencer.play;
 	}
 	pause {
@@ -322,37 +325,51 @@ I8TMain
 
 
 		if( something.isKindOf(I8TNode), {
+			if( nodes[key].isNil ) {
 
-			item = this.addNode(something,key);
-			item.play;
+				item = this.addNode(something,key);
+
+				if( playing ) {
+					item.play;
+				}
+
+			};
+
+			item = nodes[key];
 
 		});
 
 		if( something.isKindOf(Collection)) {
 
-			var newGroup = InstrumentGroup.new;
 
-			newGroup.name = key;
+			if( groups[key].isNil ) {
+
+				var newGroup = InstrumentGroup.new;
+
+				newGroup.name = key;
 
 
-			something.collect({
-				arg itemName;
+				something.collect({
+					arg itemName;
 
-				// if item name is a node, add it
-				if( nodes[itemName].notNil, {
-					newGroup.add( nodes[itemName] );
-				}, {
-					// if item name is a group
-					if( groups[itemName].notNil, {
-						// add its items
-						newGroup.add( groups[itemName] );
+					// if item name is a node, add it
+					if( nodes[itemName].notNil, {
+						newGroup.add( nodes[itemName] );
+					}, {
+						// if item name is a group
+						if( groups[itemName].notNil, {
+							// add its items
+							newGroup.add( groups[itemName] );
+						});
 					});
 				});
-			});
 
-			groups[key] = newGroup;
+				groups[key] = newGroup;
+
+			};
 
 			item = groups[key];
+
 
 		};
 

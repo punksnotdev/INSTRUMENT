@@ -84,4 +84,6 @@ I8TNode : I8TeventListener
 
 	}
 
+	play {}
+
 }
