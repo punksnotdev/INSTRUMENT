@@ -788,4 +788,10 @@ I8TMain
 	}
 
 
+	kill {
+		this.stop();
+		instance = nil;
+	}
+
+
 }
