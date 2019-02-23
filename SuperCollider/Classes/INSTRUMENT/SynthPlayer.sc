@@ -436,5 +436,16 @@ SynthPlayer : SynthInstrument
 	}
 
 
+	autostart {
+		this.start();
+
+		super.autostart();
+
+	}
+
+	start {
+		this.createSynth();
+	}
+
 
 }

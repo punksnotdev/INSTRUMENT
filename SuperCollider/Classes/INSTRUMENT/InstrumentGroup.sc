@@ -163,4 +163,21 @@ InstrumentGroup : List {
 		});
 	}
 
+	rm {|parameter_,value_|
+		this.collect({|item|
+			if( item.isKindOf(Instrument),{
+				item.rm(parameter_,value_);
+			}, {
+
+				if( item.isKindOf(InstrumentGroup),{
+					item.collect({|subItem|
+						subItem.rm(parameter_,value_);
+					});
+				});
+
+			});
+		});
+	}
+
+
 }

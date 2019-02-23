@@ -11,6 +11,7 @@ SynthInstrument : Instrument
   var fx;
   var fxBus;
 
+  var autostart;
 
   *new{|name_|
     ^super.new.init(name_,this.graph);
@@ -31,6 +32,13 @@ SynthInstrument : Instrument
   }
 
 
+    autostart {
+      autostart=true;
+    }
+    autostart_ {|value|
+      autostart=value;
+    }
+
 	fx {|pattern|
 
         if(pattern.notNil, {
@@ -44,8 +52,7 @@ SynthInstrument : Instrument
 
 	fx_ {|synthdef_|
 
-
-		if( synthdef_.notNil,{
+        if( synthdef_.notNil,{
 			if( fxSynth.notNil, {
 				fxSynth.free;
 				// fxSynth = Synth.replace(fxSynth,synthdef_);
@@ -62,11 +69,19 @@ SynthInstrument : Instrument
 			fxSynth = nil;
 		});
 
+
+        if( autostart == true ) {
+            this.start();
+        }
+
 		// ^fxSynth;
 
 	}
 
 
+    restart {
+
+    }
 
 	fxSet {|parameter,value|
 		if( value.notNil, {

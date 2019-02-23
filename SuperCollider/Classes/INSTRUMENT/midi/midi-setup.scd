@@ -5,7 +5,7 @@
 	var outMidiDevicesNames;
 	var specs = IdentityDictionary.new;
 
-	s.boot;
+	// s.boot;
 
 	s.doWhenBooted({
 
