@@ -17,20 +17,15 @@ SynthPlayer : SynthInstrument
 	var creatingSynth;
 
 
-	*new{|synthdef_,mode_,name_,autostart|
-		^super.new.init(this.graph,synthdef_,mode_,name_,autostart);
+	*new{|synthdef_,name_|
+		^super.new.init(this.graph,synthdef_,name_);
 	}
 
-	init{|graph_,synthdef_,mode_,name_,autostart_|
+	init{|graph_,synthdef_,name_|
 
 		nodeIDs=IdentityDictionary.new;
 
-
-		if( mode_.notNil, {
-			mode = mode_;
-		}, {
-			mode = \poly;
-		});
+		mode = \poly;
 
 		if( synthdef_.notNil, {
 			// [name_,synthdef_].postln;
@@ -50,11 +45,6 @@ SynthPlayer : SynthInstrument
 
 		pressedKeys = IdentityDictionary.new;
 
-		if( autostart_ == true ) {
-			this.fx_( fx );
-			this.createSynth();
-			autostart=autostart_;
-		};
 
 		creatingSynth = false;
 
@@ -277,7 +267,6 @@ SynthPlayer : SynthInstrument
 									}, {
 
 										if( synth.isKindOf(Synth) ) {
-
 											synth.set(\amp,amp);
 											synth.set(\gate,1);
 
