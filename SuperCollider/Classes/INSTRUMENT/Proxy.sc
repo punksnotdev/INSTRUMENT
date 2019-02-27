@@ -13,7 +13,7 @@ Proxy : Instrument
 			"input is a nodeproxy".postln;
 			proxy_.postln;
 			proxy = proxy_;
-			this.createSynth();
+			// this.createSynth();
 			super.init(graph_,proxy_.key,);
 		},{
 			"input not a nodeproxy".postln;

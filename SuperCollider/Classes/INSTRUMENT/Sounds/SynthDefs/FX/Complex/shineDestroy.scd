@@ -33,7 +33,7 @@
 		sig = sig+Mix.new(CombC.ar(sig,3,delay*[1/3,1/2,1/4],2));
 
 
-		sig = (sig * 1.2).tanh;
+		sig = (sig * 1.2).tanh/8;
 
 		Out.ar(outBus,Pan2.ar(sig));
 
