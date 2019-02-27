@@ -1,4 +1,4 @@
-I8TMain
+I8TMain : Event
 {
 
 	classvar instance;
@@ -36,6 +36,9 @@ I8TMain
 	var currentFolder;
 
 
+
+	classvar mainEvent;
+
 	*new {
 
 		if( instance.isNil, {
@@ -44,15 +47,13 @@ I8TMain
 
 		}, {
 
-			^instance
+			^instance;
 
 		});
 
 
 	}
 	init {
-
-
 
 		instance = this;
 
@@ -85,6 +86,8 @@ I8TMain
 
 		synths = ();
 		currentFolder = synths;
+
+		^instance
 
 	}
 
@@ -137,9 +140,14 @@ I8TMain
 		sequencer.play;
 	}
 	pause {
+		playing=false;
 		sequencer.pause;
 	}
 	stop {
+		playing=false;
+		nodes.collect({|node|
+			node.stop;
+		});
 		sequencer.stop;
 	}
 
@@ -305,8 +313,8 @@ I8TMain
 		this.tempo( bpm );
 	}
 
-	at {|key|
-
+	at {|key,something|
+		["at",key,something].postln;
 		if( nodes[key].notNil, {
 			^nodes[key]
 		});
@@ -316,10 +324,10 @@ I8TMain
 		});
 
 	}
-
 	put {|key,something|
 
 		var item;
+		["put",key,something].postln;
 
 		nextKey = key;
 
@@ -330,7 +338,7 @@ I8TMain
 
 				item = this.addNode(something,key);
 
-				if( playing ) {
+				if( playing == true ) {
 					item.play;
 				}
 
@@ -345,32 +353,34 @@ I8TMain
 
 		if( something.isKindOf(Collection)) {
 
+			var newGroup = InstrumentGroup.new;
 
-			if( groups[key].isNil ) {
+			if( groups[key].notNil ) {
 
-				var newGroup = InstrumentGroup.new;
+				groups.removeAt(key);
+				
+			};
 
-				newGroup.name = key;
+
+			newGroup.name = key;
 
 
-				something.collect({
-					arg itemName;
+			something.collect({
+				arg itemName;
 
-					// if item name is a node, add it
-					if( nodes[itemName].notNil, {
-						newGroup.add( nodes[itemName] );
-					}, {
-						// if item name is a group
-						if( groups[itemName].notNil, {
-							// add its items
-							newGroup.add( groups[itemName] );
-						});
+				// if item name is a node, add it
+				if( nodes[itemName].notNil, {
+					newGroup.add( nodes[itemName] );
+				}, {
+					// if item name is a group
+					if( groups[itemName].notNil, {
+						// add its items
+						newGroup.add( groups[itemName] );
 					});
 				});
+			});
 
-				groups[key] = newGroup;
-
-			};
+			groups[key] = newGroup;
 
 			item = groups[key];
 
