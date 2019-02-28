@@ -353,37 +353,74 @@ I8TMain : Event
 
 		if( something.isKindOf(Collection)) {
 
-			var newGroup = InstrumentGroup.new;
-
-			if( groups[key].notNil ) {
-
-				groups.removeAt(key);
-				
-			};
 
 
-			newGroup.name = key;
 
+			var newGroup;
 
-			something.collect({
-				arg itemName;
+			var allValid = true;
 
-				// if item name is a node, add it
-				if( nodes[itemName].notNil, {
-					newGroup.add( nodes[itemName] );
-				}, {
-					// if item name is a group
-					if( groups[itemName].notNil, {
-						// add its items
-						newGroup.add( groups[itemName] );
-					});
-				});
+			something.collect({|i|
+				if( (( i.isKindOf(Symbol) ) || ( i.isKindOf(I8TNode) )) == false) {
+					allValid = false;
+				};
 			});
 
-			groups[key] = newGroup;
+			if( allValid == true ) {
 
-			item = groups[key];
+				newGroup = InstrumentGroup.new;
 
+				if( groups[key].notNil ) {
+
+					groups.removeAt(key);
+
+				};
+
+
+				newGroup.name = key;
+
+
+				something.collect({
+
+					arg item;
+
+					// if item name is a node, add it
+					if( item.isKindOf(I8TNode) ) {
+						if( nodes.includes( item ) ) {
+							newGroup.add( item );
+							["add", item].postln;
+						}
+					};
+
+					if( item.isKindOf(InstrumentGroup) ) {
+						if( groups.includes(item) ) {
+							newGroup.add( item );
+						};
+					};
+
+					if( item.isKindOf(Symbol)) {
+
+						var itemName = item;
+
+						if( nodes[itemName].notNil, {
+							newGroup.add( nodes[itemName] );
+						}, {
+							// if item name is a group
+							if( groups[itemName].notNil, {
+								// add its items
+								newGroup.add( groups[itemName] );
+							});
+						});
+
+					}
+
+				});
+
+				groups[key] = newGroup;
+
+				item = groups[key];
+
+			};
 
 		};
 
