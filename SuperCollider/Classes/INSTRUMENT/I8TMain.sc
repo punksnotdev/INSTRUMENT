@@ -313,17 +313,7 @@ I8TMain : Event
 		this.tempo( bpm );
 	}
 
-	at {|key,something|
-		["at",key,something].postln;
-		if( nodes[key].notNil, {
-			^nodes[key]
-		});
 
-		if( groups[key].notNil, {
-			^groups[key]
-		});
-
-	}
 	put {|key,something|
 
 		var item;
@@ -331,171 +321,189 @@ I8TMain : Event
 
 		nextKey = key;
 
+		if( something.isNil, {
 
-		if( something.isKindOf(I8TNode), {
-
-			if( nodes[key].isNil, {
-
-				item = this.addNode(something,key);
-
-				if( playing == true ) {
-					item.play;
-				}
-
-			}, {
-
-				item = nodes[key];
-				item.setContent(something);
-
+			if( nodes[key].notNil, {
+				^nodes[key]
 			});
 
-		});
-
-		if( something.isKindOf(Collection)) {
-
-
-
-
-			var newGroup;
-
-			var allValid = true;
-
-			something.collect({|i|
-				if( (( i.isKindOf(Symbol) ) || ( i.isKindOf(I8TNode) )) == false) {
-					allValid = false;
-				};
+			if( groups[key].notNil, {
+				^groups[key]
 			});
 
-			if( allValid == true ) {
+			^nil;
 
-				newGroup = InstrumentGroup.new;
-
-				if( groups[key].notNil ) {
-
-					groups.removeAt(key);
-
-				};
+		}, {
 
 
-				newGroup.name = key;
+				if( something.isKindOf(I8TNode), {
 
+					if( nodes[key].isNil, {
 
-				something.collect({
+						item = this.addNode(something,key);
 
-					arg item;
-
-					// if item name is a node, add it
-					if( item.isKindOf(I8TNode) ) {
-						if( nodes.includes( item ) ) {
-							newGroup.add( item );
-							["add", item].postln;
+						if( playing == true ) {
+							item.play;
 						}
-					};
 
-					if( item.isKindOf(InstrumentGroup) ) {
-						if( groups.includes(item) ) {
-							newGroup.add( item );
-						};
-					};
+					}, {
 
-					if( item.isKindOf(Symbol)) {
+						item = nodes[key];
+						item.setContent(something);
 
-						var itemName = item;
-
-						if( nodes[itemName].notNil, {
-							newGroup.add( nodes[itemName] );
-						}, {
-							// if item name is a group
-							if( groups[itemName].notNil, {
-								// add its items
-								newGroup.add( groups[itemName] );
-							});
-						});
-
-					}
+					});
 
 				});
 
-				groups[key] = newGroup;
-
-				item = groups[key];
-
-			};
-
-		};
-
-
-		if( midiControllers.inputs.notNil ) {
-
-			if( (autoMIDI == true) && (midiControllers.inputs.size > 0),{
+				if( something.isKindOf(Collection)) {
 
 
 
-				if( item.notNil ) {
 
-					if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
+					var newGroup;
 
-						var nextIndex;
-						var next;
-						var shouldIncrement = true;
+					var allValid = true;
 
-						controllerManager.controlTargetMap.collect({
-							|mapping_,key_|
+					something.collect({|i|
+						if( (( i.isKindOf(Symbol) ) || ( i.isKindOf(I8TNode) )) == false) {
+							allValid = false;
+						};
+					});
 
-							var mapping, key;
+					if( allValid == true ) {
 
-							if( mapping_.isKindOf(List) ) {
-								mapping = mapping_[0];
-							};
+						newGroup = InstrumentGroup.new;
+
+						if( groups[key].notNil ) {
+
+							groups.removeAt(key);
+
+						};
 
 
-							if( mapping_.isKindOf(Event) ) {
+						newGroup.name = key;
 
-								mapping = mapping_;
 
-								if( mapping.target.name == item.name ) {
+						something.collect({
 
-									shouldIncrement = false;
+							arg item;
 
-									midiControllers.inputs.collect({|input|
-
-										if(input.isKindOf(MIDIController)){
-
-											if(input.key==key) {
-												next=input
-											}
-										}
-
-									});
-
+							// if item name is a node, add it
+							if( item.isKindOf(I8TNode) ) {
+								if( nodes.includes( item ) ) {
+									newGroup.add( item );
+									["add", item].postln;
 								}
 							};
 
+							if( item.isKindOf(InstrumentGroup) ) {
+								if( groups.includes(item) ) {
+									newGroup.add( item );
+								};
+							};
+
+							if( item.isKindOf(Symbol)) {
+
+								var itemName = item;
+
+								if( nodes[itemName].notNil, {
+									newGroup.add( nodes[itemName] );
+								}, {
+									// if item name is a group
+									if( groups[itemName].notNil, {
+										// add its items
+										newGroup.add( groups[itemName] );
+									});
+								});
+
+							}
+
 						});
 
-						if( shouldIncrement == true ) {
-							nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
-							next = midiControllers.inputs[nextMIDIController];
-						};
+						groups[key] = newGroup;
 
-						if( (next.notNil && item.notNil),{
+						item = groups[key];
 
-							this.map( next, item, \amp,[0,1]);
-
-						});
-
-					}
+					};
 
 				};
 
-				autoMIDI = false;
-				("Assigned MIDI controller:"++nextMIDIController).postln;
-				"Auto MIDI disabled".postln;
+
+				if( midiControllers.inputs.notNil ) {
+
+					if( (autoMIDI == true) && (midiControllers.inputs.size > 0),{
+
+
+
+						if( item.notNil ) {
+
+							if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
+
+								var nextIndex;
+								var next;
+								var shouldIncrement = true;
+
+								controllerManager.controlTargetMap.collect({
+									|mapping_,key_|
+
+									var mapping, key;
+
+									if( mapping_.isKindOf(List) ) {
+										mapping = mapping_[0];
+									};
+
+
+									if( mapping_.isKindOf(Event) ) {
+
+										mapping = mapping_;
+
+										if( mapping.target.name == item.name ) {
+
+											shouldIncrement = false;
+
+											midiControllers.inputs.collect({|input|
+
+												if(input.isKindOf(MIDIController)){
+
+													if(input.key==key) {
+														next=input
+													}
+												}
+
+											});
+
+										}
+									};
+
+								});
+
+								if( shouldIncrement == true ) {
+									nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
+									next = midiControllers.inputs[nextMIDIController];
+								};
+
+								if( (next.notNil && item.notNil),{
+
+									this.map( next, item, \amp,[0,1]);
+
+								});
+
+							}
+
+						};
+
+						autoMIDI = false;
+						("Assigned MIDI controller:"++nextMIDIController).postln;
+						"Auto MIDI disabled".postln;
+					});
+
+				};
+
+				super.put(key,item);
+
+				^item;
+
 			});
-
-		}
-
-		^item;
 
 	}
 
