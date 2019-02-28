@@ -2,68 +2,37 @@ InstrumentGroup : List {
 
 	var <amp;
 	var <clock;
+	var <baseClock;
 	var <fx;
 	var <>name;
 
 	play {
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.play;
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.play;
-					});
-				});
-
-			});
+			};
 		});
 	}
 	stop {
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.stop;
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.stop;
-					});
-				});
-
-			});
+			};
 		});
 	}
 	go {|time|
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.go(time);
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.go(time);
-					});
-				});
-
-			});
+			};
 		});
 	}
 	set {|parameter,value_|
 
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
-				item.set(parameter,value_)
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.set(parameter,value_)
-					});
-				});
-
-			});
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+				item.set(parameter,value_);
+			};
 		});
 
 	}
@@ -71,38 +40,48 @@ InstrumentGroup : List {
 	amp_ {|value_|
 
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.amp = value_;
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.amp = value_ * item.amp;
-					});
-				});
-
-			});
+			};
 		});
 		amp = value_;
 	}
 
 
+	setClock {|speed_|
+		if( speed_.isKindOf(Number) ) {
+			if( speed_>0 && speed_ < 256 ) {
+				var newClock = speed_;
+				if( baseClock.notNil) {
+					newClock = speed_ * baseClock;
+				};
+				this.collect({|item|
 
-	clock_ {|value_|
-		this.collect({|item|
-			if( item.isKindOf(Instrument),{
-				item.clock=value_;
-			}, {
+					if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+						item.setClock(speed_);
+					};
 
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.clock=value_ * item.clock;
-					});
 				});
+			}
+		}
+	}
 
-			});
-		});
-		clock = value_;
+	clock_ {|speed_|
+
+		if( speed_.isKindOf(Number) ) {
+			if( speed_>0 && speed_ < 256 ) {
+				baseClock = speed_;
+				clock = speed_;
+				this.collect({|item|
+					if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+						item.setClock(speed_);
+					};
+				});
+			}
+
+		}
+
+
 
 	}
 
@@ -115,17 +94,9 @@ InstrumentGroup : List {
 
 	fx_ {|value_|
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.fx=value_;
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.fx=value_;
-					});
-				});
-
-			});
+			};
 		});
 		fx = value_;
 	}
@@ -133,49 +104,25 @@ InstrumentGroup : List {
 
 	fxSet{|parameter_,value_|
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.fxSet(parameter_,value_);
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.fxSet(parameter_,value_);
-					});
-				});
-
-			});
+			};
 		});
 	}
 
 	seq {|parameter_,value_|
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.seq(parameter_,value_);
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.seq(parameter_,value_);
-					});
-				});
-
-			});
+			};
 		});
 	}
 
 	rm {|parameter_,value_|
 		this.collect({|item|
-			if( item.isKindOf(Instrument),{
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.rm(parameter_,value_);
-			}, {
-
-				if( item.isKindOf(InstrumentGroup),{
-					item.collect({|subItem|
-						subItem.rm(parameter_,value_);
-					});
-				});
-
-			});
+			};
 		});
 	}
 

@@ -6,7 +6,6 @@ Instrument : Sequenceable
 	var <>volume;
 	var <>octave;
 	var <main;
-	var <clock;
 
 	*new{|name_|
 		^super.new.init(name_,this.graph);

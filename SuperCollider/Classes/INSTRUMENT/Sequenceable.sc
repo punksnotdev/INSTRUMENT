@@ -3,6 +3,8 @@ Sequenceable : I8TNode
 
 	var <>sequencer;
 	var <clock;
+	var <>baseClock;
+
 	var <playing;
 	var <>amp;
 
@@ -156,14 +158,33 @@ Sequenceable : I8TNode
 	}
 
 
+	setClock{|speed_|
+		if( speed_.isKindOf(Number) ) {
+			if( speed_>0 && speed_ < 256 ) {
+
+				var newClock = speed_;
+				if( baseClock.notNil) {
+					newClock = speed_ * baseClock;
+				};
+				sequencer.setSpeed(name,newClock);
+
+
+			}
+		}
+
+	}
 
 
 	clock_{|speed_|
 
+
 		if( speed_.isKindOf(Number) ) {
 			if( speed_>0 && speed_ < 256 ) {
-				clock = speed_;
-				sequencer.setSpeed(name,clock);
+
+				baseClock=speed_;
+				clock=speed_;
+				sequencer.setSpeed(name,speed_);
+
 			}
 		}
 	}
