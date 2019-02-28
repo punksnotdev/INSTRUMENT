@@ -48,22 +48,23 @@ Sequenceable : I8TNode
 
 		currentParameter = parameters.parameter;
 
+		if( sequencer.notNil ) {
 
+			currentPatternEvent = sequencer.addPattern(
+				name,
+				parameters.parameter,
+				nextPatternKey,
+				parameters.pattern,
+				parameters.play_parameters
+			);
 
-		currentPatternEvent = sequencer.addPattern(
-			name,
-			parameters.parameter,
-			nextPatternKey,
-			parameters.pattern,
-			parameters.play_parameters
-		);
+			if( currentPatternEvent.notNil, {
 
-		if( currentPatternEvent.notNil, {
+				currentPattern = currentPatternEvent.pattern.pattern;
 
-			currentPattern = currentPatternEvent.pattern.pattern;
+			});
 
-		});
-
+		};
 
 		^this;
 

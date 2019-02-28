@@ -1,4 +1,4 @@
-InstrumentGroup : List {
+InstrumentGroup : Event {
 
 	var <amp;
 	var <clock;

@@ -386,19 +386,30 @@ I8TMain : Event
 
 						something.collect({
 
-							arg item;
+							arg item,key;
 
 							// if item name is a node, add it
 							if( item.isKindOf(I8TNode) ) {
-								if( nodes.includes( item ) ) {
-									newGroup.add( item );
-									["add", item].postln;
-								}
+
+								if( (nodes.includes( item ) == false), {
+
+									item.name=key;
+
+									item = this.addNode(item,key);
+
+									if( playing == true ) {
+										item.play;
+									}
+
+								});
+
+								newGroup.put( key, item );
+
 							};
 
 							if( item.isKindOf(InstrumentGroup) ) {
 								if( groups.includes(item) ) {
-									newGroup.add( item );
+									newGroup.put( item.name, item );
 								};
 							};
 
@@ -407,12 +418,12 @@ I8TMain : Event
 								var itemName = item;
 
 								if( nodes[itemName].notNil, {
-									newGroup.add( nodes[itemName] );
+									newGroup.put( itemName, nodes[itemName] );
 								}, {
 									// if item name is a group
 									if( groups[itemName].notNil, {
 										// add its items
-										newGroup.add( groups[itemName] );
+										newGroup.put( itemName, groups[itemName] );
 									});
 								});
 

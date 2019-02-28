@@ -1,20 +1,20 @@
 INSTRUMENT {
 
-    *new {|source,autostart=false|
-        ^super.new.init(source,autostart);
+    *new {|source|
+        ^super.new.init(source);
     }
 
-    init {|source,autostart=false|
+    init {|source|
         if( source.isNil) {
 			"I N S T R U M E N T".postln;
             ^I8TMain();
         };
 
         if( (source.isKindOf(Symbol) ), {
-            ^SynthPlayer(source,autostart);
+            ^SynthPlayer(source);
         }, {
             if( source.isKindOf(SynthDef) ) {
-                ^SynthPlayer(source.name.asSymbol,autostart);
+                ^SynthPlayer(source.name.asSymbol);
             };
         });
 
