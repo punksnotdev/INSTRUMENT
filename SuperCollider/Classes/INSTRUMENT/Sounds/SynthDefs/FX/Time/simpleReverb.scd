@@ -8,7 +8,7 @@ SynthDef(\reverb, {
 
 	var sig = In.ar(inBus);
 
-	var dsp = FreeVerb.ar( sig, 1, room, damp );
+	var dsp = (FreeVerb.ar( sig, 1, room, damp ) * 3).tanh;
 
 	var mix = (sig * (1-wet)) + (dsp * wet);
 
