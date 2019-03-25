@@ -254,16 +254,19 @@ Looper : SynthInstrument
 
 		amp_ {|value,layer|
 			if( value.notNil && value != \r ) {
+
 				if( layer.isNil, {
 
-					playSynths.collect({|synth|
-						synth.set( \amp, value.asFloat );
+					playSynths.collect({|synth,i|
+						["set amp", value,i].postln;
+						synth.set( \amp, value );
 					});
 
 				}, {
 
 					if(playSynths[layer].notNil ) {
-						playSynths[layer].set( \amp, value.asFloat );
+						["set amp", value,layer].postln;
+						playSynths[layer].set( \amp, value );
 					}
 
 				});
@@ -273,6 +276,8 @@ Looper : SynthInstrument
 
 		rate_ {|value,layer|
 			if( value.notNil && value != \r ) {
+
+				value.postln;
 				if( layer.isNil, {
 
 					playSynths.collect({|synth|
