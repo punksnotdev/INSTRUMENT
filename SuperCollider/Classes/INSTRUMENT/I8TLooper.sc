@@ -49,19 +49,19 @@ Looper : SynthInstrument
 
 		rec {|layer|
 
-			main.sequencer.recLooper( this );
+			main.sequencer.recLooper( this, layer );
 			nextLayer = layer;
 			// this.startRecording(layer);
 		}
 
 		start {|layer|
-			main.sequencer.startLooper( this );
+			main.sequencer.startLooper( this, layer );
 			nextLayer = layer;
 
 		}
 
 		stop {|layer|
-			main.sequencer.stopLooper( this );
+			main.sequencer.stopLooper( this, layer );
 			nextLayer = layer;
 		}
 

@@ -1,7 +1,9 @@
 ControlMode {
 
+    var <>loadCallback;
     var <callbacks;
     var <name;
+    var <>midiTarget;
 
     *new {|name_|
         ^super.new.init(name_);

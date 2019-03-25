@@ -55,6 +55,16 @@ Sequencer : I8TNode
 		playing = true;
 	}
 
+
+
+	setupLooper{|looper|
+		loopers[looper]=IdentityDictionary.new;
+		8.do{|j|
+			loopers[looper][j]=IdentityDictionary.new;
+		}
+	}
+
+
 	play {
 
 		playing = true;
@@ -68,32 +78,35 @@ Sequencer : I8TNode
 
 					if( beats % 1 == 0 ) {
 
-						loopers.collect({|state,looper|
+						loopers.collect({|stateArray,looper|
 
-							switch( state,
-								\awaitingRec, {
+							stateArray.collect({|state,stateIndex|
 
-									"Looper: Rec".postln;
+								switch( state,
+									\awaitingRec, {
 
-									looper.performRec();
-									loopers[looper]=\recording;
-								},
-								\awaitingStart, {
+										"Looper: Rec".postln;
 
-									"Looper: Start".postln;
+										looper.performRec();
+										loopers[looper][stateIndex]=\recording;
+									},
+									\awaitingStart, {
 
-									looper.performStart();
-									loopers[looper]=\playing;
-								},
-								\awaitingStop, {
+										"Looper: Start".postln;
 
-									"Looper: Stop".postln;
+										looper.performStart();
+										loopers[looper][stateIndex]=\playing;
+									},
+									\awaitingStop, {
 
-									looper.performStop();
-									loopers[looper]=\stopped;
-								}
-							);
+										"Looper: Stop".postln;
 
+										looper.performStop();
+										loopers[looper][stateIndex]=\stopped;
+									}
+								);
+
+							});
 						});
 					};
 
@@ -293,13 +306,25 @@ Sequencer : I8TNode
 	}
 
 
-	recLooper {|looper|
-		loopers[looper] = \awaitingRec;
+	recLooper {|looper,layer|
+		if( layer.isNil ) {
+			layer = 0;
+		};
+		if( loopers[looper].isNil, {
+			this.setupLooper( looper );
+		});
+		loopers[looper][layer] = \awaitingRec;
 	}
-	startLooper {|looper|
-		loopers[looper] = \awaitingStart;
+	startLooper {|looper,layer|
+		if( layer.isNil ) {
+			layer = 0;
+		};
+		loopers[looper][layer] = \awaitingStart;
 	}
-	stopLooper {|looper|
-		loopers[looper] = \awaitingStop;
+	stopLooper {|looper,layer|
+		if( layer.isNil ) {
+			layer = 0;
+		};
+		loopers[looper][layer] = \awaitingStop;
 	}
 }

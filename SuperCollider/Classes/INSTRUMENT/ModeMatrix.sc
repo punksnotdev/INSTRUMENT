@@ -1,7 +1,7 @@
 ModeMatrix : ControllerLogic {
 
     var < modes;
-    var <>midiTarget;
+    var <midiTarget;
 
     var currentMode;
     var currentModeIndex;
@@ -61,8 +61,14 @@ ModeMatrix : ControllerLogic {
         //     var targetKey;
         //
         //     offset = (param1/9).floor;
+        //     var offset;
+        //     var targetKey;
         //
-        //     9.do{|l|
+            // offset = (param1/9).floor;
+
+
+            //loadCallback.value();
+            // 9.do{|l|
         //         if(( (param1%9==(8-l))&&(param1 > (7+(8*l)))),{ offset=offset+1; });
         //     };
         //
@@ -81,6 +87,7 @@ ModeMatrix : ControllerLogic {
             var modeFiles = "/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
 
             mode=modeFiles[j%modeFiles.size].load;
+
             modes[j] = mode;
 
         };
@@ -94,7 +101,7 @@ ModeMatrix : ControllerLogic {
 
 
 
-    addMode { |key, mode|
+    addMode {|key, mode|
 
         modes[key] = mode;
 
@@ -109,6 +116,11 @@ ModeMatrix : ControllerLogic {
         modes[index.asInteger].callbacks.keysValuesDo({|k,v|
             currentCallbacks[k]=(callback:v,parameter: k );
         });
+        // modes[index.asInteger].callbacks.keysValuesDo({|k,v|
+        //     currentCallbacks[k]=(callback:v,parameter: k );
+        // });
+        modes[index.asInteger].loadCallback.value();
+
 
         currentModeIndex = index.asInteger;
 
@@ -148,6 +160,13 @@ ModeMatrix : ControllerLogic {
 
     updateView {
 
+    }
+
+    midiTarget_{|target_|
+        midiTarget = target_;
+        modes.collect({|mode|
+            mode.midiTarget = midiTarget;
+        });
     }
 
     setupModeNavigation{

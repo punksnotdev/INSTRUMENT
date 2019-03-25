@@ -1,5 +1,54 @@
 var m = ControlMode("loopMatrix");
 
+m.loadCallback={
+
+	64.do{|index|
+
+		var currentRow;
+		var currentColumn;
+		currentRow = (index/8).floor;
+		currentColumn = index%8;
+
+		if( i.notNil ) {
+			if( i.data.notNil ) {
+
+				if( i.data.loopers[currentRow].status.notNil ) {
+
+					var targetColor = 0;
+					var targetKey;
+					var offset;
+
+
+					offset = (index/9).floor;
+
+					9.do{|l|
+						if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
+					};
+
+					targetKey = (index+offset).asInteger;
+
+					switch( i.data.loopers[currentRow].status,
+
+						1, {
+							targetColor=15;
+						},
+						2, {
+							targetColor=60;
+						},
+						3, {
+							targetColor=17;
+						}
+					);
+
+					[m.midiTarget,targetKey,targetColor].postln;
+					m.midiTarget.send(targetKey,targetColor);
+
+				};
+
+			};
+		};
+	};
+};
 
 
 m.setup({
