@@ -79,9 +79,9 @@
 
  		e.modeMatrix.midiTarget = i.midi.launchpad;
 
-		4.wait;
+		0.wait;
 
-		MIDIClient.disposeClient;
+		// MIDIClient.disposeClient;
 
 		4.wait;
 

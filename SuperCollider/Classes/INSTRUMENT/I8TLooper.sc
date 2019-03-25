@@ -245,10 +245,13 @@ Looper : SynthInstrument
 				});
 			}, {
 
-				playSynths.collect({|synth|
-					if(synth.isKindOf(Synth)) {
-						synth.release;
-					};
+
+				if( playSynths[nextLayer].isKindOf(Synth), {
+
+					playSynths[nextLayer].release;
+
+				}, {
+					"I8TLooper: layer id not found".postln;
 				});
 
 			});
