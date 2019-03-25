@@ -43,20 +43,20 @@ m.setup({
 
 				if( looperData.status[currentValue].isNil, {
 					looperData.status[currentValue]=1;
-					looperData.instrument.rec;
+					looperData.instrument.rec(currentValue);
 					targetColor = 15;
 					midiTarget.send(targetKey,targetColor);
 				}, {
 					if( looperData.status[currentValue]==1, {
 						looperData.status[currentValue] = 2;
-						looperData.instrument.start;
+						looperData.instrument.start(currentValue);
 						targetColor = 60;
 						midiTarget.send(targetKey,targetColor);
 					}, {
 						if( looperData.status[currentValue]==2, {
 							looperData.status[currentValue] = 3;
 							looperData.instrument.stop(currentValue);
-							targetColor = 24;
+							targetColor = 17;
 							midiTarget.send(targetKey,targetColor);
 						}, {
 							if( looperData.status[currentValue]==3, {

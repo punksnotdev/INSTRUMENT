@@ -15,7 +15,7 @@ Looper : SynthInstrument
 
 		var rate;
 
-		var nextLayer;
+		var <nextLayer;
 
 		*new{|bus_|
 			^super.new.init(this.graph,bus_);
@@ -91,38 +91,31 @@ Looper : SynthInstrument
 		}
 
 
-		performRec {
-
-			if( nextLayer.notNil, {
-				// if buffer for nextLayer not allocated,
-				if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
-					buffers[ nextLayer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
-						{|buffer|
-							recSynth = Synth(\loopWrite, [
-								\inBus, bus,
-								\buffer, buffer
-							]);
-							lastDuration = TempoClock.default.beats;
-						});
-				};
-
-
-
-
-			}, {
-
-				// if buffer for layer not allocated,
-				if( buffers[ buffers.size ].isKindOf(Buffer) == false ) {
-					buffers[ buffers.size ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1, {|buffer|
+		recordBuffer{|nextLayer|
+			// if buffer for nextLayer not allocated,
+			if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
+				buffers[ nextLayer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
+					{|buffer|
 						recSynth = Synth(\loopWrite, [
 							\inBus, bus,
 							\buffer, buffer
 						]);
 						lastDuration = TempoClock.default.beats;
 					});
-				};
+			};
 
 
+		}
+
+		performRec {
+
+			if( nextLayer.notNil, {
+
+				this.recordBuffer(nextLayer)
+
+			}, {
+
+				this.recordBuffer(buffers.size)
 
 			});
 		}
