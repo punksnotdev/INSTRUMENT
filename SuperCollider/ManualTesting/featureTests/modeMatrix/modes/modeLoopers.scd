@@ -13,11 +13,9 @@ m.loadCallback={
 			if( i.data.notNil ) {
 
 				if( i.data.loopers[currentRow].status.notNil ) {
-
 					var targetColor = 0;
 					var targetKey;
 					var offset;
-
 
 					offset = (index/9).floor;
 
@@ -27,7 +25,7 @@ m.loadCallback={
 
 					targetKey = (index+offset).asInteger;
 
-					switch( i.data.loopers[currentRow].status,
+					switch( i.data.loopers[currentRow].status[currentColumn],
 
 						1, {
 							targetColor=15;
@@ -40,7 +38,6 @@ m.loadCallback={
 						}
 					);
 
-					[m.midiTarget,targetKey,targetColor].postln;
 					m.midiTarget.send(targetKey,targetColor);
 
 				};
@@ -74,9 +71,8 @@ m.setup({
 				currentChannel = (param1/8).floor;
 				currentValue = param1%8;
 
-				looperData = i.data.loopers[currentChannel].postln;
+				looperData = i.data.loopers[currentChannel];
 
-				["currentChannel",currentChannel, currentValue].postln;
 
 				offset = (param1/9).floor;
 
@@ -143,7 +139,6 @@ m.setup({
 //
 // 		currentChannel = (param1/8).floor;
 //
-// 		["currentChannel",currentChannel].postln;
 //
 //
 //

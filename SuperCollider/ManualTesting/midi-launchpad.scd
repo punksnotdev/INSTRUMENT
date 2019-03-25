@@ -91,11 +91,15 @@
 			4.wait;
 
 
-			i.data.loopers=Array.fill(8,{
+			i.data.loopers=Array.fill(8,{|index|
+				var chan = (index/4).floor.asInteger;
+
 				(
-						instrument: Looper(e.targetChannel);
+						instrument: Looper(chan);
 				)
 			});
+
+			CmdPeriod.add({MIDIClient.disposeClient;});
 
 			"Loopers: Loaded".postln;
 
