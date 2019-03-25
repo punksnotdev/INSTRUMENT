@@ -84,24 +84,15 @@ Sequencer : I8TNode
 
 								switch( state,
 									\awaitingRec, {
-
-										"Looper: Rec".postln;
-
-										looper.performRec();
+										looper.performRec(stateIndex);
 										loopers[looper][stateIndex]=\recording;
 									},
 									\awaitingStart, {
-
-										"Looper: Start".postln;
-
-										looper.performStart();
+										looper.performStart(stateIndex);
 										loopers[looper][stateIndex]=\playing;
 									},
 									\awaitingStop, {
-
-										"Looper: Stop".postln;
-
-										looper.performStop();
+										looper.performStop(stateIndex);
 										loopers[looper][stateIndex]=\stopped;
 									}
 								);

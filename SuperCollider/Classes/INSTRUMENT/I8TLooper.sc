@@ -7,7 +7,7 @@ Looper : SynthInstrument
 		var numChannels;
 
 		var <>bus;
-		var <recSynth;
+		var recSynths;
 		var <playSynths;
 		var <durations;
 		var lastDuration;
@@ -15,7 +15,7 @@ Looper : SynthInstrument
 
 		var rate;
 
-		var <nextLayer;
+		// var }<nextLayer;
 
 		*new{|bus_|
 			^super.new.init(this.graph,bus_);
@@ -34,6 +34,7 @@ Looper : SynthInstrument
 
 			buffers = IdentityDictionary.new;
 			playSynths = IdentityDictionary.new;
+			recSynths = IdentityDictionary.new;
 			durations = IdentityDictionary.new;
 
 			maxDuration = 60;
@@ -50,19 +51,19 @@ Looper : SynthInstrument
 		rec {|layer|
 
 			main.sequencer.recLooper( this, layer );
-			nextLayer = layer;
+			// nextLayer = layer;
 			// this.startRecording(layer);
 		}
 
 		start {|layer|
 			main.sequencer.startLooper( this, layer );
-			nextLayer = layer;
+			// nextLayer = layer;
 
 		}
 
 		stop {|layer|
 			main.sequencer.stopLooper( this, layer );
-			nextLayer = layer;
+			// nextLayer = layer;
 		}
 
 
@@ -75,17 +76,17 @@ Looper : SynthInstrument
 		// }
 
 
-		stopRecording {
+		stopRecording {|nextLayer|
 
 
-			if( recSynth.isKindOf(Synth)) {
+			if( recSynths[nextLayer].isKindOf(Synth)) {
 				var recDuration;
-				recSynth.free;
+				recSynths[nextLayer].free;
 				recDuration = TempoClock.default.beats - lastDuration;
 				// recDuration = recDuration / TempoClock.default.tempo;
-				durations[buffers.size-1]=recDuration;
-				recSynth = nil;
-				["Duration:", recDuration,buffers.size-1,TempoClock.default.beats, lastDuration;].postln;
+				durations[nextLayer]=recDuration;
+				recSynths[nextLayer] = nil;
+				["Duration:", recDuration, nextLayer,TempoClock.default.beats, lastDuration].postln;
 			};
 
 		}
@@ -94,85 +95,41 @@ Looper : SynthInstrument
 		recordBuffer{|nextLayer|
 			// if buffer for nextLayer not allocated,
 			if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
-				buffers[ nextLayer ] = Buffer.alloc( Server.local, Server.local.sampleRate * maxDuration, 1,
+				buffers[ nextLayer ] = Buffer.alloc(
+					Server.local,
+					Server.local.sampleRate * maxDuration,
+					1,
 					{|buffer|
-						recSynth = Synth(\loopWrite, [
+						recSynths[ nextLayer ] = Synth(\loopWrite, [
 							\inBus, bus,
 							\buffer, buffer
 						]);
 						lastDuration = TempoClock.default.beats;
-					});
+					}
+				);
 			};
 
 
 		}
 
-		performRec {
-
+		performRec {|nextLayer|
+			["performRec",nextLayer].postln;
 			if( nextLayer.notNil, {
 
 				this.recordBuffer(nextLayer)
-
-			}, {
-
-				this.recordBuffer(buffers.size)
 
 			});
 		}
 
 
 
-		performStart {
+		performStart {|nextLayer|
+			["performStart",nextLayer].postln;
 
-			this.stopRecording();
+			if( nextLayer.notNil, {
 
-			// if no layers selected
-			if( nextLayer.isNil, {
-				// play all available layers:
-				// first stop all
-				playSynths.collect({|synth|
-					if( synth.isKindOf(Synth) ) {
-						synth.release;
-					};
-				});
-				// then create new synths:
-				buffers.collect({|buffer,key|
-					if( buffer.isKindOf(Buffer) ) {
+				this.stopRecording(nextLayer);
 
-						var synth;
-
-						if( fxSynth.isKindOf(Synth), {
-
-							synth = Synth.before( fxSynth, \loopRead,
-								[
-								\out,fxBus,
-								\buffer, buffer,
-								\duration, durations[key],
-								\amp, amp,
-								\rate, rate
-							]);
-							synth.register;
-						}, {
-
-							synth = Synth.head( group, \loopRead,[
-								\buffer, buffer,
-								\duration, durations[key],
-								\amp, amp,
-								\rate, rate
-							]);
-
-							synth.register;
-
-						});
-
-
-						playSynths[key]=synth;
-
-					};
-				});
-			}, {
-
-				// if nextLayer exists
 				if( buffers[nextLayer].isKindOf(Buffer), {
 
 
@@ -214,6 +171,8 @@ Looper : SynthInstrument
 
 					playSynths[nextLayer] = synth;
 
+					[nextLayer, synth].postln;
+
 
 				}, {
 					"I8TLooper: layer id not found".postln;
@@ -223,21 +182,12 @@ Looper : SynthInstrument
 
 		}
 
-		performStop {
+		performStop {|nextLayer|
+			["performStop",nextLayer].postln;
 
-			this.stopRecording();
+			if( nextLayer.notNil, {
 
-
-			// if no layers selected
-			if( nextLayer.isNil, {
-				// stop all available layers
-				buffers.collect({|buffer,key|
-					if( buffer.isKindOf(Buffer) ) {
-						playSynths[key].release;
-					};
-				});
-			}, {
-
+				this.stopRecording(nextLayer);
 
 				if( playSynths[nextLayer].isKindOf(Synth), {
 
@@ -245,7 +195,9 @@ Looper : SynthInstrument
 
 				}, {
 					"I8TLooper: layer id not found".postln;
-				});
+
+
+[nextLayer, synth].postln;				});
 
 			});
 
