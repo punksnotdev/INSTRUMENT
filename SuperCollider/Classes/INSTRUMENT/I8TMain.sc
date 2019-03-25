@@ -95,8 +95,8 @@ I8TMain : Event
 
 		if( key.isNil) {
 			key = nextKey;
-		};
 
+		};
 		if( nodes[key].notNil ) {
 			nodes.removeAt(key);
 		};
@@ -262,7 +262,13 @@ I8TMain : Event
 	map {|controller,target,parameter,range|
 		if( controller.isKindOf(MIDIController), {
 
-			if( (target.isKindOf(Instrument)||target.isKindOf(InstrumentGroup)), {
+			if( (
+				target.isKindOf(Instrument)
+				||
+				target.isKindOf(InstrumentGroup)
+				||
+				target.isKindOf(ControllerLogic)
+			), {
 				^controllerManager.map(controller,target,parameter,range);
 			}, {
 				"Target not of class 'Instrument'"
@@ -287,6 +293,10 @@ I8TMain : Event
 
 		controllerManager.midi_( on );
 
+	}
+
+	startMidi {
+		controllerManager.midi_( true );
 	}
 
 	midi {
@@ -317,7 +327,6 @@ I8TMain : Event
 	put {|key,something|
 
 		var item;
-		["put",key,something].postln;
 
 		nextKey = key;
 
@@ -356,9 +365,6 @@ I8TMain : Event
 				});
 
 				if( something.isKindOf(Collection)) {
-
-
-
 
 					var newGroup;
 

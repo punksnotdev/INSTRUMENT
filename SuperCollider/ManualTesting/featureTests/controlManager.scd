@@ -4,7 +4,7 @@ s.boot;
 
 s.doWhenBooted({
 
-"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
+"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
 
 Tdef(\boot, {
 

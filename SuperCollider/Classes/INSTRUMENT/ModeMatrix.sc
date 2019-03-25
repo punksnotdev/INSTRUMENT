@@ -78,7 +78,7 @@ ModeMatrix : ControllerLogic {
 
             var mode;
 
-            var modeFiles = "/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
+            var modeFiles = "/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
 
             mode=modeFiles[j%modeFiles.size].load;
             modes[j] = mode;
@@ -116,6 +116,7 @@ ModeMatrix : ControllerLogic {
 
         currentMode.setup();
 
+        ["currentMode.name",currentMode.name].postln;
     }
 
 
@@ -125,7 +126,8 @@ ModeMatrix : ControllerLogic {
     set {|source,param1,param2|
 
         var key = param1.val.asInteger;
-        // [source,param1,param2].postln;
+
+
         if(currentCallbacks[key].notNil,{
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,
@@ -139,7 +141,7 @@ ModeMatrix : ControllerLogic {
 
     send { arg ...args;
 
-        args.postln;
+        ["send",args].postln;
 
     }
 

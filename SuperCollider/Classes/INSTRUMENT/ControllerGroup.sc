@@ -49,8 +49,7 @@ ControllerGroup {
 
 		// convert to symbol
 		key = key.asSymbol;
-		[key, name_ ].postln;
-
+		
 		newController = MIDIController(
 			device,
 			type,

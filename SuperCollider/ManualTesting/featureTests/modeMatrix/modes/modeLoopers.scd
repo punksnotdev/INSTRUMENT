@@ -1,4 +1,5 @@
-var m = ControlMode.new;
+var m = ControlMode("loopMatrix");
+
 
 
 m.setup({
@@ -17,10 +18,14 @@ m.setup({
 			var currentChannel;
 			var currentValue;
 
+			var looperData;
+
 			if( param2 > 0, {
 
 				currentChannel = (param1/8).floor;
 				currentValue = param1%8;
+
+				looperData = i.data.loopers[currentChannel].postln;
 
 				["currentChannel",currentChannel, currentValue].postln;
 
@@ -32,21 +37,36 @@ m.setup({
 
 				targetKey = (param1+offset).asInteger;
 
+				if( looperData.status.isNil, {
+					looperData.status = 1;
+					looperData.instrument.rec;
+					targetColor = 3;
+					midiTarget.send(targetKey,targetColor);
+				}, {
+					if( looperData.status==1, {
+						looperData.status = 2;
+						looperData.instrument.start;
+						targetColor = 6;
+						midiTarget.send(targetKey,targetColor);
+					}, {
+						if( looperData.status==2, {
+							looperData.status = 3;
+							looperData.instrument.stop;
+							targetColor = 9;
+							midiTarget.send(targetKey,targetColor);
+						}, {
+							if( looperData.status==3, {
+								looperData.status = 2;
+								looperData.instrument.start;
+								targetColor = 6;
+								midiTarget.send(targetKey,targetColor);
+							});
 
-				9.do{|l|
-					if(currentValue >= l, {
-						targetColor=71+(8*l);
-						midiTarget.send((targetKey-currentValue)+l,targetColor);
-					},{
-						targetColor=0;
-						midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
-					});
+						})
 
-				};
+					})
+				});
 
-				targetColor=71+(8*((currentValue)));
-
-				midiTarget.send(targetKey,targetColor);
 
 
 			});

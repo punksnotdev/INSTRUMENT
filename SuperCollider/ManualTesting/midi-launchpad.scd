@@ -1,40 +1,41 @@
 (
 
-	var midiDevicesNames;
-	var specs;
-	var midi;
-	var modeMatrix;
-	var spec;
-
-
-	modeMatrix = ModeMatrix.new();
-	specs = IdentityDictionary.new;
-
-
-	"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/launchpad.scd".load;
-	specs[ o[\name].asSymbol ] = o;
-
-
 	s.boot;
+
 
 	s.doWhenBooted({
 
+		e=();
+
+		e.midiDevicesNames;
+		e.specs;
+		e.midi;
+		e.modeMatrix;
+		e.spec;
+
+
+		e.modeMatrix = ModeMatrix.new();
+		e.specs = IdentityDictionary.new;
+
+
+		"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/launchpad.scd".load;
+		e.specs[ o[\name].asSymbol ] = o;
 	Tdef(\start, { 1.do {
 
 		i=INSTRUMENT();
 
-		3.wait;
+		1.wait;
 
-		i.midi=true;
+		i.startMidi();
 
-		midi = i.controllerManager.midi;
+		e.midi = i.controllerManager.midi;
 
-		3.wait;
+		4.wait;
 
 		// midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
-		midiDevicesNames = ["Launchpad"];
+		e.midiDevicesNames = ["Launchpad"];
 
-		midi.addDevices( midiDevicesNames, specs );
+		e.midi.addDevices( e.midiDevicesNames, e.specs );
 
 		1.wait;
 
@@ -42,31 +43,64 @@
 		i.midi.launchpad.addControllerGroup(\note,\buttons);
 		i.midi.launchpad.groups.buttons.addController(\buttons);
 
-		// i.midi.usb_axiom_25.addControllerGroup(\note,\piano);
-		// i.midi.usb_axiom_25.groups.piano.addController(\piano);
+
+		// 72.do{|j|
+		// 	i.midi.launchpad.send(j,90+24.rand+(j%32));
+		// };
+		// Array.series(8,8,9).collect{|num|
+		// 	i.midi.launchpad.send(num,3);
+		// 	// 0.25.wait;
+		// };
 
 
 
-		72.do{|j|
-			i.midi.launchpad.send(j,90+24.rand+(j%32));
-		};
-		Array.series(8,8,9).collect{|num|
-			i.midi.launchpad.send(num,3);
-		};
+		i.map(
+			i.midi.launchpad.groups.buttons.controllers.buttons,
+			e.modeMatrix,
+			\note
+		);
 
+		1.wait;
+		i.piano=INSTRUMENT(\distNote1);
 
-
-		modeMatrix.addInput(i.midi.launchpad.groups.buttons.controllers.buttons);
-		modeMatrix.addOutput(\matrix,i.midi.launchpad,specs[ o[\name].asSymbol ] );
-		modeMatrix.addOutput(\device,i.gui);
-
-		// i[\piano] = SynthPlayer(\piano);
 		// i.map(
-		// 	modeMatrix,
-		// 	i[\piano],
+		// 	e.modeMatrix,
+		// 	// i.midi.launchpad.groups.buttons.controllers.buttons,
+		// 	i.midi.launchpad,
 		// 	\note
 		// );
 
+		// i.map(
+		// 	// e.modeMatrix,
+		// 	i.midi.launchpad.groups.buttons.controllers.buttons,
+		// 	i.piano,
+		// 	\note
+		// );
+
+ 		e.modeMatrix.midiTarget = i.midi.launchpad;
+
+		4.wait;
+
+		MIDIClient.disposeClient;
+
+		4.wait;
+
+		MIDIClient.init(verbose:false);
+
+		4.wait;
+
+
+		i.data.loopers=Array.fill(8,{
+			(
+					instrument: Looper(e.targetChannel);
+			)
+		});
+
+		"Loopers: Loaded".postln;
+
+		"ModeMatrix: Disconnect and Reconnect Lauchpad".postln;
+
+		i.play;
 
 	}}).play;
 

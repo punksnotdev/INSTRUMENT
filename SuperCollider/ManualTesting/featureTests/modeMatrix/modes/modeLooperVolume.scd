@@ -1,4 +1,5 @@
-var m = ControlMode.new;
+var m = ControlMode("loopVolumes");
+
 
 
 m.setup({
@@ -22,6 +23,7 @@ m.setup({
 				currentChannel = (param1/8).floor;
 				currentValue = param1%8;
 
+				i.data.loopers[currentChannel].postln;
 				["currentChannel",currentChannel, currentValue].postln;
 
 				offset = (param1/9).floor;

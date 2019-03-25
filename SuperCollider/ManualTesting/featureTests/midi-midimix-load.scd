@@ -35,10 +35,10 @@
 		m = i.midiControllers;
 
 
-		"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.map.scd".load;
+		"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.map.scd".load;
 
 
-		"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.setup.scd".load;
+		"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.setup.scd".load;
 
 
 		m.inputs=List.new;
@@ -50,7 +50,7 @@
 			}
 		});
 
-		// "/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/axiom.setup.scd".load;
+		// "/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/axiom.setup.scd".load;
 
 
 

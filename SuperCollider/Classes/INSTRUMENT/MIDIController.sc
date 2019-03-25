@@ -55,7 +55,7 @@ MIDIController {
 
 				func = MIDIFunc.noteOn(
 					{
-						
+
 						arg ...args;
 
 						this.set(args[1],args[0]);

@@ -4,6 +4,8 @@ MIDIManager {
 
     var >controllerManager;
 
+    var mainMIDIOutput;
+
     *new {|controllerManager_|
         ^super.new.init(controllerManager_);
     }
@@ -65,25 +67,36 @@ MIDIManager {
 
     setupMIDIOut {
 
-        var midiOut=MIDIOut(0);
+        // if( mainMIDIOutput.notNil, {
 
-        Tdef(\MidiClock).set(\bpm, TempoClock.default.tempo*120);
 
-        Tdef(\MidiClock, {
-        	var period, tick;
+            Tdef(\MidiClock).set(\bpm, TempoClock.default.tempo*120);
 
-        	midiOut.start;
+            Tdef(\MidiClock, {
+            	var period, tick;
 
-        	inf.do{
-        		period = 1/2;//(60/(TempoClock.default.tempo*120));
-        		tick = period/24;
-        		midiOut.midiClock;
-        		tick.wait;
-        	}
 
-        });
+            	inf.do{
 
-        Tdef(\MidiClock).play;
+                    if( mainMIDIOutput.notNil, {
+                        period = 1/2;//(60/(TempoClock.default.tempo*120));
+                        tick = period/24;
+                        mainMIDIOutput.midiClock;
+                    },{
+                        tick=10;
+                        mainMIDIOutput = MIDIOut(0);
+                        mainMIDIOutput.start;
+
+                    });
+
+            		tick.wait;
+            	}
+
+            });
+
+            Tdef(\MidiClock).play;
+
+        // });
 
     }
 

@@ -3,6 +3,8 @@ ControllerLogic : I8TNode
 
 	// State for storing values and callbacks
 	var state;
+	var inputs;
+	var outputs;
 
 	*new {
 		^super.new.init();
@@ -23,7 +25,16 @@ ControllerLogic : I8TNode
 	}
 
 
+	addInput {|input|
 
+		inputs.add(input)
+
+	}
+	addOutput {|input|
+
+		inputs.add(input)
+
+	}
 
 
 }

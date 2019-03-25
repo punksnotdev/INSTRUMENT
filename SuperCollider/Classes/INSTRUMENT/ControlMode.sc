@@ -1,13 +1,15 @@
 ControlMode {
 
     var <callbacks;
+    var <name;
 
-    *new {
-        ^super.new.init();
+    *new {|name_|
+        ^super.new.init(name_);
     }
 
 
-    init {
+    init {|name_|
+        name = name_;
         callbacks = IdentityDictionary.new;
     }
 

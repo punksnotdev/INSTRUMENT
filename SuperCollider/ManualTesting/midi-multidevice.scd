@@ -15,7 +15,7 @@
 		i.midi=true;
 		midi = i.controllerManager.midi;
 
-		"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
+		"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
 
 
 		specs[ b[\name].asSymbol ] = b;

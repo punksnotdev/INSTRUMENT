@@ -11,7 +11,7 @@
 
 			i=INSTRUMENT();
 
-			"/home/mukkekunst/Musica/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
+			"/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ControllerMaps/midimix.scd".load;
 
 			i.midi=true;
 

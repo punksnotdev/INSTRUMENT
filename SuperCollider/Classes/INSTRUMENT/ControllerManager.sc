@@ -276,7 +276,6 @@ ControllerManager {
 
 			3.wait;
 
-
 			MIDIClient.sources.collect({|src,i|
 				srcNames.add( src.device.asSymbol );
 			});
