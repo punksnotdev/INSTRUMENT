@@ -26,20 +26,20 @@ m.loadCallback = {
 						if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
 					};
 
-					currentValue = (i.data.loopers[currentRow].amp*8).floor;
+					currentValue = (i.data.loopers[currentRow].amp*4).floor;
 
-					targetKey = (currentRow+currentValue).asInteger;
+					targetKey = ((currentRow*9)+currentValue).asInteger;
 
 
 					9.do{|l|
-					if(currentValue >= l, {
-					  targetColor=71+(8*l);
-					  m.midiTarget.send((targetKey-currentValue)+l,targetColor);
-					},{
-					  targetColor=0;
-					  m.midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
-					});
-
+						[currentValue,l].postln;
+						if(currentValue >= l, {
+						  targetColor=71+(8*l);
+						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
+						},{
+						  targetColor=0;
+						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
+						});
 					};
 
 					targetColor=71+(8*((currentValue)));
@@ -106,6 +106,7 @@ m.setup({
 
 
 				i.data.loopers[currentChannel.asInteger].instrument.amp_((currentValue/8)*2);
+				i.data.loopers[currentChannel.asInteger].amp=(currentValue/8)*2;
 
 			});
 
