@@ -23,6 +23,7 @@
 	Tdef(\start, { 1.do {
 
 		i=INSTRUMENT();
+		i.play;
 
 		1.wait;
 
@@ -79,9 +80,9 @@
 
  		e.modeMatrix.midiTarget = i.midi.launchpad;
 
-		0.wait;
+		4.wait;
 
-		// MIDIClient.disposeClient;
+		MIDIClient.disposeClient;
 
 		4.wait;
 
@@ -99,8 +100,6 @@
 		"Loopers: Loaded".postln;
 
 		"ModeMatrix: Disconnect and Reconnect Lauchpad".postln;
-
-		i.play;
 
 	}}).play;
 
