@@ -143,11 +143,14 @@ ModeMatrix : ControllerLogic {
         var key = param1.val.asInteger;
 
         if(currentCallbacks[key].notNil,{
+            currentCallbacks[key].postln;
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,
                 param1.amplitude,
                 midiTarget
             );
+        }, {
+            "no callback".postln;
         });
 
     }

@@ -67,7 +67,14 @@ m.setup({
 
 			var looperData;
 
+			currentChannel = (param1/8).floor.asInteger;
+			currentValue = param1%8;
+
+			looperData = i.data.loopers[currentChannel];
+
+
 			if( param2 > 0, {
+
 				m.data.pressed[index] = TempoClock.default.beats;
 
 			});
@@ -78,15 +85,17 @@ m.setup({
 
 				if( delta > 2, {
 
-					if(i.data.loopers[currentChannel].status.notNil) {
-						i.data.loopers[currentChannel].status[index] = 4;
+					if(looperData.status.notNil) {
+						looperData.status[index] = 4;
 					};
 
 				}, {
 
-					if(i.data.loopers[currentChannel].status.notNil) {
-						if(i.data.loopers[currentChannel].status[index] == 4, {
-							i.data.loopers[currentChannel].status[index] == 5
+					if(
+						looperData.status.notNil
+					) {
+						if(looperData.status[index] == 4, {
+							looperData.status[index] == 5
 						});
 					};
 				});
@@ -94,10 +103,6 @@ m.setup({
 				m.data.pressed[index] = nil;
 
 
-				currentChannel = (param1/8).floor;
-				currentValue = param1%8;
-
-				looperData = i.data.loopers[currentChannel];
 
 
 				offset = (param1/9).floor;
