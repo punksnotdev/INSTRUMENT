@@ -86,7 +86,8 @@ m.setup({
 				if( delta > 2, {
 
 					if(looperData.status.notNil) {
-						looperData.status[index] = 4;
+						"Confirm Delete".postln;
+						looperData.status[currentValue] = 4;
 					};
 
 				}, {
@@ -94,8 +95,9 @@ m.setup({
 					if(
 						looperData.status.notNil
 					) {
-						if(looperData.status[index] == 4, {
-							looperData.status[index] == 5
+						if(looperData.status[currentValue] == 4, {
+							"Prepare Delete".postln;
+							looperData.status[currentValue] = 5
 						});
 					};
 				});
@@ -145,13 +147,21 @@ m.setup({
 								midiTarget.send(targetKey,targetColor);
 						},
 						4, {
-							looperData.status[currentValue] = 4;
 							targetColor = 15;
 							midiTarget.send(targetKey,targetColor);
 						},
 						5, {
+							var chan = 0;
+							if( currentChannel>3) {
+								chan = 1;
+							};
+							"Delete Loop".postln;
 							looperData.status[currentValue] = nil;
 							looperData.instrument.stop(currentValue);
+							looperData.status[currentValue]=nil;
+							looperData.instrument.playSynths[currentValue].free;
+							looperData.instrument.playSynths[currentValue]=nil;
+
 							targetColor = 0;
 							midiTarget.send(targetKey,targetColor);
 						}

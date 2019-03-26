@@ -94,7 +94,7 @@ Looper : SynthInstrument
 
 		recordBuffer{|nextLayer|
 			// if buffer for nextLayer not allocated,
-			if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
+			// if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
 				buffers[ nextLayer ] = Buffer.alloc(
 					Server.local,
 					Server.local.sampleRate * maxDuration,
@@ -107,7 +107,7 @@ Looper : SynthInstrument
 						lastDuration = TempoClock.default.beats;
 					}
 				);
-			};
+			// };
 
 
 		}

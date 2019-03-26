@@ -116,9 +116,12 @@ ModeMatrix : ControllerLogic {
             currentCallbacks[j]=nil;
         };
 
-        modes[index.asInteger].callbacks.keysValuesDo({|k,v|
-            currentCallbacks[k]=(callback:v,parameter: k );
-        });
+        if( modes[index.asInteger].isKindOf(ControlMode) ) {
+            modes[index.asInteger].callbacks.keysValuesDo({|k,v|
+                currentCallbacks[k]=(callback:v,parameter: k );
+            });
+        };
+
         // modes[index.asInteger].callbacks.keysValuesDo({|k,v|
         //     currentCallbacks[k]=(callback:v,parameter: k );
         // });
