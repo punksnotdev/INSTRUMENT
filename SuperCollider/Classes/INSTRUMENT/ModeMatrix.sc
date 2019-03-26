@@ -1,5 +1,5 @@
 ModeMatrix : ControllerLogic {
-
+    var name;
     var < modes;
     var <midiTarget;
 
@@ -18,6 +18,7 @@ ModeMatrix : ControllerLogic {
 
     init {
 
+        name = "ModeMatrix";
         currentCallbacks = IdentityDictionary.new;
 
         functions = IdentityDictionary.new;
@@ -141,7 +142,6 @@ ModeMatrix : ControllerLogic {
 
         var key = param1.val.asInteger;
 
-
         if(currentCallbacks[key].notNil,{
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,
@@ -149,7 +149,6 @@ ModeMatrix : ControllerLogic {
                 midiTarget
             );
         });
-
 
     }
 

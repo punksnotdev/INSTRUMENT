@@ -4,6 +4,7 @@ ControlMode {
     var <callbacks;
     var <name;
     var <>midiTarget;
+    var <>data;
 
     *new {|name_|
         ^super.new.init(name_);
@@ -13,11 +14,11 @@ ControlMode {
     init {|name_|
         name = name_;
         callbacks = IdentityDictionary.new;
+        data = ();
     }
 
     setup {|callback|
         callback.value();
-
     }
 
     addCallback{|n,callback|

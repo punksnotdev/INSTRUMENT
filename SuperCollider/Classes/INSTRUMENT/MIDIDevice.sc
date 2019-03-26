@@ -57,7 +57,7 @@ MIDIDevice {
             // if( port.notNil, {
 
 
-                output = MIDIOut.new( 0 );
+                output = MIDIOut( 0 );
 
                 // output.connect( port );
 

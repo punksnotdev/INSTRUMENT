@@ -1,5 +1,7 @@
 var m = ControlMode("loopMatrix");
 
+m.data.pressed = IdentityDictionary.new;
+
 m.loadCallback={
 
 	64.do{|index|
@@ -58,7 +60,6 @@ m.setup({
 			var offset;
 			var targetKey;
 
-
 			var targetColor;
 
 			var currentChannel;
@@ -67,6 +68,31 @@ m.setup({
 			var looperData;
 
 			if( param2 > 0, {
+				m.data.pressed[index] = TempoClock.default.beats;
+
+			});
+
+			if( ((param2 == 0) && (m.data.pressed[index].notNil) ), {
+
+				var delta = TempoClock.default.beats - m.data.pressed[index];
+
+				if( delta > 2, {
+
+					if(i.data.loopers[currentChannel].status.notNil) {
+						i.data.loopers[currentChannel].status[index] = 4;
+					};
+
+				}, {
+
+					if(i.data.loopers[currentChannel].status.notNil) {
+						if(i.data.loopers[currentChannel].status[index] == 4, {
+							i.data.loopers[currentChannel].status[index] == 5
+						});
+					};
+				});
+
+				m.data.pressed[index] = nil;
+
 
 				currentChannel = (param1/8).floor;
 				currentValue = param1%8;
@@ -92,35 +118,47 @@ m.setup({
 					targetColor = 15;
 					midiTarget.send(targetKey,targetColor);
 				}, {
-					if( looperData.status[currentValue]==1, {
-						looperData.status[currentValue] = 2;
-						looperData.instrument.start(currentValue);
-						targetColor = 60;
-						midiTarget.send(targetKey,targetColor);
-					}, {
-						if( looperData.status[currentValue]==2, {
+
+
+					switch( looperData.status[currentValue],
+						1, {
+							looperData.status[currentValue] = 2;
+							looperData.instrument.start(currentValue);
+							targetColor = 60;
+							midiTarget.send(targetKey,targetColor);
+						},
+						2, {
 							looperData.status[currentValue] = 3;
 							looperData.instrument.stop(currentValue);
 							targetColor = 17;
 							midiTarget.send(targetKey,targetColor);
-						}, {
-							if( looperData.status[currentValue]==3, {
+						},
+						3, {
 								looperData.status[currentValue] = 2;
 								looperData.instrument.start(currentValue);
 								targetColor = 60;
 								midiTarget.send(targetKey,targetColor);
-							});
+						},
+						4, {
+							looperData.status[currentValue] = 4;
+							targetColor = 15;
+							midiTarget.send(targetKey,targetColor);
+						},
+						5, {
+							looperData.status[currentValue] = nil;
+							looperData.instrument.stop(currentValue);
+							targetColor = 0;
+							midiTarget.send(targetKey,targetColor);
+						}
+					);
 
-						})
+				})
 
-					})
-				});
-
-
-
-			});
+			})
 
 		});
+
+
 
 	};
 

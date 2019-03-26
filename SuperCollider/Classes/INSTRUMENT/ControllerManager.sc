@@ -48,12 +48,12 @@ ControllerManager {
 
 		mappedParam1 = param1;
 
+
 		if( source.midiTarget.notNil,{
 
 			if( source.midiTarget.isKindOf(MIDIDevice), {
 				inputMap = source.midiTarget.inputMap;
 			});
-
 	        if( inputMap.isKindOf(IdentityDictionary), {
 	            if( inputMap[param1].notNil, {
 	                mappedParam1 = source.midiTarget.inputMap[param1].inputNum;
@@ -106,6 +106,7 @@ ControllerManager {
 					},
 
 					\note, {
+
 						target.set(\note,(val:mappedParam1, amplitude: param2/127));
 					}
 
@@ -272,16 +273,16 @@ ControllerManager {
 
 			Tdef(\initMidi, { 1.do{
 
-			MIDIClient.init(verbose:false);
+			// MIDIClient.init(verbose:false);
 
-			3.wait;
+			// 3.wait;
 
 			MIDIClient.sources.collect({|src,i|
 				srcNames.add( src.device.asSymbol );
 			});
 
 
-			midi.setupMIDIOut();
+			// midi.setupMIDIOut();
 
 			// if( instrument.gui.notNil, {
 			//

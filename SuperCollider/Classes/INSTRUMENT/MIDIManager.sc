@@ -20,6 +20,7 @@ MIDIManager {
         MIDIClient.sources.collect({|device|
             midiDevicesNames.collect({|midiDeviceName|
                 var midiDevice;
+
                 if( device.name == midiDeviceName, {
                     midiDevice = device;
                 }, {
@@ -51,6 +52,7 @@ MIDIManager {
         devices[key] = MIDIDevice(this,device,spec);
 
         ^devices[key]
+
     }
 
     removeDevice{|deviceName|

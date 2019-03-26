@@ -38,7 +38,7 @@ MIDIController {
 		switch(messageType,
 			\cc, {
 
-				var func = MIDIFunc.cc(
+				var func = MIDIdef.cc( (name +"_cc").asSymbol,
 					{arg ...args;
 
 						this.set(args[0])
@@ -53,7 +53,7 @@ MIDIController {
 
 				var func;
 
-				func = MIDIFunc.noteOn(
+				func = MIDIdef.noteOn( (name ++ "_noteOn" ).asSymbol,
 					{
 
 						arg ...args;
@@ -65,7 +65,7 @@ MIDIController {
 
 				callbacks.add( func );
 
-				func = MIDIFunc.noteOff(
+				func = MIDIdef.noteOff( (name ++ "_noteOff" ).asSymbol,
 					{arg ...args;
 
 						this.set(args[1],args[0]);

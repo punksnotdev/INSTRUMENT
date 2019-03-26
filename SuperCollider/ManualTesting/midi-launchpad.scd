@@ -1,7 +1,7 @@
 (
+s.boot;
 
-	s.boot;
-
+ // MIDIClient.restart;
 
 	s.doWhenBooted({
 
@@ -23,15 +23,19 @@
 		Tdef(\start, { 1.do {
 
 			i=INSTRUMENT();
-			i.play;
+			// i.play;
 
-			1.wait;
+
+			// 1.wait;
+			MIDIClient.init(verbose:false);
+
+			2.wait;
 
 			i.startMidi();
 
 			e.midi = i.controllerManager.midi;
 
-			4.wait;
+			// 0.wait;
 
 			// midiDevicesNames = ["Launchpad", "USB Axiom 25 MIDI 1"];
 			e.midiDevicesNames = ["Launchpad"];
@@ -45,15 +49,8 @@
 			i.midi.launchpad.groups.buttons.addController(\buttons);
 
 
-			// 72.do{|j|
-			// 	i.midi.launchpad.send(j,90+24.rand+(j%32));
-			// };
-			// Array.series(8,8,9).collect{|num|
-			// 	i.midi.launchpad.send(num,3);
-			// 	// 0.25.wait;
-			// };
 
-
+			1.wait;
 
 			i.map(
 				i.midi.launchpad.groups.buttons.controllers.buttons,
@@ -61,7 +58,6 @@
 				\note
 			);
 
-			1.wait;
 			i.piano=INSTRUMENT(\distNote1);
 
 			// i.map(
@@ -80,15 +76,6 @@
 
 	 		e.modeMatrix.midiTarget = i.midi.launchpad;
 
-			4.wait;
-
-			MIDIClient.disposeClient;
-
-			4.wait;
-
-			MIDIClient.init(verbose:false);
-
-			4.wait;
 
 
 			i.data.loopers=Array.fill(8,{|index|
@@ -103,7 +90,21 @@
 
 			"Loopers: Loaded".postln;
 
+
+			// 0.wait;
+
+			72.do{|j|
+				i.midi.launchpad.send(j,90+24.rand+(j%32));
+			};
+			Array.series(8,8,9).collect{|num|
+				i.midi.launchpad.send(num,3);
+				// 0.25.wait;
+			};
+
+
 			"ModeMatrix: Disconnect and Reconnect Lauchpad".postln;
+
+			i.play;
 
 		}}).play;
 
