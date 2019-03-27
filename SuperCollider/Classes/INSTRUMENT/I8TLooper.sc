@@ -325,21 +325,28 @@ Looper : SynthInstrument
 
 
 
-		fx_ {|synthdef|
+	fx_ {|synthdef|
 
-			super.fx_(synthdef);
+		super.fx_(synthdef);
 
-			playSynths.collect({|synth|
-				if( synth.isKindOf(Synth), {
-					if( fxSynth.notNil, {
-						synth.moveBefore(fxSynth);
-						synth.set(\out,fxBus);
-					}, {
-						synth.moveBefore(group);
-						synth.set(\out,0);
-					});
+		playSynths.collect({|synth|
+			if( synth.isKindOf(Synth), {
+				if( fxSynth.notNil, {
+					synth.moveBefore(fxSynth);
+					synth.set(\out,fxBus);
+				}, {
+					synth.moveBefore(group);
+					synth.set(\out,0);
 				});
-			})
-		}
+			});
+		})
+	}
+
+	fxSet {|parameter,value|
+
+		^super.fxSet(parameter,value)
+		
+	}
+
 
 }

@@ -1,18 +1,23 @@
 var m = ControlMode("loopFX");
 
 m.loadCallback = {
+	if( i.data.notNil ) {
 
-	i.data.loopFX = [
-		nil,
-		\reverb,
-		"gateDistort.overdrive",
-		\reverbLPF,
-		\shineDestroy,
-		\delay2,
-		\moogFilter,
-		\pitchShift,
-	];
+		i.data.lastChanThatUsedFX=IdentityDictionary.new;
 
+		i.data.loopFX = [
+			nil,
+			\reverb,
+			\gateDistort,
+			\reverbLPF,
+			\shineDestroy,
+			\delay2,
+			\moogFilter,
+			\pitchShift,
+		];
+
+
+	};
 	64.do{|index|
 
 		var currentRow;
@@ -74,42 +79,51 @@ m.setup({
 
 			var currentChannel;
 			var currentValue;
+			var fxName;
 
-			if( param2 > 0, {
+				if( param2 > 0, {
 
-				currentChannel = (param1/8).floor;
-				currentValue = (param1%8).asInteger;
-
-				// TO DO : check if next line should be here
-				i.data.loopers[currentChannel.asInteger].fx = currentValue;
+					currentChannel = ((param1/8).floor).asInteger;
+					currentValue = (param1%8).asInteger;
 
 
-				offset = (param1/9).floor;
+					fxName = i.data.loopFX[currentValue].asSymbol;
 
-				9.do{|l|
-					if(( (param1%9==(8-l))&&(param1 > (7+(8*l)))),{ offset=offset+1; });
-				};
+					if( fxName.notNil )
+					{
 
-				targetKey = (param1+offset).asInteger;
+					// TO DO : check if next line should be here
+					i.data.loopers[currentChannel].fx = currentValue;
 
 
-				targetColor=0;
-				9.do{|l|
-					midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
-				};
+					offset = (param1/9).floor;
 
-				targetColor=60;
+					9.do{|l|
+						if(( (param1%9==(8-l))&&(param1 > (7+(8*l)))),{ offset=offset+1; });
+					};
 
-				midiTarget.send(targetKey,targetColor);
+					targetKey = (param1+offset).asInteger;
 
-				["FX: ", currentChannel, currentValue, ": ", i.data.loopFX[currentValue] ].postln;
 
-				i.data.currentLoop = i.data.loopers[currentChannel];
-				i.data.currentLoopFX = i.data.loopFX[currentValue];
+					targetColor=0;
+					9.do{|l|
+						midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
+					};
 
-				i.data.loopers[currentChannel.asInteger].instrument.fx=i.data.loopFX[currentValue];
-				i.data.loopers[currentChannel.asInteger].fx=currentValue;
+					targetColor=60;
 
+					midiTarget.send(targetKey,targetColor);
+
+					["FX: ", currentChannel, currentValue, ": ", fxName ].postln;
+
+					i.data.currentLoop = i.data.loopers[currentChannel];
+					i.data.currentLoopFX = fxName;
+
+					i.data.loopers[currentChannel].instrument.fx=fxName;
+					i.data.loopers[currentChannel].fx=currentValue;
+
+					i.data.lastChanThatUsedFX[ fxName ] = currentChannel;
+				}
 			});
 
 		});

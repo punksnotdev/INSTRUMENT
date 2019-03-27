@@ -2,7 +2,7 @@
 
 	SynthDef(\gateDistort, {
 
-		arg gain=0.3,
+		arg gain=3.3,
 		inBus=0,
 		outBus=0,
 		compGate=1.7;

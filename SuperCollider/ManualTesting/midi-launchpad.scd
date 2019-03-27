@@ -125,6 +125,11 @@
 			i.data.synths.parameter_ranges.gain=[1,100];
 			i.data.synths.parameter_ranges.cutoff=[50,12000];
 
+
+			i.data.lastChanThatUsedFX=IdentityDictionary.new;
+
+
+
 		}}).play;
 
 
