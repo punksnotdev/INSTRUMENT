@@ -1,4 +1,5 @@
 (
+
 	s.options.memSize=2048*1024;
 	s.options.maxNodes=128*1024;
 
@@ -112,7 +113,7 @@
 
 			(0.5).wait;
 
-			"ModeMatrix: Disconnect and Reconnect Lauchpad".postln;
+			"ModeMatrix: Lauchpad connected".postln;
 
 			i.play;
 

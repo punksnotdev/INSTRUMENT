@@ -78,9 +78,10 @@ m.setup({
 			if( param2 > 0, {
 
 				currentChannel = (param1/8).floor;
-				currentValue = param1%8;
+				currentValue = (param1%8).asInteger;
 
-				i.data.loopers[currentChannel].fx = currentValue;
+				// TO DO : check if next line should be here
+				i.data.loopers[currentChannel.asInteger].fx = currentValue;
 
 
 				offset = (param1/9).floor;

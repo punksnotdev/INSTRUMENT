@@ -39,7 +39,6 @@ m.loadCallback = {
 
 
 					9.do{|l|
-						[currentValue,l].postln;
 						if(currentValue >= l, {
 						  targetColor=22+(8*l);
 						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);

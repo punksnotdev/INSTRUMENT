@@ -90,6 +90,11 @@ SynthInstrument : Instrument
         	fx_parameters[parameter] = value;
 			fxSynth.set(parameter,value);
 
+            [
+            "fxSynth.set(parameter,value);",
+            fxSynth.set(parameter,value)
+            ].postln;
+            
         }, {
             // if no value, check if is valid sequence:
             if( this.checkIsValidSequence(parameter) ) {
