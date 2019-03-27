@@ -85,9 +85,14 @@ m.setup({
 
 				if( delta > 2, {
 
-					if(looperData.status.notNil) {
-						"Confirm Delete".postln;
-						looperData.status[currentValue] = 4;
+					if(looperData.status.isKindOf(Collection)) {
+
+						if(looperData.status[currentValue] != 4, {
+							looperData.status[currentValue] = 4;
+						}, {
+							"Cancel Delete.".postln;
+							looperData.status[currentValue] = 2;						
+						});
 					};
 
 				}, {
@@ -96,7 +101,6 @@ m.setup({
 						looperData.status.notNil
 					) {
 						if(looperData.status[currentValue] == 4, {
-							"Prepare Delete".postln;
 							looperData.status[currentValue] = 5
 						});
 					};
@@ -123,6 +127,8 @@ m.setup({
 					looperData.status[currentValue]=1;
 					looperData.instrument.rec(currentValue);
 					targetColor = 15;
+					["Record: " ++ currentChannel ++ ": " ++ currentValue].postln;
+
 					midiTarget.send(targetKey,targetColor);
 				}, {
 
@@ -132,22 +138,27 @@ m.setup({
 							looperData.status[currentValue] = 2;
 							looperData.instrument.start(currentValue);
 							targetColor = 60;
+							["Play: " ++ currentChannel ++ ": " ++ currentValue].postln;
+
 							midiTarget.send(targetKey,targetColor);
 						},
 						2, {
 							looperData.status[currentValue] = 3;
 							looperData.instrument.stop(currentValue);
 							targetColor = 17;
+							["Stop: " ++ currentChannel ++ ": " ++ currentValue].postln;
 							midiTarget.send(targetKey,targetColor);
 						},
 						3, {
 								looperData.status[currentValue] = 2;
 								looperData.instrument.start(currentValue);
 								targetColor = 60;
+								["Play: " ++ currentChannel ++ ": " ++ currentValue].postln;
 								midiTarget.send(targetKey,targetColor);
 						},
 						4, {
 							targetColor = 15;
+							["Confirm Delete: " ++ currentChannel ++ ": " ++ currentValue].postln;
 							midiTarget.send(targetKey,targetColor);
 						},
 						5, {
@@ -155,7 +166,6 @@ m.setup({
 							if( currentChannel>3) {
 								chan = 1;
 							};
-							"Delete Loop".postln;
 							looperData.status[currentValue] = nil;
 							looperData.instrument.stop(currentValue);
 							looperData.status[currentValue]=nil;
@@ -163,6 +173,7 @@ m.setup({
 							looperData.instrument.playSynths[currentValue]=nil;
 
 							targetColor = 0;
+							["Delete: " ++ currentChannel ++ ": " ++ currentValue].postln;
 							midiTarget.send(targetKey,targetColor);
 						}
 					);

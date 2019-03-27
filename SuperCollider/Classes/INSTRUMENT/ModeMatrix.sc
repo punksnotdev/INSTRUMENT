@@ -134,7 +134,7 @@ ModeMatrix : ControllerLogic {
 
         currentMode.setup();
 
-        ["currentMode.name",currentMode.name].postln;
+        ["Mode:",currentMode.name].postln;
     }
 
 
@@ -146,7 +146,6 @@ ModeMatrix : ControllerLogic {
         var key = param1.val.asInteger;
 
         if(currentCallbacks[key].notNil,{
-            currentCallbacks[key].postln;
             currentCallbacks[key].callback(
                 currentCallbacks[key].parameter,
                 param1.amplitude,
@@ -160,7 +159,7 @@ ModeMatrix : ControllerLogic {
 
     send { arg ...args;
 
-        ["send",args].postln;
+        // ["send",args].postln;
 
     }
 

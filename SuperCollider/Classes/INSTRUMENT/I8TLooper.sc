@@ -81,12 +81,12 @@ Looper : SynthInstrument
 
 			if( recSynths[nextLayer].isKindOf(Synth)) {
 				var recDuration;
-				recSynths[nextLayer].free;
 				recDuration = TempoClock.default.beats - lastDuration;
+				recSynths[nextLayer].free;
 				// recDuration = recDuration / TempoClock.default.tempo;
-				durations[nextLayer]=recDuration;
+				durations[nextLayer]= recDuration / TempoClock.default.tempo;
 				recSynths[nextLayer] = nil;
-				["Duration:", recDuration, nextLayer,TempoClock.default.beats, lastDuration].postln;
+				["Duration:", recDuration].postln;
 			};
 
 		}
@@ -196,8 +196,7 @@ Looper : SynthInstrument
 				}, {
 					"I8TLooper: layer id not found".postln;
 
-
-[nextLayer, synth].postln;				});
+				});
 
 			});
 
@@ -277,11 +276,9 @@ Looper : SynthInstrument
 		rate_ {|value,layer|
 			if( value.notNil && value != \r ) {
 
-				value.postln;
 				if( layer.isNil, {
 
 					playSynths.collect({|synth|
-						synth.postln;
 						synth.set( \rate, value.asFloat );
 					});
 

@@ -25,6 +25,8 @@ s.boot;
 			i=INSTRUMENT();
 			// i.play;
 
+			i.tempo=88;
+
 
 			// 1.wait;
 			MIDIClient.init(verbose:false);
