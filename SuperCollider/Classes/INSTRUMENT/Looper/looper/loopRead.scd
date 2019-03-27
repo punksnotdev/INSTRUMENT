@@ -1,4 +1,4 @@
-SynthDef(\loopRead, {| out = 0, buffer = 0, gate=1,duration=1,amp=1,rate=1|
+z=SynthDef(\loopRead, {| out = 0, buffer = 0, gate=1,duration=1,amp=1,rate=1|
 
 	var sig, env;
 	var numFrames = BufFrames.kr(buffer);

@@ -103,7 +103,13 @@ m.setup({
 				targetColor=60;
 
 				if( i.data.currentLoopFX.notNil ) {
-					i.data.currentLoopFX.postln;
+					var fxName = i.data.currentLoopFX;
+
+					if( i.data.synths.parameters[ fxName ].notNil, {
+						i.data.synths.parameters[ fxName ].postln;
+					}, {
+						("No parameter data for " ++ i.data.currentLoopFX ).postln;
+					});
 				};
 
 				midiTarget.send(targetKey,targetColor);

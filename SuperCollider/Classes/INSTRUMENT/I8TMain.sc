@@ -84,6 +84,10 @@ I8TMain : Event
 		// dictionary for placing custom data:
 		data = ();
 
+		data.synths = () ;
+		data.synths.parameters = ();
+
+
 		synths = ();
 		currentFolder = synths;
 
@@ -662,37 +666,6 @@ I8TMain : Event
 
 	loadSynths {|path, parent, grandparent, greatgrandparent|
 
-		/*
-
-		mysynth.scd
-
-		- [x] i.synths.parentFolder.mysynth
-		- autocompleteeee
-		- [x] i.synths.grandparentFolder.parentFolder.mysynth
-		- [x] i.synths.grandparentFolder.mysynth
-		- [x] i.synths.mysynth
-
-		- [ ] i.synths.parentFolder[z] => synth
-		- [ ] i.synths.grandparentFolder[z] => synth, hermanos o primos
-		- [ ] i.synths.mysynth[z] => variación
-
-
-		---
-
-		folder
-			subfolder
-				mysynth.scd -> SynthDef("customName")
-			another_subfolder
-				mysynth.scd -> SynthDef("mysynth__flavor1")
-
-		folder.mysynth -> first
-		- [ ] i.synths.mysynth -> first
-
-		- [ ] i.synths.mysynth.flavor1 -> second
-		- [ ] i.synths.mysynth[1] -> second
-
-		*/
-
 
 		var files = path.pathMatch;
 		var folder;
@@ -708,18 +681,6 @@ I8TMain : Event
 		};
 
 		folder = ();
-
-		// level = 0;
-
-		/*
-		// enter directory
-		// assign parent
-		// read all .scd files
-		// add synthdef to parent directory
-		// make a list of all root folders
-		// enter each folder
-		// repeat
-		*/
 
 
 		files.collect({|fileName, index|
@@ -749,6 +710,21 @@ I8TMain : Event
 
 			if( synthdef.isKindOf(SynthDef)) {
 				items[fileName.asSymbol]=synthdef.name.asSymbol;
+
+				if( data.synths.parameters.isKindOf(Event) ) {
+
+					var parameterNames;
+
+					parameterNames = synthdef.allControlNames.collect({|ctl|
+						ctl.name.asSymbol
+					});
+
+					data.synths.parameters[synthdef.name] = parameterNames;
+
+					parameterNames.postln;
+
+				};
+
 			};
 
 
@@ -785,78 +761,8 @@ I8TMain : Event
 		});
 
 
-// 		files.collect({|fileName, index|
-
-//
-// 			var pathName = PathName( fileName );
-//
-// 			if( pathName.isFile) {
-//
-// 				if( pathName.extension == "scd" ) {
-// 					// ("Load: " ++ pathName.fileNameWithoutExtension).postln;
-//
-// 					if( currentFolder.notNil, {
-//
-// 						var synthdefs = fileName.loadPaths[0];
-// 						if( synthdefs.isKindOf(List) == true, {
-//
-// 							["fileName",pathName.fileNameWithoutExtension,synthdefs].postln;
-// 							// synthdefs.collect({|synthdef|
-// 							// 	["synthdef",synthdef.name.asSymbol].postln;
-// 							// 	currentFolder[synthdef.name.asSymbol]=synthdef.name;
-// 							// });
-// 						}, {
-// 							if( synthdefs.isKindOf(SynthDef), {
-// 							["synthdef",pathName.fileNameWithoutExtension,synthdefs.name].postln;
-//
-// 							currentFolder[pathName.fileNameWithoutExtension.asSymbol]=synthdefs.name;
-//
-// 							}, {
-// 								["not a synthdef",synthdefs].postln;
-//
-// 							});
-//
-// 						});
-//
-// 					}, {
-// 						// synths[pathName.fileNameWithoutExtension]=fileName.loadPaths;
-//
-// 					});
-// 				}
-//
-// 		 	};
-//
-// 			if( pathName.isFolder ) {
-//
-// 				var folder = ();
-//
-//
-// 				folderName = pathName.folderName.toLower.asSymbol;
-// // [folderName]
-// 				currentFolder[ folderName ] = folder;
-//
-// 				folder.parent = folderName;
-//
-//
-// 				// store in parent array
-// 				// store in grandParent array
-// 				// store in main synths array
-//
-// 				synths[ folderName ] = folder;
-//
-// 				currentFolder = folder;
-//
-// 				level = level + 1;
-//
-// 				this.loadPath(fileName ++ "*");
-//
-//
-// 			};
-//
-// 		});
-
-		// synths = synths;
 		^folder
+
 	}
 
 
