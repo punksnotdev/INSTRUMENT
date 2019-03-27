@@ -721,7 +721,7 @@ I8TMain : Event
 
 					data.synths.parameters[synthdef.name] = parameterNames;
 
-					parameterNames.postln;
+					// parameterNames.postln;
 
 				};
 
@@ -737,9 +737,9 @@ I8TMain : Event
 
 			var folderName = pathName.folderName.toLower.asSymbol;
 
-			"-------".postln;
-			folderName.postln;
-			"-------".postln;
+			// "-------".postln;
+			// folderName.postln;
+			// "-------".postln;
 
 			items[folderName]=this.loadSynths( folderSrc++"*", folder, parent, grandparent );
 

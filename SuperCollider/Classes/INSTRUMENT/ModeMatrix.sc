@@ -1,3 +1,18 @@
+/*
+Modes: LoopMatrix
+
+- LoopMatrix Page1
+- LoopMatrix Page2
+- Volumes
+- Rates
+- FX
+- FXSet x8
+- FXSet Detail
+-
+- Tempo
+
+*/
+
 ModeMatrix : ControllerLogic {
     var name;
     var < modes;

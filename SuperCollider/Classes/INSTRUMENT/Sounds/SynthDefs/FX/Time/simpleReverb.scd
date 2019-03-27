@@ -4,15 +4,28 @@ SynthDef(\reverb, {
 	inBus=0, outBus=0, wet=1,
 
 	room=0.3,
-	damp=0.3;
+	damp=0.3,
+	roomdamp
+	;
 
-	var sig = In.ar(inBus);
+	var sig;
+	var targetRoom, targetDamp;
+	var dsp, mix;
 
-	var dsp = (FreeVerb.ar( sig, 1, room, damp ) * 3).tanh;
+	sig = In.ar(inBus);
 
-	var mix = (sig * (1-wet)) + (dsp * wet);
+	targetRoom=room;
+	targetDamp=damp;
+
+	if( roomdamp.notNil ) {
+		targetRoom=roomdamp;
+		targetDamp=roomdamp;
+	};
+
+	dsp = (FreeVerb.ar( sig, 1, targetRoom, targetDamp ) * 3).tanh;
+
+	mix = (sig * (1-wet)) + (dsp * wet);
 
 	Out.ar( outBus, Pan2.ar( mix, 0 ) );
-
 
 }).store;

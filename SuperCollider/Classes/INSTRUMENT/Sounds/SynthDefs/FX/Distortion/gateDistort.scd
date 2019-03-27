@@ -14,7 +14,7 @@
 
 		sig = CompanderD.ar(sig,0.3,compGate);
 
-		sig = (sig*(gain*1000)).distort/4;
+		sig = (sig*(gain*1000)).distort/8;
 
 		Out.ar(outBus,Pan2.ar(sig));
 

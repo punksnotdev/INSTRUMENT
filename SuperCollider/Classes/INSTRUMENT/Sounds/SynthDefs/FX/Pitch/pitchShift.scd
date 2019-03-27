@@ -6,17 +6,25 @@ SynthDef(\pitchShift, {
 	arg gain=0.3,
 	inBus=0,
 	outBus=0,
-	compGate=1.7;
+	compGate=1.7,
+	pitch;
 
 
 	var sig, env;
+	var targetPitch;
 
 	sig = In.ar(inBus);
 
+	targetPitch = MouseX.kr(0,16);
+
+	if( pitch.notNil, {
+		targetPitch=pitch;
+	});
+
 	sig=PitchShift.ar(
-        sig,    // stereo audio input
-        0.1,             // grain size
-        MouseX.kr(0,3),    // mouse x controls pitch shift ratio
+        sig,
+        0.1,
+        targetPitch,
         0,                 // pitch dispersion
         0.004            // time dispersion
     );

@@ -1,60 +1,6 @@
 var m = ControlMode("looperFXParams");
 
-m.loadCallback = {
-
-	// 64.do{|index|
-	//
-	// 	var currentRow;
-	// 	var currentColumn;
-	// 	currentRow = (index/8).floor;
-	// 	currentColumn = index%8;
-	//
-	// 	if( i.notNil ) {
-	// 		if( i.data.notNil ) {
-	//
-	// 			if( i.data.loopers[currentRow].amp.notNil ) {
-	//
-	// 				var targetColor = 3;
-	// 				var targetKey;
-	// 				var offset;
-	//
-	// 				var currentValue = 0;
-	//
-	// 				offset = (index/9).floor;
-	//
-	// 				9.do{|l|
-	// 					if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
-	// 				};
-	//
-	// 				currentValue = (i.data.loopers[currentRow].amp*4).floor;
-	//
-	// 				targetKey = ((currentRow*9)+currentValue).asInteger;
-	//
-	//
-	// 				9.do{|l|
-	// 					[currentValue,l].postln;
-	// 					if(currentValue >= l, {
-	// 					  targetColor=60;
-	// 					  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-	// 					},{
-	// 					  targetColor=0;
-	// 					  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-	// 					});
-	// 				};
-	//
-	// 				targetColor=60;
-	//
-	//
-	//
-	// 				m.midiTarget.send(targetKey,targetColor);
-	//
-	// 			};
-	//
-	// 		};
-	// 	};
-	// };
-
-};
+m.loadCallback = {};
 
 m.setup({
 
@@ -106,7 +52,7 @@ m.setup({
 					var fxName = i.data.currentLoopFX;
 
 					if( i.data.synths.parameters[ fxName ].notNil, {
-						i.data.synths.parameters[ fxName ].postln;
+						[i.data.synths.parameters[ fxName ][currentChannel], currentValue].postln;
 					}, {
 						("No parameter data for " ++ i.data.currentLoopFX ).postln;
 					});

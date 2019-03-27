@@ -1,5 +1,8 @@
 (
-s.boot;
+	s.options.memSize=2048*1024;
+	s.options.maxNodes=128*1024;
+
+	s.boot;
 
  // MIDIClient.restart;
 
@@ -103,12 +106,27 @@ s.boot;
 				// 0.25.wait;
 			};
 
+			i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Sounds/SynthDefs/*');
+
+			"Synths Loaded".postln;
+
+			(0.5).wait;
 
 			"ModeMatrix: Disconnect and Reconnect Lauchpad".postln;
 
 			i.play;
 
+
+
+			i.data.synths.parameter_ranges=();
+			i.data.synths.parameter_ranges.amp=[0,1];
+			i.data.synths.parameter_ranges.wet=[0,1];
+			i.data.synths.parameter_ranges.gain=[1,100];
+			i.data.synths.parameter_ranges.cutoff=[50,12000];
+
 		}}).play;
+
+
 
 
 	});

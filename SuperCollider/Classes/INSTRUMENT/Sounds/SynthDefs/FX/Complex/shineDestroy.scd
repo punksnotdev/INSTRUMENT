@@ -28,12 +28,12 @@
 
 
 		sig = sig * SinOsc.kr(4).linlin(-1,1,0.3,[1,1.3]);
-		sig = (sig*gain).tanh;
+		sig = (sig*gain).tanh*0.7;
 
 		sig = sig+Mix.new(CombC.ar(sig,3,delay*[1/3,1/2,1/4],2));
 
 
-		sig = (sig * 1.2).tanh/8;
+		sig = (sig * 1.2).tanh/2.5;
 
 		Out.ar(outBus,Pan2.ar(sig));
 
