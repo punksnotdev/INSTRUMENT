@@ -23,7 +23,7 @@ m.loadCallback = {
 		if( i.notNil ) {
 			if( i.data.notNil ) {
 
-				if( i.data.loopers[currentRow].amp.notNil ) {
+				if( i.data.loopers[currentRow].fx.notNil ) {
 
 					var targetColor = 3;
 					var targetKey;
@@ -101,6 +101,10 @@ m.setup({
 
 				midiTarget.send(targetKey,targetColor);
 
+				["FX: ", currentChannel, currentValue, ": ", i.data.loopFX[currentValue] ].postln;
+
+				i.data.currentLoop = i.data.loopers[currentChannel];
+				i.data.currentLoopFX = i.data.loopFX[currentValue];
 
 				i.data.loopers[currentChannel.asInteger].instrument.fx=i.data.loopFX[currentValue];
 				i.data.loopers[currentChannel.asInteger].fx=currentValue;
