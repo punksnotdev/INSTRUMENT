@@ -69,7 +69,7 @@ MIDIManager {
 
     setupMIDIOut {
 
-        // if( mainMIDIOutput.notNil, {
+        if( mainMIDIOutput.notNil, {
 
 
             Tdef(\MidiClock).set(\bpm, TempoClock.default.tempo*120);
@@ -80,16 +80,8 @@ MIDIManager {
 
             	inf.do{
 
-                    if( mainMIDIOutput.notNil, {
-                        period = 1/2;//(60/(TempoClock.default.tempo*120));
-                        tick = period/24;
-                        mainMIDIOutput.midiClock;
-                    },{
-                        tick=10;
-                        mainMIDIOutput = MIDIOut(0);
-                        mainMIDIOutput.start;
-
-                    });
+                    period = 1/2;//(60/(TempoClock.default.tempo*120));
+                    tick = period/24;
 
             		tick.wait;
             	}
@@ -98,7 +90,7 @@ MIDIManager {
 
             Tdef(\MidiClock).play;
 
-        // });
+        });
 
     }
 

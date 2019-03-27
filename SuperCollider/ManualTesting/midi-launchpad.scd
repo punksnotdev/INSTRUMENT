@@ -25,7 +25,7 @@ s.boot;
 			i=INSTRUMENT();
 			// i.play;
 
-			i.tempo=88;
+			i.tempo=288;
 
 
 			// 1.wait;

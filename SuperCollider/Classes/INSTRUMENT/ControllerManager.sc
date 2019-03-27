@@ -282,7 +282,7 @@ ControllerManager {
 			});
 
 
-			// midi.setupMIDIOut();
+			midi.setupMIDIOut();
 
 			// if( instrument.gui.notNil, {
 			//
