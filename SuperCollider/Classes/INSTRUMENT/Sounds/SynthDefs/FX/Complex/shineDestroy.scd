@@ -13,7 +13,8 @@
 		decay=3,
 		rel=6,
 		inBus=0,
-		outBus=0;
+		outBus=0,
+		lag=3;
 
 
 		var sig, env;
@@ -30,7 +31,7 @@
 		sig = sig * SinOsc.kr(4).linlin(-1,1,0.3,[1,1.3]);
 		sig = (sig*gain).tanh*0.7;
 
-		sig = sig+Mix.new(CombC.ar(sig,3,delay*[1/3,1/2,1/4],2));
+		sig = sig+Mix.new(CombC.ar(sig,3,Lag2.kr(delay,lag)*[1/3,1/2,1/4],2));
 
 
 		sig = (sig * 1.2).tanh/2.5;

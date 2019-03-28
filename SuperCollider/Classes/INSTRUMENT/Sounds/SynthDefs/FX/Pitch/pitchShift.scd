@@ -7,6 +7,7 @@ SynthDef(\pitchShift, {
 	inBus=0,
 	outBus=0,
 	compGate=1.7,
+	lag=1,
 	pitch;
 
 
@@ -15,16 +16,16 @@ SynthDef(\pitchShift, {
 
 	sig = In.ar(inBus);
 
-	targetPitch = MouseX.kr(0,16);
-
-	if( pitch.notNil, {
+	// targetPitch = MouseX.kr(0,16);
+	//
+	// if( pitch.notNil, {
 		targetPitch=pitch;
-	});
+	// });
 
 	sig=PitchShift.ar(
         sig,
         0.1,
-        targetPitch,
+        Lag2.kr(targetPitch*2,lag),
         0,                 // pitch dispersion
         0.004            // time dispersion
     );

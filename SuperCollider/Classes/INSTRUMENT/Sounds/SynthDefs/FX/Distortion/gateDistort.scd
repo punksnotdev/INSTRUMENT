@@ -5,7 +5,8 @@
 		arg gain=3.3,
 		inBus=0,
 		outBus=0,
-		compGate=1.7;
+		compGate=1.7,
+		lag=0.3;
 
 
 		var sig, env;
@@ -14,8 +15,9 @@
 
 		sig = CompanderD.ar(sig,0.3,compGate);
 
-		sig = (sig*(gain*1000)).distort/20;
+		sig = (sig*((Lag2.kr(gain,lag))*2000)).distort.tanh*0.1;
 
+		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3)/24;
 		Out.ar(outBus,Pan2.ar(sig));
 
 

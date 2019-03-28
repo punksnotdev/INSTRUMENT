@@ -11,7 +11,7 @@ m.loadCallback = {
 			\gateDistort,
 			\reverbLPF,
 			\shineDestroy,
-			\delay2,
+			\delay1,
 			\moogFilter,
 			\pitchShift,
 		];

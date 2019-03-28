@@ -9,7 +9,7 @@ SynthDef(\reverb, {
 	;
 
 	var sig;
-	var targetRoom, targetDamp;
+	var targetRoom, targetDamp, lag=0.3;
 	var dsp, mix;
 
 	sig = In.ar(inBus);
@@ -18,8 +18,8 @@ SynthDef(\reverb, {
 	targetDamp=damp;
 
 	if( roomdamp.notNil ) {
-		targetRoom=roomdamp;
-		targetDamp=roomdamp;
+		targetRoom=Lag2.kr(roomdamp,lag);
+		targetDamp=Lag2.kr(roomdamp,lag);
 	};
 
 	dsp = (FreeVerb.ar( sig, 1, targetRoom, targetDamp ) * 3).tanh;

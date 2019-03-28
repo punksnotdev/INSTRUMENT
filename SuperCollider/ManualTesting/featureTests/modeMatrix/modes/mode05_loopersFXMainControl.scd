@@ -13,7 +13,7 @@ m.loadCallback = {
 			\gateDistort,
 			\reverbLPF,
 			\shineDestroy,
-			\delay2,
+			\delay1,
 			\moogFilter,
 			\pitchShift,
 		];
@@ -29,7 +29,7 @@ m.loadCallback = {
 
 		i.data.loopFXMainControls[\gateDistort]		= (
 			parameter: \gain,
-			range: [1,33],
+			range: [1/2,10],
 			parameterValues: IdentityDictionary.new,
 			parameterValue: nil// deprecated
 		);
@@ -48,7 +48,7 @@ m.loadCallback = {
 			parameterValue: nil// deprecated
 		);
 
-		i.data.loopFXMainControls[\delay2]			= (
+		i.data.loopFXMainControls[\delay1]			= (
 			parameter: \delay,
 			range: [0.02,2],
 			parameterValues: IdentityDictionary.new,
@@ -57,14 +57,14 @@ m.loadCallback = {
 
 		i.data.loopFXMainControls[\moogFilter]		= (
 			parameter: \cutoff,
-			range: [360,4500],
+			range: [60,2500],
 			parameterValues: IdentityDictionary.new,
 			parameterValue: nil// deprecated
 		);
 
 		i.data.loopFXMainControls[\pitchShift]		= (
 			parameter: \pitch,
-			range: [0,1.5],
+			range: [0,4],
 			parameterValues: IdentityDictionary.new,
 			parameterValue: nil// deprecated
 		);

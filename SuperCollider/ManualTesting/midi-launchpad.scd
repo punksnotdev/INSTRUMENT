@@ -4,7 +4,6 @@
 	s.options.maxNodes=128*1024;
 
 	s.boot;
-
  // MIDIClient.restart;
 
 	s.doWhenBooted({
@@ -29,7 +28,7 @@
 			i=INSTRUMENT();
 			// i.play;
 
-			i.tempo=288;
+			i.tempo=333;
 
 
 			// 1.wait;
@@ -129,7 +128,7 @@
 
 
 			i.play;
-			
+
 			"INSTRUMENT: play".postln;
 
 		}}).play;
