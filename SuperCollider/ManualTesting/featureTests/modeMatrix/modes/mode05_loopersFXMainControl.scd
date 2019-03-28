@@ -71,72 +71,80 @@ m.loadCallback = {
 
 
 	};
-	// 64.do{|index|
-	//
-	//
-	// 	if( i.notNil ) {
-	// 		if( i.data.notNil ) {
-	//
-	// 			var currentRow;
-	// 			var currentColumn;
-	//
-	// 			var eachFx;
-	// 			var eachParameter;
-	// 			if( i.loopFX.isKindOf(Collection) ) {
-	//
-	// 			currentRow = (index/8).floor.asInteger;
-	// 			currentColumn = (index%8).asInteger;
-	//
-	//
-	// 				eachFx = i.loopFX[currentRow];
-	// 				eachParameter = i.data.loopFXMainControls[eachFx];
-	//
-	// 			};
-	//
-	// 			if( eachParameter.notNil ) {
-	// 				if( eachParameter.parameterValue.notNil )  {
-	//
-	// 					var targetColor = 3;
-	// 					var targetKey;
-	// 					var offset;
-	//
-	// 					var currentValue = 0;
-	//
-	// 					offset = (index/9).floor;
-	//
-	// 					9.do{|l|
-	// 						if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
-	// 					};
-	//
-	// 					currentValue = (eachParameter.parameterValue*8).asInteger;
-	//
-	// 					targetKey = ((currentRow*9)+currentValue).asInteger;
-	//
-	//
-	// 					targetColor=0;
-	//
-	// 					9.do{|l|
-	//
-	// 						if(currentValue >= l, {
-	// 						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-	// 						},{
-	// 						  targetColor=0;
-	// 						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-	// 						});
-	// 					};
-	//
-	// 					targetColor=22+(8*((currentValue)));
-	//
-	//
-	//
-	// 					m.midiTarget.send(targetKey,targetColor);
-	//
-	// 				};
-	// 			};
-	//
-	// 		};
-	// 	};
-	// };
+	64.do{|index|
+
+
+		if( i.notNil ) {
+			if( i.data.notNil ) {
+
+				var currentRow;
+				var currentColumn;
+
+				var eachFx;
+				var eachParameter;
+
+				var lastChanThatUsedFX;
+
+				if( i.loopFX.isKindOf(Collection) ) {
+
+				currentRow = (index/8).floor.asInteger;
+				currentColumn = (index%8).asInteger;
+
+
+				eachFx = i.loopFX[currentRow];
+
+				lastChanThatUsedFX=i.data.lastChanThatUsedFX[eachFx];
+
+				eachParameter = i.data.loopFXMainControls[eachFx];
+
+				[lastChanThatUsedFX,eachFx, eachParameter,eachParameter.parameterValues].postln;
+
+				};
+
+				if( eachParameter.notNil ) {
+					if( eachParameter.parameterValues[lastChanThatUsedFX].notNil )  {
+
+						var targetColor = 3;
+						var targetKey;
+						var offset;
+
+						var currentValue = 0;
+
+						offset = (index/9).floor;
+
+						9.do{|l|
+							if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
+						};
+
+						currentValue = (eachParameter.parameterValues[lastChanThatUsedFX]*8).asInteger;
+
+						targetKey = ((currentRow*9)+currentValue).asInteger;
+
+
+						targetColor=0;
+
+						9.do{|l|
+
+							if(currentValue >= l, {
+							  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
+							},{
+							  targetColor=0;
+							  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
+							});
+						};
+
+						targetColor=22+(8*((currentValue)));
+
+
+
+						m.midiTarget.send(targetKey,targetColor);
+
+					};
+				};
+
+			};
+		};
+	};
 
 };
 
@@ -218,16 +226,21 @@ m.setup({
 					interpolatedValue
 				].postln;
 
-				targetInstrument=i.data.lastChanThatUsedFX[currentFX].asInteger;
 
-				targetInstrument.postln;
+				if(i.data.lastChanThatUsedFX[currentFX].notNil,{
 
-				i.data.loopers[targetInstrument].instrument.fxSet(
-					i.data.loopFXMainControls[ currentFX ].parameter.asSymbol,
-					interpolatedValue
-				);
+					targetInstrument=i.data.lastChanThatUsedFX[currentFX].asInteger;
 
-				i.data.loopFXMainControls[currentFX].parameterValues[targetInstrument]=interpolatedValue;
+					i.data.loopers[targetInstrument].instrument.fxSet(
+						i.data.loopFXMainControls[ currentFX ].parameter.asSymbol,
+						interpolatedValue
+					);
+
+					i.data.loopFXMainControls[currentFX].parameterValues[targetInstrument]=interpolatedValue;
+
+				},{
+					"no last channel for current fx".postln;
+				}).postln;
 
 				// i.data.loopers[currentChannel].fxMainControl = i.data.loopFXMainControls[ currentFX ];
 				//

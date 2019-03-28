@@ -115,7 +115,6 @@
 
 			"ModeMatrix: Lauchpad connected".postln;
 
-			i.play;
 
 
 
@@ -129,6 +128,9 @@
 			i.data.lastChanThatUsedFX=IdentityDictionary.new;
 
 
+			i.play;
+			
+			"INSTRUMENT: play".postln;
 
 		}}).play;
 
