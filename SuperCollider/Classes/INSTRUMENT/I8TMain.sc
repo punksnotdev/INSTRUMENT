@@ -295,8 +295,7 @@ I8TMain : Event
 
 	midi_ {|on=false|
 
-		controllerManager.midi_( on );
-
+		^controllerManager.midi_( on );
 	}
 
 	startMidi {
@@ -304,6 +303,7 @@ I8TMain : Event
 	}
 
 	midi {
+		controllerManager.midi.devices.postln;
 		^controllerManager.midi.devices;
 	}
 

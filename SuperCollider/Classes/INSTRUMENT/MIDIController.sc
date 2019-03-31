@@ -14,15 +14,17 @@ MIDIController {
 
 	var callbacks;
 
-	*new {|midiTarget_, type_, controllerId_, channel_, sourceId_ |
-		^super.new.init(midiTarget_, type_, controllerId_, channel_, sourceId_ );
+	*new {|midiTarget_, type_, controllerId_, channel_, sourceId_, name_ |
+		^super.new.init(midiTarget_, type_, controllerId_, channel_, sourceId_, name_ );
 	}
 
-	init {|midiTarget_, type_, controllerId_, channel_, sourceId_ |
+	init {|midiTarget_, type_, controllerId_, channel_, sourceId_, name_ |
 
 		midiTarget = midiTarget_;
 		type = type_;
 		protocol = "midi";
+
+		name = name_;
 
 		callbacks = List.new;
 

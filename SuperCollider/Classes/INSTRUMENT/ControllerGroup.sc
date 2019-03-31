@@ -49,16 +49,16 @@ ControllerGroup {
 
 		// convert to symbol
 		key = key.asSymbol;
-		
+
 		newController = MIDIController(
 			device,
 			type,
 			id_,
 			channel_,
-			device.id
+			device.id,
+			name_
 		);
 
-		newController.name = name_;
 		newController.key = key;
 		newController.protocol = device.protocol;
 

@@ -133,7 +133,7 @@ ControllerManager {
 			protocol: controller.protocol,
 		);
 
-
+		mapping.postln;
 		// var newKey = target.name ++ '-' ++ target.parameter;
 
 		if( controlTargetMap[controller.key].isKindOf(List) == false, {
