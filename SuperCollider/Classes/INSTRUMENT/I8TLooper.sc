@@ -326,7 +326,7 @@ Looper : SynthInstrument
 
 
 	fx_ {|synthdef|
-
+		
 		super.fx_(synthdef);
 
 		playSynths.collect({|synth|
@@ -345,7 +345,7 @@ Looper : SynthInstrument
 	fxSet {|parameter,value|
 
 		^super.fxSet(parameter,value)
-		
+
 	}
 
 

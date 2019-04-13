@@ -22,6 +22,7 @@ m.loadCallback = {
 
 		var currentRow;
 		var currentColumn;
+
 		currentRow = (index/8).floor;
 		currentColumn = index%8;
 
@@ -34,7 +35,7 @@ m.loadCallback = {
 					var targetKey;
 					var offset;
 
-					var currentValue = 0;
+					var currentColumn = 0;
 
 					offset = (index/9).floor;
 
@@ -42,9 +43,9 @@ m.loadCallback = {
 						if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
 					};
 
-					currentValue = i.data.loopers[currentRow].fx;
+					currentColumn = i.data.loopers[currentRow].fx;
 
-					targetKey = ((currentRow*9)+currentValue).asInteger;
+					targetKey = ((currentRow*9)+currentColumn).asInteger;
 
 
 					targetColor=0;
@@ -77,23 +78,23 @@ m.setup({
 
 			var targetColor;
 
-			var currentChannel;
-			var currentValue;
+			var currentRow;
+			var currentColumn;
 			var fxName;
 
 				if( param2 > 0, {
 
-					currentChannel = ((param1/8).floor).asInteger;
-					currentValue = (param1%8).asInteger;
+					currentRow = ((param1/8).floor).asInteger;
+					currentColumn = (param1%8).asInteger;
 
 
-					fxName = i.data.loopFX[currentValue].asSymbol;
+					fxName = i.data.loopFX[currentColumn].asSymbol;
 
 					if( fxName.notNil )
 					{
 
 					// TO DO : check if next line should be here
-					i.data.loopers[currentChannel].fx = currentValue;
+					i.data.loopers[currentRow].fx = currentColumn;
 
 
 					offset = (param1/9).floor;
@@ -107,22 +108,22 @@ m.setup({
 
 					targetColor=0;
 					9.do{|l|
-						midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
+						midiTarget.send(targetKey+((l-1)-currentColumn),targetColor);
 					};
 
 					targetColor=60;
 
 					midiTarget.send(targetKey,targetColor);
 
-					["FX: ", currentChannel, currentValue, ": ", fxName ].postln;
+					["FX: ", currentRow, currentColumn, ": ", fxName ].postln;
 
-					i.data.currentLoop = i.data.loopers[currentChannel];
+					i.data.currentLoop = i.data.loopers[currentRow];
 					i.data.currentLoopFX = fxName;
 
-					i.data.loopers[currentChannel].instrument.fx=fxName;
-					i.data.loopers[currentChannel].fx=currentValue;
+					i.data.loopers[currentRow].instrument.fx=fxName;
+					i.data.loopers[currentRow].fx=currentColumn;
 
-					i.data.lastChanThatUsedFX[ fxName ] = currentChannel;
+					i.data.lastChanThatUsedFX[ fxName ] = currentRow;
 				}
 			});
 

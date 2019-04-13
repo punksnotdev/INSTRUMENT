@@ -19,6 +19,7 @@ MIDIDevice {
 
     init {|midiManager,device_, spec_|
 
+
         midi = midiManager;
         device = device_;
         protocol = "midi";

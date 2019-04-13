@@ -303,7 +303,6 @@ I8TMain : Event
 	}
 
 	midi {
-		controllerManager.midi.devices.postln;
 		^controllerManager.midi.devices;
 	}
 
@@ -454,8 +453,6 @@ I8TMain : Event
 
 					if( (autoMIDI == true) && (midiControllers.inputs.size > 0),{
 
-
-
 						if( item.notNil ) {
 
 							if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
@@ -502,6 +499,8 @@ I8TMain : Event
 									nextMIDIController =  ( nextMIDIController + 1 ) % midiControllers.inputs.size;
 									next = midiControllers.inputs[nextMIDIController];
 								};
+
+								(["SHOULD AUTOMIDI!",next,item]).postln;
 
 								if( (next.notNil && item.notNil),{
 

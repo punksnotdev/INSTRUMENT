@@ -52,7 +52,8 @@ SynthInstrument : Instrument
 
 	fx_ {|synthdef_|
 
-        if( synthdef_.notNil,{
+
+        if( (synthdef_.notNil) && (synthdef_ != "nil".asSymbol )), {
 			if( fxSynth.notNil, {
 				fxSynth.free;
 				// fxSynth = Synth.replace(fxSynth,synthdef_);

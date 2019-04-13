@@ -105,9 +105,13 @@ m.setup({
 
 				i.data.currentLoop = i.data.loopers[currentChannel];
 				i.data.currentLoopFX = i.data.loopFX[currentValue];
-
-				i.data.loopers[currentChannel.asInteger].instrument.fx=i.data.loopFX[currentValue];
-				i.data.loopers[currentChannel.asInteger].fx=currentValue;
+				if( currentChannel.notNil, {
+					i.data.loopers[currentChannel.asInteger].instrument.fx=i.data.loopFX[currentValue];
+					i.data.loopers[currentChannel.asInteger].fx=currentValue;
+				}, {
+					i.data.loopers[currentChannel.asInteger].instrument.fx=nil;
+					i.data.loopers[currentChannel.asInteger].fx=nil;
+				});
 
 			});
 

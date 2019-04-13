@@ -17,7 +17,7 @@
 
 		sig = (sig*((Lag2.kr(gain,lag))*2000)).distort.tanh*0.1;
 
-		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3)/24;
+		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3)/10;
 		Out.ar(outBus,Pan2.ar(sig));
 
 

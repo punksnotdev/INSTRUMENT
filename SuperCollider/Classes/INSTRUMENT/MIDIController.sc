@@ -36,18 +36,18 @@ MIDIController {
 	}
 
 	addResponder {|messageType, controllerId, channel, sourceId|
-
+		// ["add Responder", controllerId, channel, sourceId].postln;
 		switch(messageType,
 			\cc, {
 
-				var func = MIDIdef.cc( (name +"_cc").asSymbol,
+				var func = MIDIdef.cc( (name ++"_"++controllerId++"_cc").asSymbol,
 					{arg ...args;
-
+						// args.postln;
 						this.set(args[0])
 
 					}, controllerId, channel, sourceId
 				);
-
+// [func, name, controllerId, channel, sourceId].postln;
 				callbacks.add( func );
 
 			},
