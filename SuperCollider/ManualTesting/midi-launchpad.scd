@@ -88,7 +88,10 @@
 				var chan = (index/4).floor.asInteger;
 
 				(
-						instrument: Looper(chan);
+						instrument: Looper(chan),
+						amp: 		1,
+						rate: 		1,
+						fx: 		nil,
 				)
 			});
 

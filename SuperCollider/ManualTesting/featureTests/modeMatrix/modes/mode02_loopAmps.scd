@@ -2,56 +2,38 @@ var m = ControlMode("loopAmps");
 
 m.loadCallback = {
 
-	64.do{|index|
+	8.do {|channelIndex|
 
-		var currentRow;
-		var currentColumn;
-		currentRow = (index/8).floor;
-		currentColumn = index%8;
+		if( i.data.loopers[channelIndex].amp.notNil ) {
 
-		if( i.notNil ) {
-			if( i.data.notNil ) {
+			var targetColor = 3;
+			var targetKey;
 
-				if( i.data.loopers[currentRow].amp.notNil ) {
+			var currentValue = 0;
 
-					var targetColor = 3;
-					var targetKey;
-					var offset;
+			currentValue = (i.data.loopers[channelIndex].amp*4).floor;
 
-					var currentValue = 0;
-
-					offset = (index/9).floor;
-
-					9.do{|l|
-						if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
-					};
-
-					currentValue = (i.data.loopers[currentRow].amp*4).floor;
-
-					targetKey = ((currentRow*9)+currentValue).asInteger;
+			targetKey = ((channelIndex*9)+currentValue).asInteger;
 
 
-					9.do{|l|
-						[currentValue,l].postln;
-						if(currentValue >= l, {
-						  targetColor=71+(8*l);
-						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-						},{
-						  targetColor=0;
-						  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-						});
-					};
-
-					targetColor=71+(8*((currentValue)));
-
-
-
-					m.midiTarget.send(targetKey,targetColor);
-
-				};
-
+			9.do{|l|
+				if(currentValue >= l, {
+				  targetColor=71+(8*l);
+				  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
+				},{
+				  targetColor=0;
+				  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
+				});
 			};
-		};
+
+			targetColor=71+(8*((currentValue)));
+
+
+
+			m.midiTarget.send(targetKey,targetColor);
+
+		}
+
 	};
 
 };
