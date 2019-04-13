@@ -26,16 +26,13 @@ m.loadCallback = {
 
 
 					9.do{|l|
-						if(currentValue >= l, {
-						  targetColor=71+(8*l);
-						  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
-						},{
+						if(currentValue != l, {
 						  targetColor=0;
 						  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
 						});
 					};
 
-					targetColor=71+(8*((currentValue)));
+					targetColor=22+(8*currentValue);
 
 
 
@@ -85,14 +82,10 @@ m.setup({
 
 
 				9.do{|l|
-					if(currentValue >= l, {
-						targetColor=22+(8*l);
-						midiTarget.send((targetKey-currentValue)+l,targetColor);
-					},{
-						targetColor=0;
-						midiTarget.send(targetKey+((l-1)-currentValue),targetColor);
+					if(currentValue != l, {
+					  targetColor=0;
+					  m.midiTarget.send(((currentChannel*9)+l).asInteger,targetColor);
 					});
-
 				};
 
 				targetColor=22+(8*((currentValue)));
