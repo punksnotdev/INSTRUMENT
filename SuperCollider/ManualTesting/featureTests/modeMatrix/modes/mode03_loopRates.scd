@@ -4,47 +4,44 @@ m.loadCallback = {
 
 	i.data.looperRates = [ -1/2, -3, -2, -1, 1, 1/2, 2, 4 ];
 
+	8.do {|channelIndex|
 
-	m.loadCallback = {
+		var currentRate = i.data.loopers[channelIndex].rate;
 
-		8.do {|channelIndex|
+		if( currentRate.notNil ) {
 
-			var currentRate = i.data.loopers[channelIndex].rate;
+			var targetColor = 3;
+			var targetKey;
 
-			if( currentRate.notNil ) {
+			var currentValue = 4;
 
-				var targetColor = 3;
-				var targetKey;
+			currentValue = currentRate.asInteger;
 
-				var currentValue = 4;
+			if( currentValue.notNil ) {
 
-				currentValue = currentRate.asInteger;
-
-				if( currentValue.notNil ) {
-
-					targetKey = ((channelIndex*9)+currentValue).asInteger;
+				targetKey = ((channelIndex*9)+currentValue).asInteger;
 
 
-					9.do{|l|
-						if(currentValue != l, {
-						  targetColor=0;
-						  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
-						});
-					};
+				9.do{|l|
+					if(currentValue != l, {
+					  targetColor=0;
+					  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
+					});
+				};
 
-					targetColor=22+(8*currentValue);
+				targetColor=22+(8*currentValue);
 
 
 
-					m.midiTarget.send(targetKey,targetColor);
-
-				}
+				m.midiTarget.send(targetKey,targetColor);
 
 			}
 
-		};
+		}
 
 	};
+
+
 
 };
 

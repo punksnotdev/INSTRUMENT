@@ -90,8 +90,8 @@
 				(
 						instrument: Looper(chan),
 						amp: 		1,
-						rate: 	1,
-						fx: 		nil,
+						rate: 		4,
+						fx: 		0,
 				)
 
 			});
