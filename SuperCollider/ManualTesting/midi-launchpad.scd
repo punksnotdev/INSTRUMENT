@@ -5,6 +5,7 @@
 
 	s.boot;
  // MIDIClient.restart;
+ 	MIDIClient.init;
 
 	s.doWhenBooted({
 
