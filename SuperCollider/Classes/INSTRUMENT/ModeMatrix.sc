@@ -127,6 +127,12 @@ ModeMatrix : ControllerLogic {
 
     loadMode{|index|
 
+        if( currentMode.isKindOf(ControlMode) ) {
+            if( currentMode.destroyCallback.isKindOf(Function) ) {
+                currentMode.destroyCallback.value();
+            };
+        };
+
         64.do {|j|
             currentCallbacks[j]=nil;
         };

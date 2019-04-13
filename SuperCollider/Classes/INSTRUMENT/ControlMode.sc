@@ -1,6 +1,7 @@
 ControlMode {
 
     var <>loadCallback;
+    var <>destroyCallback;
     var <callbacks;
     var <name;
     var <>midiTarget;

@@ -27,13 +27,12 @@ m.loadCallback = {
 };
 
 
-//
-// TODO: dESTROY CALLBACK
-// m.destroyCallback = {
-//
-// 	Tdef(\animation).stop;
-//
-// };
+
+m.destroyCallback = {
+
+	Tdef(\animation).stop;
+
+};
 
 m.setup({
 
