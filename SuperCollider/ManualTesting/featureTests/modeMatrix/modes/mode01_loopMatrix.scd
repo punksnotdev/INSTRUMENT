@@ -6,6 +6,26 @@ m.loadCallback={
 
 	64.do{|index|
 
+		var targetColor = 0;
+
+		var targetKey;
+		var offset;
+
+		offset = (index/9).floor;
+
+		9.do{|l|
+			if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
+		};
+
+		targetKey = (index+offset).asInteger;
+
+		m.midiTarget.send(targetKey,targetColor);
+
+
+	};
+
+	64.do{|index|
+
 		var currentRow;
 		var currentColumn;
 		currentRow = (index/8).floor;
@@ -91,7 +111,7 @@ m.setup({
 							looperData.status[currentValue] = 4;
 						}, {
 							"Cancel Delete.".postln;
-							looperData.status[currentValue] = 2;						
+							looperData.status[currentValue] = 2;
 						});
 					};
 

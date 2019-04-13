@@ -44,32 +44,32 @@ ModeMatrix : ControllerLogic {
             if( currentModeIndex != index ){
 
 
+
+                this.loadMode( index );
+
                 if( midiTarget.isKindOf(MIDIDevice), {
 
 
                     8.do{|k|
                         if(((k+1)*9)!=((index+1)*9),{
-                            midiTarget.send(8+((k)*9),3);
-                        });
-                    };
-
-                    midiTarget.send(((index+1)*9)-1,124);
-
-                    if( currentModeIndex.notNil, {
-
-                        72.do{|j|
-                            if(j%9<8){
-                                midiTarget.send(j,0);
-                            }
+                            midiTarget.send(8+((k)*9),0);
+                            });
                         };
 
-                    });
+                        midiTarget.send(((index+1)*9)-1,60);
+
+                        // if( currentModeIndex.notNil, {
+                        //
+                        //     72.do{|j|
+                        //         if(j%9<8){
+                        //             midiTarget.send(j,0);
+                        //         }
+                        //     };
+                        //
+                        // });
 
 
                 });
-
-                this.loadMode( index );
-
             }
         };
 

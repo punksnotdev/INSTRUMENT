@@ -55,52 +55,6 @@ m.loadCallback = {
 
 	};
 
-	//
-	// 64.do{|index|
-	//
-	// 	var currentRow;
-	// 	var currentColumn;
-	//
-	// 	currentRow = (index/8).floor;
-	// 	currentColumn = index%8;
-	//
-	// 	if( i.notNil ) {
-	// 		if( i.data.notNil ) {
-	//
-	// 			if( i.data.loopers[currentRow].fx.notNil ) {
-	//
-	// 				var targetColor = 3;
-	// 				var targetKey;
-	// 				var offset;
-	//
-	// 				var currentColumn = 0;
-	//
-	// 				offset = (index/9).floor;
-	//
-	// 				9.do{|l|
-	// 					if(( (index%9==(8-l))&&(index > (7+(8*l)))),{ offset=offset+1; });
-	// 				};
-	//
-	// 				currentColumn = i.data.loopers[currentRow].fx;
-	//
-	// 				targetKey = ((currentRow*9)+currentColumn).asInteger;
-	//
-	//
-	// 				targetColor=0;
-	// 				9.do{|l|
-	// 				  m.midiTarget.send(((currentRow*9)+l).asInteger,targetColor);
-	// 				};
-	//
-	// 				targetColor=60;
-	//
-	// 				m.midiTarget.send(targetKey,targetColor);
-	//
-	// 			};
-	//
-	// 		};
-	// 	};
-	// };
-
 };
 
 m.setup({

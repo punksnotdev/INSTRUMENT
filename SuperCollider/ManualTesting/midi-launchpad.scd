@@ -129,7 +129,7 @@
 			i.data.synths.parameter_ranges.cutoff=[50,12000];
 
 
-			i.data.lastChanThatUsedFX=IdentityDictionary.new;
+			i.data.lastChanThatUsedFX = IdentityDictionary.new;
 
 
 			i.play;
