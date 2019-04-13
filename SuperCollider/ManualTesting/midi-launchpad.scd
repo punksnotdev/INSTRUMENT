@@ -90,9 +90,10 @@
 				(
 						instrument: Looper(chan),
 						amp: 		1,
-						rate: 		1,
+						rate: 	1,
 						fx: 		nil,
 				)
+
 			});
 
 			CmdPeriod.add({MIDIClient.disposeClient;});
