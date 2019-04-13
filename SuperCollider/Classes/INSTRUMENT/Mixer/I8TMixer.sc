@@ -16,21 +16,54 @@ I8TMixer : I8TNode
 	init {
 
 		// "init mixer".postln;
-		
-	}
 
-
-
-	at {|index|
-
-		// ["at", index].postln;
+		channelGroups = IdentityDictionary.new;
 
 	}
 
 
-	put {|index, something|
 
-		// ["put", index, something].postln;
+	at {|key|
+
+		^channelGroups[key]
+
+	}
+
+
+	put {|key, something|
+
+		// ["put", key, something].postln;
+
+		// if 'something' is valid source
+		if( this.isValidSource( something ) ) {
+
+			var channelGroup;
+			var channel;
+
+			channelGroup = List.new;
+
+			channel = I8TChannel.new;
+
+			channelGroups[key] = channelGroup;
+
+			^channel;
+
+		};
+
+		"Not a valid Source".warn;
+
+		^nil
+
+	}
+
+
+	isValidSource {|source|
+
+		^ (
+			source.isKindOf(Instrument)
+			||
+			source.isKindOf(InstrumentGroup)
+		)
 
 	}
 
