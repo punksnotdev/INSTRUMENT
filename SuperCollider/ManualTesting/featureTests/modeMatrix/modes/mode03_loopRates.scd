@@ -18,26 +18,30 @@ m.loadCallback = {
 
 				var currentValue = 4;
 
-				currentValue = i.data.looperRates.indexOf( currentRate );
+				currentValue = currentRate.asInteger;
 
-				targetKey = ((channelIndex*9)+currentValue).asInteger;
+				if( currentValue.notNil ) {
 
-
-				9.do{|l|
-					if(currentValue >= l, {
-					  targetColor=71+(8*l);
-					  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
-					},{
-					  targetColor=0;
-					  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
-					});
-				};
-
-				targetColor=71+(8*((currentValue)));
+					targetKey = ((channelIndex*9)+currentValue).asInteger;
 
 
+					9.do{|l|
+						if(currentValue >= l, {
+						  targetColor=71+(8*l);
+						  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
+						},{
+						  targetColor=0;
+						  m.midiTarget.send(((channelIndex*9)+l).asInteger,targetColor);
+						});
+					};
 
-				m.midiTarget.send(targetKey,targetColor);
+					targetColor=71+(8*((currentValue)));
+
+
+
+					m.midiTarget.send(targetKey,targetColor);
+
+				}
 
 			}
 
