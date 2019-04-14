@@ -1,10 +1,13 @@
-InstrumentGroup : Event {
+InstrumentGroup : Event
+{
 
 	var <amp;
+	var <>main;
 	var <clock;
 	var <baseClock;
 	var <fx;
 	var <>name;
+
 
 	play {
 		this.collect({|item|
@@ -85,12 +88,6 @@ InstrumentGroup : Event {
 
 	}
 
-	// speed {|value_|
-	//
-	//
-	// 	^speed
-	//
-	// }
 
 	fx_ {|value_|
 		this.collect({|item|
@@ -126,5 +123,29 @@ InstrumentGroup : Event {
 		});
 	}
 
+
+	put{|key,something|
+
+		if( something.isKindOf(I8TNode) ) {
+
+			if( main.notNil ) {
+				main.addNodeToGroup( this, something );
+			};
+
+			^super.put(key,something);
+
+		};
+
+		if( something.isKindOf(InstrumentGroup) ) {
+
+			something.name = name + "_" + key;
+			something.main = main;
+
+			^super.put(key,something);
+
+		};
+
+
+	}
 
 }

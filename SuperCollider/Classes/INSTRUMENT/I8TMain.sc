@@ -415,6 +415,8 @@ I8TMain : Event
 
 							newGroup.name = key;
 
+							newGroup.main = this;
+
 
 							something.collect({
 
@@ -553,6 +555,17 @@ I8TMain : Event
 
 	}
 
+	addNodeToGroup {|group, node|
+
+		if( nodes.includes( node ) == false ) {
+			this.addNode( node );
+			if( playing == true ) {
+				node.play;
+			};
+		}
+
+	}
+
 
 	synths_ {|list|
 
@@ -614,6 +627,7 @@ I8TMain : Event
 	}
 
 	selectPlayingTracks{|selection|
+
 		[selection].postln;
 		// sequencer.sequencer_tracks.collect({|track,index|
 		// 	if( selection.indexOf(index).notNil, {
