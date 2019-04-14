@@ -42,9 +42,23 @@ I8TMixer : I8TNode
 
 			channelGroup = List.new;
 
-			channel = I8TChannel.new;
+			channel = I8TChannel();
+
+			channelGroup.add( channel );
 
 			channelGroups[key] = channelGroup;
+
+			^channelGroups[key];
+
+		};
+
+		if( something.isNil ) {
+
+			var channel;
+
+			channel = channelGroups[key];
+
+			channelGroups.removeAt(key)
 
 			^channel;
 

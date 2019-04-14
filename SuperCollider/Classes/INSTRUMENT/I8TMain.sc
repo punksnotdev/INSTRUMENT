@@ -381,68 +381,94 @@ I8TMain : Event
 
 					if( allValid == true ) {
 
-						newGroup = InstrumentGroup.new;
 
-						if( groups[key].notNil ) {
+						if( groups[key].notNil, {
 
-							groups.removeAt(key);
+							var currentGroup = groups[key];
 
-						};
+							[currentGroup.keys,something.keys].postln;
 
+							something.collect({|groupItem,groupItemKey|
 
-						newGroup.name = key;
-
-
-						something.collect({
-
-							arg item,key;
-
-							// if item name is a node, add it
-							if( item.isKindOf(I8TNode) ) {
-
-								if( (nodes.includes( item ) == false), {
-
-									item.name=key;
-
-									item = this.addNode(item,key);
+								if( currentGroup.keys.includes(groupItemKey),
+								{
+									currentGroup[groupItemKey].synthdef=groupItem.synthdef;
+								},
+								{
+									var newItem;
+									currentGroup[groupItemKey]=groupItem;
+									newItem = this.addNode(groupItem,groupItemKey);
 
 									if( playing == true ) {
-										item.play;
+										newItem.play;
 									}
 
 								});
 
-								newGroup.put( key, item );
+							});
 
-							};
+							item = currentGroup;
 
-							if( item.isKindOf(InstrumentGroup) ) {
-								if( groups.includes(item) ) {
-									newGroup.put( item.name, item );
-								};
-							};
+						}, {
 
-							if( item.isKindOf(Symbol)) {
+							newGroup = InstrumentGroup.new;
 
-								var itemName = item;
+							newGroup.name = key;
 
-								if( nodes[itemName].notNil, {
-									newGroup.put( itemName, nodes[itemName] );
-								}, {
-									// if item name is a group
-									if( groups[itemName].notNil, {
-										// add its items
-										newGroup.put( itemName, groups[itemName] );
+
+							something.collect({
+
+								arg item,key;
+
+								// if item name is a node, add it
+								if( item.isKindOf(I8TNode) ) {
+
+									if( (nodes.includes( item ) == false), {
+
+										item.name=key;
+
+										item = this.addNode(item,key);
+
+										if( playing == true ) {
+											item.play;
+										}
+
 									});
-								});
 
-							}
+									newGroup.put( key, item );
+
+								};
+
+								if( item.isKindOf(InstrumentGroup) ) {
+									if( groups.includes(item) ) {
+										newGroup.put( item.name, item );
+									};
+								};
+
+								if( item.isKindOf(Symbol)) {
+
+									var itemName = item;
+
+									if( nodes[itemName].notNil, {
+										newGroup.put( itemName, nodes[itemName] );
+									}, {
+										// if item name is a group
+										if( groups[itemName].notNil, {
+											// add its items
+											newGroup.put( itemName, groups[itemName] );
+										});
+									});
+
+								}
+
+							});
+
+							groups[key] = newGroup;
+
+							item = groups[key];
 
 						});
 
-						groups[key] = newGroup;
-
-						item = groups[key];
 
 					};
 
