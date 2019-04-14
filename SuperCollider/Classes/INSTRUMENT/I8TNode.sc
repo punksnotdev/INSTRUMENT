@@ -4,9 +4,12 @@ I8TNode : I8TeventListener
 	classvar <>graph;
 
 	var <>name;
+	var <>input;
+	var <>output;
 	var <>nodeGraph;
 
-	var inputs, outputs;
+	var <>inputs;
+	var <>outputs;
 
 	*new {|graph_,name_|
 
@@ -47,7 +50,6 @@ I8TNode : I8TeventListener
 
 		name = newKey;
 
-		inputs = ();
 
 	}
 
@@ -56,5 +58,51 @@ I8TNode : I8TeventListener
 
 
 	play {}
+
+
+
+
+	setName{|name_|
+		name=name_;
+	}
+
+
+	setInput{|input_|
+		input=input_;
+	}
+	setOutput{|output_|
+		output=output_;
+	}
+
+
+	addInput{|input_|
+
+		if(inputs.isNil) {
+			inputs=();
+		};
+
+		inputs[input_.name]=input_;
+		inputs.postln;
+
+	}
+	
+	addOutput{|output_|
+
+		if(outputs.isNil) {
+			outputs=();
+		};
+
+		outputs[output_.name]=output_;
+		outputs.postln;
+
+	}
+	
+
+	removeInput{|key|
+		inputs.removeAt(key);
+	}
+	removeOutput{|key|
+		outputs.removeAt(key);
+	}
 
 }

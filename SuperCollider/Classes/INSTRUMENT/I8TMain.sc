@@ -60,7 +60,7 @@ I8TMain : Event
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new(this);
-		mixer = Mixer.new(this);
+		mixer = I8TMixer.new(this);
 		controllerManager = ControllerManager.new(this);
 
 		nodes = IdentityDictionary.new;
@@ -70,6 +70,7 @@ I8TMain : Event
 		nextKey = 0;
 
 		rootNode = I8TNode.new(this,"rootNode");
+
 		this.addNode( rootNode );
 
 		// this.play;
@@ -419,6 +420,7 @@ I8TMain : Event
 
 							newGroup.main = this;
 
+							mixer.addChannel( newGroup );
 
 							something.collect({
 
@@ -566,6 +568,12 @@ I8TMain : Event
 			if( playing == true ) {
 				node.play;
 			};
+
+			if( mixer[group.name].isNil ) {
+				mixer.addChannel( group );
+			};
+
+			mixer.addChannel( node, group );
 
 		}
 

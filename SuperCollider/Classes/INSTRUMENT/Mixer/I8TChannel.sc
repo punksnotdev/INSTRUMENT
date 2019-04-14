@@ -1,8 +1,6 @@
 I8TChannel : I8TNode
 {
-
-
-
+	
 	* new {
 		^super.new.init();
 	}

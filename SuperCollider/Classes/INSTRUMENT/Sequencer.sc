@@ -28,8 +28,6 @@ Sequencer : I8TNode
 	var loopers;
 
 	*new {|main_|
-		// SequencerEvent instances need to have a reference to 'this' (sequencer):
-
 		^super.new.init(main_);
 	}
 
