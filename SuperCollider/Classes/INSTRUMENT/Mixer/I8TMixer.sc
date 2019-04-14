@@ -131,6 +131,7 @@ I8TMixer : I8TNode
 			channel.addOutput( master[0] );
 			channel.addOutput( master[1] );
 			channel.setName( node.name );
+			channel.setAmp( node.amp );
 
 		}
 	}
