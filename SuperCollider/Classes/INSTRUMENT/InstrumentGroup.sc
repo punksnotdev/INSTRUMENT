@@ -128,11 +128,14 @@ InstrumentGroup : Event
 
 		if( something.isKindOf(I8TNode) ) {
 
+			["put",key,something].postln;
 			if( main.notNil ) {
 				main.addNodeToGroup( this, something );
 			};
 
-			^super.put(key,something);
+			super.put(key,something);
+
+			^super.at(key)
 
 		};
 
@@ -144,7 +147,11 @@ InstrumentGroup : Event
 			^super.put(key,something);
 
 		};
-
+		if( something.isNil ) {
+			var item = super.at(key).postln;
+			["at",key,item].postln;
+			^item
+		};
 
 	}
 

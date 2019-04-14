@@ -388,20 +388,20 @@ I8TMain : Event
 
 							[currentGroup.keys,something.keys].postln;
 
-							something.collect({|groupItem,groupItemKey|
+							something.collect({|childItem,childItemKey|
 
-								if( currentGroup.keys.includes(groupItemKey),
+								if( currentGroup.keys.includes(childItemKey),
 								{
-									currentGroup[groupItemKey].synthdef=groupItem.synthdef;
+									currentGroup[childItemKey].synthdef=childItem.synthdef;
 								},
 								{
 									var newItem;
-									currentGroup[groupItemKey]=groupItem;
-									newItem = this.addNode(groupItem,groupItemKey);
+									currentGroup[childItemKey]=childItem;
+									// newItem = this.addNode(childItem,childItemKey);
 
-									if( playing == true ) {
-										newItem.play;
-									}
+									// if( playing == true ) {
+									// 	newItem.play;
+									// }
 
 								});
 
@@ -420,48 +420,46 @@ I8TMain : Event
 
 							something.collect({
 
-								arg item,key;
+							  arg childItem,childItemKey;
 
-								// if item name is a node, add it
-								if( item.isKindOf(I8TNode) ) {
+							  // if childItem name is a node, add it
+							  if( childItem.isKindOf(I8TNode) ) {
 
-									if( (nodes.includes( item ) == false), {
+							    if( (nodes.includes( childItem ) == false), {
 
-										item.name=key;
+							      childItem.name=childItemKey;
 
-										item = this.addNode(item,key);
+							      this.addNodeToGroup(
+									  	newGroup, childItem
+								  );
 
-										if( playing == true ) {
-											item.play;
-										}
+							    });
 
-									});
+							    newGroup.put( childItemKey, childItem );
 
-									newGroup.put( key, item );
+							  };
 
-								};
+							  if( childItem.isKindOf(InstrumentGroup) ) {
+							    if( groups.includes(childItem) ) {
+							      newGroup.put( childItem.name, childItem );
+							    };
+							  };
 
-								if( item.isKindOf(InstrumentGroup) ) {
-									if( groups.includes(item) ) {
-										newGroup.put( item.name, item );
-									};
-								};
+							  if( childItem.isKindOf(Symbol)) {
 
-								if( item.isKindOf(Symbol)) {
+							    var childItemName = childItem;
 
-									var itemName = item;
+							    if( nodes[childItemName].notNil, {
+							      newGroup.put( childItemName, nodes[childItemName] );
+							    }, {
+							      // if childItem name is a group
+							      if( groups[childItemName].notNil, {
+							        // add its childItems
+							        newGroup.put( childItemName, groups[childItemName] );
+							      });
+							    });
 
-									if( nodes[itemName].notNil, {
-										newGroup.put( itemName, nodes[itemName] );
-									}, {
-										// if item name is a group
-										if( groups[itemName].notNil, {
-											// add its items
-											newGroup.put( itemName, groups[itemName] );
-										});
-									});
-
-								}
+							  }
 
 							});
 
@@ -555,10 +553,13 @@ I8TMain : Event
 
 	}
 
+
+
 	addNodeToGroup {|group, node|
 
 		if( nodes.includes( node ) == false ) {
-			this.addNode( node );
+			["ANTG",group.name,node.name].postln;
+			this.addNode( node, node.name );
 			if( playing == true ) {
 				node.play;
 			};
