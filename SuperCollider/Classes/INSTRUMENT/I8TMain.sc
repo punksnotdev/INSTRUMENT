@@ -8,6 +8,7 @@ I8TMain : Event
 
 	var <playing;
 	var <>sequencer;
+	var <>mixer;
 	var <>controllerManager;
 
 	var nodes;
@@ -59,6 +60,7 @@ I8TMain : Event
 
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new(this);
+		mixer = Mixer.new(this);
 		controllerManager = ControllerManager.new(this);
 
 		nodes = IdentityDictionary.new;
@@ -558,11 +560,13 @@ I8TMain : Event
 	addNodeToGroup {|group, node|
 
 		if( nodes.includes( node ) == false ) {
-			["ANTG",group.name,node.name].postln;
+
 			this.addNode( node, node.name );
+
 			if( playing == true ) {
 				node.play;
 			};
+
 		}
 
 	}

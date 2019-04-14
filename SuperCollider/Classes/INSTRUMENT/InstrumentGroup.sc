@@ -128,7 +128,6 @@ InstrumentGroup : Event
 
 		if( something.isKindOf(I8TNode) ) {
 
-			["put",key,something].postln;
 			if( main.notNil ) {
 				main.addNodeToGroup( this, something );
 			};
