@@ -8,6 +8,9 @@ I8TChannel : I8TNode
 	var submixAmps;
 
 	var bus;
+	var busSynth;
+
+	var synthGroup;
 
 	* new {
 		^super.new.init();
@@ -15,8 +18,15 @@ I8TChannel : I8TNode
 
 	init {
 
-		// "init mixer".postln;
-		bus = Bus.audio(s,2);
+		bus = Bus.audio(Server.local,2);
+
+		synthGroup = Group.new;
+
+		busSynth = Synth.tail(
+			synthGroup,
+			\audioBus,
+			[\inBus,bus]
+		);
 
 	}
 
