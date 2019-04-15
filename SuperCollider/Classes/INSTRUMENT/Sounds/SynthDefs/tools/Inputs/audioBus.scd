@@ -1,7 +1,7 @@
-SynthDef(\audioBus, {|inBus=99,outBus=99|
+SynthDef(\audioBus, {|in=99,out=99|
 
-	var sig = In.ar(inBus);
+	var sig = In.ar(in);
 
-	ReplaceOut.ar(outBus, Pan2.ar(sig,0))
+	ReplaceOut.ar(out, Pan2.ar(sig,0))
 
 }).store;

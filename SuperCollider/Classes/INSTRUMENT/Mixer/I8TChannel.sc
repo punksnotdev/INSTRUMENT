@@ -55,7 +55,15 @@ I8TChannel : I8TNode
 		^bus
 	}
 
-	
+
+
+	getInput {
+		^input
+	}
+	setInput {|input_|
+		super.setInput(input_);
+		input.set(\outBus,bus);
+	}
 
 	getAmp {
 		^amp

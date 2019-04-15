@@ -1,6 +1,8 @@
 Instrument : Sequenceable
 {
 
+	var outBus;
+
 	var <>synth;
 	var <>synths;
 	var <>volume;
@@ -18,6 +20,9 @@ Instrument : Sequenceable
 		synths = List.new;
 		main = graph_;
 		super.init(graph_,name_);
+
+		outBus = 0;
+
 	}
 
 	trigger {
@@ -26,6 +31,14 @@ Instrument : Sequenceable
 
 	set {|parameter,value|
 
+	}
+
+
+	outBus_ {|outBus_|
+		outBus = outBus_;
+	}
+	outBus {
+		^outBus;
 	}
 
 	parameters_array {|array|
