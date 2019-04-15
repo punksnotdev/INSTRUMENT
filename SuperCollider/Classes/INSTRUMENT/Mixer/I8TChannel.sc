@@ -7,6 +7,8 @@ I8TChannel : I8TNode
 	var sends;
 	var submixAmps;
 
+	var bus;
+
 	* new {
 		^super.new.init();
 	}
@@ -14,6 +16,7 @@ I8TChannel : I8TNode
 	init {
 
 		// "init mixer".postln;
+		bus = Bus.audio(s,2);
 
 	}
 
@@ -32,6 +35,11 @@ I8TChannel : I8TNode
 
 	}
 
+
+
+	getBus {
+		^bus
+	}
 
 
 	getAmp {
