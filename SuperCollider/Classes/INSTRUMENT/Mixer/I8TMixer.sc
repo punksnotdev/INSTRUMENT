@@ -8,6 +8,9 @@ I8TMixer : I8TNode
 	var sends;
 	var returns;
 
+	var bus;
+	var busSynth;
+	var synthGroup;
 
 	*new {|main_|
 		^super.new.init(main_);
@@ -19,7 +22,20 @@ I8TMixer : I8TNode
 
 		channelGroups = IdentityDictionary.new;
 
-		master = [I8TChannel.new,I8TChannel.new];
+
+
+		bus = Bus.audio(Server.local,2);
+
+		synthGroup = Group.new;
+
+		busSynth = Synth.tail(
+			synthGroup,
+			\audioBus,
+			[\inBus, bus, \outBus,0]
+		);
+
+
+		master = [I8TChannel(synthGroup),I8TChannel(synthGroup)];
 
 		master[0].setName(\system_out_0);
 		master[1].setName(\system_out_1);
@@ -30,6 +46,7 @@ I8TMixer : I8TNode
 		master[1].addOutput(
 			(name:\system_out_1,channel:1)
 		);
+
 
 	}
 
@@ -75,7 +92,7 @@ I8TMixer : I8TNode
 
 			if( node.isKindOf( Instrument ) ) {
 
-				channel = I8TChannel();
+				channel = I8TChannel(synthGroup);
 
 				this.setupChannel( node, channel );
 
@@ -96,7 +113,7 @@ I8TMixer : I8TNode
 
 					channelGroup = channelGroups[group.name];
 
-					channel = I8TChannel();
+					channel = I8TChannel(synthGroup);
 
 					channelGroup[node.name] = channel;
 
@@ -127,6 +144,7 @@ I8TMixer : I8TNode
 	setupChannel{|node, channel|
 		if( node.isKindOf(I8TNode)){
 
+			channel.setSynthGroup( synthGroup );
 			channel.setInput( node );
 			channel.addOutput( master[0] );
 			channel.addOutput( master[1] );

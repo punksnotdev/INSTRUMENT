@@ -12,15 +12,19 @@ I8TChannel : I8TNode
 
 	var synthGroup;
 
-	* new {
-		^super.new.init();
+	* new {|synthGroup_|
+		^super.new.init(synthGroup_);
 	}
 
-	init {
+	init {|synthGroup_|
 
 		bus = Bus.audio(Server.local,2);
 
-		synthGroup = Group.new;
+		if( synthGroup_.notNil, {
+			synthGroup = synthGroup_;
+		}, {
+			synthGroup = Group.new;
+		});
 
 		busSynth = Synth.tail(
 			synthGroup,
@@ -51,6 +55,7 @@ I8TChannel : I8TNode
 		^bus
 	}
 
+	
 
 	getAmp {
 		^amp
