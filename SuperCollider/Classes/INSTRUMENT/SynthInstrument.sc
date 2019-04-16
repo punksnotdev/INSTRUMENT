@@ -27,9 +27,31 @@ SynthInstrument : Instrument
     fxSynth = nil;
     fxBus = Bus.audio(Server.local,2);
 
+
+	outBus = 0;
+
     super.init(graph_,name_);
 
   }
+
+
+
+  	outBus_ {|outBus_|
+  		outBus = outBus_;
+  	}
+  	outBus {
+  		^outBus;
+  	}
+
+  	group_ {|group_|
+  		group = group_;
+        group.register;
+        groupID = group.nodeID;
+  	}
+  	group {
+  		^group;
+  	}
+
 
 
     autostart {

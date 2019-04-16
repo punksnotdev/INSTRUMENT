@@ -2,6 +2,7 @@ Instrument : Sequenceable
 {
 
 	var outBus;
+	var outGroup;
 
 	var <>synth;
 	var <>synths;
@@ -21,7 +22,6 @@ Instrument : Sequenceable
 		main = graph_;
 		super.init(graph_,name_);
 
-		outBus = 0;
 
 	}
 
@@ -33,13 +33,6 @@ Instrument : Sequenceable
 
 	}
 
-
-	outBus_ {|outBus_|
-		outBus = outBus_;
-	}
-	outBus {
-		^outBus;
-	}
 
 	parameters_array {|array|
 		var parameters_array = List.new;

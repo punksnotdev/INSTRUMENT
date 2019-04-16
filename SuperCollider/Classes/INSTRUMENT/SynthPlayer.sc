@@ -126,25 +126,6 @@ SynthPlayer : SynthInstrument
 				synth.register;
 			}, {
 
-				/*
-				var initNodeID = nodeID;
-				// s.sendBundle(0,["/n_free",nodeID]);
-				// if( synth.isPlaying, {
-					initNodeID = s.nextNodeID;
-					// synth.release;
-				// });
-
-				synth = Synth.basicNew( synthdef.asSymbol, s, initNodeID );
-				synth.register;
-				synths.add(synth);
-				nodeIDs[initNodeID]=true;
-				// [[\out,fxBus]++parameters].postln;
-				// s.sendBundle(0,synth.addToHeadMsg(group, [\freq,300]));
-
-				s.sendBundle(0,synth.addToHeadMsg(group, parameters));
-
-				*/
-
 				synth = Synth.head( group, synthdef.asSymbol, parameters );
 
 				synth.register;
@@ -230,7 +211,8 @@ SynthPlayer : SynthInstrument
 										\t_trig,1,
 										\freq,((octave*12)+note).midicps,
 										\note,(octave*12)+note,
-										\amp, amp
+										\amp, amp,
+										\out, outBus
 										]++this.parameters_array(use_synth_parameters)
 									);
 
@@ -257,7 +239,8 @@ SynthPlayer : SynthInstrument
 												\freq,((octave*12)+note).midicps,
 												\note,(octave*12)+note,
 												\amp, amp,
-												\legato,0
+												\legato,0,
+												\out, outBus
 												]++this.parameters_array(use_synth_parameters)
 											);
 
