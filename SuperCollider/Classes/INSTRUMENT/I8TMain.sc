@@ -372,7 +372,7 @@ I8TMain : Event
 
 				if( something.isKindOf(Collection)) {
 
-					this.addMixerGroup( something, key );
+					item = this.addMixerGroup( something, key );
 
 				};
 
@@ -457,126 +457,130 @@ I8TMain : Event
 
 	addMixerGroup {|group_,key_|
 
-		var item;
+		if( key_.notNil ) {
 
-		var newGroup;
+			var item;
 
-		var allValid = true;
+			var newGroup;
+
+			var allValid = true;
+
+			var key = key_;
+			// var key = group_.name;
+
+			group_.collect({|childItem|
+				if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
+					allValid = false;
+				};
+			});
+
+			if( allValid == true ) {
 
 
-		// var key = group_.name;
-		var key = key_;
+				if( groups[key].notNil, {
 
-		["key", key].postln;
+					var currentGroup = groups[key];
 
-		group_.collect({|childItem|
-			if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
-				allValid = false;
-			};
-		});
+					group_.collect({|childItem,childItemKey|
 
-		if( allValid == true ) {
+						if( currentGroup.keys.includes(childItemKey),
+						{
+							currentGroup[childItemKey].synthdef=childItem.synthdef;
+						},
+						{
 
+							currentGroup[childItemKey]=childItem;
 
-			if( groups[key].notNil, {
-
-				var currentGroup = groups[key];
-
-				group_.collect({|childItem,childItemKey|
-
-					if( currentGroup.keys.includes(childItemKey),
-					{
-						currentGroup[childItemKey].synthdef=childItem.synthdef;
-					},
-					{
-
-						currentGroup[childItemKey]=childItem;
+						});
 
 					});
 
-				});
+					mixer.addChannel( currentGroup );
 
-				mixer.addChannel( currentGroup );
-
-				item = currentGroup;
-
-			}, {
-
-
-				if( group_.isKindOf(InstrumentGroup), {
-
-					newGroup = group_;
-
-					newGroup.name = key;
-
+					item = currentGroup;
 
 				}, {
 
-					newGroup = InstrumentGroup.new;
 
-					newGroup.name = key;
+					if( group_.isKindOf(InstrumentGroup), {
 
-					group_.collect({
+						newGroup = group_;
 
-					  arg childItem,childItemKey;
+						newGroup.name = key;
 
-					  // if childItem name is a node, add it
-					  if( childItem.isKindOf(I8TNode) ) {
 
-						if( (nodes.includes( childItem ) == false), {
+					}, {
 
-						  childItem.name=childItemKey;
+						newGroup = InstrumentGroup.new;
 
-						  this.setupMixerNode( childItem );
+						newGroup.name = key;
+
+						group_.collect({
+
+						  arg childItem,childItemKey;
+
+						  // if childItem name is a node, add it
+						  if( childItem.isKindOf(I8TNode) ) {
+
+							if( (nodes.includes( childItem ) == false), {
+
+							  childItem.name=childItemKey;
+
+							  this.setupMixerNode( childItem );
+
+							});
+
+							newGroup.put( childItemKey, childItem );
+
+						  };
+
+						  if( childItem.isKindOf(InstrumentGroup) ) {
+							if( groups.includes(childItem) ) {
+							  newGroup.put( childItem.name, childItem );
+							};
+						  };
+
+						  if( childItem.isKindOf(Symbol)) {
+
+							var childItemName = childItem;
+
+							if( nodes[childItemName].notNil, {
+							  newGroup.put( childItemName, nodes[childItemName] );
+							}, {
+							  // if childItem name is a group
+							  if( groups[childItemName].notNil, {
+								// add its childItems
+								newGroup.put( childItemName, groups[childItemName] );
+							  });
+							});
+
+						  }
 
 						});
-
-						newGroup.put( childItemKey, childItem );
-
-					  };
-
-					  if( childItem.isKindOf(InstrumentGroup) ) {
-						if( groups.includes(childItem) ) {
-						  newGroup.put( childItem.name, childItem );
-						};
-					  };
-
-					  if( childItem.isKindOf(Symbol)) {
-
-						var childItemName = childItem;
-
-						if( nodes[childItemName].notNil, {
-						  newGroup.put( childItemName, nodes[childItemName] );
-						}, {
-						  // if childItem name is a group
-						  if( groups[childItemName].notNil, {
-							// add its childItems
-							newGroup.put( childItemName, groups[childItemName] );
-						  });
-						});
-
-					  }
 
 					});
+
+
+					newGroup.main = this;
+
+
+					groups[key] = newGroup;
+
+					item = groups[key];
+
+					mixer.addChannel( newGroup );
+
 
 				});
 
 
-				newGroup.main = this;
-
-				mixer.addChannel( newGroup );
-
-				groups[key] = newGroup;
-
-				item = groups[key];
-
-			});
+			};
 
 
-		};
+			^item;
 
+		}
 
-		^item;
 	}
 
 
@@ -586,7 +590,7 @@ I8TMain : Event
 
 			if( group.name.notNil, {
 
-				this.addMixerGroup(group,group.name);
+				^this.addMixerGroup(group,group.name);
 
 			}, {
 

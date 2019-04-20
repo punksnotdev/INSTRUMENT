@@ -89,79 +89,90 @@
 	addChannel {|node,group|
 
 
-		if( this.isValidSource( node ) ) {
+		if( outbus.isKindOf(Bus), {
 
-			var channel, channelGroup;
+			if( this.isValidSource( node ) ) {
 
-			if( node.isKindOf( Instrument ) ) {
+				var channel, channelGroup;
 
-				if( group.isKindOf(InstrumentGroup), {
+				if( node.isKindOf( Instrument ) ) {
 
-					channelGroup = channelGroups[ group.name ];
+					if( group.isKindOf(InstrumentGroup), {
 
-					if( channelGroup.isKindOf( IdentityDictionary ), {
-						["Mixer: Instrument Group already exists",group.name].postln;
-						if( channelGroup.keys.includes( node.name ) == false, {
-							channel = I8TChannel();
+						channelGroup = channelGroups[ group.name ];
 
+						if( channelGroup.isKindOf( IdentityDictionary ), {
+							["Mixer: Instrument Group already exists",group.name].postln;
+							if( channelGroup.keys.includes( node.name ) == false, {
+								channel = I8TChannel();
+								channel.setOutbus( outbus );
+
+							}, {
+								["Mixer:", group.name, "already includes node key"].postln;
+							})
 						}, {
-							["Mixer:", group.name, "already includes node key"].postln;
-						})
+
+							channel = I8TChannel();
+							channel.setOutbus( outbus );
+							channelGroups[ group.name ] = IdentityDictionary.new;
+							channelGroup=channelGroups[ group.name ];
+
+							["Mixer: Instrument Group doesn't exist",group.name].postln;
+						});
 					}, {
+						// no group
+						if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
 
-						channel = I8TChannel();
-						channelGroups[ group.name ] = IdentityDictionary.new;
-						channelGroup=channelGroups[ group.name ];
+							["Mixer: no group", node.name].postln;
+							channel = I8TChannel();
+							channel.setOutbus( outbus );
 
-						["Mixer: Instrument Group doesn't exist",group.name].postln;
+							channelGroups[node.name]=IdentityDictionary.new;
+							channelGroup = channelGroups[node.name];
+
+						};
+
 					});
-				}, {
-					// no group
-					if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
 
-						["Mixer: no group", node.name].postln;
-						channel = I8TChannel();
-
-						channelGroups[node.name]=IdentityDictionary.new;
-						channelGroup = channelGroups[node.name];
-
-					};
-
-				});
-
-				channelGroup[node.name]=channel;
+					channelGroup[node.name]=channel;
 
 
-				this.setupChannel( node, channel );
+					this.setupChannel( node, channel );
 
-				^channelGroup[node.name];
+					^channelGroup[node.name];
 
 
-			};
-
-			if( node.isKindOf( InstrumentGroup ) ) {
-
-				var instrumentGroup = node;
-				var channelGroup = channelGroups[instrumentGroup.name];
-
-				if( channelGroup.isKindOf(IdentityDictionary) == false )
-				{
-					["Mixer: added new group", instrumentGroup.name ].postln;
-					channelGroup = IdentityDictionary.new;
-					channelGroups[instrumentGroup.name] = channelGroup;
 				};
 
-				instrumentGroup.keysValuesDo({|k,v|
-					if(channelGroups[instrumentGroup.name][ k ].isKindOf(I8TChannel)==false) {
-						["Mixer: add new group child", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
-						this.addChannel( v, instrumentGroup );
+				if( node.isKindOf( InstrumentGroup ) ) {
+
+					var instrumentGroup = node;
+					var channelGroup = channelGroups[instrumentGroup.name];
+
+					if( channelGroup.isKindOf(IdentityDictionary) == false )
+					{
+						["Mixer: added new group", instrumentGroup.name ].postln;
+						channelGroup = IdentityDictionary.new;
+						channelGroups[instrumentGroup.name] = channelGroup;
 					};
-				});
+
+					instrumentGroup.keysValuesDo({|k,v|
+						if(channelGroups[instrumentGroup.name][ k ].isKindOf(I8TChannel)==false) {
+							["Mixer: add new group child", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
+							this.addChannel( v, instrumentGroup );
+						};
+					});
+
+				};
+
 
 			};
+		}, {
 
+			"Mixer: No Outbus defined".warn;
 
-		};
+		});
+
 
 		["Not a valid Source", node].postln;
 
