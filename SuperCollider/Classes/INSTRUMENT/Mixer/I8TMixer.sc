@@ -146,15 +146,15 @@
 
 				if( channelGroup.isKindOf(IdentityDictionary) == false )
 				{
-					["Mixer: added new group", node.name ].postln;
+					["Mixer: added new group", instrumentGroup.name ].postln;
 					channelGroup = IdentityDictionary.new;
-					channelGroups[node.name] = channelGroup;
+					channelGroups[instrumentGroup.name] = channelGroup;
 				};
 
 				instrumentGroup.keysValuesDo({|k,v|
-					if(channelGroups[ k ].isKindOf(I8TChannel)==false) {
-						["Mixer: add new child group", node.name, k ].postln;
-						this.addChannel( v, channelGroup );
+					if(channelGroups[instrumentGroup.name][ k ].isKindOf(I8TChannel)==false) {
+						["Mixer: add new child group", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
+						this.addChannel( v, instrumentGroup );
 					};
 				});
 
@@ -163,7 +163,7 @@
 
 		};
 
-		"Not a valid Source".warn;
+		["Not a valid Source", node].warn;
 
 		^nil
 

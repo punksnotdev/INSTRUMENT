@@ -434,7 +434,7 @@ I8TMain : Event
 
 								      childItem.name=childItemKey;
 
-								      this.addNodeToGroup(
+								      this.setupNode(
 										  	newGroup, childItem
 									  );
 
@@ -567,10 +567,8 @@ I8TMain : Event
 
 
 
-	addNodeToGroup {|group, node|
-		if( node.isNil, {
-			node = group;
-
+	setupNode {|node|
+		if( node.isKindOf( I8TNode ) ) {
 			if( nodes.includes( node ) == false ) {
 
 				this.addNode( node, node.name );
@@ -579,31 +577,14 @@ I8TMain : Event
 					node.play;
 				};
 
-				if( mixer[group.name].isNil ) {
-					mixer[group.name] = group;
-				};
-
-				mixer.addChannel( node, group );
-
-			};
-
-		}, {
-			if( nodes.includes( node ) == false ) {
-
-				this.addNode( node, node.name );
-
-				if( playing == true ) {
-					node.play;
-				};
-
-				if( mixer[group.name].isNil ) {
-					mixer[group.name] = group;
-				};
-
-				mixer.addChannel( node, group );
+				// if( mixer[group.name].isNil ) {
+				// 	mixer[group.name] = group;
+				// };
+				//
+				// mixer.addChannel( node, group );
 
 			};
-		});
+		};
 
 	}
 

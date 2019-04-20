@@ -34,7 +34,6 @@ I8TChannel : I8TNode
 			synthGroup,
 			\addToTail
 		);
-		["Group", synthGroup, busSynth].postln;
 
 
 	}
