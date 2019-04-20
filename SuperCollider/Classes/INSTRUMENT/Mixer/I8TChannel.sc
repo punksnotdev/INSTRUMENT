@@ -8,6 +8,7 @@ I8TChannel : I8TNode
 	var submixAmps;
 
 	var bus;
+	var outbus;
 	var busSynth;
 
 	var synthGroup;
@@ -67,6 +68,15 @@ I8TChannel : I8TNode
 	setInput {|input_|
 		super.setInput(input_);
 		input.set(\outBus,bus);
+	}
+
+
+	getOutbus {
+		^outbus
+	}
+	setOutbus {|outbus_|
+		outbus = outbus_;
+		busSynth.set(\out,outbus);
 	}
 
 	getSynthGroup {
