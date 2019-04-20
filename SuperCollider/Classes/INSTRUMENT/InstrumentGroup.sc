@@ -128,11 +128,12 @@ InstrumentGroup : Event
 
 		if( something.isKindOf(I8TNode) ) {
 
-			if( main.notNil ) {
-				main.addNodeToGroup( this, something );
-			};
 
 			super.put(key,something);
+
+			if( main.notNil ) {
+				main.updateMixerGroup( this );
+			};
 
 			^super.at(key)
 

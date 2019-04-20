@@ -153,7 +153,7 @@
 
 				instrumentGroup.keysValuesDo({|k,v|
 					if(channelGroups[instrumentGroup.name][ k ].isKindOf(I8TChannel)==false) {
-						["Mixer: add new child group", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
+						["Mixer: add new group child", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
 						this.addChannel( v, instrumentGroup );
 					};
 				});
@@ -163,7 +163,7 @@
 
 		};
 
-		["Not a valid Source", node].warn;
+		["Not a valid Source", node].postln;
 
 		^nil
 

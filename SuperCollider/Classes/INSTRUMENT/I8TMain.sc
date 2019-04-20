@@ -372,117 +372,7 @@ I8TMain : Event
 
 				if( something.isKindOf(Collection)) {
 
-					var newGroup;
-
-					var allValid = true;
-
-					something.collect({|childItem|
-						if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
-							allValid = false;
-						};
-					});
-
-					if( allValid == true ) {
-
-
-						if( groups[key].notNil, {
-
-							var currentGroup = groups[key];
-
-							something.collect({|childItem,childItemKey|
-
-								if( currentGroup.keys.includes(childItemKey),
-								{
-									currentGroup[childItemKey].synthdef=childItem.synthdef;
-								},
-								{
-
-									currentGroup[childItemKey]=childItem;
-
-								});
-
-							});
-
-							mixer.addChannel( currentGroup );
-
-							item = currentGroup;
-
-						}, {
-
-
-							if( something.isKindOf(InstrumentGroup), {
-
-								newGroup = something;
-
-								newGroup.name = key;
-
-
-							}, {
-
-								newGroup = InstrumentGroup.new;
-
-								newGroup.name = key;
-
-								something.collect({
-
-								  arg childItem,childItemKey;
-
-								  // if childItem name is a node, add it
-								  if( childItem.isKindOf(I8TNode) ) {
-
-								    if( (nodes.includes( childItem ) == false), {
-
-								      childItem.name=childItemKey;
-
-								      this.setupNode(
-										  	newGroup, childItem
-									  );
-
-								    });
-
-								    newGroup.put( childItemKey, childItem );
-
-								  };
-
-								  if( childItem.isKindOf(InstrumentGroup) ) {
-								    if( groups.includes(childItem) ) {
-								      newGroup.put( childItem.name, childItem );
-								    };
-								  };
-
-								  if( childItem.isKindOf(Symbol)) {
-
-								    var childItemName = childItem;
-
-								    if( nodes[childItemName].notNil, {
-								      newGroup.put( childItemName, nodes[childItemName] );
-								    }, {
-								      // if childItem name is a group
-								      if( groups[childItemName].notNil, {
-								        // add its childItems
-								        newGroup.put( childItemName, groups[childItemName] );
-								      });
-								    });
-
-								  }
-
-								});
-
-							});
-
-
-							newGroup.main = this;
-
-							mixer.addChannel( newGroup );
-
-							groups[key] = newGroup;
-
-							item = groups[key];
-
-						});
-
-
-					};
+					this.addMixerGroup( something, key );
 
 				};
 
@@ -565,9 +455,150 @@ I8TMain : Event
 
 	}
 
+	addMixerGroup {|group_,key_|
+
+		var item;
+
+		var newGroup;
+
+		var allValid = true;
 
 
-	setupNode {|node|
+		// var key = group_.name;
+		var key = key_;
+
+		["key", key].postln;
+
+		group_.collect({|childItem|
+			if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
+				allValid = false;
+			};
+		});
+
+		if( allValid == true ) {
+
+
+			if( groups[key].notNil, {
+
+				var currentGroup = groups[key];
+
+				group_.collect({|childItem,childItemKey|
+
+					if( currentGroup.keys.includes(childItemKey),
+					{
+						currentGroup[childItemKey].synthdef=childItem.synthdef;
+					},
+					{
+
+						currentGroup[childItemKey]=childItem;
+
+					});
+
+				});
+
+				mixer.addChannel( currentGroup );
+
+				item = currentGroup;
+
+			}, {
+
+
+				if( group_.isKindOf(InstrumentGroup), {
+
+					newGroup = group_;
+
+					newGroup.name = key;
+
+
+				}, {
+
+					newGroup = InstrumentGroup.new;
+
+					newGroup.name = key;
+
+					group_.collect({
+
+					  arg childItem,childItemKey;
+
+					  // if childItem name is a node, add it
+					  if( childItem.isKindOf(I8TNode) ) {
+
+						if( (nodes.includes( childItem ) == false), {
+
+						  childItem.name=childItemKey;
+
+						  this.setupMixerNode( childItem );
+
+						});
+
+						newGroup.put( childItemKey, childItem );
+
+					  };
+
+					  if( childItem.isKindOf(InstrumentGroup) ) {
+						if( groups.includes(childItem) ) {
+						  newGroup.put( childItem.name, childItem );
+						};
+					  };
+
+					  if( childItem.isKindOf(Symbol)) {
+
+						var childItemName = childItem;
+
+						if( nodes[childItemName].notNil, {
+						  newGroup.put( childItemName, nodes[childItemName] );
+						}, {
+						  // if childItem name is a group
+						  if( groups[childItemName].notNil, {
+							// add its childItems
+							newGroup.put( childItemName, groups[childItemName] );
+						  });
+						});
+
+					  }
+
+					});
+
+				});
+
+
+				newGroup.main = this;
+
+				mixer.addChannel( newGroup );
+
+				groups[key] = newGroup;
+
+				item = groups[key];
+
+			});
+
+
+		};
+
+
+		^item;
+	}
+
+
+	updateMixerGroup {|group|
+
+		if( group.isKindOf(InstrumentGroup)) {
+
+			if( group.name.notNil, {
+
+				this.addMixerGroup(group,group.name);
+
+			}, {
+
+				"Main: cannot update group with nil name".postln;
+
+			});
+
+		}
+
+	}
+
+	setupMixerNode {|node|
 		if( node.isKindOf( I8TNode ) ) {
 			if( nodes.includes( node ) == false ) {
 
