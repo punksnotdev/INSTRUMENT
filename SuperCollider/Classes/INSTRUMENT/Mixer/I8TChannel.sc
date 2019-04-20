@@ -12,25 +12,29 @@ I8TChannel : I8TNode
 
 	var synthGroup;
 
-	* new {|synthGroup_|
-		^super.new.init(synthGroup_);
+	*new {|synthGroup_|
+		^super.new.init(this.graph,synthGroup_);
 	}
 
-	init {|synthGroup_|
+	init {|graph_,synthGroup_|
 
-		bus = Bus.audio(Server.local,2);
-
-		if( synthGroup_.notNil, {
+		if( synthGroup_.isKindOf(Group), {
 			synthGroup = synthGroup_;
 		}, {
 			synthGroup = Group.new;
 		});
 
-		busSynth = Synth.tail(
-			synthGroup,
+
+		bus = Bus.audio(Server.local,numChannels:2);
+
+		busSynth = Synth(
 			\audioBus,
-			[\inBus,bus]
+			[\inBus,bus],
+			synthGroup,
+			\addToTail
 		);
+		["Group", synthGroup, busSynth].postln;
+
 
 	}
 
@@ -63,6 +67,13 @@ I8TChannel : I8TNode
 	setInput {|input_|
 		super.setInput(input_);
 		input.set(\outBus,bus);
+	}
+
+	getSynthGroup {
+		^synthGroup
+	}
+	setSynthGroup {|synthGroup_|
+		synthGroup.set(\outBus,bus);
 	}
 
 	getAmp {

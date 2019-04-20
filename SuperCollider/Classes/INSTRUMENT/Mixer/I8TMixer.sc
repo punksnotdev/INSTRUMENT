@@ -10,7 +10,8 @@ I8TMixer : I8TNode
 
 	var bus;
 	var busSynth;
-	var synthGroup;
+	var mixGroup;
+	var masterGroup;
 
 	*new {|main_|
 		^super.new.init(main_);
@@ -26,19 +27,21 @@ I8TMixer : I8TNode
 
 		bus = Bus.audio(Server.local,2);
 
-		synthGroup = Group.new;
-
-		busSynth = Synth.tail(
-			synthGroup,
-			\audioBus,
-			[\inBus, bus, \outBus,0]
-		);
+		mixGroup = Group.new;
+		masterGroup = Group.new;
 
 
-		master = [I8TChannel(synthGroup),I8TChannel(synthGroup)];
+
+		master = [
+			I8TChannel(mixGroup),
+			I8TChannel(mixGroup)
+		];
 
 		master[0].setName(\system_out_0);
 		master[1].setName(\system_out_1);
+
+		master[0].setOutbus(\system_out_0);
+		master[1].setOutbus(\system_out_1);
 
 		master[0].addOutput(
 			(name:\system_out_0,channel:0)
@@ -60,7 +63,6 @@ I8TMixer : I8TNode
 
 
 	put {|key, something|
-
 		^this.addChannel( something );
 
 	}
@@ -85,6 +87,7 @@ I8TMixer : I8TNode
 
 	addChannel {|node,group|
 
+
 		if( this.isValidSource( node ) ) {
 
 			var channel;
@@ -92,42 +95,46 @@ I8TMixer : I8TNode
 
 			if( node.isKindOf( Instrument ) ) {
 
-				channel = I8TChannel(synthGroup);
+				var targetGroup;
+
+				if( group.isKindOf(InstrumentGroup) == false, {
+
+
+				}, {
+
+					if( channelGroups[ group.name ].isKindOf( IdentityDictionary ), {
+						"Instrument Group already exists".postln;
+					}, {
+
+						channel = I8TChannel(targetGroup);
+
+					});
+				});
+
+				channelGroup = channelGroups[group.name];
+
+
+				if( mixGroup.isKindOf(Group) == false ) {
+					var targetGroup = Group.new;
+					mixGroup = targetGroup;
+				};
+
+
+
+				channel = I8TChannel(mixGroup);
+
+				channelGroup[node.name] = channel;
 
 				this.setupChannel( node, channel );
 
-				if( group.isNil ) {
-
-					if( channelGroups[node.name].isNil, {
-						channelGroup = IdentityDictionary.new;
-					}, {
-						["channelGroup is not nil!"].warn;
-					});
-				};
-
-				if( group.isKindOf(InstrumentGroup)) {
-
-					if(channelGroups[group.name].isNil ) {
-						channelGroups[group.name] = IdentityDictionary.new;
-					};
-
-					channelGroup = channelGroups[group.name];
-
-					channel = I8TChannel(synthGroup);
-
-					channelGroup[node.name] = channel;
-
-					this.setupChannel( node, channel );
-
-					^channelGroups[node.name];
-
-				};
+				^channelGroup[node.name];
+				
 
 			};
 
 			if( node.isKindOf( InstrumentGroup ) ) {
 
-				channelGroups[node.name] = IdentityDictionary.new;
+				// channelGroups[node.name] = IdentityDictionary.new;
 
 			};
 
@@ -144,7 +151,7 @@ I8TMixer : I8TNode
 	setupChannel{|node, channel|
 		if( node.isKindOf(I8TNode)){
 
-			channel.setSynthGroup( synthGroup );
+			channel.setSynthGroup( mixGroup );
 			channel.setInput( node );
 			channel.addOutput( master[0] );
 			channel.addOutput( master[1] );

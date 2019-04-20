@@ -376,8 +376,8 @@ I8TMain : Event
 
 					var allValid = true;
 
-					something.collect({|i|
-						if( (( i.isKindOf(Symbol) ) || ( i.isKindOf(I8TNode) )) == false) {
+					something.collect({|childItem|
+						if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
 							allValid = false;
 						};
 					});
@@ -389,8 +389,6 @@ I8TMain : Event
 
 							var currentGroup = groups[key];
 
-							[currentGroup.keys,something.keys].postln;
-
 							something.collect({|childItem,childItemKey|
 
 								if( currentGroup.keys.includes(childItemKey),
@@ -398,74 +396,84 @@ I8TMain : Event
 									currentGroup[childItemKey].synthdef=childItem.synthdef;
 								},
 								{
-									var newItem;
-									currentGroup[childItemKey]=childItem;
-									// newItem = this.addNode(childItem,childItemKey);
 
-									// if( playing == true ) {
-									// 	newItem.play;
-									// }
+									currentGroup[childItemKey]=childItem;
 
 								});
 
 							});
 
+							mixer.addChannel( currentGroup );
+
 							item = currentGroup;
 
 						}, {
 
-							newGroup = InstrumentGroup.new;
 
-							newGroup.name = key;
+							if( something.isKindOf(InstrumentGroup), {
+
+								newGroup = something;
+
+								newGroup.name = key;
+
+
+							}, {
+
+								newGroup = InstrumentGroup.new;
+
+								newGroup.name = key;
+
+								something.collect({
+
+								  arg childItem,childItemKey;
+
+								  // if childItem name is a node, add it
+								  if( childItem.isKindOf(I8TNode) ) {
+
+								    if( (nodes.includes( childItem ) == false), {
+
+								      childItem.name=childItemKey;
+
+								      this.addNodeToGroup(
+										  	newGroup, childItem
+									  );
+
+								    });
+
+								    newGroup.put( childItemKey, childItem );
+
+								  };
+
+								  if( childItem.isKindOf(InstrumentGroup) ) {
+								    if( groups.includes(childItem) ) {
+								      newGroup.put( childItem.name, childItem );
+								    };
+								  };
+
+								  if( childItem.isKindOf(Symbol)) {
+
+								    var childItemName = childItem;
+
+								    if( nodes[childItemName].notNil, {
+								      newGroup.put( childItemName, nodes[childItemName] );
+								    }, {
+								      // if childItem name is a group
+								      if( groups[childItemName].notNil, {
+								        // add its childItems
+								        newGroup.put( childItemName, groups[childItemName] );
+								      });
+								    });
+
+								  }
+
+								});
+
+							});
+
 
 							newGroup.main = this;
 
 							mixer.addChannel( newGroup );
-
-							something.collect({
-
-							  arg childItem,childItemKey;
-
-							  // if childItem name is a node, add it
-							  if( childItem.isKindOf(I8TNode) ) {
-
-							    if( (nodes.includes( childItem ) == false), {
-
-							      childItem.name=childItemKey;
-
-							      this.addNodeToGroup(
-									  	newGroup, childItem
-								  );
-
-							    });
-
-							    newGroup.put( childItemKey, childItem );
-
-							  };
-
-							  if( childItem.isKindOf(InstrumentGroup) ) {
-							    if( groups.includes(childItem) ) {
-							      newGroup.put( childItem.name, childItem );
-							    };
-							  };
-
-							  if( childItem.isKindOf(Symbol)) {
-
-							    var childItemName = childItem;
-
-							    if( nodes[childItemName].notNil, {
-							      newGroup.put( childItemName, nodes[childItemName] );
-							    }, {
-							      // if childItem name is a group
-							      if( groups[childItemName].notNil, {
-							        // add its childItems
-							        newGroup.put( childItemName, groups[childItemName] );
-							      });
-							    });
-
-							  }
-
-							});
 
 							groups[key] = newGroup;
 
@@ -560,22 +568,42 @@ I8TMain : Event
 
 
 	addNodeToGroup {|group, node|
+		if( node.isNil, {
+			node = group;
 
-		if( nodes.includes( node ) == false ) {
+			if( nodes.includes( node ) == false ) {
 
-			this.addNode( node, node.name );
+				this.addNode( node, node.name );
 
-			if( playing == true ) {
-				node.play;
+				if( playing == true ) {
+					node.play;
+				};
+
+				if( mixer[group.name].isNil ) {
+					mixer[group.name] = group;
+				};
+
+				mixer.addChannel( node, group );
+
 			};
 
-			if( mixer[group.name].isNil ) {
-				mixer.addChannel( group );
+		}, {
+			if( nodes.includes( node ) == false ) {
+
+				this.addNode( node, node.name );
+
+				if( playing == true ) {
+					node.play;
+				};
+
+				if( mixer[group.name].isNil ) {
+					mixer[group.name] = group;
+				};
+
+				mixer.addChannel( node, group );
+
 			};
-
-			mixer.addChannel( node, group );
-
-		}
+		});
 
 	}
 
