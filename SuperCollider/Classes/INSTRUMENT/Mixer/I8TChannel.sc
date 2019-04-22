@@ -74,6 +74,7 @@ I8TChannel : I8TNode
 		super.setInput(input_);
 		input.group=synthGroup;
 		input.outbus=bus;
+		input.set(\amp,amp);
 	}
 
 	group_ {|group_|
@@ -106,6 +107,7 @@ I8TChannel : I8TNode
 	}
 	setAmp {|amp_|
 		amp = amp_;
+		input.set(\amp,amp)
 	}
 
 
