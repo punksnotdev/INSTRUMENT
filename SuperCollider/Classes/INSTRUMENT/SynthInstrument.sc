@@ -4,6 +4,7 @@ SynthInstrument : Instrument
     var group;
 	var groupID;
 
+    var outbus;
 
   var fx_parameters;
 
@@ -28,7 +29,7 @@ SynthInstrument : Instrument
     fxBus = Bus.audio(Server.local,2);
 
 
-	outBus = 0;
+	outbus = 0;
 
     super.init(graph_,name_);
 
@@ -36,15 +37,16 @@ SynthInstrument : Instrument
 
 
 
-  	outBus_ {|outBus_|
-  		outBus = outBus_;
+  	outbus_ {|outbus_|
+  		outbus = outbus_;
   	}
-  	outBus {
-  		^outBus;
+  	outbus {
+  		^outbus;
   	}
 
   	group_ {|group_|
   		group = group_;
+        "To do: check if should register??".warn;
         group.register;
         groupID = group.nodeID;
   	}

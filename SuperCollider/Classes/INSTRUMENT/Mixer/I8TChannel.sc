@@ -7,32 +7,31 @@ I8TChannel : I8TNode
 	var sends;
 	var submixAmps;
 
-	var bus;
-	var outbus;
+	var <bus;
+	var <>outbus;
 	var busSynth;
 
 	var synthGroup;
 
 	*new {|synthGroup_|
-		^super.new.init(this.graph,synthGroup_);
+		^super.new(this.graph,synthGroup_);
 	}
 
 	init {|graph_,synthGroup_|
 
+
 		if( synthGroup_.isKindOf(Group), {
-			synthGroup = synthGroup_;
+			synthGroup = Group.tail(synthGroup_);
 		}, {
-			synthGroup = Group.new;
+			synthGroup = Group.tail(Server.default.defaultGroup);
 		});
 
+		bus = Bus.audio(Server.local,2);
 
-		bus = Bus.audio(Server.local,numChannels:2);
-
-		busSynth = Synth(
-			\audioBus,
-			[\inBus,bus],
+		busSynth = Synth.tail(
 			synthGroup,
-			\addToTail
+			\audioBus,
+			[\inBus,bus]
 		);
 
 
@@ -59,6 +58,13 @@ I8TChannel : I8TNode
 		^bus
 	}
 
+	setBus {|bus_|
+		bus = bus_;
+		if( busSynth.isKindOf(Synth)) {
+			busSynth.set(\inBus,bus);
+		}
+	}
+
 
 
 	getInput {
@@ -66,23 +72,33 @@ I8TChannel : I8TNode
 	}
 	setInput {|input_|
 		super.setInput(input_);
-		input.set(\outBus,bus);
+		input.group=synthGroup;
+		input.outbus=bus;
 	}
 
+	group_ {|group_|
+		"channel group CHANGE".postln;
+		super.group=group_;
+	}
 
 	getOutbus {
 		^outbus
 	}
 	setOutbus {|outbus_|
+
 		outbus = outbus_;
-		busSynth.set(\out,outbus);
+
+		busSynth.set(\outBus,outbus);
+
 	}
 
 	getSynthGroup {
 		^synthGroup
 	}
 	setSynthGroup {|synthGroup_|
-		synthGroup.set(\outBus,bus);
+		if(synthGroup_.isKindOf(Group)) {
+			synthGroup=synthGroup_;
+		}
 	}
 
 	getAmp {

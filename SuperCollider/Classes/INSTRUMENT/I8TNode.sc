@@ -82,10 +82,9 @@ I8TNode : I8TeventListener
 		};
 
 		inputs[input_.name]=input_;
-		inputs.postln;
 
 	}
-	
+
 	addOutput{|output_|
 
 		if(outputs.isNil) {
@@ -93,10 +92,9 @@ I8TNode : I8TeventListener
 		};
 
 		outputs[output_.name]=output_;
-		outputs.postln;
 
 	}
-	
+
 
 	removeInput{|key|
 		inputs.removeAt(key);

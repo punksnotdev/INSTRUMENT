@@ -53,7 +53,6 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
-
 				if( this.currentEvent().notNil, {
 
 					var channel;

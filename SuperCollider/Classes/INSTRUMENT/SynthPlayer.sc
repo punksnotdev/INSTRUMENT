@@ -36,7 +36,7 @@ SynthPlayer : SynthInstrument
 				synthdef = \test;
 			});
 
-			// this.createSynth();
+			// this.createSynth([\out,outbus]);
 			synth_parameters = IdentityDictionary.new;
 			super.init(graph_,name_);
 
@@ -69,7 +69,7 @@ SynthPlayer : SynthInstrument
 		// 	synth_parameters=IdentityDictionary.new;
 		// });
 
-		this.createSynth();
+		this.createSynth([\out,outbus]);
 
 		^synthdef
 
@@ -125,7 +125,6 @@ SynthPlayer : SynthInstrument
 				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
 				synth.register;
 			}, {
-
 				synth = Synth.head( group, synthdef.asSymbol, parameters );
 
 				synth.register;
@@ -212,7 +211,7 @@ SynthPlayer : SynthInstrument
 										\freq,((octave*12)+note).midicps,
 										\note,(octave*12)+note,
 										\amp, amp,
-										\out, outBus
+										\out, outbus
 										]++this.parameters_array(use_synth_parameters)
 									);
 
@@ -240,7 +239,7 @@ SynthPlayer : SynthInstrument
 												\note,(octave*12)+note,
 												\amp, amp,
 												\legato,0,
-												\out, outBus
+												\out, outbus
 												]++this.parameters_array(use_synth_parameters)
 											);
 
@@ -331,7 +330,7 @@ SynthPlayer : SynthInstrument
 							computed_params.removeAt(\amp);
 							use_synth_parameters = computed_params;
 						});
-						this.createSynth([\t_trig,1,\amp,amp]++this.parameters_array(use_synth_parameters));
+						this.createSynth([\t_trig,1,\amp,amp,\out,outbus]++this.parameters_array(use_synth_parameters));
 					}
 				},
 				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
@@ -416,7 +415,7 @@ SynthPlayer : SynthInstrument
 	}
 
 	start {
-		this.createSynth();
+		this.createSynth([\out,outbus]);
 	}
 
 

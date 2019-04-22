@@ -1,7 +1,6 @@
 Instrument : Sequenceable
 {
 
-	var outBus;
 	var outGroup;
 
 	var <>synth;
