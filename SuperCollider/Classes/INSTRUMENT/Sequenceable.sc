@@ -13,6 +13,7 @@ Sequenceable : I8TNode
 	var currentPatternEvent;
 	var currentPattern;
 	var currentParameter;
+	var minSpeed;
 
 	*new{|graph_,name_|
 		^super.new.init(this.graph,name_);
@@ -23,6 +24,7 @@ Sequenceable : I8TNode
 		clock = 1;
 		amp = 1;
 		nextPatternKey = 0;
+		minSpeed=1/32;
 		this.play;
 	}
 
@@ -212,7 +214,10 @@ Sequenceable : I8TNode
 
 	speed {|n|
 		if(n.isKindOf(Number)) {
-			var speed = max(n.asFloat,0.01);
+			var speed = max(n.asFloat,minSpeed);
+			if( n < minSpeed ) {
+				("speed set to min speed value:" ++ minSpeed).warn
+			};
 			if( currentPatternEvent.notNil ) {
 				currentPatternEvent.parameters[\speed]=speed;
 			};

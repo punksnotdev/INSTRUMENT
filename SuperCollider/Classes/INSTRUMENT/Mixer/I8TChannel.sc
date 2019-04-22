@@ -1,4 +1,4 @@
-I8TChannel : I8TNode
+I8TChannel : Sequenceable
 {
 
 	var amp;
@@ -100,6 +100,21 @@ I8TChannel : I8TNode
 		if(synthGroup_.isKindOf(Group)) {
 			synthGroup=synthGroup_;
 		}
+	}
+
+
+	set {|parameter,value|
+
+		if( parameter == \amp, {
+			if( value.isKindOf(Number), {
+				this.setAmp(value)
+			}, {
+				"Amp value not a number".warn;
+			});
+		}, {
+			["Channel: parameter", parameter, "not handled"].postln;
+		});
+
 	}
 
 	getAmp {
