@@ -31,4 +31,4 @@ m.midi_mix=();
 i.midiControllers.inputs = inputs;
 
 
-"MIDIMIX setup".postln;
+( "Created Namespace:" ++ b[\name] ).postln;

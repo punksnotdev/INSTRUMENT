@@ -1,17 +1,20 @@
 Instrument : Sequenceable
 {
 
-	var outGroup;
 
 	var <>synth;
 	var <>synths;
 	var <>volume;
 	var <>octave;
 	var <main;
+	// var synthGroup;
+	var outGroup;
+
 
 	*new{|name_|
 		^super.new.init(name_,this.graph);
 	}
+
 
 	init{|graph_,name_|
 

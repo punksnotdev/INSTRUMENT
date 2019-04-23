@@ -1,11 +1,13 @@
 
+// Setup: INSTRUMENT
 
 i=INSTRUMENT();
 
+i.tempo = e.tempo;
 
 
 
-i.tempo = 176;
+// Setup: ProxySpace
 
 ProxySpace.clearAll;
 p = ProxySpace.push(s);
@@ -36,18 +38,32 @@ p.quant = 4;
 
 
 
+
+// Setup: Loopers
+
 i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Looper/looper/*');
 
 
 "Loopers Synths: Loaded".postln;
 
+(thisProcess.nowExecutingPath.dirname ++ "/create-loopers.scd").load;
+
+
+// Setup: Synths
 
 i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Sounds/SynthDefs/*');
 
 "Synths: Loaded".postln;
 
 
-(thisProcess.nowExecutingPath.dirname ++ "/create-loopers.scd").load;
 
+// Setup: MIDI
+
+
+(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-setup.scd").load;
+(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-out-setup.scd").load;
+
+
+// Start:
 
 i.play;

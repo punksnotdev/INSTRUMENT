@@ -46,6 +46,7 @@ ControllerManager {
 		var mappedParam1;
 		var inputMap;
 
+
 		mappedParam1 = param1;
 
 
@@ -62,9 +63,11 @@ ControllerManager {
 
 		});
 
-		controllerList.collect({|controller|
 
-			if(controller.notNil, {
+		if( ( controllerList.isKindOf(Collection) && (controllerList.size > 0) ), {
+
+			controllerList.collect({|controller|
+
 
 				var target = controller.target;
 				var key = controller.key;
@@ -113,17 +116,18 @@ ControllerManager {
 				);
 
 
-			}, {
-
-				["ControllerManager:", "no controller set", source, param1, param2].postln;
-
 			});
+
+		}, {
+
+			["ControllerManager:", "no controller set", source, param1, param2].postln;
 
 		});
 	}
 
 
 	map {|controller,target,parameter,range|
+
 		var mapping = (
 			controller: controller,
 			target: target,
@@ -132,6 +136,8 @@ ControllerManager {
 			key: controller.key,
 			protocol: controller.protocol,
 		);
+
+["ControllerManager: map", controller,target,parameter,range].postln;
 
 		mapping.postln;
 		// var newKey = target.name ++ '-' ++ target.parameter;

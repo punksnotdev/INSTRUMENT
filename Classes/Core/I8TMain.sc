@@ -267,10 +267,13 @@ I8TMain : Event
 
 
 	map {|controller,target,parameter,range|
+
+		["Main: map", controller,target,parameter,range].postln;
+
 		if( controller.isKindOf(MIDIController), {
 
 			if( (
-				target.isKindOf(Instrument)
+				target.isKindOf(Sequenceable)
 				||
 				target.isKindOf(InstrumentGroup)
 				||

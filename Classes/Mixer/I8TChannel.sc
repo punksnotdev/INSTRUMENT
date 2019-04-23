@@ -9,9 +9,9 @@ I8TChannel : Sequenceable
 
 	var <bus;
 	var <>outbus;
-	var busSynth;
-
+	var synth;
 	var synthGroup;
+
 
 	*new {|synthGroup_|
 		^super.new(this.graph,synthGroup_);
@@ -28,7 +28,7 @@ I8TChannel : Sequenceable
 
 		bus = Bus.audio(Server.local,2);
 
-		busSynth = Synth.tail(
+		synth = Synth.tail(
 			synthGroup,
 			\audioBus,
 			[\inBus,bus]
@@ -60,8 +60,8 @@ I8TChannel : Sequenceable
 
 	setBus {|bus_|
 		bus = bus_;
-		if( busSynth.isKindOf(Synth)) {
-			busSynth.set(\inBus,bus);
+		if( synth.isKindOf(Synth)) {
+			synth.set(\inBus,bus);
 		}
 	}
 
@@ -89,7 +89,7 @@ I8TChannel : Sequenceable
 
 		outbus = outbus_;
 
-		busSynth.set(\outBus,outbus);
+		synth.set(\outBus,outbus);
 
 	}
 

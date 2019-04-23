@@ -79,4 +79,4 @@ n[22] = ( target: 7, note: 0 );
 n[24] = ( target: 7, note: 1 );
 
 
-"MIDIMIX map loaded".postln;
+( "Loaded Map:" ++ b[\name] ).postln;

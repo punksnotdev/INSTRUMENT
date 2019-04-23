@@ -5,18 +5,17 @@
 	var outMidiDevicesNames;
 	var specs = IdentityDictionary.new;
 
-	e = ();
-
-	e.modeMatrix = ModeMatrix.new();
+	// e = ();
+	//
+	// e.modeMatrix = ModeMatrix.new();
 
 
 	(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/midimix/midimix.map.scd").load;
 
-
 	specs[ b[\name].asSymbol ] = b;
 
-	(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/launchpad/launchpad.map.scd").load;
-	specs[ o[\name].asSymbol ] = o;
+	// (thisProcess.nowExecutingPath.dirname ++ "/../../midi/controllers/launchpad/launchpad.map.scd").load;
+	// specs[ o[\name].asSymbol ] = o;
 
 	Tdef(\MIDI, { 1.do {
 
@@ -24,7 +23,11 @@
 
 		MIDIClient.init(verbose:false);
 
-		3.wait;
+		4.wait;
+
+		"MIDIClient: init".postln;
+		"----".postln;
+
 		i.startMidi();
 
 		midi = i.controllerManager.midi;
@@ -43,12 +46,12 @@
 		m=();
 
 
-		(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/mpk_mk2/mpk_mk2.namespace.scd").load;
+		// (thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/mpk_mk2/mpk_mk2.namespace.scd").load;
 
 		(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/midimix/midimix.namespace.scd").load;
 
-		i.midi.launchpad.addControllerGroup(\note,\buttons);
-		i.midi.launchpad.groups.buttons.addController(\buttons);
+		// i.midi.launchpad.addControllerGroup(\note,\buttons);
+		// i.midi.launchpad.groups.buttons.addController(\buttons);
 
 		// (thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/launchpad/launchpad.namespace.scd").load;
 
@@ -57,30 +60,30 @@
 
 
 
-		i.map(
-			i.midi.launchpad.groups.buttons.controllers.buttons,
-			e.modeMatrix,
-			\note
-		);
+		// i.map(
+		// 	i.midi.launchpad.groups.buttons.controllers.buttons,
+		// 	e.modeMatrix,
+		// 	\note
+		// );
 
-		e.modeMatrix.midiTarget = i.midi.launchpad;
+		// e.modeMatrix.midiTarget = i.midi.launchpad;
 
 
-		i.data.modeMatrix = e.modeMatrix;
+		// i.data.modeMatrix = e.modeMatrix;
 
 
 		CmdPeriod.add({MIDIClient.disposeClient;});
 
+		//
+		// 72.do{|j|
+		// 	i.midi.launchpad.send(j,90+24.rand+(j%32));
+		// };
+		// Array.series(8,8,9).collect{|num|
+		// 	i.midi.launchpad.send(num,3);
+		// 	// 0.25.wait;
+		// };
 
-		72.do{|j|
-			i.midi.launchpad.send(j,90+24.rand+(j%32));
-		};
-		Array.series(8,8,9).collect{|num|
-			i.midi.launchpad.send(num,3);
-			// 0.25.wait;
-		};
-
-		"Launchpad: Loaded".postln;
+		// "Launchpad: Loaded".postln;
 
 
 
