@@ -1,7 +1,18 @@
 # INSTRUMENT
 ### v0.1.prealpha.0
 #### afterthought
-##### v.0.2
+
+# IMPORTANT / IMPORTANTE
+
+#### English:
+INSTRUMENT is about to be publicly released on April 24th, 2019. Expect turbulence in this repository while this date approaches.
+
+#### Español:
+INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
+
+Espere turbulencia en este repositorio mientras se acerca esa fecha.
+
+Ese día se publicará este documento en español. 
 
 
 - [Disclaimers:](#disclaimers)
