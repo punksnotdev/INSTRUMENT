@@ -83,7 +83,13 @@
 		// 	// 0.25.wait;
 		// };
 
-		// "Launchpad: Loaded".postln;
+		if( e.isKindOf(Environment), {
+			e.readyMessage.postln;
+		}, {
+			"-------------------------".warn;
+			"R E A D Y".postln;
+			"-------------------------".warn;
+		});
 
 
 

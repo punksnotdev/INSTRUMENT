@@ -1,7 +1,8 @@
 (
 	e=Environment[
 
-		'tempo' -> 192
+		'tempo' -> 192,
+		'readyMessage' -> '¡ L I S T O !'
 
 	];
 
