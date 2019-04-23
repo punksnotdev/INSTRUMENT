@@ -5,16 +5,52 @@
 # IMPORTANT / IMPORTANTE
 
 #### English:
-INSTRUMENT is about to be publicly released on April 24th, 2019. Expect turbulence in this repository while this date approaches.
+INSTRUMENT is about to be publicly released on April 24th, 2019.
+
+Expect turbulence in this repository while this date approaches.
+
+Spanish translation of the following document will be published that day in this same hyperlink.
 
 #### Español:
 INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
 
 Espere turbulencia en este repositorio mientras se acerca esa fecha.
 
-Ese día se publicará este documento en español.
+La traducción al español del siguiente documento se publicará ese día en este mismo hipervínculo.
 
 
+- [Disclaimers:](#disclaimers)
+- [Installation:](#installation)
+- [Quick Tutorial](#tutorial)
+	- [Basic sequencing:](#basic-sequencing)
+	- [Set tempo](#set-tempo)
+	- [Add silences](#add-silences)
+	- [Change instrument parameters:](#change-instrument-parameters)
+	- [Repeating events:](#repeating-events)
+	- [Changing steps duration](#changing-steps-duration)
+	- [Sequencing patterns](#sequencing-patterns)
+	- [Removing patterns:](#removing-patterns)
+	- [Control pattern speeds](#control-pattern-speeds)
+	- [Controlling pattern repetitions](#controlling-pattern-repetitions)
+	- [Jump to position](#jump-to-position)
+	- [Create a basic beat](#create-a-basic-beat)
+	- [Setting parameters](#setting-parameters)
+	- [Sequencing parameters](#sequencing-parameters)
+	- [Sequencing synthdefs:](#sequencing-synthdefs)
+	- [Effects (FX)](#effects-fx)
+	- [Sequencing fx parameters](#sequencing-fx-parameters)
+	- [Sequencing fx](#sequencing-fx)
+	- [Grouping INSTRUMENTS](#grouping-instruments)
+	- [Array manipulation](#array-manipulation)
+	- [Sequencing events:](#sequencing-events)
+	- [Controlling NodeProxies](#controlling-nodeproxies)
+	- [Chord progressions:](#chord-progressions)
+	- [Sequencing different progressions:](#sequencing-different-progressions)
+	- [Loopers:](#loopers)
+	- [MIDI Control:](#midi-control)
+	- [Synthesizers](#synthesizers)
+
+<!-- /TOC -->
 
 
 # Quick Tutorial
