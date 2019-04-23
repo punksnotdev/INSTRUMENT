@@ -1,4 +1,4 @@
-SynthDef(\audioBus, {|inBus=99,outBus=0,amp=1,pan=0|
+SynthDef(\audioBus, {|inBus=99,outBus=99,amp=1,pan=0|
 
 	var sig = In.ar(inBus) * amp;
 
