@@ -1,5 +1,0 @@
-SequenceEvent : I8Tevent
-{
-
-
-}

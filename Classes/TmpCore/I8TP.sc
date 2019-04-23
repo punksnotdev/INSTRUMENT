@@ -1,3 +1,0 @@
-P : I8TPattern
-{
-}
