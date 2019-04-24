@@ -82,6 +82,8 @@ Load included Synthdefs:
 First, lets load the included synths.
 
 ```SuperCollider
+
+i = INSTRUMENT();
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
 ```
 
