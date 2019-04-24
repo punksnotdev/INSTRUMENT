@@ -227,6 +227,7 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_|
 		if( (fx_.isKindOf(Symbol)) ) {
+			this.removeFx(fx_);
 			fxChain[fx_] = Synth.before(
 				outSynth,
 				fx_,

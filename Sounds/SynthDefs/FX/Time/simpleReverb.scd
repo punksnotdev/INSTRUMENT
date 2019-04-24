@@ -18,10 +18,10 @@ SynthDef(\reverb, {
 	targetRoom=room;
 	targetDamp=damp;
 
-	if( roomdamp.notNil ) {
-		targetRoom=Lag2.kr(roomdamp,lag);
-		targetDamp=Lag2.kr(roomdamp,lag);
-	};
+	// if( roomdamp.notNil ) {
+	// 	targetRoom=Lag2.kr(roomdamp,lag);
+	// 	targetDamp=Lag2.kr(roomdamp,lag);
+	// };
 
 	dsp = FreeVerb.ar( sig, 1, targetRoom, targetDamp );
 
