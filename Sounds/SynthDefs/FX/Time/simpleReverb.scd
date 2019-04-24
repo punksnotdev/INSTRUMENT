@@ -4,7 +4,7 @@ SynthDef(\reverb, {
 	outBus=0,
 	wet=0.5,
 	room=0.3,
-	damp=0.3
+	damp=0.3,
 	amp=1;
 
 	var sig;

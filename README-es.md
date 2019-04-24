@@ -5,7 +5,9 @@
 # IMPORTANT / IMPORTANTE
 
 #### English:
-INSTRUMENT is about to be publicly released on April 24th, 2019. Expect turbulence in this repository while this date approaches.
+INSTRUMENT is about to be publicly released on April 24th, 2019.
+
+Expect turbulence in this repository while this date approaches.
 
 #### Español:
 INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
@@ -20,20 +22,19 @@ Ese día se publicará este documento en español.
 # Quick Tutorial
 
 
+INSTRUMENT es una librería para hacer música con código en vivo, dentro del entorno de SuperCollider.
 
-INSTRUMENT is a library for musical live-coding inside the SuperCollider environment.
+Ofrece una interfaz de programación (API) para la creación de composiciones desde cero, "al vuelo". INSTRUMENT se enfoca en el lenguaje musical: ritmo, armonía, melodía, procesamiento de audio.
 
-It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
+Una de sus motivaciones principales es facilitar la integración con la increíble JITLib, que permite incorporar síntesis mutante en los actos en vivo.
 
-One of its main motivations is to easily integrate with the awesome JITLib, that allows musicians to incorporate mutating synthesis onto their live acts.
+INSTRUMENT también facilita la conexión con dispositivos MIDI, con una interfaz sencilla que facilita su mapeo a diferentes parámetros sonoros.
 
-INSTRUMENT also enables the connection of MIDI controllers with an easy interface that facilitates its mapping to different sound parameters.
+Su nombe está inspirado por el famoso documental sobre Fugazi, la banda favorita de furenku.
 
-It's name is inspired by the famous documentary about Fugazi, furenku's favorite band.
+INSTRUMENT es una iniciativa independiente y voluntara operando desde el subterráneo del código en vivo mexicano.
 
-INSTRUMENT is a voluntary independent open source initiative operating from the Mexican live coding underground
-
-For questions, inquiries, help, or fun conversations, please contact me at furenku@gmail.com.
+Para preguntas, consultas, conversaciones divertidas, por favor contactarme a furenku@gmail.com.
 
 
 ## Disclaimers:
@@ -57,10 +58,11 @@ Evaluate following code lines or groups one by one:
 
 ```SuperCollider
 
-// First, boot
+~~// First, boot~~
+// Primero, arrancar el servidor
 (
-// useful snippet for increasing default memory
-
+~~// useful snippet for increasing default memory~~
+// fragmento de código útil para incrementar memoria
 s.options.memSize=2048*1024;
 s.options.maxNodes=128*1024;
 s.boot;
@@ -72,22 +74,24 @@ s.boot;
 ## Synths
 
 
-Load included Synthdefs:
+Cargar los Synthdefs incluidos
 
 
+Primero, carguemos los sintetizadores incluidos.
 
-First, lets load the included synths.
 
 ```SuperCollider
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
 ```
 
-See **Automatic Synth Loading**, at the end of this document for more info.
+
+Ver **Cargado Automático de Sintetizadores**, al final de este documento para más información.
 
 
 
 
-## Basic sequencing:
+## Secuenciado básico:
+
 
 ```SuperCollider
 
@@ -98,7 +102,7 @@ i.kick=INSTRUMENT(\kickElectro);
 i.kick.seq("1");
 
 
-// trigger synths with different amp values:
+// disparar sintes con distintos valores de amplitud
 i.kick.seq("1 0.1 0.75");
 
 // this also works
@@ -894,11 +898,10 @@ i.loop2.stop;
 
 ## Synthesizers
 
-
-
-### Automatic Synth Loading
 INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
 
+
+## Cargado Automático de Sintetizadores
 
 **loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
 
@@ -924,7 +927,7 @@ i.synths.kick.kickDeep
 ```
 
 
-### Using your own Synthdefs
+## Using your own Synthdefs
 
 You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
 

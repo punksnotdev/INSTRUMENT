@@ -166,7 +166,7 @@ I8TMain : Event
 		sequencer.stop;
 
 		"I N S T R U M E N T stopped".postln;
-		
+
 	}
 
 	go {|time=0|
