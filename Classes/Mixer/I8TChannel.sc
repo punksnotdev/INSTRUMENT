@@ -227,10 +227,10 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_|
 		if( (fx_.isKindOf(Symbol)) ) {
-			fxChain[fx_] = Synth.after(
-				fxChain[\eq],
+			fxChain[fx_] = Synth.before(
+				outSynth,
 				fx_,
-				[\in,bus,\out,bus]
+				[\inBus,bus,\outBus,bus]
 			);
 		}
 	}

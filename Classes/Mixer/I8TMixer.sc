@@ -216,9 +216,9 @@ I8TMixer : I8TNode
 		var channelGroup = channelGroups[key.asSymbol];
 
 		if( channelGroup.notNil ) {
-
+			channelGroup.keys.postln;
 			if( channelGroup.keys.size == 1 ) {
-				^channelGroups[key][channelGroup.keys.keyAt(0)];
+				^channelGroup[key];
 			};
 			^channelGroup
 		};
