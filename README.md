@@ -5,15 +5,18 @@
 # IMPORTANT / IMPORTANTE
 
 #### English:
-INSTRUMENT is about to be publicly released on April 24th, 2019. Expect turbulence in this repository while this date approaches.
+INSTRUMENT is about to be publicly released on April 24th, 2019.
+
+Expect turbulence in this repository while this date approaches.
+
+Spanish translation of the following document will be published that day in this same hyperlink.
 
 #### Español:
 INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
 
 Espere turbulencia en este repositorio mientras se acerca esa fecha.
 
-Ese día se publicará este documento en español.
-
+La traducción al español del siguiente documento se publicará ese día en este mismo hipervínculo.
 
 
 
@@ -82,7 +85,7 @@ First, lets load the included synths.
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
 ```
 
-See **Automatic Synth Loading"", at the end of this document for more info.
+See **Automatic Synth Loading**, at the end of this document for more info.
 
 
 
