@@ -1,15 +1,19 @@
 I8TChannel : Sequenceable
 {
 
-	var amp;
+	var <inSynth;
+	var <outSynth;
+
+	var amp,inAmp,outAmp;
 	var pan;
+
 	var fxChain;
+
 	var sends;
-	var submixAmps;
 
 	var <bus;
 	var <>outbus;
-	var synth;
+
 	var synthGroup;
 
 
@@ -26,13 +30,38 @@ I8TChannel : Sequenceable
 			synthGroup = Group.tail(Server.default.defaultGroup);
 		});
 
+		fxChain = IdentityDictionary.new;
+
 		bus = Bus.audio(Server.local,2);
 
-		synth = Synth.tail(
+
+
+		outSynth = Synth.tail(
 			synthGroup,
 			\audioBus,
-			[\inBus,bus]
+			[\inBus,bus,\outBus,bus]
 		);
+
+		// inSynth = Synth.before(
+		// 	outSynth,
+		// 	\audioBus,
+		// 	[\inBus,bus]
+		// );
+
+
+		fxChain[\eq] = Synth.before(
+			outSynth,
+			\eq,
+			[\in,bus,\out,bus]
+		);
+
+		fxChain[\comp] = Synth.before(
+			outSynth,
+			\simpleCompressor,
+			[\in,bus,\out,bus]
+		);
+
+
 
 
 	}
@@ -60,8 +89,8 @@ I8TChannel : Sequenceable
 
 	setBus {|bus_|
 		bus = bus_;
-		if( synth.isKindOf(Synth)) {
-			synth.set(\inBus,bus);
+		if( inSynth.isKindOf(Synth)) {
+			inSynth.set(\inBus,bus);
 		}
 	}
 
@@ -70,11 +99,13 @@ I8TChannel : Sequenceable
 	getInput {
 		^input
 	}
+
 	setInput {|input_|
+
 		super.setInput(input_);
 		input.group=synthGroup;
 		input.outbus=bus;
-		input.set(\amp,amp);
+
 	}
 
 	group_ {|group_|
@@ -85,11 +116,12 @@ I8TChannel : Sequenceable
 	getOutbus {
 		^outbus
 	}
+
 	setOutbus {|outbus_|
 
 		outbus = outbus_;
 
-		synth.set(\outBus,outbus);
+		outSynth.set(\outBus,outbus);
 
 	}
 
@@ -105,32 +137,69 @@ I8TChannel : Sequenceable
 
 	set {|parameter,value|
 
-		if( parameter == \amp, {
-			if( value.isKindOf(Number), {
-				this.setAmp(value)
-			}, {
-				"Amp value not a number".warn;
-			});
-		}, {
-			["Channel: parameter", parameter, "not handled"].postln;
-		});
 
+		if( ( parameter.notNil && value.notNil ) ) {
+			if( (value.isKindOf(Number)||value.isKindOf(String)), {
+				switch( parameter.asSymbol,
+					\amp, {
+						this.setAmp(value.asFloat);
+						^this
+					},
+					\pan, {
+						this.setPan(value.asFloat);
+						^this
+					},
+					\low, {
+						this.fxSet(\eq,parameter,value.asFloat);
+						^this
+					},
+					\middle, {
+						this.fxSet(\eq,parameter,value.asFloat);
+						^this
+					},
+					\high, {
+						this.fxSet(\eq,parameter,value.asFloat);
+						^this
+					}
+				);
+
+				["Channel: parameter", parameter, "not handled"].postln;
+
+			}, {
+
+				"Set value not a number".warn;
+
+			});
+		};
+
+		"Must provide non-nil 'parameter' or 'value'".warn;
 	}
+
 
 	getAmp {
 		^amp
 	}
+
 	setAmp {|amp_|
-		amp = amp_;
-		input.set(\amp,amp)
+		outAmp = amp_;
+		outSynth.set(\amp,outAmp)
 	}
 
 
 	getPan {
 		^pan
 	}
+
 	setPan {|pan_|
 		pan = pan_;
+		outSynth.set(\pan,pan)
+	}
+
+	amp_{|amp_|
+		this.setAmp(amp_);
+	}
+	amp{|amp_|
+		^amp;
 	}
 
 
@@ -140,11 +209,27 @@ I8TChannel : Sequenceable
 	setFxChain {|fxChain_|
 		fxChain = fxChain_;
 	}
+
 	addToFxChain {|key,fxChain_|
 		//add to fxChains
 	}
 	removeFromFxChain {|key|
 		//remove from fxChains
+	}
+
+	fx {|name|
+		^fxChain[name]
+	}
+
+	fxSet {|name,parameter,value|
+
+		if(fxChain[name].isKindOf(Synth)){
+			if( (parameter.isKindOf(Symbol)&&value.isKindOf(Number)) ) {
+
+				fxChain[name].set(parameter.asSymbol,value);
+
+			};
+		}
 	}
 
 	getSends {
@@ -161,17 +246,5 @@ I8TChannel : Sequenceable
 	}
 
 
-	getSubmixAmps {
-		^submixAmps
-	}
-	setSubmixAmps {|submixAmps_|
-		submixAmps = submixAmps_;
-	}
-	addToSubmixAmps {|key,submixAmp_|
-		//add to submixAmps
-	}
-	removeFromSubmixAmps {|key|
-		//remove from submixAmps
-	}
 
 }

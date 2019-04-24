@@ -1,4 +1,5 @@
 (
+
 	e=Environment[
 
 		'tempo' -> 192,
@@ -11,10 +12,12 @@
 	s.options.memSize=2048*1024;
 	s.options.maxNodes=128*1024;
 	// (thisProcess.nowExecutingPath.dirname ++ "/tools/setup/variables.scd").load;
-	s.volume=(-12);
 
 	s.boot;
 	s.doWhenBooted({
+
+		s.volume=(-3);
+		().play;
 
 		(thisProcess.nowExecutingPath.dirname ++ "/tools/setup/setup.scd").load;
 

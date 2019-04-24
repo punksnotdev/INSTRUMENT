@@ -30,7 +30,7 @@ SynthDef(\pitchShift, {
         0.004            // time dispersion
     );
 
-	ReplaceOut.ar(outBus,Pan2.ar(sig));
+	Out.ar(outBus,Pan2.ar(sig));
 
 
 },

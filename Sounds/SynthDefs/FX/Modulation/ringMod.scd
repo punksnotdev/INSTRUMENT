@@ -7,8 +7,7 @@ SynthDef(\ringMod, {
 
 	rmod = sig * SinOsc.ar(freq);
 
-	ReplaceOut.ar(outBus, Pan2.ar( rmod, 0 ));
+	Out.ar(outBus, Pan2.ar( rmod, 0 ));
 
 }).store;
 )
-	

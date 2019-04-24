@@ -25,7 +25,8 @@
 
 		4.wait;
 
-		"MIDIClient: init".postln;
+		"----".postln;
+		"MIDIClient: initializing...".postln;
 		"----".postln;
 
 		i.startMidi();
@@ -40,6 +41,7 @@
 
 		midi.addDevices( inMidiDevicesNames, specs );
 
+		"MIDI: added devices.".postln;
 
 		1.wait;
 
@@ -83,13 +85,23 @@
 		// 	// 0.25.wait;
 		// };
 
+		"".postln;
+		"".postln;
+		"-------------------------".warn;
+		"".postln;
+		"".postln;
+
 		if( e.isKindOf(Environment), {
 			e.readyMessage.postln;
 		}, {
-			"-------------------------".warn;
 			"R E A D Y".postln;
-			"-------------------------".warn;
 		});
+
+		"".postln;
+		"".postln;
+		"-------------------------".warn;
+		"".postln;
+		"".postln;
 
 
 
