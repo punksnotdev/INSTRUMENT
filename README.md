@@ -12,7 +12,7 @@ INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
 
 Espere turbulencia en este repositorio mientras se acerca esa fecha.
 
-Ese día se publicará este documento en español. 
+Ese día se publicará este documento en español.
 
 
 - [Disclaimers:](#disclaimers)
@@ -103,27 +103,133 @@ s.boot;
 
 ```
 
+## Synths
+
+
+Load included Synthdefs:
+
+
+
+First, lets load the included synths.
+
+**loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
+
+```SuperCollider
+
+i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
+
+// Multiple hierarchies support.
+
+i.synths.percussion.drums == i.synths.drums
+i.synths.percussion.drums.kick == i.synths.kick
+i.synths.percussion.drums.kick.kickDeep == i.synths.kickDeep
+
+// choose one Synthdef at random
+
+i.synths.kick.choose.postln;
+i.synths.bass.choose.postln;
+
+// a dictionary
+i.synths.kick.kickDeep
+
+```
+
+
 
 ## Basic sequencing:
 
 ```SuperCollider
 
-
+s.volume=(-12)
 (
-i=INSTRUMENT();
-i[\kick]=INSTRUMENT(\kickElectroKit);
-i[\kick].seq("1");
+i=INSTRUMENT().play;
+i.kick=INSTRUMENT(\kickElectro);
+i.kick.seq("1");
+
+
 // trigger synths with different amp values:
-i[\kick].seq("1 0.5 0.75");
+i.kick.seq("1 0.1 0.75");
 
 // this also works
-i[\kick].seq([1, 0.5, 0.75]);
+i.kick.seq([1, 0.1, 0.75]);
 
-i[\bass]=INSTRUMENT(\tranceBazz);
+i.kick.stop;
+
+
+// Press Ctrl/Cmd + . to stop the server
+
+```
+
+**.seq** method allows to sequence any parameter. In previous example, the default parameter 'trigger' is being automatically passed.
+
+Lets pass a different parameter, *note*.
+
+```SuperCollider
+
+i=INSTRUMENT().play;
+
+i.bass=INSTRUMENT(\tranceBazz);
+
+i.bass.seq(\note, "0 2 3 5");
+
+
+```
+
+There are shorthands 'seq' methods for some common parameters, some of them:
+
+- trigger
+- note
+- chord
+- vol
+- pan
+- fx
+- fxSet
+
+```SuperCollider
+
+(
+i=INSTRUMENT().play;
+
+i.bass=INSTRUMENT(\tranceBazz);
 // play notes
-i[\bass].note("0 2 3");
+i.bass.note("0 2 3 5");
+// make it a bass, please:
+
+i.bass.octave=3;
+
 )
 
+// Efectos
+i.bass.fx=\reverb;
+
+i.bass.fxSet(\wet,1);
+i.bass.fxSet(\wet,0.3);
+
+i.bass.fxSet(\room,7/8);
+i.bass.fxSet(\damp,7/8);
+
+i.bass.fxSet(\room,1/8);
+i.bass.fxSet(\damp,1/8);
+
+i.bass.play;
+
+
+
+// Mixer
+
+
+// Mixer EQ
+
+i.mixer.getChannel(\bass).set(\low,0.5)
+i.mixer.getChannel(\bass).set(\middle,0.5)
+i.mixer.getChannel(\bass).set(\high,1)
+
+
+// Mixer FX
+
+i.mixer.getChannel(\bass).addFx(\gateDistort)
+i.mixer.getChannel(\bass).removeFx(\gateDistort)
+i.mixer.getChannel(\bass).fxSet(\gateDistort,\gain,3**4)
 
 ```
 
@@ -142,9 +248,9 @@ i.tempo=120;
 
 ```SuperCollider
 
-i[\kick].seq("1   0.5");
+i.kick.seq("1   0.5");
 // array notation equivalent:
-i[\kick].seq([1, \r, \r, \r, 0.5]);
+i.kick.seq([1, \r, \r, \r, 0.5]);
 
 
 ```
@@ -154,12 +260,12 @@ i[\kick].seq([1, \r, \r, \r, 0.5]);
 ```SuperCollider
 
 
-i[\kick].amp=1/2;
-i[\kick].amp=3/4;
-i[\kick].amp=1;
+i.kick.amp=1/2;
+i.kick.amp=3/4;
+i.kick.amp=1;
 
-i[\kick].clock=2;
-i[\bass].clock=4;
+i.kick.clock=2;
+i.bass.clock=4;
 
 ```
 
@@ -167,8 +273,8 @@ i[\bass].clock=4;
 
 ```SuperCollider
 
-i[\kick].seq("1   0.5xxxx");
-i[\bass].note("0 2xx 3xxx");
+i.kick.seq("1   0.5xxxx");
+i.bass.note("0 2xx 3xxx");
 
 
 ```
@@ -177,8 +283,8 @@ i[\bass].note("0 2xx 3xxx");
 ```SuperCollider
 
 // al subsequent events are afected
-i[\kick].seq("1 :0.25 1xxx ");
-i[\kick].seq("1 :0.25 1xxx :0.125 1xxx ");
+i.kick.seq("1 :0.25 1xxx ");
+i.kick.seq("1 :0.25 1xxx :0.125 1xxx ");
 
 
 ```
@@ -187,9 +293,16 @@ i[\kick].seq("1 :0.25 1xxx :0.125 1xxx ");
 
 ```SuperCollider
 
-i[\kick][0].seq("1");
-i[\kick][1].seq("1 ");
-i[\kick][2].seq("1  ");
+// Ctrl/Cmd + Period
+
+i=INSTRUMENT().play;
+i.kick=INSTRUMENT(\kickElectro);
+
+
+i.kick.clock=2;
+i.kick[0].seq("1");
+i.kick[1].seq("1xx  1");
+i.kick[2].seq("1  1xx  1 ").speed(2);
 
 ```
 
@@ -198,9 +311,9 @@ i[\kick][2].seq("1  ");
 ```SuperCollider
 
 
-i[\kick].rm(\trigger,0);
-i[\kick].rm(\trigger,1);
-i[\kick].rm(\trigger,2);
+i.kick.rm(\seq,0);
+i.kick.rm(\trigger,1);
+i.kick.rm(\trigger,2);
 
 
 ```
@@ -210,9 +323,9 @@ i[\kick].rm(\trigger,2);
 ```SuperCollider
 
 
-i[\kick][0].seq("1").speed(1);
-i[\kick][1].seq("1").speed(2);
-i[\kick][2].seq("1").speed(4);
+i.kick[0].seq("1").speed(1);
+i.kick[1].seq("1").speed(2);
+i.kick[2].seq("1").speed(4);
 
 
 ```
@@ -221,10 +334,10 @@ i[\kick][2].seq("1").speed(4);
 
 ```SuperCollider
 
-i[\kick][0].seq("1").speed(1).repeat(4);
+i.kick[0].seq("1").speed(1).repeat(4);
 // different names for the same function:
-i[\kick][1].seq("1").speed(2).do(8);
-i[\kick][2].seq("1").speed(4).x(16);
+i.kick[1].seq("1").speed(2).do(8);
+i.kick[2].seq("1").speed(4).x(16);
 
 
 ```
@@ -237,12 +350,12 @@ i[\kick][2].seq("1").speed(4).x(16);
 
 (
 	i = INSTRUMENT();
-	i[\hihat]=INSTRUMENT(\hihatElectroKit);
-	i[\hihat].seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
+	i.hihat=INSTRUMENT(\hihatElectroKit);
+	i.hihat.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
 )
 
-i[\hihat].go(0);
-i[\hihat].go(4);
+i.hihat.go(0);
+i.hihat.go(4);
 
 
 ```
@@ -253,13 +366,13 @@ i[\hihat].go(4);
 
 (
 i = INSTRUMENT();
-i[\kick]=INSTRUMENT(\kickElectro);
-i[\hihat]=INSTRUMENT(\hihatElectroKit);
-i[\clap]=INSTRUMENT(\clapElectroKit);
+i.kick=INSTRUMENT(\kickElectro);
+i.hihat=INSTRUMENT(\hihatElectroKit);
+i.clap=INSTRUMENT(\clapElectroKit);
 
-i[\kick].seq("1").speed(2);
-i[\hihat].seq(" 1").speed(4);
-i[\clap].seq(" 1").speed(2);
+i.kick.seq("1").speed(2);
+i.hihat.seq(" 1").speed(4);
+i.clap.seq(" 1").speed(2);
 )
 
 
@@ -274,14 +387,14 @@ i[\clap].seq(" 1").speed(2);
 
 i = INSTRUMENT();
 
-i[\bass]=INSTRUMENT(\tranceBazz);
-i[\bass].note("0 2 3");
+i.bass=INSTRUMENT(\tranceBazz);
+i.bass.note("0 2 3");
 )
 
-i[\bass].set(\rel,2);
-i[\bass].set(\rel,0.2);
-i[\bass].set(\gain,0.1);
-i[\bass].set(\gain,2);
+i.bass.set(\rel,2);
+i.bass.set(\rel,0.2);
+i.bass.set(\gain,0.1);
+i.bass.set(\gain,2);
 
 ```
 
@@ -293,10 +406,10 @@ i[\bass].set(\gain,2);
 
 
 
-i[\bass].seq(\rel,[2,0.2,1]);
+i.bass.seq(\rel,[2,0.2,1]);
 
 // rests in params:
-i[\bass].seq(\rel,[2,0.2,\r,\r,1]);
+i.bass.seq(\rel,[2,0.2,\r,\r,1]);
 
 
 
@@ -308,9 +421,9 @@ i[\bass].seq(\rel,[2,0.2,\r,\r,1]);
 
 (
 i=INSTRUMENT();
-i[\kick]=INSTRUMENT(\kickDeep);
-i[\kick].seq("1");
-i[\kick].synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
+i.kick=INSTRUMENT(\kickDeep);
+i.kick.seq("1");
+i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 )
 
 
@@ -321,13 +434,13 @@ i[\kick].synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 ```SuperCollider
 
 
-i[\clap].fx=\reverb;
+i.clap.fx=\reverb;
 // setting fx parameters
-i[\clap].fxSet(\wet,1);
-i[\clap].fxSet(\rv1,1);
-i[\clap].fxSet(\rv2,1);
+i.clap.fxSet(\wet,1);
+i.clap.fxSet(\rv1,1);
+i.clap.fxSet(\rv2,1);
 
-i[\clap].fx=nil;
+i.clap.fx=nil;
 
 
 ```
@@ -339,11 +452,11 @@ i[\clap].fx=nil;
 (
 	i = INSTRUMENT();
 
-	i[\clap]=INSTRUMENT(\clapElectroKit);
-	i[\clap].seq(" 1  :0.25 1xx").speed(2);
+	i.clap=INSTRUMENT(\clapElectroKit);
+	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
-	i[\clap].fx = \revlpf;
-	i[\clap].fxSet([
+	i.clap.fx = \revlpf;
+	i.clap.fxSet([
 		(cutoff:3000),
 		(cutoff:1000),
 		(cutoff:2000),
@@ -360,7 +473,7 @@ i[\clap].fx=nil;
 
 ```SuperCollider
 
-i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
+i.clap.fx([\reverb,\distortion,\delay2]).speed(1/4);
 
 
 
@@ -374,27 +487,27 @@ i[\clap].fx([\reverb,\distortion,\delay2]).speed(1/4);
 (
 i = INSTRUMENT();
 
-i[\kick]=INSTRUMENT(\kickElectro);
-i[\hihat]=INSTRUMENT(\hihatElectroKit);
-i[\clap]=INSTRUMENT(\clapElectroKit);
+i.kick=INSTRUMENT(\kickElectro);
+i.hihat=INSTRUMENT(\hihatElectroKit);
+i.clap=INSTRUMENT(\clapElectroKit);
 
-i[\kick].seq("1xx :0.25 1xxx ").speed(2);
-i[\hihat].seq(" 1").speed(4);
-i[\clap].seq(" 1  :0.25 1xx").speed(2);
+i.kick.seq("1xx :0.25 1xxx ").speed(2);
+i.hihat.seq(" 1").speed(4);
+i.clap.seq(" 1  :0.25 1xx").speed(2);
 
 
-i[\drums]=[\kick,\hihat,\clap];
+i.drums=[\kick,\hihat,\clap];
 
-i[\drums].clock=1/2;
-i[\drums].clock=2;
-i[\drums].clock=1;
-i[\drums].amp=1/2;
-i[\drums].amp=1;
+i.drums.clock=1/2;
+i.drums.clock=2;
+i.drums.clock=1;
+i.drums.amp=1/2;
+i.drums.amp=1;
 )
 
 // add fx to group
-i[\drums].fx = \delay2;
-i[\drums].fx = nil;
+i.drums.fx = \delay2;
+i.drums.fx = nil;
 
 
 ```
@@ -408,20 +521,20 @@ i[\drums].fx = nil;
 
 i = INSTRUMENT();
 
-i[\bass]=INSTRUMENT(\tranceBazz);
-i[\hihat]=INSTRUMENT(\hihatElectroKit);
+i.bass=INSTRUMENT(\tranceBazz);
+i.hihat=INSTRUMENT(\hihatElectroKit);
 )
 
-i[\bass].note("0 2 3").pyramid.mirror;
+i.bass.note("0 2 3").pyramid.mirror;
 
 // randomness
-i[\bass].note("0 2 3 5 7 10 12").random;
-i[\bass].note("0 2 3 5 7 10 12").random;
+i.bass.note("0 2 3 5 7 10 12").random;
+i.bass.note("0 2 3 5 7 10 12").random;
 
 
-i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.5); // default value
-i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.25);
-i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.5); // default value
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.25);
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
 
 
 ```
@@ -432,7 +545,7 @@ i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
 
 i.every(4,{
 
-	i[\hihat].seq("1xxxxxxxxx").speed(8).maybe(0.75);
+	i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
 
 });
 
@@ -449,8 +562,8 @@ p=ProxySpace.push(s);
 ~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 4 ! 2 };
 
 
-i[\notes]=INSTRUMENT(~sound);
-i[\notes].seq(\gain,[3,1,13]).speed(1/2);
+i.notes=INSTRUMENT(~sound);
+i.notes.seq(\gain,[3,1,13]).speed(1/2);
 
 
 ```
@@ -465,7 +578,7 @@ i[\notes].seq(\gain,[3,1,13]).speed(1/2);
 
 (
 
-i[\notes].chord([
+i.notes.chord([
 	C(0,\m),
 	C(0,\m,1),
 	C(0,\m,2),
@@ -477,7 +590,7 @@ i[\notes].chord([
 
 // different chord types:
 (
-	i[\notes].chord([
+	i.notes.chord([
 
 		C(0,\M),
 		C(0,\m),
@@ -510,12 +623,12 @@ i[\notes].chord([
 
 (
 
-	i[\notes][0].chord([
+	i.notes[0].chord([
 		C(0,\m),
 		C(1,\M,0,[16]),
 	]).speed(1/2).do(2);
 
-	i[\notes][1].chord([
+	i.notes[1].chord([
 		C(0,\m),
 		C(3,\sus2),
 		C(2,\dim),
@@ -540,123 +653,123 @@ i=INSTRUMENT();
 // create looper connected to audio interface's first audio input:
 
 // record looper for the 1st channel:
-i[\loop1]=Looper(0);
+i.loop1=Looper(0);
 
 //
 
-i[\loop1].rec;
+i.loop1.rec;
 
-i[\loop1].start;
+i.loop1.start;
 
 
-i[\loop1].amp=0.5;
-i[\loop1].amp=1;
-i[\loop1].amp=0;
-i[\loop1].amp=0.3;
-i[\loop1].amp=1;
+i.loop1.amp=0.5;
+i.loop1.amp=1;
+i.loop1.amp=0;
+i.loop1.amp=0.3;
+i.loop1.amp=1;
 
 
 // sequence amp
-i[\loop1].amp("1 0.3 1 0.5 0 0.1")
+i.loop1.amp("1 0.3 1 0.5 0 0.1")
 
 
-i[\loop1].rate = 1/2;
+i.loop1.rate = 1/2;
 
-i[\loop1].rate = -1;
-i[\loop1].rate([1, 2, -1, \r, 3, \r , 1/2]).speed(1);
+i.loop1.rate = -1;
+i.loop1.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(1);
 
 // remove rate sequencer:
 
-i[\loop1].rm(\rate,0);
+i.loop1.rm(\rate,0);
 
 
-i[\loop1].rate(1/8);
-i[\loop1].rate(2.5);
+i.loop1.rate(1/8);
+i.loop1.rate(2.5);
 
 
 // record another layer
-i[\loop1].rec;
-i[\loop1].start;
+i.loop1.rec;
+i.loop1.start;
 
 
 // change rate separately for each of the layers:
 
-i[\loop1].rate(1,0);
-i[\loop1].rate(1.5,1);
+i.loop1.rate(1,0);
+i.loop1.rate(1.5,1);
 
-i[\loop1].rate(3,0);
-i[\loop1].rate(1/4,1);
+i.loop1.rate(3,0);
+i.loop1.rate(1/4,1);
 
-i[\loop1].rate(4,0);
-i[\loop1].rate(1/2,0);
+i.loop1.rate(4,0);
+i.loop1.rate(1/2,0);
 
-i[\loop1].rate(1/2,1);
-i[\loop1].rate(1/4,1);
+i.loop1.rate(1/2,1);
+i.loop1.rate(1/4,1);
 
 
 
 // add fx:
 
-i[\loop1].fx=\reverb;
+i.loop1.fx=\reverb;
 
-i[\loop1].fxSet(\wet,1);
+i.loop1.fxSet(\wet,1);
 
-i[\loop1].fxSet(\rv1,1);
-i[\loop1].fxSet(\rv2,1);
+i.loop1.fxSet(\rv1,1);
+i.loop1.fxSet(\rv2,1);
 
-i[\loop2].fxSet(\gain,33.3);
+i.loop2.fxSet(\gain,33.3);
 
-i[\loop1].fx=\revlpf;
-i[\loop1].fxSet(\cutoff,200)
-i[\loop1].fxSet(\cutoff,1200)
-
-
-i[\loop1].amp(0.5,0)
-i[\loop1].amp(0.5,1)
+i.loop1.fx=\revlpf;
+i.loop1.fxSet(\cutoff,200)
+i.loop1.fxSet(\cutoff,1200)
 
 
+i.loop1.amp(0.5,0)
+i.loop1.amp(0.5,1)
 
-i[\loop1].fx=nil
 
-i[\loop1].amp(0.5);
 
-i[\loop1].rate(1);
+i.loop1.fx=nil
+
+i.loop1.amp(0.5);
+
+i.loop1.rate(1);
 
 
 // create another separate looper:
 
-i[\loop2]=Looper(0);
-i[\loop2].rec;
-i[\loop2].start;
-i[\loop2].amp=0.5;
-i[\loop2].rate([1, 2, -1, \r, 3, \r , 1/2]).speed(2);
-i[\loop2].rm(\rate,0);
-i[\loop2].amp("1 0.3 1 0.5 0 0.1").speed(4)
-i[\loop2].rm(\amp,0);
-i[\loop2].rm(\amp,0);
-i[\loop2].rate = 1/3;
-i[\loop2].rate = -1;
-i[\loop2].rate(1/2);
-i[\loop2].rate(-3);
-i[\loop2].rec;
-i[\loop2].start;
-i[\loop2].rate(1,0);
-i[\loop2].rate(4,1);
-i[\loop2].rate(2/3,1);
-i[\loop2].rate(5/4,1);
-i[\loop2].fx=\distortion;
-i[\loop2].fxSet(\wet,1/2);
-i[\loop2].amp(0.01);
-i[\loop2].fxSet(\cutoff,1440);
-i[\loop2].fx=nil
-i[\loop2].amp(0.5);
-i[\loop2].rate(1);
+i.loop2=Looper(0);
+i.loop2.rec;
+i.loop2.start;
+i.loop2.amp=0.5;
+i.loop2.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(2);
+i.loop2.rm(\rate,0);
+i.loop2.amp("1 0.3 1 0.5 0 0.1").speed(4)
+i.loop2.rm(\amp,0);
+i.loop2.rm(\amp,0);
+i.loop2.rate = 1/3;
+i.loop2.rate = -1;
+i.loop2.rate(1/2);
+i.loop2.rate(-3);
+i.loop2.rec;
+i.loop2.start;
+i.loop2.rate(1,0);
+i.loop2.rate(4,1);
+i.loop2.rate(2/3,1);
+i.loop2.rate(5/4,1);
+i.loop2.fx=\distortion;
+i.loop2.fxSet(\wet,1/2);
+i.loop2.amp(0.01);
+i.loop2.fxSet(\cutoff,1440);
+i.loop2.fx=nil
+i.loop2.amp(0.5);
+i.loop2.rate(1);
 
 
 // stop loopers:
 
-i[\loop1].stop;
-i[\loop2].stop;
+i.loop1.stop;
+i.loop2.stop;
 
 ```
 ## MIDI Control:

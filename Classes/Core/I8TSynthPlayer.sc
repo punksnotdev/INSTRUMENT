@@ -119,11 +119,11 @@ SynthPlayer : SynthInstrument
 				// parameters=parameters++[\clock,main.clock];
 
 
-
 			if( fxSynth.isKindOf(Synth), {
 
-				synth = Synth.before( fxSynth, synthdef.asSymbol, [\out,fxBus]++parameters );
+				synth = Synth.before( fxSynth, synthdef.asSymbol, parameters++[\out,fxBus] );
 				synth.register;
+
 			}, {
 				synth = Synth.head( group, synthdef.asSymbol, parameters );
 

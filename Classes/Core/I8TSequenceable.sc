@@ -98,29 +98,40 @@ Sequenceable : I8TNode
 		var key = key_;
 		var parameter = parameter_;
 
-		if( parameter_.isNil, {
 
-			// sequencer.clearPatterns(name,\trigger);
+		if( parameter_ == \seq ) {
+			parameter = \trigger;
+		};
 
-		}, {
-			if( key.isNil ) {
+		if( sequencer.notNil, {
+			if( parameter_.isNil, {
 
-				if( parameter.isKindOf(Symbol) == true, {
+				sequencer.clearPatterns(name,\trigger);
 
-					// clear all patterns
-					sequencer.clearPatterns(name,\trigger);
-				}, {
+			}, {
+				if( key.isNil ) {
+
+					if( parameter.isKindOf(Symbol) == true, {
+
+						// clear all patterns
+						sequencer.clearPatterns(name,parameter);
+
+					}, {
+
+						sequencer.clearPatterns(name,\trigger);
+
+					});
+
+				};
+				if( key.notNil ) {
 
 					sequencer.removePattern(name,parameter,key);
 
-				});
+				};
+			});
+		}, {
 
-			};
-			if( key.notNil ) {
-
-				sequencer.removePattern(name,parameter,key);
-
-			};
+				"Sequencer is nil".postln;
 		});
 
 

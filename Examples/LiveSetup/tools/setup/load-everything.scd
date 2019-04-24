@@ -51,7 +51,7 @@ i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Looper/looper/*'
 
 // Setup: Synths
 
-i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Sounds/SynthDefs/*');
+i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/Sounds/SynthDefs/*');
 
 "Synths: Loaded".postln;
 

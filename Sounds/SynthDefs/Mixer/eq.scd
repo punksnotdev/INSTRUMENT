@@ -27,9 +27,9 @@ SynthDef(\eq, {
 	var dBsMiddle=middle.max(0).min(1);
 	var dBsHigh=high.max(0).min(1);
 
-	dBsLow = dBsLow.linlin(0,1,-18,18);
-	dBsMiddle = dBsMiddle.linlin(0,1,-18,18);
-	dBsHigh = dBsHigh.linlin(0,1,-18,18);
+	dBsLow = dBsLow.linlin(0,1,-24,24);
+	dBsMiddle = dBsMiddle.linlin(0,1,-24,24);
+	dBsHigh = dBsHigh.linlin(0,1,-24,24);
 
 	dry = In.ar(inBus) * amp;
 
@@ -39,6 +39,6 @@ SynthDef(\eq, {
 
 	sig = (wet * (1 - lowCut)) + (HPF.ar(wet,lowCutFreq)*lowCut);
 
-	Out.ar(outBus, Pan2.ar(sig,pan))
+	ReplaceOut.ar(outBus, Pan2.ar(sig,pan))
 
 }).store;

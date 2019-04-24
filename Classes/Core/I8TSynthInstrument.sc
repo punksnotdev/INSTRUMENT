@@ -46,7 +46,7 @@ SynthInstrument : Instrument
 
   	group_ {|group_|
   		group = group_;
-        "To do: check if should register??".warn;
+        // "To do: check if should register??".warn;
         group.register;
         groupID = group.nodeID;
   	}
@@ -85,7 +85,11 @@ SynthInstrument : Instrument
 				// fxSynth = Synth.new(synthdef_);
 			});
 
-			fxSynth = Synth.new(synthdef_.asSymbol,[\inBus,fxBus]++this.parameters_array(fx_parameters));
+            if( group.isKindOf(Group), {
+                fxSynth = Synth.head(group,synthdef_.asSymbol,this.parameters_array(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
+            }, {
+	             fxSynth = Synth.new(synthdef_.asSymbol,this.parameters_array(fx_parameters)++[\inBus,fxBus]);
+            });
 
 
 		}, {
@@ -114,12 +118,6 @@ SynthInstrument : Instrument
 
         	fx_parameters[parameter] = value;
 			fxSynth.set(parameter,value);
-
-            [
-            "fxSynth.set(parameter,value);",
-            fxSynth,
-            parameter,value
-            ].postln;
 
         }, {
             // if no value, check if is valid sequence:

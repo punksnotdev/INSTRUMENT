@@ -59,8 +59,7 @@ I8TMain : Event
 		instance = this;
 
 		CmdPeriod.add({
-			instance = nil;
-			"I N S T R U M E N T killed.".warn;
+			this.kill()
 		});
 
 
@@ -157,11 +156,17 @@ I8TMain : Event
 		sequencer.pause;
 	}
 	stop {
+
 		playing=false;
+
 		nodes.collect({|node|
 			node.stop;
 		});
+
 		sequencer.stop;
+
+		"I N S T R U M E N T stopped".postln;
+		
 	}
 
 	go {|time=0|
@@ -872,8 +877,11 @@ I8TMain : Event
 
 
 	kill {
-		this.stop();
-		instance = nil;
+		if( instance.notNil ) {
+			this.stop();
+			instance = nil;
+			"I N S T R U M E N T killed.".warn;
+		}
 	}
 
 

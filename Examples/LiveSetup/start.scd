@@ -16,8 +16,7 @@
 	s.boot;
 	s.doWhenBooted({
 
-		s.volume=(-3);
-		().play;
+		s.volume=(-12);
 
 		(thisProcess.nowExecutingPath.dirname ++ "/tools/setup/setup.scd").load;
 
