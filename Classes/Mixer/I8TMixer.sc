@@ -212,7 +212,16 @@ I8TMixer : I8TNode
 	}
 
 	getChannel {|key|
-		^channelGroups[key]
+
+		var channelGroup = channelGroups[key.asSymbol];
+
+		if( channelGroup.notNil ) {
+
+			if( channelGroup.keys.size == 1 ) {
+				^channelGroups[key][channelGroup.keys.keyAt(0)];
+			};
+			^channelGroup
+		};
 	}
 
 	removeChannel {|key|

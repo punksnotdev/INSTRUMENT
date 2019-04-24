@@ -57,12 +57,7 @@ I8TChannel : Sequenceable
 		// 	[\in,bus,\out,bus]
 		// );
 
-		// fxChain[\reverb] = Synth.tail(
-		// 	synthGroup,
-		// 	\reverb,
-		// 	[\in,bus,\out,bus]
-		// );
-		//
+
 		// fxChain[\dist] = Synth.tail(
 		// 	synthGroup,
 		// 	\gateDistort,
@@ -230,11 +225,22 @@ I8TChannel : Sequenceable
 		fxChain = fxChain_;
 	}
 
-	addToFxChain {|key,fxChain_|
-		//add to fxChains
+	addFx {|fx_|
+		if( (fx_.isKindOf(Symbol)) ) {
+			fxChain[fx_] = Synth.after(
+				fxChain[\eq],
+				fx_,
+				[\in,bus,\out,bus]
+			);
+		}
 	}
-	removeFromFxChain {|key|
-		//remove from fxChains
+	removeFx {|fx_|
+		if( fx_.isKindOf(Symbol) ) {
+			if( fxChain[ fx_ ].isKindOf(Synth)) {
+				fxChain[ fx_ ].free;
+				fxChain.removeAt( fx_ )
+			};
+		}
 	}
 
 	fx {|name|

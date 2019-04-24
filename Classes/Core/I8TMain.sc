@@ -58,7 +58,10 @@ I8TMain : Event
 
 		instance = this;
 
-		CmdPeriod.add({ instance = nil });
+		CmdPeriod.add({
+			instance = nil;
+			"I N S T R U M E N T killed.".warn;
+		});
 
 
 		nodes = Dictionary.new;
@@ -363,7 +366,9 @@ I8TMain : Event
 
 						if( playing == true ) {
 							item.play;
-						}
+						};
+
+						mixer.addChannel( something );
 
 					}, {
 
