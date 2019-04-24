@@ -171,9 +171,6 @@ Looper : SynthInstrument
 
 					playSynths[nextLayer] = synth;
 
-					[nextLayer, synth].postln;
-
-
 				}, {
 					"I8TLooper: layer id not found".postln;
 				});
@@ -326,7 +323,7 @@ Looper : SynthInstrument
 
 
 	fx_ {|synthdef|
-		
+
 		super.fx_(synthdef);
 
 		playSynths.collect({|synth|

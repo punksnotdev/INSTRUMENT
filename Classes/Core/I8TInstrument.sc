@@ -2,6 +2,11 @@ Instrument : Sequenceable
 {
 
 
+    var group;
+	var groupID;
+
+	var outbus;
+
 	var <>synth;
 	var <>synths;
 	var <>volume;
@@ -47,4 +52,17 @@ Instrument : Sequenceable
 		^parameters_array
 	}
 
+
+	group_ {|group_| }
+  	group {
+  		^group;
+  	}
+
+
+	  	outbus_ {|outbus_|
+	  		outbus = outbus_;
+	  	}
+	  	outbus {
+	  		^outbus;
+	  	}
 }

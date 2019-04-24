@@ -15,38 +15,6 @@ Espere turbulencia en este repositorio mientras se acerca esa fecha.
 Ese día se publicará este documento en español.
 
 
-- [Disclaimers:](#disclaimers)
-- [Installation:](#installation)
-- [Quick Tutorial](#tutorial)
-	- [Basic sequencing:](#basic-sequencing)
-	- [Set tempo](#set-tempo)
-	- [Add silences](#add-silences)
-	- [Change instrument parameters:](#change-instrument-parameters)
-	- [Repeating events:](#repeating-events)
-	- [Changing steps duration](#changing-steps-duration)
-	- [Sequencing patterns](#sequencing-patterns)
-	- [Removing patterns:](#removing-patterns)
-	- [Control pattern speeds](#control-pattern-speeds)
-	- [Controlling pattern repetitions](#controlling-pattern-repetitions)
-	- [Jump to position](#jump-to-position)
-	- [Create a basic beat](#create-a-basic-beat)
-	- [Setting parameters](#setting-parameters)
-	- [Sequencing parameters](#sequencing-parameters)
-	- [Sequencing synthdefs:](#sequencing-synthdefs)
-	- [Effects (FX)](#effects-fx)
-	- [Sequencing fx parameters](#sequencing-fx-parameters)
-	- [Sequencing fx](#sequencing-fx)
-	- [Grouping INSTRUMENTS](#grouping-instruments)
-	- [Array manipulation](#array-manipulation)
-	- [Sequencing events:](#sequencing-events)
-	- [Controlling NodeProxies](#controlling-nodeproxies)
-	- [Chord progressions:](#chord-progressions)
-	- [Sequencing different progressions:](#sequencing-different-progressions)
-	- [Loopers:](#loopers)
-	- [MIDI Control:](#midi-control)
-	- [Synthesizers](#synthesizers)
-
-<!-- /TOC -->
 
 
 # Quick Tutorial
@@ -82,8 +50,6 @@ before the v.1 release.
 - You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
 
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
 
 
 Evaluate following code lines or groups one by one:
@@ -112,27 +78,12 @@ Load included Synthdefs:
 
 First, lets load the included synths.
 
-**loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
-
 ```SuperCollider
-
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
-
-// Multiple hierarchies support.
-
-i.synths.percussion.drums == i.synths.drums
-i.synths.percussion.drums.kick == i.synths.kick
-i.synths.percussion.drums.kick.kickDeep == i.synths.kickDeep
-
-// choose one Synthdef at random
-
-i.synths.kick.choose.postln;
-i.synths.bass.choose.postln;
-
-// a dictionary
-i.synths.kick.kickDeep
-
 ```
+
+See **Automatic Synth Loading"", at the end of this document for more info.
+
 
 
 
@@ -199,39 +150,7 @@ i.bass.octave=3;
 
 )
 
-// Efectos
-i.bass.fx=\reverb;
 
-i.bass.fxSet(\wet,1);
-i.bass.fxSet(\wet,0.3);
-
-i.bass.fxSet(\room,7/8);
-i.bass.fxSet(\damp,7/8);
-
-i.bass.fxSet(\room,1/8);
-i.bass.fxSet(\damp,1/8);
-
-i.bass.play;
-
-
-
-// Mixer
-
-
-// Mixer EQ
-
-i.mixer.getChannel(\bass).set(\low,0.5)
-i.mixer.getChannel(\bass).set(\middle,0.5)
-i.mixer.getChannel(\bass).set(\high,1)
-
-
-// Mixer FX
-
-i.mixer.getChannel(\bass).addFx(\gateDistort)
-i.mixer.getChannel(\bass).removeFx(\gateDistort)
-i.mixer.getChannel(\bass).fxSet(\gateDistort,\gain,3**4)
-
-```
 
 ## Set tempo
 
@@ -349,7 +268,7 @@ i.kick[2].seq("1").speed(4).x(16);
 
 
 (
-	i = INSTRUMENT();
+	i = INSTRUMENT().play;
 	i.hihat=INSTRUMENT(\hihatElectroKit);
 	i.hihat.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
 )
@@ -365,7 +284,7 @@ i.hihat.go(4);
 ```SuperCollider
 
 (
-i = INSTRUMENT();
+i = INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickElectro);
 i.hihat=INSTRUMENT(\hihatElectroKit);
 i.clap=INSTRUMENT(\clapElectroKit);
@@ -385,7 +304,7 @@ i.clap.seq(" 1").speed(2);
 
 (
 
-i = INSTRUMENT();
+i = INSTRUMENT().play;
 
 i.bass=INSTRUMENT(\tranceBazz);
 i.bass.note("0 2 3");
@@ -420,7 +339,7 @@ i.bass.seq(\rel,[2,0.2,\r,\r,1]);
 ```SuperCollider
 
 (
-i=INSTRUMENT();
+i=INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickDeep);
 i.kick.seq("1");
 i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
@@ -429,18 +348,49 @@ i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 
 ```
 
-## Effects (FX)
+## FX (Effects)
 
 ```SuperCollider
 
 
+(
+	i=INSTRUMENT().play;
+
+	i.clap=INSTRUMENT(\clapElectro);
+	// play notes
+	i.clap.note("0 2 3 5");
+	// make it a clap, please:
+
+	i.clap.octave=3;
+
+)
+
 i.clap.fx=\reverb;
-// setting fx parameters
+
+i.clap.fxSet(\wet,0);
 i.clap.fxSet(\wet,1);
-i.clap.fxSet(\rv1,1);
-i.clap.fxSet(\rv2,1);
+i.clap.fxSet(\wet,3/4);
+
+i.clap.fxSet(\room,7/8);
+i.clap.fxSet(\damp,7/8);
+
+i.clap.fxSet(\room,1/8);
+i.clap.fxSet(\damp,1/8);
+
+
+i.clap.fxSet(\room,1);
+i.clap.fxSet(\damp,1);
+
+
+i.clap.stop;
 
 i.clap.fx=nil;
+i.clap.play;
+
+i.clap.fx=\reverb;
+
+
+```
 
 
 ```
@@ -450,12 +400,12 @@ i.clap.fx=nil;
 ```SuperCollider
 
 (
-	i = INSTRUMENT();
+	i = INSTRUMENT().play;
 
 	i.clap=INSTRUMENT(\clapElectroKit);
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
-	i.clap.fx = \revlpf;
+	i.clap.fx = \reverbLPF;
 	i.clap.fxSet([
 		(cutoff:3000),
 		(cutoff:1000),
@@ -473,7 +423,14 @@ i.clap.fx=nil;
 
 ```SuperCollider
 
-i.clap.fx([\reverb,\distortion,\delay2]).speed(1/4);
+(
+	i = INSTRUMENT().play;
+
+	i.clap=INSTRUMENT(\clapElectroKit);
+	i.clap.seq(" 1  :0.25 1xx").speed(2);
+
+	i.clap.fx([\reverb,\reverbLPF,\delay2]).speed(1/4);
+)
 
 
 
@@ -485,7 +442,7 @@ i.clap.fx([\reverb,\distortion,\delay2]).speed(1/4);
 
 
 (
-i = INSTRUMENT();
+i = INSTRUMENT().play;
 
 i.kick=INSTRUMENT(\kickElectro);
 i.hihat=INSTRUMENT(\hihatElectroKit);
@@ -519,7 +476,7 @@ i.drums.fx = nil;
 
 (
 
-i = INSTRUMENT();
+i = INSTRUMENT().play;
 
 i.bass=INSTRUMENT(\tranceBazz);
 i.hihat=INSTRUMENT(\hihatElectroKit);
@@ -539,6 +496,49 @@ i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
 
 ```
 
+
+A small composition:
+
+```SuperCollider
+// Ctrl/Cmd + .
+
+
+(
+
+i = INSTRUMENT().play;
+
+i.voices = (
+
+	a: INSTRUMENT(\distPad1),
+	b: INSTRUMENT(\distPad2),
+	c: INSTRUMENT(\distNote1),
+	d: INSTRUMENT(\distNote2),
+
+);
+
+
+i.voices.a.note("0 2  0 2 3   0 2 3 7    0 2 3 7 14").speed(1/4);
+i.voices.a.amp=1.5;
+i.voices.a.set(\rel,8);
+
+i.voices.b.note("0 2  0 2 3   0 2 3 7    0 2 3 7 14").speed(1/2).random;
+i.voices.b.octave=6;
+i.voices.b.amp=1/4;
+
+i.voices.c.note("0 2  0 2 3   0 2 3 7    0 2 3 7 14").speed(2).random;
+i.voices.c.octave=8;
+i.voices.c.amp=1/4;
+
+i.voices.d.note("0 2  0 2 3   0 2 3 7    0 2 3 7 14").speed(3).random;
+i.voices.d.octave=7;
+i.voices.d.amp=1/3;
+
+)
+
+
+```
+
+
 ## Sequencing events:
 
 ```SuperCollider
@@ -556,6 +556,7 @@ i.every(4,{
 
 ```SuperCollider
 
+i = INSTRUMENT().play;
 
 p=ProxySpace.push(s);
 ~sound.play;
@@ -575,6 +576,20 @@ i.notes.seq(\gain,[3,1,13]).speed(1/2);
 
 // Class 'C' is an alias for 'I8TChord':
 // C( interval, chordtype/chordarray, inversion, additional );
+
+(
+
+i.notes.chord([
+	C(0,\m),
+	C(7,\M,1),
+	C(3,\Mmaj7),
+	C(1,\m,0,[16])
+]).speed(1/2);
+
+)
+
+// remove fx sequence
+i.notes.rm(\gain);
 
 (
 
@@ -639,6 +654,82 @@ i.notes.chord([
 )
 
 
+
+
+
+## Mixer
+
+
+(
+	i=INSTRUMENT().play;
+
+	i.kick=INSTRUMENT(\kickElectro);
+	i.hihat=INSTRUMENT(\hihatElectro);
+	i.snare=INSTRUMENT(\snareElectro);
+	// play notes
+	i.kick.seq("1");
+	i.snare.seq("1").speed(2);
+	i.hihat.seq("1").speed(3);
+	// make it a hihat, please:
+
+	i.hihat.octave=3;
+
+)
+
+
+// Mixer EQ
+
+i.mixer.getChannel(\kick).set(\low,0);
+i.mixer.getChannel(\kick).set(\low,1);
+i.mixer.getChannel(\kick).set(\low,0.5);
+
+i.mixer.getChannel(\hihat).set(\middle,0);
+i.mixer.getChannel(\hihat).set(\middle,1);
+i.mixer.getChannel(\hihat).set(\middle,0.5);
+
+i.mixer.getChannel(\snare).set(\high,0);
+i.mixer.getChannel(\snare).set(\high,1);
+i.mixer.getChannel(\snare).set(\high,0.5);
+
+
+// Mixer FX Chain
+
+i.kick.stop;
+i.hihat.stop;
+
+i.mixer.getChannel(\snare).addFx(\lpf);
+i.mixer.getChannel(\snare).addFx(\reverb);
+
+i.mixer.getChannel(\snare).fxSet(\reverb,\wet,0);
+i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
+i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1/2);
+i.mixer.getChannel(\snare).fxSet(\reverb,\room,0);
+i.mixer.getChannel(\snare).fxSet(\reverb,\room,1);
+i.mixer.getChannel(\snare).fxSet(\reverb,\damp,1);
+
+
+// check this out:
+
+i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
+
+
+i.mixer.getChannel(\snare).fxSet(\lpf,\q,0.025);
+i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,1900);
+i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,900);
+i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,500);
+i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,300);
+
+
+i.mixer.getChannel(\snare).addFx(\gateDistort)
+i.mixer.getChannel(\snare).fxSet(\gateDistort,\gain,3**4)
+
+i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,3000);
+
+i.mixer.getChannel(\snare).removeFx(\gateDistort)
+
+i.snare.stop;
+
+
 ```
 
 ## Loopers:
@@ -646,20 +737,35 @@ i.notes.chord([
 ```SuperCollider
 
 
+i=INSTRUMENT().play;
 
-
-i=INSTRUMENT();
 
 // create looper connected to audio interface's first audio input:
-
-// record looper for the 1st channel:
 i.loop1=Looper(0);
 
 //
 
+// record looper for the 1st channel:
 i.loop1.rec;
-
 i.loop1.start;
+
+i.loop1.fx=\reverb;
+i.loop1.fxSet(\room,3/4);
+
+// replace
+i.loop1.rec;
+i.loop1.start;
+
+i.loop1.stop(2);
+
+i.loop1.rec(1);
+i.loop1.start(1);
+
+i.loop1.rec(2);
+i.loop1.start(2);
+
+i.loop1.rec(2);
+i.loop1.start(2);
 
 
 i.loop1.amp=0.5;
@@ -790,6 +896,33 @@ i.loop2.stop;
 
 INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
 
+
+**loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
+
+
+```SuperCollider
+
+i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
+
+// Multiple hierarchies support.
+
+i.synths.percussion.drums == i.synths.drums
+i.synths.percussion.drums.kick == i.synths.kick
+i.synths.percussion.drums.kick.kickDeep == i.synths.kickDeep
+
+// choose one Synthdef at random
+
+i.synths.kick.choose.postln;
+i.synths.bass.choose.postln;
+
+// a specific SynthDef
+i.synths.kick.kickDeep
+
+```
+
+
+## Using your own Synthdefs
+
 You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
 
 Optionally, you can make them add themselves to the server by putting them inside INSTRUMENT's **Sounds/Synthdef** folder
@@ -816,3 +949,40 @@ Synthdef(\yourSynthdef, {|out=0,amp=1,freq,gate=1|
 **NOTE:** you can use note or freq interchangeably. When you sequence notes, both parameters are addressed. **note** must be converted to freq using the **.midicps** method.
 
 You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
+
+
+
+###### FX Synthdefs
+
+
+Only requirements are using **inBus**, **outBus**, **wet**, and **amp** params.
+
+See following example:
+
+```SuperCollider
+
+
+SynthDef(\reverb, {
+	arg
+	inBus=0,
+	outBus=0,
+	wet=0.5,
+	room=0.3,
+	damp=0.3
+	amp=1;
+
+	var sig;
+	var targetRoom, targetDamp, lag=0.3;
+	var dsp, mix;
+
+	sig = In.ar(inBus) * 1.25;
+
+	dsp = FreeVerb.ar( sig, 1, room, damp );
+
+	mix = (sig * (1-wet)) + (dsp * wet);
+
+	ReplaceOut.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
+
+}).store;
+
+```

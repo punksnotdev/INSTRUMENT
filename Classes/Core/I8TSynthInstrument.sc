@@ -1,10 +1,7 @@
 SynthInstrument : Instrument
 {
 
-    var group;
-	var groupID;
 
-    var outbus;
 
   var fx_parameters;
 
@@ -37,12 +34,6 @@ SynthInstrument : Instrument
 
 
 
-  	outbus_ {|outbus_|
-  		outbus = outbus_;
-  	}
-  	outbus {
-  		^outbus;
-  	}
 
   	group_ {|group_|
   		group = group_;
