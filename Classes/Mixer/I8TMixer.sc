@@ -2,7 +2,7 @@ I8TMixer : I8TNode
 {
 
 	var channelGroups;
-	var master;
+	var <master;
 	var main;
 	var submixes;
 	var sends;
@@ -52,7 +52,7 @@ I8TMixer : I8TNode
 
 			masterChannel.setName( channelName );
 
-			masterChannel.setOutbus(outbus);
+			masterChannel.setOutbus( outbus );
 
 			masterChannel.addOutput(
 				( name: channelName, channel: index )

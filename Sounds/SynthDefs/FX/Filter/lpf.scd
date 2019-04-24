@@ -1,9 +1,9 @@
-SynthDef(\lpf, { arg inBus=0, cutoff=1500,q=0.1, wet=0.75;
+SynthDef(\lpf, { arg inBus=0,outBus=0, cutoff=777,q=0.1, wet=0.5;
     Out.ar(
-        [0,1],
-        (In.ar(inBus) * (1-wet))+
+        outBus,
+        (In.ar(inBus).tanh * (1-wet))+
         (RLPF.ar(
 			In.ar(inBus), cutoff, q
-		)*wet);
+		).tanh*wet);
     )
 }).store;

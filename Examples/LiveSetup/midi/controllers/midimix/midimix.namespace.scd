@@ -21,8 +21,6 @@ m.midi_mix=();
 
 	m.midi_mix[chanName].fader = m.midi_mix[chanName].ctlGroup.addController(\fader,b[(4*index)+3].ctlNum,[0,1]);
 
-	[chanName,m.midi_mix[chanName].keys,m.midi_mix[chanName]].postln;
-
 };
 
 

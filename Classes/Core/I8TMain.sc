@@ -58,6 +58,9 @@ I8TMain : Event
 
 		instance = this;
 
+		CmdPeriod.add({ instance = nil });
+
+
 		nodes = Dictionary.new;
 		sequencer = Sequencer.new(this);
 		mixer = I8TMixer.new(this);
@@ -267,8 +270,6 @@ I8TMain : Event
 
 
 	map {|controller,target,parameter,range|
-
-		["Main: map", controller,target,parameter,range].postln;
 
 		if( controller.isKindOf(MIDIController), {
 

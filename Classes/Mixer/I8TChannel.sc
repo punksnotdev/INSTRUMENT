@@ -36,31 +36,51 @@ I8TChannel : Sequenceable
 
 
 
-		outSynth = Synth.tail(
+		inSynth = Synth.tail(
 			synthGroup,
 			\audioBus,
 			[\inBus,bus,\outBus,bus]
 		);
 
-		// inSynth = Synth.before(
-		// 	outSynth,
-		// 	\audioBus,
-		// 	[\inBus,bus]
+
+		fxChain[\eq]
+		= Synth.tail(
+			synthGroup,
+			\eq,
+			[\inBus,bus,\outBus,bus]
+		);
+
+
+		// fxChain[\lpf] = Synth.tail(
+		// 	synthGroup,
+		// 	\lpf,
+		// 	[\in,bus,\out,bus]
+		// );
+
+		// fxChain[\reverb] = Synth.tail(
+		// 	synthGroup,
+		// 	\reverb,
+		// 	[\in,bus,\out,bus]
+		// );
+		//
+		// fxChain[\dist] = Synth.tail(
+		// 	synthGroup,
+		// 	\gateDistort,
+		// 	[\in,bus,\out,bus]
+		// );
+
+		// fxChain[\comp] = Synth.tail(
+		// 	synthGroup,
+		// 	\simpleCompressor,
+		// 	[\in,bus,\out,bus]
 		// );
 
 
-		fxChain[\eq] = Synth.before(
-			outSynth,
-			\eq,
-			[\in,bus,\out,bus]
+		outSynth = Synth.tail(
+			synthGroup,
+			\audioBus,
+			[\inBus,bus,\outBus,bus]
 		);
-
-		fxChain[\comp] = Synth.before(
-			outSynth,
-			\simpleCompressor,
-			[\in,bus,\out,bus]
-		);
-
 
 
 

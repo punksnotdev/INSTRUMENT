@@ -1,6 +1,6 @@
-SynthDef(\reverbLPF, { arg inBus=0, cutoff=1500,q=0.075, room=0.4,damp=0.6, wet=0.75, lag=2;
+SynthDef(\reverbLPF, { arg inBus=0, outBus=0, cutoff=1500,q=0.075, room=0.4,damp=0.6, wet=0.5, lag=2;
     Out.ar(
-        [0,1],(
+        outBus,(
 
             (In.ar(inBus) * (1-wet))+
             (RLPF.ar(
