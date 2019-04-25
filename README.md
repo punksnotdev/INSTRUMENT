@@ -24,7 +24,7 @@ La traducción al español del siguiente documento se publicará ese día en est
 
 
 
-INSTRUMENT is a library for musical live-coding inside the SuperCollider environment.
+INSTRUMENT is a library for musical live-coding inside SuperCollider.
 
 It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
 
@@ -72,23 +72,32 @@ s.boot;
 
 ```
 
+
+## Start INSTRUMENT
+
+```SuperCollider
+
+i = INSTRUMENT().play;
+
+```
+
+
 ## Synths
-
-
-Load included Synthdefs:
-
 
 
 First, lets load the included synths.
 
 ```SuperCollider
 
-i = INSTRUMENT();
 
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
+
+
 ```
 
-See **Automatic Synth Loading**, at the end of this document for more info.
+
+
+See [**Synthesizers**](#synthesizers), at the end of this document for more info about working with Synths, Effects, and this automatic loader.
 
 
 
@@ -148,9 +157,9 @@ There are shorthands 'seq' methods for some common parameters, some of them:
 i=INSTRUMENT().play;
 
 i.bass=INSTRUMENT(\tranceBazz);
-// play notes
+
 i.bass.note("0 2 3 5");
-// make it a bass, please:
+
 
 i.bass.octave=3;
 
@@ -196,18 +205,30 @@ i.bass.clock=4;
 
 ## Repeating events:
 
+
+The 'x' operator inside string Patterns allow for repetition of last value
+
 ```SuperCollider
 
+i=INSTRUMENT().play;
+
 i.kick.seq("1   0.5xxxx");
+
 i.bass.note("0 2xx 3xxx");
 
 
 ```
 ## Changing steps duration
 
+
+The ':duration' operator inside string Patterns allow for setting of duration of following values
+
 ```SuperCollider
 
-// al subsequent events are afected
+// all subsequent events are affected
+
+i=INSTRUMENT().play;
+
 i.kick.seq("1 :0.25 1xxx ");
 i.kick.seq("1 :0.25 1xxx :0.125 1xxx ");
 
@@ -363,9 +384,9 @@ i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 	i=INSTRUMENT().play;
 
 	i.clap=INSTRUMENT(\clapElectro);
-	// play notes
+
 	i.clap.note("0 2 3 5");
-	// make it a clap, please:
+
 
 	i.clap.octave=3;
 
@@ -672,11 +693,11 @@ i.notes.chord([
 	i.kick=INSTRUMENT(\kickElectro);
 	i.hihat=INSTRUMENT(\hihatElectro);
 	i.snare=INSTRUMENT(\snareElectro);
-	// play notes
+
 	i.kick.seq("1");
 	i.snare.seq("1").speed(2);
 	i.hihat.seq("1").speed(3);
-	// make it a hihat, please:
+
 
 	i.hihat.octave=3;
 
@@ -714,7 +735,7 @@ i.mixer.getChannel(\snare).fxSet(\reverb,\room,1);
 i.mixer.getChannel(\snare).fxSet(\reverb,\damp,1);
 
 
-// check this out:
+
 
 i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
 
@@ -770,8 +791,8 @@ i.loop1.start(1);
 i.loop1.rec(2);
 i.loop1.start(2);
 
-i.loop1.rec(2);
-i.loop1.start(2);
+i.loop1.rec(3);
+i.loop1.start(3);
 
 
 i.loop1.amp=0.5;
@@ -855,33 +876,28 @@ i.loop2.rec;
 i.loop2.start;
 i.loop2.amp=0.5;
 i.loop2.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(2);
-i.loop2.rm(\rate,0);
 i.loop2.amp("1 0.3 1 0.5 0 0.1").speed(4)
-i.loop2.rm(\amp,0);
-i.loop2.rm(\amp,0);
-i.loop2.rate = 1/3;
-i.loop2.rate = -1;
-i.loop2.rate(1/2);
-i.loop2.rate(-3);
-i.loop2.rec;
-i.loop2.start;
-i.loop2.rate(1,0);
-i.loop2.rate(4,1);
-i.loop2.rate(2/3,1);
-i.loop2.rate(5/4,1);
+
 i.loop2.fx=\distortion;
+
 i.loop2.fxSet(\wet,1/2);
-i.loop2.amp(0.01);
+
 i.loop2.fxSet(\cutoff,1440);
+
+
 i.loop2.fx=nil
+
 i.loop2.amp(0.5);
-i.loop2.rate(1);
+
+i.loop2.rate(-1);
 
 
 // stop loopers:
 
 i.loop1.stop;
 i.loop2.stop;
+
+
 
 ```
 ## MIDI Control:
@@ -897,8 +913,9 @@ i.loop2.stop;
 
 
 
+<a name="synthesizers"></a>
 
-## Synthesizers
+# Synthesizers
 
 
 

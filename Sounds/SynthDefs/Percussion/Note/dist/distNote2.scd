@@ -13,4 +13,4 @@ sig = sig * env;
 
 Out.ar( out, sig * amp );
 
-}).store
+}).store;

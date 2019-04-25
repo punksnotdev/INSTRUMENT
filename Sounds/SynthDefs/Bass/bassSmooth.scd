@@ -1,5 +1,3 @@
-(
-
 SynthDef(\bassSmooth, {
     |gain=1,freq=331.0, decayTime=0.5, amp=2, gate=1, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.3, cutoff=1, q=0.06,legato=0.2|
 
@@ -16,5 +14,3 @@ SynthDef(\bassSmooth, {
   Out.ar( out, Pan2.ar( sig/1.25, pan ));
 
 }).store;
-
-)

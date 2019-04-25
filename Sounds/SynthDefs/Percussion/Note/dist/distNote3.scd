@@ -13,4 +13,4 @@ SynthDef(\distNote3, {
 
 	Out.ar( out, sig * amp );
 
-}).store
+}).store;

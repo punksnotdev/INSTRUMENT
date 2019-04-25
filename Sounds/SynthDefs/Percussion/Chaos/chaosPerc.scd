@@ -19,7 +19,7 @@ SynthDef(\chaosPerc,{|out=0,note=0,amp=0.5,modfactor=130,att=0.01,rel=1|
 
 	Out.ar(out,Pan2.ar(sig,0))
 
-},variations:(
+},variants:(
 	hollow: [modfactor:100],
 	glass: [modfactor:1200]
 )).store;

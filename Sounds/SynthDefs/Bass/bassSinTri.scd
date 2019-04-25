@@ -1,4 +1,3 @@
-(
 SynthDef(\bassSinTri,
 {
 	arg
@@ -16,4 +15,3 @@ SynthDef(\bassSinTri,
   	Out.ar(out, (Pan2.ar( sig * env) / 2));
 
 }).store;
-)
