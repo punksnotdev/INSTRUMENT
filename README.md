@@ -2,9 +2,8 @@
 ### v0.1.alpha.0
 #### afterthought
 
-# IMPORTANT / IMPORTANTE
+# IMPORTANT
 
-#### English:
 
 INSTRUMENT is now publicly available as an alpha-release.
 
