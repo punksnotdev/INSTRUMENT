@@ -111,8 +111,7 @@ See [**Synthesizers**](#synthesizers), at the end of this document, for more inf
 
 ```SuperCollider
 
-s.volume=(-12)
-(
+
 i=INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickElectro);
 i.kick.seq("1");
@@ -171,6 +170,7 @@ i.bass.octave=3;
 )
 
 
+```
 
 ## Set tempo
 
@@ -686,11 +686,16 @@ i.notes.chord([
 )
 
 
-
+```
 
 
 ## Mixer
 
+INSTRUMENT comes with a virtual Mixer. Any instruments added will automatically create a new mixer channel.
+
+This mixer adds a three-band EQ per channel, as well as a flexible fx chain
+
+```SuperCollider
 
 (
 	i=INSTRUMENT().play;
@@ -764,7 +769,20 @@ i.snare.stop;
 
 ```
 
+
+
 ## Loopers:
+
+A multi-layer looper
+
+- Time-synced to main sequencer.
+- Allows recording of multiple layers.
+- Sequenceable amp and rate manipulation.
+- Works in the same way as any other INSTRUMENT
+	- Sequence any parameter
+	- Add FX
+	- etc...
+
 
 ```SuperCollider
 

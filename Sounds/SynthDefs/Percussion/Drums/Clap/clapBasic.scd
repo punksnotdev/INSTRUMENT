@@ -1,5 +1,4 @@
-(
-	SynthDef(\clapBasic, {
+SynthDef(\clapBasic, {
 		|out = 0, amp = 0.5, pan = 0, dur = 1|
 		var env1, env2, snd, noise1, noise2;
 
@@ -30,6 +29,4 @@
 		snd = snd.softclip;
 
 		Out.ar(out, Pan2.ar(snd,pan,amp) / 2);
-	}).store;
-
-)
+}).store;

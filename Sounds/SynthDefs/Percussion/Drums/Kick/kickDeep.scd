@@ -1,4 +1,3 @@
-(
 SynthDef(\kickDeep, {|amp=0.5, out=0|
 
     var daNoise,daOsc,env1,env2,env3;
@@ -14,4 +13,3 @@ SynthDef(\kickDeep, {|amp=0.5, out=0|
     Out.ar(out,Pan2.ar(Mix.ar([daNoise,daOsc]) * amp, 0, EnvGen.kr(env2,doneAction: 2))) / 2;
 
 }).store;
-)

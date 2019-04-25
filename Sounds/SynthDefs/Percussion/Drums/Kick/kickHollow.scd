@@ -1,4 +1,3 @@
-(
 SynthDef(\kickHollow, {|amp=0.5, out=0|
 
     var sig, env;
@@ -15,4 +14,3 @@ SynthDef(\kickHollow, {|amp=0.5, out=0|
     Out.ar( out, Pan2.ar(sig * amp,0)/2 );
 
 }).store;
-)

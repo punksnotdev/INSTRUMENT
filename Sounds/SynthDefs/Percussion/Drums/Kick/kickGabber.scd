@@ -1,4 +1,3 @@
-(
 SynthDef(\kickGabber, {|amp=0.5, out=0|
    var snd;
    snd = SinOsc.ar(Env([1000, 69, 60], [0.015, 0.1], \exp).ar * [-0.1, 0, 0.1].midiratio);
@@ -12,7 +11,3 @@ SynthDef(\kickGabber, {|amp=0.5, out=0|
    snd = (snd * 0.6).clip(-1, 1);
    Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
 }).store;
-
-
-
-)

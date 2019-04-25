@@ -1,4 +1,3 @@
-(
 SynthDef(\kickFull, {|amp=0.5, out=0|
 
     var subosc, subenv, suboutput, clickosc, clickenv, clickoutput;
@@ -15,4 +14,3 @@ SynthDef(\kickFull, {|amp=0.5, out=0|
     Out.ar(out, Pan2.ar((suboutput + clickoutput) * amp, 0) / 2);
 
 }).store;
-)

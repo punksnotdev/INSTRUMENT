@@ -1,18 +1,14 @@
-(
+SynthDef(\hihatShort, {
+    |out = 0, pan = 0, amp = 0.5|
+    var click, clickAmp;
+    var noise, noiseAmp;
+    var snd;
 
-	SynthDef(\hihatShort, {
-	    |out = 0, pan = 0, amp = 0.5|
-	    var click, clickAmp;
-	    var noise, noiseAmp;
-	    var snd;
+    // noise -> resonance -> expodec envelope
+    noiseAmp = EnvGen.ar(Env.perc(0.001, 0.3, curve: -8), doneAction: 2);
+    noise = Mix(BPF.ar(ClipNoise.ar, [4010, 4151], [0.15, 0.56], [1.0, 0.6])) * 0.7 * noiseAmp;
 
-	    // noise -> resonance -> expodec envelope
-	    noiseAmp = EnvGen.ar(Env.perc(0.001, 0.3, curve: -8), doneAction: 2);
-	    noise = Mix(BPF.ar(ClipNoise.ar, [4010, 4151], [0.15, 0.56], [1.0, 0.6])) * 0.7 * noiseAmp;
+    snd = noise;
 
-	    snd = noise;
-
-	    Out.ar(out, Pan2.ar(snd, pan, amp) );
-	}).store;
-
-)
+    Out.ar(out, Pan2.ar(snd, pan, amp) );
+}).store;
