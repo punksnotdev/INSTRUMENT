@@ -22,7 +22,6 @@ Sequenceable : I8TNode
 	init{|graph_,name_|
 		super.init(graph_,name_);
 		clock = 1;
-		amp = 1;
 		nextPatternKey = 0;
 		minSpeed=1/32;
 		this.play;

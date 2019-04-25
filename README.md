@@ -857,12 +857,12 @@ i.loop1.amp=1;
 
 
 // sequence amp
-i.loop1.amp("1 0.3 1 0.5 0 0.1")
+i.loop1.vol("1 0.3 1 0.5 0 0.1")
 
 
 i.loop1.rate = 1/2;
 
-i.loop1.rate = -1;
+i.loop1.rate = -2;
 i.loop1.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(1);
 
 // remove rate sequencer:
@@ -874,9 +874,6 @@ i.loop1.rate(1/8);
 i.loop1.rate(2.5);
 
 
-// record another layer
-i.loop1.rec;
-i.loop1.start;
 
 
 // change rate separately for each of the layers:
@@ -951,6 +948,8 @@ i.loop2.rate(-1);
 i.loop1.stop;
 i.loop2.stop;
 
+i.loop1.play;
+i.loop1.stop;
 
 
 ```

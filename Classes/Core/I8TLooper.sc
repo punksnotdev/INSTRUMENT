@@ -40,30 +40,45 @@ Looper : SynthInstrument
 			maxDuration = 60;
 			numChannels = 1;
 
+			this.amp=1;
+
 			main = graph_;
 
 			super.init(graph_,"looper_"++bus);
-
 		}
 
 
 
 		rec {|layer|
-
 			main.sequencer.recLooper( this, layer );
-			// nextLayer = layer;
-			// this.startRecording(layer);
 		}
 
 		start {|layer|
-			main.sequencer.startLooper( this, layer );
-			// nextLayer = layer;
+			if( layer.notNil, {
+				main.sequencer.startLooper( this, layer );
+			}, {
+				buffers.do({|buffer,index|
 
+					// if( playSynths[index].isKindOf(Synth) == false ) {
+						main.sequencer.startLooper( this, index );
+					// };
+
+
+				});
+			});
 		}
 
 		stop {|layer|
-			main.sequencer.stopLooper( this, layer );
-			// nextLayer = layer;
+			if( layer.notNil, {
+				main.sequencer.stopLooper( this, layer );
+			}, {
+				playSynths.collect({|playSynth,index|
+					main.sequencer.stopLooper( this, index );
+				});
+			});
+		}
+		play {|layer|
+			this.start(layer);
 		}
 
 
@@ -94,20 +109,24 @@ Looper : SynthInstrument
 
 		recordBuffer{|nextLayer|
 			// if buffer for nextLayer not allocated,
-			// if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
-				buffers[ nextLayer ] = Buffer.alloc(
-					Server.local,
-					Server.local.sampleRate * maxDuration,
-					1,
-					{|buffer|
-						recSynths[ nextLayer ] = Synth(\loopWrite, [
-							\inBus, bus,
-							\buffer, buffer
-						]);
-						lastDuration = TempoClock.default.beats;
-					}
-				);
-			// };
+			if( Server.local.sampleRate.notNil && maxDuration.isKindOf(Number) ) {
+				if( maxDuration > 0 ) {
+				// if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
+					buffers[ nextLayer ] = Buffer.alloc(
+						Server.local,
+						Server.local.sampleRate * maxDuration,
+						1,
+						{|buffer|
+							recSynths[ nextLayer ] = Synth(\loopWrite, [
+								\inBus, bus,
+								\buffer, buffer
+							]);
+							lastDuration = TempoClock.default.beats;
+						}
+					);
+				// };
+				};
+			};
 
 
 		}
@@ -124,6 +143,7 @@ Looper : SynthInstrument
 
 
 		performStart {|nextLayer|
+
 			["performStart",nextLayer].postln;
 
 			if( nextLayer.notNil, {
@@ -169,6 +189,7 @@ Looper : SynthInstrument
 
 					});
 
+
 					playSynths[nextLayer] = synth;
 
 				}, {
@@ -195,6 +216,12 @@ Looper : SynthInstrument
 
 				});
 
+			}, {
+				playSynths.collect({|playSynth|
+					if( playSynth.isKindOf(Synth)) {
+						playSynth.release;
+					};
+				});
 			});
 
 		}
@@ -238,7 +265,7 @@ Looper : SynthInstrument
 
 
 		set {|parameter,value|
-
+[parameter,value].postln;
 			if( parameter == \amp ) {
 				amp = value;
 				this.amp_(amp);
@@ -292,13 +319,18 @@ Looper : SynthInstrument
 
 		// .seq shorthands:
 
-		amp  {|pattern,index|
+		vol {|pattern,index|
 			var isPattern = (
-				(pattern.isKindOf(String)==true) || (pattern.isKindOf(Array)==true)
+				(pattern.isKindOf(String)) || (pattern.isKindOf(Array))
 			);
 
-			if( (index.isNil && (isPattern)), {
-				^this.seq(\amp,pattern);
+			if( isPattern, {
+				["is Pattern", pattern].postln;
+				if( index.isNil, {
+					^this.seq(\amp,pattern);
+				}, {
+					^this.seq(\amp,pattern);
+				});
 			}, {
 				var amp = pattern;
 				this.amp_(amp,index);
