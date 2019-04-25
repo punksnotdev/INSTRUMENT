@@ -114,7 +114,6 @@ ParameterTrack
 	}
 
 	fwd{|i|
-i.postln;
 		if( playing == true, {
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
@@ -128,8 +127,7 @@ i.postln;
 
 					currentPattern = this.currentEvent().pattern;
 
-
-								if( currentPattern.hasDurations == true, {
+					if( currentPattern.hasDurations == true, {
 
 						if( durationSequencer.isPlaying == false, {
 							durationSequencer.play;

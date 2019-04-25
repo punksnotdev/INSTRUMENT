@@ -79,6 +79,7 @@ Looper : SynthInstrument
 		}
 		play {|layer|
 			this.start(layer);
+			super.play;
 		}
 
 
@@ -254,7 +255,6 @@ Looper : SynthInstrument
 
 					},
 					\rate, {
-						"set rate".postln;
 						this.rate_( value.val );
 
 					}
@@ -266,8 +266,6 @@ Looper : SynthInstrument
 
 		set {|parameter,value|
 
-			[parameter,value].postln;
-
 			if( parameter == \amp ) {
 				amp = value;
 				this.amp_(amp);
@@ -278,24 +276,24 @@ Looper : SynthInstrument
 
 
 		amp_ {|value,layer|
+
 			if( value.notNil && value != \r ) {
+
+				amp = value.asFloat;
 
 				if( layer.isNil, {
 
-					playSynths.collect({|synth,i|
-						["set amp", value,i].postln;
-						synth.set( \amp, value );
+					playSynths.collect({|playSynth|
+						playSynth.set( \amp, amp );
 					});
 
 				}, {
 
 					if(playSynths[layer].notNil ) {
-						["set amp", value,layer].postln;
-						playSynths[layer].set( \amp, value );
+						playSynths[layer].set( \amp, amp );
 					}
 
 				});
-				amp = value;
 			}
 		}
 

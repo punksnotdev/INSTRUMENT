@@ -846,15 +846,17 @@ i.loop1.rec(3);
 i.loop1.start(3);
 
 
+
 i.loop1.amp=0.5;
 i.loop1.amp=1;
 i.loop1.amp=0;
 i.loop1.amp=0.3;
 i.loop1.amp=1;
+i.loop1.amp_(1);
 
 
 // sequence amp
-i.loop1.seq(\amp,"1 0.25 0 1 0.5 0.75").speed(4)
+i.loop1.vol("1 0.25 0 1 0.5 0.75")
 
 
 i.loop1.rate = 1/2;
@@ -869,7 +871,6 @@ i.loop1.rm(\rate,0);
 
 i.loop1.rate(1/8);
 i.loop1.rate(2.5);
-
 
 
 

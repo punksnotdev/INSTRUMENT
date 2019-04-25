@@ -47,7 +47,7 @@ I8TChannel : Sequenceable
 		= Synth.tail(
 			synthGroup,
 			\eq,
-			[\inBus,bus,\outBus,bus]
+			[\inBus,bus,\outBus,outbus]
 		);
 
 
