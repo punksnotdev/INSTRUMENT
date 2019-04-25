@@ -200,7 +200,6 @@ I8TMixer : I8TNode
 			channel.setAmp( node.amp );
 			channel.setOutbus( master[0].getBus );
 
-["MBus",master[0].getBus].postln;
 		}
 	}
 
