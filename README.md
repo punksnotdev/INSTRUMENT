@@ -75,7 +75,6 @@ After installation, open up or restart/recompile your SuperCollider environment.
 
 ```SuperCollider
 
-// First, boot
 (
 // useful snippet for increasing default memory
 
