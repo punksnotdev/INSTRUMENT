@@ -85,11 +85,18 @@ s.boot;
 
 # Using INSTRUMENT
 
+Most things related with INSTRUMENT are accessed through a single intance.
+
+You will normally begin by typing and evaluating the following line:
+
 ```SuperCollider
 
 i = INSTRUMENT().play;
 
 ```
+
+
+This line will be repeated throughout this document, so any individual fragment can be tried in isolation.
 
 
 ## Synths
