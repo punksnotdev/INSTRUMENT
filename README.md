@@ -41,19 +41,16 @@ For questions, inquiries, help, or fun conversations, please contact me at furen
 
 # Installation:
 
-- Clone the repo or download the .zip file and place it inside your SuperCollider 'Extensions/' folder. Recompile.
-- Load SynthDefs by running 'Sounds/load-synths.scd';
-- You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
+1. Figure out your Supercollider Extensions folder path. You can find this inside SuperCollider environment, by running the following command:
 
 
+```SuperCollider
 
+Platform.userExtensionDir;
 
-Evaluate following code lines or groups one by one:
+```
 
-
-# Getting Started
-
-After installation, open up or restart your SuperCollider environment (or use "Recompile Class Library" option/command).
+2. Clone the repo or download the .zip file and place it inside your SuperCollider 'Extensions/' folder. Restart or Recompile SuperCollider.
 
 
 Type
@@ -65,6 +62,14 @@ i=INSTRUMENT();
 ```
 
 to see if the Library was successfully added.
+
+
+
+
+# Getting Started
+
+After installation, open up or restart/recompile your SuperCollider environment.
+
 
 ## Start Server
 
