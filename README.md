@@ -326,7 +326,7 @@ i.kick[2].seq("1").speed(4).x(16);
 
 (
 	i = INSTRUMENT().play;
-	i.hihat=INSTRUMENT(\hihatElectroKit);
+	i.hihat=INSTRUMENT(\hihatElectro);
 	i.hihat.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
 )
 
@@ -343,8 +343,8 @@ i.hihat.go(4);
 (
 i = INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickElectro);
-i.hihat=INSTRUMENT(\hihatElectroKit);
-i.clap=INSTRUMENT(\clapElectroKit);
+i.hihat=INSTRUMENT(\hihatElectro);
+i.clap=INSTRUMENT(\clapElectro);
 
 i.kick.seq("1").speed(2);
 i.hihat.seq(" 1").speed(4);
@@ -459,7 +459,7 @@ i.clap.fx=\reverb;
 (
 	i = INSTRUMENT().play;
 
-	i.clap=INSTRUMENT(\clapElectroKit);
+	i.clap=INSTRUMENT(\clapElectro);
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
 	i.clap.fx = \reverbLPF;
@@ -483,7 +483,7 @@ i.clap.fx=\reverb;
 (
 	i = INSTRUMENT().play;
 
-	i.clap=INSTRUMENT(\clapElectroKit);
+	i.clap=INSTRUMENT(\clapElectro);
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
 	i.clap.fx([\reverb,\reverbLPF,\delay2]).speed(1/4);
@@ -502,8 +502,8 @@ i.clap.fx=\reverb;
 i = INSTRUMENT().play;
 
 i.kick=INSTRUMENT(\kickElectro);
-i.hihat=INSTRUMENT(\hihatElectroKit);
-i.clap=INSTRUMENT(\clapElectroKit);
+i.hihat=INSTRUMENT(\hihatElectro);
+i.clap=INSTRUMENT(\clapElectro);
 
 i.kick.seq("1xx :0.25 1xxx ").speed(2);
 i.hihat.seq(" 1").speed(4);
@@ -536,7 +536,7 @@ i.drums.fx = nil;
 i = INSTRUMENT().play;
 
 i.bass=INSTRUMENT(\tranceBazz);
-i.hihat=INSTRUMENT(\hihatElectroKit);
+i.hihat=INSTRUMENT(\hihatElectro);
 )
 
 i.bass.note("0 2 3").pyramid.mirror;
