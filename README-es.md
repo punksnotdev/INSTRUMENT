@@ -2,14 +2,14 @@
 ### v0.1.alpha.0
 #### afterthought
 
-# IMPORTANT
+# IMPORTANTE
 
 
-INSTRUMENT is now publicly available as an alpha-release.
+INSTRUMENT ya está disponible públicamente como lanzamiento alpha.
 
-Please try this tool and [get in touch](mailto:furenku@gmail.com).
+Por favor prueba esta herramienta y [ponte en contacto](mailto:furenku@gmail.com).
 
-Expect turbulence in this repository while this test phase evolves.
+Espera turbulencia en este repositorio mientras evoluciona esta fase de pruebas.
 
 
 
@@ -31,13 +31,13 @@ Para preguntas, consultas, conversaciones divertidas, por favor contactarme a fu
 
 
 
-## Disclaimers:
+## Avisos:
 
 - Documentación + Tutorial próximamente.
 - INSTRUMENT está en fase alfa. La API está sujeta a cambiar en el futuro cercano.
 
 
-# Installation:
+# Instalación:
 
 1. Averigua dónde está el directorio 'Extensions' de SuperCollider. Puedes encontrarlo corriendo el siguiente comando en el ambiente de SuperCollider:
 
@@ -66,15 +66,15 @@ para ver si la Librería fue añadida exitosamente.
 
 
 
-# Getting Started
+# Empezando
 
 
-## Start Server
+## Iniciar Servidor
 
 ```SuperCollider
 
 (
-// useful snippet for increasing default memory
+// fragmento de código útil para aumentar la memoria del servidor.
 
 s.options.memSize=2048*1024;
 s.options.maxNodes=128*1024;
@@ -85,11 +85,12 @@ s.boot;
 ```
 
 
-# Using INSTRUMENT
+# Usando INSTRUMENT
 
-Most things related with INSTRUMENT are accessed through a single intance.
+La mayoría de INSTRUMENT es accesible a través de una sola instancia.
 
-You will normally begin by typing and evaluating the following line:
+Normalmente, comenzarás escribiendo y evaluando la siguiente línea:
+
 
 ```SuperCollider
 
@@ -98,18 +99,18 @@ i = INSTRUMENT().play;
 ```
 
 
-This line will be repeated throughout this document, so any individual fragment can be tried in isolation.
+Esta línea se repetirá a lo largo de todo este documento, para que cualquier fragmento individual pueda ser probado aisladamente.
 
 
 ## Synths
 
 
-First, lets load the included synths.
+Primero, carguemos los sintetizadores incluidos.
 
-Two options:
+Dos opciones:
 
-1. Automatic Synth Loader. (Still experimental)
-2. Manual Evaluation. Get them from [this link](https://github.com/punksnotdev/INSTRUMENT/tree/master/Sounds/ManualEvaluation)
+1. Cargador de Sintes Automático. (Aún experimental)
+2. Evaluación manual: Obténlos en [este enlace](https://github.com/punksnotdev/INSTRUMENT/tree/master/Sounds/ManualEvaluation)
 
 
 ```SuperCollider
@@ -118,7 +119,7 @@ i=INSTRUMENT().play;
 
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
 
-// creates a dictionary
+// crea un diccionario
 
 i.synths.drums.kick.choose;
 
@@ -126,12 +127,11 @@ i.synths.drums.kick.choose;
 
 
 
-See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and this automatic loader.
+Ver [**sintetizadores**](#synthesizers),  al final de este documento, para información paa trabajar con Sintes, Efectos, y este cargador automático.
 
 
 
-
-## Basic sequencing:
+## Secuenciado Básico:
 
 ```SuperCollider
 
@@ -196,7 +196,7 @@ i.bass.octave=3;
 
 ```
 
-## Set tempo
+## Establecer tempo
 
 ```SuperCollider
 
@@ -207,7 +207,7 @@ i.tempo=120;
 
 ```
 
-## Add silences
+## Añadir silencios
 
 ```SuperCollider
 
@@ -218,7 +218,7 @@ i.kick.seq([1, \r, \r, \r, 0.5]);
 
 ```
 
-## Change instrument parameters:
+## Cambiar parámetros de instrumentos:
 
 ```SuperCollider
 
@@ -232,7 +232,7 @@ i.bass.clock=4;
 
 ```
 
-## Repeating events:
+## Repitiendo eventos:
 
 
 The 'x' operator inside string Patterns allow for repetition of last value
@@ -247,7 +247,7 @@ i.bass.note("0 2xx 3xxx");
 
 
 ```
-## Changing steps duration
+## Cambiar la duración de algunos pasos
 
 
 The ':duration' operator inside string Patterns allow for setting of duration of following values
@@ -264,7 +264,8 @@ i.kick.seq("1 :0.25 1xxx :0.125 1xxx ");
 
 ```
 
-## Sequencing patterns
+## Secuenciando patrones
+
 
 ```SuperCollider
 
@@ -281,7 +282,7 @@ i.kick[2].seq("1  1xx  1 ").speed(2);
 
 ```
 
-## Removing patterns:
+## Eliminar patrones:
 
 ```SuperCollider
 
@@ -293,7 +294,7 @@ i.kick.rm(\trigger,2);
 
 ```
 
-## Control pattern speeds
+## Controlar velocidades de patrones
 
 ```SuperCollider
 
@@ -305,7 +306,7 @@ i.kick[2].seq("1").speed(4);
 
 ```
 
-## Controlling pattern repetitions
+## Controlando repeticiones de patrones
 
 ```SuperCollider
 
@@ -317,7 +318,8 @@ i.kick[2].seq("1").speed(4).x(16);
 
 ```
 
-## Jump to position
+## Saltar a posición
+
 
 ```SuperCollider
 
@@ -335,7 +337,8 @@ i.hihat.go(4);
 
 ```
 
-## Create a basic beat
+## Creando un beat básico
+
 
 ```SuperCollider
 
@@ -353,7 +356,7 @@ i.clap.seq(" 1").speed(2);
 
 ```
 
-## Setting parameters
+## Cambiando parameters
 
 ```SuperCollider
 
@@ -374,7 +377,7 @@ i.bass.set(\gain,2);
 ```
 
 
-## Sequencing parameters
+## Sequenciando parámetros
 
 ```SuperCollider
 
@@ -822,20 +825,19 @@ i=INSTRUMENT().play;
 // create looper connected to audio interface's first audio input:
 i.loop1=Looper(0);
 
-//
+
 
 // record looper for the 1st channel:
 i.loop1.rec;
+
+
 i.loop1.start;
 
-i.loop1.fx=\reverb;
-i.loop1.fxSet(\room,3/4);
 
 // replace
 i.loop1.rec;
 i.loop1.start;
 
-i.loop1.stop(2);
 
 i.loop1.rec(1);
 i.loop1.start(1);
@@ -847,20 +849,22 @@ i.loop1.rec(3);
 i.loop1.start(3);
 
 
+
 i.loop1.amp=0.5;
 i.loop1.amp=1;
 i.loop1.amp=0;
 i.loop1.amp=0.3;
 i.loop1.amp=1;
+i.loop1.amp_(1);
 
 
 // sequence amp
-i.loop1.amp("1 0.3 1 0.5 0 0.1")
+i.loop1.seq(\amp,"1 0.2 1 0.5 0.75").speed(2)
 
 
 i.loop1.rate = 1/2;
 
-i.loop1.rate = -1;
+i.loop1.rate = -2;
 i.loop1.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(1);
 
 // remove rate sequencer:
@@ -871,10 +875,6 @@ i.loop1.rm(\rate,0);
 i.loop1.rate(1/8);
 i.loop1.rate(2.5);
 
-
-// record another layer
-i.loop1.rec;
-i.loop1.start;
 
 
 // change rate separately for each of the layers:
@@ -949,9 +949,13 @@ i.loop2.rate(-1);
 i.loop1.stop;
 i.loop2.stop;
 
+i.loop1.play;
+i.loop1.stop;
 
 
 ```
+
+
 ## MIDI Control:
 
 ```SuperCollider

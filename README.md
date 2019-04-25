@@ -5,7 +5,7 @@
 # IMPORTANT
 
 
-INSTRUMENT is now publicly available as an alpha-release.
+INSTRUMENT is now publicly available as an alpha release.
 
 Please try this tool and [get in touch](mailto:furenku@gmail.com).
 
@@ -824,12 +824,14 @@ i=INSTRUMENT().play;
 // create looper connected to audio interface's first audio input:
 i.loop1=Looper(0);
 
-//
+
 
 // record looper for the 1st channel:
 i.loop1.rec;
 
+
 i.loop1.start;
+
 
 // replace
 i.loop1.rec;
@@ -856,7 +858,7 @@ i.loop1.amp_(1);
 
 
 // sequence amp
-i.loop1.vol("1 0.25 0 1 0.5 0.75")
+i.loop1.seq(\amp,"1 0.2 1 0.5 0.75").speed(2)
 
 
 i.loop1.rate = 1/2;
@@ -951,6 +953,8 @@ i.loop1.stop;
 
 
 ```
+
+
 ## MIDI Control:
 
 ```SuperCollider

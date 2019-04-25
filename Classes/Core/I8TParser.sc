@@ -94,8 +94,11 @@ I8TParser {
 						if( lastChar == Char.space ) {
 							// start new group with a space
 							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
-							if( input.findBackwards( Char.space ) <= index ) {
-								buildingGroupChars = buildingGroupChars ++ Char.space;
+
+							if( input.findBackwards( Char.space ).notNil ) {
+								if( input.findBackwards( Char.space ) <= index ) {
+									buildingGroupChars = buildingGroupChars ++ Char.space;
+								}
 							}
 
 						};

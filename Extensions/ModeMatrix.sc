@@ -102,7 +102,7 @@ ModeMatrix : ControllerLogic {
 
             var mode;
 
-            var modeFiles = "/home/furenku/Music/SuperCollider/INSTRUMENT/SuperCollider/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
+            var modeFiles = "/home/furenku/Music/SuperCollider/INSTRUMENT/TmpTests/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
 
             mode=modeFiles[j%modeFiles.size].load;
 
