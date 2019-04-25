@@ -1,82 +1,68 @@
 # INSTRUMENT
-### v0.1.alpha.0
+### v0.1.prealpha.0
 #### afterthought
 
-# IMPORTANT
+# IMPORTANT / IMPORTANTE
+
+#### English:
+INSTRUMENT is about to be publicly released on April 24th, 2019.
+
+Expect turbulence in this repository while this date approaches.
+
+#### Español:
+INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
+
+Espere turbulencia en este repositorio mientras se acerca esa fecha.
+
+Ese día se publicará este documento en español.
 
 
-INSTRUMENT is now publicly available as an alpha-release.
-
-Please try this tool and [get in touch](mailto:furenku@gmail.com).
-
-Expect turbulence in this repository while this test phase evolves.
 
 
+# Quick Tutorial
 
 
-### Motivation
+INSTRUMENT es una librería para hacer música con código en vivo, dentro del entorno de SuperCollider.
 
+Ofrece una interfaz de programación (API) para la creación de composiciones desde cero, "al vuelo". INSTRUMENT se enfoca en el lenguaje musical: ritmo, armonía, melodía, procesamiento de audio.
 
+Una de sus motivaciones principales es facilitar la integración con la increíble JITLib, que permite incorporar síntesis mutante en los actos en vivo.
 
-INSTRUMENT is a library for musical live-coding inside SuperCollider.
+INSTRUMENT también facilita la conexión con dispositivos MIDI, con una interfaz sencilla que facilita su mapeo a diferentes parámetros sonoros.
 
-It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
+Su nombe está inspirado por el famoso documental sobre Fugazi, la banda favorita de furenku.
 
-INSTRUMENT also enables the connection of MIDI controllers with an easy interface that facilitates its mapping to different sound parameters.
+INSTRUMENT es una iniciativa independiente y voluntara operando desde el subterráneo del código en vivo mexicano.
 
-It's name is inspired by the famous documentary about Fugazi, furenku's favorite band.
-
-INSTRUMENT is a voluntary independent open source initiative operating from the Mexican live coding underground
-
-For questions, inquiries, help, or fun conversations, please contact me at furenku@gmail.com.
+Para preguntas, consultas, conversaciones divertidas, por favor contactarme a furenku@gmail.com.
 
 
 ## Disclaimers:
 
-- Full Documentation + Tutorial coming soon.
-- INSTRUMENT is in alpha phase. The API is subject to change in the near future.
+- Documentation is still a work in progress... more news soon.
+- INSTRUMENT is not officially released yet: the API is subject to change in the near future
+before the v.1 release.
 
 
 # Installation:
 
-1. Figure out your Supercollider Extensions folder path. You can find this inside SuperCollider environment, by running the following command:
+- Clone the repo or download the .zip file and place it inside your SuperCollider 'Extensions/' folder. Recompile.
+- Load SynthDefs by running 'Sounds/load-synths.scd';
+- You can check currently existing Synthdefs [here](https://github.com/punksnotdev/INSTRUMENT/tree/master/SuperCollider/Sounds/SynthDefs)
+
+
+
+
+Evaluate following code lines or groups one by one:
 
 
 ```SuperCollider
 
-Platform.userExtensionDir;
-
-```
-
-2. To install INSTRUMENT, theres two possible ways:
-	1. Clone the repo inside your 'Extensions/' folder
-	2. or download the .zip file and place it inside the 'Extensions/' folder.
-
-3. Restart or Recompile SuperCollider.
-4. Verify installation. Type:
-
-
-```SuperCollider
-
-i=INSTRUMENT();
-
-```
-
-to see if the Library was successfully added.
-
-
-
-
-# Getting Started
-
-
-## Start Server
-
-```SuperCollider
-
+~~// First, boot~~
+// Primero, arrancar el servidor
 (
-// useful snippet for increasing default memory
-
+~~// useful snippet for increasing default memory~~
+// fragmento de código útil para incrementar memoria
 s.options.memSize=2048*1024;
 s.options.maxNodes=128*1024;
 s.boot;
@@ -85,64 +71,38 @@ s.boot;
 
 ```
 
-
-# Using INSTRUMENT
-
-Most things related with INSTRUMENT are accessed through a single intance.
-
-You will normally begin by typing and evaluating the following line:
-
-```SuperCollider
-
-i = INSTRUMENT().play;
-
-```
-
-
-This line will be repeated throughout this document, so any individual fragment can be tried in isolation.
-
-
 ## Synths
 
 
-First, lets load the included synths.
+Cargar los Synthdefs incluidos
 
-Two options:
 
-1. Automatic Synth Loader. (Still experimental)
-2. Manual Evaluation. Get them from [this link](https://github.com/punksnotdev/INSTRUMENT/tree/master/Sounds/ManualEvaluation)
+Primero, carguemos los sintetizadores incluidos.
 
 
 ```SuperCollider
-
-i=INSTRUMENT().play;
-
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
-
-// creates a dictionary
-
-i.synths.drums.kick.choose;
-
 ```
 
 
-
-See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and this automatic loader.
-
+Ver **Cargado Automático de Sintetizadores**, al final de este documento para más información.
 
 
 
-## Basic sequencing:
+
+## Secuenciado básico:
+
 
 ```SuperCollider
 
-
+s.volume=(-12)
+(
 i=INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickElectro);
 i.kick.seq("1");
 
 
-// trigger synths with different amp values:
+// disparar sintes con distintos valores de amplitud
 i.kick.seq("1 0.1 0.75");
 
 // this also works
@@ -186,16 +146,15 @@ There are shorthands 'seq' methods for some common parameters, some of them:
 i=INSTRUMENT().play;
 
 i.bass=INSTRUMENT(\tranceBazz);
-
+// play notes
 i.bass.note("0 2 3 5");
-
+// make it a bass, please:
 
 i.bass.octave=3;
 
 )
 
 
-```
 
 ## Set tempo
 
@@ -235,30 +194,18 @@ i.bass.clock=4;
 
 ## Repeating events:
 
-
-The 'x' operator inside string Patterns allow for repetition of last value
-
 ```SuperCollider
 
-i=INSTRUMENT().play;
-
 i.kick.seq("1   0.5xxxx");
-
 i.bass.note("0 2xx 3xxx");
 
 
 ```
 ## Changing steps duration
 
-
-The ':duration' operator inside string Patterns allow for setting of duration of following values
-
 ```SuperCollider
 
-// all subsequent events are affected
-
-i=INSTRUMENT().play;
-
+// al subsequent events are afected
 i.kick.seq("1 :0.25 1xxx ");
 i.kick.seq("1 :0.25 1xxx :0.125 1xxx ");
 
@@ -414,9 +361,9 @@ i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 	i=INSTRUMENT().play;
 
 	i.clap=INSTRUMENT(\clapElectro);
-
+	// play notes
 	i.clap.note("0 2 3 5");
-
+	// make it a clap, please:
 
 	i.clap.octave=3;
 
@@ -609,21 +556,15 @@ i.every(4,{
 
 ```
 
-## Using ProxySpace
-
-
-One of its main motivations is to easily integrate with the awesome JITLib, that allows musicians to incorporate mutating synthesis onto their live acts.
-
+## Controlling NodeProxies
 
 ```SuperCollider
 
 i = INSTRUMENT().play;
 
 p=ProxySpace.push(s);
-
 ~sound.play;
 ~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 4 ! 2 };
-~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 4 ! 2 };
 
 
 i.notes=INSTRUMENT(~sound);
@@ -717,16 +658,11 @@ i.notes.chord([
 )
 
 
-```
+
 
 
 ## Mixer
 
-INSTRUMENT comes with a virtual Mixer. Any instruments added will automatically create a new mixer channel.
-
-This mixer adds a three-band EQ per channel, as well as a flexible fx chain
-
-```SuperCollider
 
 (
 	i=INSTRUMENT().play;
@@ -734,11 +670,11 @@ This mixer adds a three-band EQ per channel, as well as a flexible fx chain
 	i.kick=INSTRUMENT(\kickElectro);
 	i.hihat=INSTRUMENT(\hihatElectro);
 	i.snare=INSTRUMENT(\snareElectro);
-
+	// play notes
 	i.kick.seq("1");
 	i.snare.seq("1").speed(2);
 	i.hihat.seq("1").speed(3);
-
+	// make it a hihat, please:
 
 	i.hihat.octave=3;
 
@@ -776,7 +712,7 @@ i.mixer.getChannel(\snare).fxSet(\reverb,\room,1);
 i.mixer.getChannel(\snare).fxSet(\reverb,\damp,1);
 
 
-
+// check this out:
 
 i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
 
@@ -800,20 +736,7 @@ i.snare.stop;
 
 ```
 
-
-
 ## Loopers:
-
-A multi-layer looper
-
-- Time-synced to main sequencer.
-- Allows recording of multiple layers.
-- Sequenceable amp and rate manipulation.
-- Works in the same way as any other INSTRUMENT
-	- Sequence any parameter
-	- Add FX
-	- etc...
-
 
 ```SuperCollider
 
@@ -845,8 +768,8 @@ i.loop1.start(1);
 i.loop1.rec(2);
 i.loop1.start(2);
 
-i.loop1.rec(3);
-i.loop1.start(3);
+i.loop1.rec(2);
+i.loop1.start(2);
 
 
 i.loop1.amp=0.5;
@@ -930,28 +853,33 @@ i.loop2.rec;
 i.loop2.start;
 i.loop2.amp=0.5;
 i.loop2.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(2);
+i.loop2.rm(\rate,0);
 i.loop2.amp("1 0.3 1 0.5 0 0.1").speed(4)
-
+i.loop2.rm(\amp,0);
+i.loop2.rm(\amp,0);
+i.loop2.rate = 1/3;
+i.loop2.rate = -1;
+i.loop2.rate(1/2);
+i.loop2.rate(-3);
+i.loop2.rec;
+i.loop2.start;
+i.loop2.rate(1,0);
+i.loop2.rate(4,1);
+i.loop2.rate(2/3,1);
+i.loop2.rate(5/4,1);
 i.loop2.fx=\distortion;
-
 i.loop2.fxSet(\wet,1/2);
-
+i.loop2.amp(0.01);
 i.loop2.fxSet(\cutoff,1440);
-
-
 i.loop2.fx=nil
-
 i.loop2.amp(0.5);
-
-i.loop2.rate(-1);
+i.loop2.rate(1);
 
 
 // stop loopers:
 
 i.loop1.stop;
 i.loop2.stop;
-
-
 
 ```
 ## MIDI Control:
@@ -967,15 +895,13 @@ i.loop2.stop;
 
 
 
-<a name="synthesizers"></a>
 
-# Synthesizers
+## Synthesizers
 
-
-
-### Automatic Synth Loading
 INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
 
+
+## Cargado Automático de Sintetizadores
 
 **loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
 
@@ -1001,7 +927,7 @@ i.synths.kick.kickDeep
 ```
 
 
-### Using your own Synthdefs
+## Using your own Synthdefs
 
 You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
 
