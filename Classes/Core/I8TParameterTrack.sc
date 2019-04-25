@@ -114,7 +114,7 @@ ParameterTrack
 	}
 
 	fwd{|i|
-
+i.postln;
 		if( playing == true, {
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {

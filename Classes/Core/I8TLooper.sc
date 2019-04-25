@@ -265,7 +265,9 @@ Looper : SynthInstrument
 
 
 		set {|parameter,value|
-[parameter,value].postln;
+
+			[parameter,value].postln;
+
 			if( parameter == \amp ) {
 				amp = value;
 				this.amp_(amp);

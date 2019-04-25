@@ -41,6 +41,7 @@ Sequenceable : I8TNode
 
 		var parameters;
 
+
 		parameters = this.orderPatternParameters(
 			parameter_,
 			pattern_

@@ -828,16 +828,13 @@ i.loop1=Looper(0);
 
 // record looper for the 1st channel:
 i.loop1.rec;
-i.loop1.start;
 
-i.loop1.fx=\reverb;
-i.loop1.fxSet(\room,3/4);
+i.loop1.start;
 
 // replace
 i.loop1.rec;
 i.loop1.start;
 
-i.loop1.stop(2);
 
 i.loop1.rec(1);
 i.loop1.start(1);
@@ -857,7 +854,7 @@ i.loop1.amp=1;
 
 
 // sequence amp
-i.loop1.vol("1 0.3 1 0.5 0 0.1")
+i.loop1.seq(\amp,"1 0.25 0 1 0.5 0.75").speed(4)
 
 
 i.loop1.rate = 1/2;
