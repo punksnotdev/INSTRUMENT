@@ -35,9 +35,8 @@ For questions, inquiries, help, or fun conversations, please contact me at furen
 
 ## Disclaimers:
 
-- Documentation is still a work in progress... more news soon.
-- INSTRUMENT is not officially released yet: the API is subject to change in the near future
-before the v.1 release.
+- Full Documentation + Tutorial coming soon.
+- INSTRUMENT is in alpha phase. The API is subject to change in the near future.
 
 
 # Installation:
@@ -51,6 +50,23 @@ before the v.1 release.
 
 Evaluate following code lines or groups one by one:
 
+
+# Getting Started
+
+After installation, open up or restart your SuperCollider environment (or use "Recompile Class Library" option/command).
+
+
+Type
+
+```SuperCollider
+
+i=INSTRUMENT();
+
+```
+
+to see if the Library was successfully added.
+
+## Start Server
 
 ```SuperCollider
 
@@ -67,7 +83,7 @@ s.boot;
 ```
 
 
-## Start INSTRUMENT
+# Using INSTRUMENT
 
 ```SuperCollider
 
