@@ -1,26 +1,21 @@
 # INSTRUMENT
-### v0.1.prealpha.0
+### v0.1.alpha.0
 #### afterthought
 
 # IMPORTANT / IMPORTANTE
 
 #### English:
-INSTRUMENT is about to be publicly released on April 24th, 2019.
 
-Expect turbulence in this repository while this date approaches.
+INSTRUMENT is now publicly available as an alpha-release.
 
-Spanish translation of the following document will be published that day in this same hyperlink.
+Please try this tool and [get in touch](mailto:furenku@gmail.com).
 
-#### Español:
-INSTRUMENT está a punto de ser liberado públicamente el 24 de abril, 2019.
-
-Espere turbulencia en este repositorio mientras se acerca esa fecha.
-
-La traducción al español del siguiente documento se publicará ese día en este mismo hipervínculo.
+Expect turbulence in this repository while this test phase evolves.
 
 
 
-# Quick Tutorial
+
+# Tutorial
 
 
 
@@ -87,17 +82,27 @@ i = INSTRUMENT().play;
 
 First, lets load the included synths.
 
+Two options:
+
+1. Automatic Synth Loader. (Still experimental)
+2. Manual Evaluation. Get them from [this link](https://github.com/punksnotdev/INSTRUMENT/tree/master/Sounds/ManualEvaluation)
+
+
 ```SuperCollider
 
+i=INSTRUMENT().play;
 
 i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
 
+// creates a dictionary
+
+i.synths.drums.kick.choose;
 
 ```
 
 
 
-See [**Synthesizers**](#synthesizers), at the end of this document for more info about working with Synths, Effects, and this automatic loader.
+See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and this automatic loader.
 
 
 
