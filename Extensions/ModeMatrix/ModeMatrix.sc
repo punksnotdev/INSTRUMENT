@@ -102,11 +102,19 @@ ModeMatrix : ControllerLogic {
 
             var mode;
 
-            var modeFiles = "/home/furenku/Music/SuperCollider/INSTRUMENT/TmpTests/ManualTesting/featureTests/modeMatrix/modes/mode*.scd".pathMatch;
+            var modeFiles = (Platform.userExtensionDir ++ "/INSTRUMENT/Extensions/ModeMatrix/modes/mode*.scd").pathMatch;
 
-            mode=modeFiles[j%modeFiles.size].load;
+["modeFiles",modeFiles].postln;
 
-            modes[j] = mode;
+            if(modeFiles[j%modeFiles.size].notNil ) {
+
+                mode = modeFiles[j%modeFiles.size].load;
+
+                if( mode.isKindOf(ControlMode) ) {
+                    modes[j] = mode;
+                };
+            };
+
 
         };
 

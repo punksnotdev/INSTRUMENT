@@ -898,12 +898,12 @@ i.loop1.fx=\reverb;
 
 i.loop1.fxSet(\wet,1);
 
-i.loop1.fxSet(\rv1,1);
-i.loop1.fxSet(\rv2,1);
+i.loop1.fxSet(\room,0.7);
+i.loop1.fxSet(\damp,0.7);
 
 i.loop2.fxSet(\gain,33.3);
 
-i.loop1.fx=\revlpf;
+i.loop1.fx=\reverbLPF;
 i.loop1.fxSet(\cutoff,200)
 i.loop1.fxSet(\cutoff,1200)
 
@@ -915,7 +915,7 @@ i.loop1.amp(0.5,1)
 
 i.loop1.fx=nil
 
-i.loop1.amp(0.5);
+i.loop1.amp=0;
 
 i.loop1.rate(1);
 
