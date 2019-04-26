@@ -36,6 +36,7 @@ I8TChannel : Sequenceable
 		bus = Bus.audio(Server.local,2);
 		inbus = Bus.audio(Server.local,2);
 
+		outbus=Server.local.outputBus;
 
 
 		inSynth = Synth.tail(
@@ -46,8 +47,8 @@ I8TChannel : Sequenceable
 
 
 		fxChain[\eq]
-		= Synth.tail(
-			synthGroup,
+		= Synth.after(
+			inSynth,
 			\eq,
 			[\inBus,bus,\outBus,outbus]
 		);
@@ -121,7 +122,8 @@ I8TChannel : Sequenceable
 
 		super.setInput(input_);
 		input.group=synthGroup;
-		input.outbus=bus;
+		input.outbus=inbus;
+		input.synth.set(\out,inbus);
 
 	}
 
@@ -238,12 +240,10 @@ I8TChannel : Sequenceable
 		}
 	}
 	removeFx {|fx_|
-		if( fx_.isKindOf(Symbol) ) {
-			if( fxChain[ fx_ ].isKindOf(Synth)) {
-				fxChain[ fx_ ].release;
-				fxChain.removeAt( fx_ )
-			};
-		}
+		if( fxChain[ fx_ ].isKindOf(Synth)) {
+			fxChain[ fx_ ].free;
+			fxChain.removeAt( fx_ )
+		};
 	}
 
 	fx {|name|
