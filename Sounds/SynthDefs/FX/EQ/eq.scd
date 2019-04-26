@@ -27,9 +27,9 @@ SynthDef(\eq, {
 	var dBsMiddle=middle.max(0).min(1);
 	var dBsHigh=high.max(0).min(1);
 
-	dBsLow = dBsLow.linlin(0,1,-24,24);
-	dBsMiddle = dBsMiddle.linlin(0,1,-24,24);
-	dBsHigh = dBsHigh.linlin(0,1,-24,24);
+	dBsLow = dBsLow.linlin(0,1,-15,15);
+	dBsMiddle = dBsMiddle.linlin(0,1,-15,15);
+	dBsHigh = dBsHigh.linlin(0,1,-15,15);
 
 	dry = In.ar(inBus) * amp;
 

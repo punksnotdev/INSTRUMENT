@@ -12,6 +12,7 @@ I8TChannel : Sequenceable
 	var sends;
 
 	var <bus;
+	var <>inbus;
 	var <>outbus;
 
 	var synthGroup;
@@ -33,13 +34,14 @@ I8TChannel : Sequenceable
 		fxChain = IdentityDictionary.new;
 
 		bus = Bus.audio(Server.local,2);
+		inbus = Bus.audio(Server.local,2);
 
 
 
 		inSynth = Synth.tail(
 			synthGroup,
 			\audioBus,
-			[\inBus,bus,\outBus,bus]
+			[\inBus,inbus,\outBus,bus]
 		);
 
 

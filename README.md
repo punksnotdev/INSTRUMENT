@@ -739,9 +739,6 @@ This mixer adds a three-band EQ per channel, as well as a flexible fx chain
 	i.snare.seq("1").speed(2);
 	i.hihat.seq("1").speed(3);
 
-
-	i.hihat.octave=3;
-
 )
 
 
@@ -797,6 +794,7 @@ i.mixer.getChannel(\snare).removeFx(\gateDistort)
 
 i.snare.stop;
 
+i.stop;
 
 ```
 
