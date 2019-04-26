@@ -104,8 +104,6 @@ ModeMatrix : ControllerLogic {
 
             var modeFiles = (Platform.userExtensionDir ++ "/INSTRUMENT/Extensions/ModeMatrix/modes/mode*.scd").pathMatch;
 
-["modeFiles",modeFiles].postln;
-
             if(modeFiles[j%modeFiles.size].notNil ) {
 
                 mode = modeFiles[j%modeFiles.size].load;
