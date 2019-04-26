@@ -231,14 +231,14 @@ I8TChannel : Sequenceable
 			fxChain[fx_] = Synth.before(
 				outSynth,
 				fx_,
-				[\inBus,bus,\outBus,bus]
+				[\inBus,bus,\outBus,outbus]
 			);
 		}
 	}
 	removeFx {|fx_|
 		if( fx_.isKindOf(Symbol) ) {
 			if( fxChain[ fx_ ].isKindOf(Synth)) {
-				fxChain[ fx_ ].free;
+				fxChain[ fx_ ].release;
 				fxChain.removeAt( fx_ )
 			};
 		}

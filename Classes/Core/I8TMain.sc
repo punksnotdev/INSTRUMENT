@@ -96,7 +96,8 @@ I8TMain : Event
 		data.synths.parameters = ();
 
 
-		synths = ();
+		synths = this.loadSynths();
+
 		currentFolder = synths;
 
 		^instance
@@ -777,7 +778,7 @@ I8TMain : Event
 	loadSynths {|path, parent, grandparent, greatgrandparent|
 
 
-		var files = path.pathMatch;
+		var files;
 		var folder;
 		// var level;
 		var scdFiles = List.new;
@@ -785,6 +786,11 @@ I8TMain : Event
 
 		var items = ();
 
+		if( path.notNil, {
+			files = path.pathMatch;
+		}, {
+			files = (Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*").pathMatch;
+		});
 
 		if( parent.isNil ) {
 			parent = ();
@@ -870,6 +876,7 @@ I8TMain : Event
 			};
 		});
 
+		synths = folder;
 
 		^folder
 
