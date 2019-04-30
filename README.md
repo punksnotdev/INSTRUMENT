@@ -104,24 +104,26 @@ This line will be repeated throughout this document, so any individual fragment 
 
 ## Synths
 
+INSTRUMENT comes with some predefined SynthDefs that you can use.
 
-First, lets load the included synths.
-
-Two options:
-
-1. Automatic Synth Loader. (Still experimental)
-2. Manual Evaluation. Get them from [this link](https://github.com/punksnotdev/INSTRUMENT/tree/master/Sounds/ManualEvaluation)
+They are automatically added on startup, but you can manually re-load them, or load any path that contains SynthDefs or folders containing them.
 
 
 ```SuperCollider
 
 i=INSTRUMENT().play;
 
-i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
+// load your own path with SynthDefs
+i.loadSynths("path/to/your/synthdefs/*");
 
-// creates a dictionary
 
+// creates a dictionary inside **i.synths**
+
+i.synths.drums.kick[0];
+i.synths.drums.kick[1];
 i.synths.drums.kick.choose;
+i.synths.drums.snare.choose;
+i.synths.bass.simpleBass;
 
 ```
 
