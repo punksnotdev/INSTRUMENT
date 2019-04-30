@@ -825,7 +825,9 @@ I8TMain : Event
 			var synthdef = fileSrc.load;
 
 			if( synthdef.isKindOf(SynthDef)) {
-				items[fileName.asSymbol]=synthdef.name.asSymbol;
+
+				items[ fileName.asSymbol ]		= synthdef.name.asSymbol;
+				items[ items.keys.size - 1 ]	= synthdef.name.asSymbol;
 
 				if( data.synths.parameters.isKindOf(Event) ) {
 
