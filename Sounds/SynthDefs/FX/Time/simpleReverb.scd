@@ -17,6 +17,6 @@ SynthDef(\reverb, {
 
 	mix = (sig * (1-wet)) + (dsp * wet);
 
-	ReplaceOut.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
+	Out.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
 
 }).store;

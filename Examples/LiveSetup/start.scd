@@ -15,10 +15,10 @@
 
 	s.boot;
 
+	s.volume=(-12);
 
 )
 
-
-s.volume=(-12);
+// Then, load setup:
 
 (thisProcess.nowExecutingPath.dirname ++ "/tools/setup/setup.scd").load;

@@ -201,6 +201,8 @@ I8TChannel : Sequenceable
 
 	setAmp {|amp_|
 		outAmp = amp_;
+		// "fix amp routing!".warn;
+		// fxChain[\eq].set(\amp,outAmp);
 		outSynth.set(\amp,outAmp)
 	}
 

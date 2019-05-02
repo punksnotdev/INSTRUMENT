@@ -16,7 +16,8 @@ MIDIManager {
     }
 
     addDevices{|midiDevicesNames,specs|
-
+midiDevicesNames.postln;
+MIDIClient.sources.postln;
         MIDIClient.sources.collect({|device|
             midiDevicesNames.collect({|midiDeviceName|
                 var midiDevice;

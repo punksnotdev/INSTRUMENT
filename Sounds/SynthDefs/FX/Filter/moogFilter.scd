@@ -1,5 +1,5 @@
 SynthDef(\moogFilter, { arg inBus=0, cutoff=1500,q=0.3, wet=0.25,lag=1;
-    ReplaceOut.ar(
+    Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
         (((MoogFF.ar(
