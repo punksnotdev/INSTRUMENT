@@ -47,10 +47,13 @@
 
 		m=();
 
+		if( i.midi.mpk_mk2.notNil ) {
+			(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/mpk_mk2/mpk_mk2.namespace.scd").load;
+		};
 
-		(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/mpk_mk2/mpk_mk2.namespace.scd").load;
-
-		(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/midimix/midimix.namespace.scd").load;
+		if( i.midi.midi_mix.notNil ) {
+			(thisProcess.nowExecutingPath.dirname ++ "/../../../midi/controllers/midimix/midimix.namespace.scd").load;
+		};
 
 		// i.midi.launchpad.addControllerGroup(\note,\buttons);
 		// i.midi.launchpad.groups.buttons.addController(\buttons);
