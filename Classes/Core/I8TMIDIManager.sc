@@ -28,7 +28,9 @@ MIDIManager {
                         midiDevice = device;
                     });
                 });
+
                 if( midiDevice.notNil, {
+
                     if( specs.notNil, {
                         this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
                     }, {

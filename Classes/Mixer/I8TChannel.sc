@@ -47,10 +47,10 @@ I8TChannel : Sequenceable
 
 
 		fxChain[\eq]
-		= Synth.after(
-			inSynth,
+		= Synth.tail(
+			synthGroup,
 			\eq,
-			[\inBus,bus,\outBus,outbus]
+			[\inBus,bus,\outBus,bus]
 		);
 
 
@@ -77,7 +77,7 @@ I8TChannel : Sequenceable
 		outSynth = Synth.tail(
 			synthGroup,
 			\audioBus,
-			[\inBus,bus,\outBus,bus]
+			[\inBus,bus,\outBus,outbus]
 		);
 
 
