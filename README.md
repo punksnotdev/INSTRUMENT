@@ -501,10 +501,8 @@ i.clap.fx=\reverb;
 
 
 (
+
 i = INSTRUMENT().play;
-
-
-
 
 
 i.drums=(
@@ -513,18 +511,15 @@ i.drums=(
 	snare: INSTRUMENT( i.synths.snare.choose ),
 )
 
-
 i.drums.kick.seq("1");
 i.drums.hihat.seq(" 1").speed(2);
 i.drums.kick.seq(" 1").speed(1/2);
-
 
 i.drums.clock=1/2;
 i.drums.clock=2;
 i.drums.clock=1;
 i.drums.amp=1/2;
 i.drums.amp=1;
-
 
 // add fx to group
 i.drums.fx = \reverb;
@@ -551,8 +546,8 @@ i.drums2.amp=1;
 
 ```
 
-## Array manipulation
 
+## Array manipulation
 ```SuperCollider
 
 
