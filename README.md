@@ -527,7 +527,7 @@ i.drums.amp=1;
 
 
 // add fx to group
-i.drums.fx = \delay2;
+i.drums.fx = \reverb;
 i.drums.fx = nil;
 
 
