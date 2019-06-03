@@ -95,11 +95,14 @@ I8TParser {
 							// start new group with a space
 							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
 
-							if( input.findBackwards( Char.space ).notNil ) {
-								if( input.findBackwards( Char.space ) <= index ) {
-									buildingGroupChars = buildingGroupChars ++ Char.space;
-								}
-							}
+							// if( input.findBackwards( Char.space ).notNil ) {
+
+								// if this is last space in string
+								// if( input.findBackwards( Char.space ) <= index ) {
+								// 	[index,"this is last space in string"].postln;
+								// 	buildingGroupChars = buildingGroupChars ++ Char.space;
+								// }
+							// }
 
 						};
 
@@ -163,6 +166,8 @@ I8TParser {
 		parameterGroups = groupStrings.collect({|groupString|
 			this.extractParameters(groupString)
 		});
+
+		parameterGroups.postln;
 
 		^this.getEventsList(parameterGroups);
 
