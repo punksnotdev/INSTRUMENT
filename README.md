@@ -13,7 +13,7 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 
 ```SuperCollider
 
-// Some beat
+// Create a beat
 
 // First, evaluate following block
 (
@@ -38,7 +38,12 @@ i.drums.clock = 2;
 // Play with clock
 
 i.drums.clock = 4;
-i.drums.clock = 1/2;
+
+// Add FX and slow down
+(
+i.drums.fx=\reverbLPF;
+i.drums.clock = 1;
+)
 
 // Stop
 
