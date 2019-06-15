@@ -71,13 +71,11 @@ Expect turbulence in this repository while this test phase evolves.
 
 
 
-INSTRUMENT is a library for musical live-coding inside SuperCollider.
-
-It provides a simple API useful for the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
+This tool is aimed at the creation of musical compositions from scratch, 'on the fly'. INSTRUMENT focuses on musical language: rhythm, harmony, melody, audio processing.
 
 INSTRUMENT also enables the connection of MIDI controllers with an easy interface that facilitates its mapping to different sound parameters.
 
-It's name is inspired by the famous documentary about Fugazi, furenku's favorite band.
+The name is inspired by Fugazi.
 
 INSTRUMENT is a voluntary independent open source initiative operating from the Mexican live coding underground
 
