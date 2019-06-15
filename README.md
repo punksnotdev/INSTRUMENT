@@ -2,6 +2,54 @@
 ### v0.1.alpha.0
 #### afterthought
 
+
+
+
+**Importante: Traducción al español en proceso...**
+
+
+INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping, FX, signal routing, synthesis, etc.) and interfacing with musical instruments and controllers from inside the SuperCollider environment.
+
+
+```SuperCollider
+
+// Some beat
+
+// First, evaluate following block
+(
+	
+i = INSTRUMENT().play;
+
+i.drums = (
+	kick: INSTRUMENT(i.synths.electro.kick),
+	hihat: INSTRUMENT(i.synths.electro.hihat),
+	clap: INSTRUMENT(i.synths.electro.clap)
+);
+
+i.drums.kick.seq("1 :0.5 1xx");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.clap.seq(" 1 :2 1 :0.25 1xxx ");
+
+i.drums.clock = 2;
+
+)
+
+
+// Play with clock
+
+i.drums.clock = 4;
+i.drums.clock = 1/2;
+
+// Stop
+
+i.drums.stop;
+
+```
+
+
+
+
+
 # IMPORTANT
 
 
@@ -341,6 +389,28 @@ i.hihat.go(4);
 ## Create a basic beat
 
 ```SuperCollider
+
+(
+
+
+i = INSTRUMENT().play;
+
+i.drums = (
+	kick: INSTRUMENT(i.synths.electro.kick),
+	hihat: INSTRUMENT(i.synths.electro.hihat),
+	clap: INSTRUMENT(i.synths.electro.clap)
+);
+
+i.drums.kick.seq("1");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.clap.seq(" 1");
+
+i.drums.clock = 2;
+
+
+)
+
+
 
 (
 i = INSTRUMENT().play;
