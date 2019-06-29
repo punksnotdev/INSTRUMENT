@@ -5,7 +5,7 @@ SynthDef(\fluteGlitch, {
 	arg
 	out=0,
 	freq=150,
-	gate=1;
+	gate=1,rel=3;
 
 	var sig, env, brown;
 
@@ -15,7 +15,7 @@ SynthDef(\fluteGlitch, {
 
 	sig=sig.tanh;
 
-	env = EnvGen.kr(Env.adsr(0.5, 0.05, 1, 3),gate,doneAction:2);
+	env = EnvGen.kr(Env.perc(0.2, rel),doneAction:2);
 
 	Out.ar(out, (Pan2.ar(sig * env) / 2));
 

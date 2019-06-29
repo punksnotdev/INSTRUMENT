@@ -3,7 +3,7 @@
 
 i=INSTRUMENT();
 
-i.tempo = e.tempo;
+i.tempo = e['tempo'];
 
 
 
@@ -44,11 +44,6 @@ p.quant = 4;
 i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/INSTRUMENT/Looper/looper/*');
 
 
-"Loopers Synths: Loaded".postln;
-
-(thisProcess.nowExecutingPath.dirname ++ "/create-loopers.scd").load;
-
-
 // Setup: Synths
 
 i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/Sounds/SynthDefs/*');
@@ -59,10 +54,13 @@ i.synths = i.loadSynths(Platform.userExtensionDir++'/INSTRUMENT/Sounds/SynthDefs
 
 // Setup: MIDI
 
+if( e['useMidi'] == true ) {
 
-(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-setup.scd").load;
-(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-out-setup.scd").load;
 
+	(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-setup.scd").load;
+	(thisProcess.nowExecutingPath.dirname ++ "/midi/midi-out-setup.scd").load;
+
+};
 
 // Start:
 

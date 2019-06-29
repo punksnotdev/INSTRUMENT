@@ -1,3 +1,3 @@
 [
-"MPK Mini Mk II"
+// your midi devices
 ]

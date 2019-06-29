@@ -95,7 +95,7 @@
 		"".postln;
 
 		if( e.isKindOf(Environment), {
-			e.readyMessage.postln;
+			e['readyMessage']postln;
 		}, {
 			"R E A D Y".postln;
 		});
