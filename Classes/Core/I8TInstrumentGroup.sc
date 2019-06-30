@@ -19,10 +19,12 @@ InstrumentGroup : Event
 	}
 
 	play {
-		this.collect({|item,key|
-			if( childrenStopped[key] == true ) {
 
-				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+		childrenStopped.postln;
+		this.collect({|item,key|
+			if(( (childrenStopped[key] == true) || (childrenStopped[key].isNil == true)) ) {
+
+				if( (item.isKindOf(I8TNode)) || (item.isKindOf(InstrumentGroup))) {
 					item.play;
 				};
 			};
@@ -163,7 +165,6 @@ InstrumentGroup : Event
 					main.updateMixerGroup( this );
 				};
 
-				childrenStopped[key] = false;
 
 			}, {
 

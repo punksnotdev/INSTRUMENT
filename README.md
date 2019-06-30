@@ -17,7 +17,7 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 
 // First, evaluate following block
 (
-	
+
 i = INSTRUMENT().play;
 
 i.drums = (
@@ -597,6 +597,23 @@ i.drums.amp=1;
 // add fx to group
 i.drums.fx = \reverb;
 i.drums.fx = nil;
+
+
+// redeclare group with less instruments
+
+
+i.drums=(
+	hihat: INSTRUMENT( i.synths.hihat.choose ),
+)
+
+
+// restore
+
+i.drums=(
+	kick: INSTRUMENT( i.synths.kick.choose ),
+	hihat: INSTRUMENT( i.synths.hihat.choose ),
+	snare: INSTRUMENT( i.synths.snare.choose ),
+)
 
 
 
