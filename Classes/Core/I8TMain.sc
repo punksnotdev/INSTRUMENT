@@ -3,6 +3,9 @@ I8TMain : Event
 
 	classvar instance;
 
+	var ready;
+	var awaitingReadyBeforePlay;
+
 	var <nodes;
 	var <rootNode;
 
@@ -52,55 +55,76 @@ I8TMain : Event
 
 		});
 
-
 	}
+
 	init {
 
-		instance = this;
 
-		CmdPeriod.add({
-			this.kill()
+		ready = false;
+
+		if( Server.local.serverRunning, {
+
+			instance = this;
+
+			CmdPeriod.add({
+				this.kill()
+			});
+
+
+			nodes = Dictionary.new;
+			sequencer = Sequencer.new(this);
+			mixer = I8TMixer.new(this);
+			controllerManager = ControllerManager.new(this);
+
+			nodes = IdentityDictionary.new;
+			groups = IdentityDictionary.new;
+
+
+			nextKey = 0;
+
+			rootNode = I8TNode.new(this,"rootNode");
+
+			this.addNode( rootNode );
+
+			// this.play;
+
+			midiControllers = ();
+			midiControllers.inputs = List.new;
+			midiControllers.outputs = List.new;
+
+			autoMIDI = false;
+			nextMIDIController = -1;
+
+			// this.setupGUI();
+
+			// dictionary for placing custom data:
+			data = ();
+
+			data.synths = () ;
+			data.synths.parameters = ();
+
+
+			synths = this.loadSynths();
+
+			currentFolder = synths;
+
+			ready = true;
+
+			if( awaitingReadyBeforePlay == true ) {
+				this.play;
+			};
+
+			^instance
+
+		}, {
+
+			"SuperCollider server not running".warn;
+
+			^this
+
 		});
 
 
-		nodes = Dictionary.new;
-		sequencer = Sequencer.new(this);
-		mixer = I8TMixer.new(this);
-		controllerManager = ControllerManager.new(this);
-
-		nodes = IdentityDictionary.new;
-		groups = IdentityDictionary.new;
-
-
-		nextKey = 0;
-
-		rootNode = I8TNode.new(this,"rootNode");
-
-		this.addNode( rootNode );
-
-		// this.play;
-
-		midiControllers = ();
-		midiControllers.inputs = List.new;
-		midiControllers.outputs = List.new;
-
-		autoMIDI = false;
-		nextMIDIController = -1;
-
-		// this.setupGUI();
-
-		// dictionary for placing custom data:
-		data = ();
-
-		data.synths = () ;
-		data.synths.parameters = ();
-
-
-		synths = this.loadSynths();
-
-		currentFolder = synths;
-
-		^instance
 
 	}
 
@@ -132,6 +156,11 @@ I8TMain : Event
 
 	}
 
+	removeNode{|key|
+		nodes[key].stop;
+		nodes.removeAt(key);
+	}
+
 
 
 	free {|node|
@@ -146,11 +175,18 @@ I8TMain : Event
 	}
 
 	play {
-		playing = true;
-		nodes.collect({|node|
-			node.play;
+
+		if( ready == true, {
+
+			playing = true;
+			nodes.collect({|node|
+				node.play;
+			});
+			sequencer.play;
+
+		}, {
+			awaitingReadyBeforePlay = true;
 		});
-		sequencer.play;
 	}
 	pause {
 		playing=false;
@@ -482,7 +518,6 @@ I8TMain : Event
 
 			var key = key_;
 			// var key = group_.name;
-
 			group_.collect({|childItem|
 				if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
 					allValid = false;
@@ -496,11 +531,15 @@ I8TMain : Event
 
 					var currentGroup = groups[key];
 
+					// disable any synths not included in new groups
+
+
 					group_.collect({|childItem,childItemKey|
 
-						if( currentGroup.keys.includes(childItemKey),
+						if( currentGroup.keys.includes(childItemKey) == true,
 						{
-							currentGroup[childItemKey].synthdef=childItem.synthdef;
+							currentGroup.at(childItemKey).synthdef=childItem.synthdef;
+							currentGroup.at(childItemKey).play;
 						},
 						{
 
@@ -523,6 +562,16 @@ I8TMain : Event
 
 					});
 
+					currentGroup.collect({|childItem,childItemKey|
+
+						if(  group_.keys.includes(childItemKey) == false ) {
+							currentGroup.stop(childItemKey);
+						};
+
+					});
+
+
+
 					mixer.addChannel( currentGroup );
 
 					item = currentGroup;
@@ -538,8 +587,6 @@ I8TMain : Event
 
 
 					}, {
-
-						"downst exists".postln;
 
 						newGroup = InstrumentGroup.new;
 
@@ -904,6 +951,9 @@ I8TMain : Event
 		if( instance.notNil ) {
 			this.stop();
 			instance = nil;
+
+			nodes = Dictionary.new;
+
 			"I N S T R U M E N T killed.".warn;
 		}
 	}

@@ -8,21 +8,46 @@ InstrumentGroup : Event
 	var <fx;
 	var <>name;
 
+	var <childrenStopped;
+
+	*new {
+		^super.new.init;
+	}
+
+	init {
+		childrenStopped = IdentityDictionary.new;
+	}
 
 	play {
-		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
-				item.play;
+		this.collect({|item,key|
+			if( childrenStopped[key] == true ) {
+
+				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+					item.play;
+				};
 			};
 		});
 	}
-	stop {
-		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
-				item.stop;
-			};
+	stop {|key|
+
+		if( key.isNil, {
+
+			this.collect({|item|
+				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+					item.stop;
+				};
+			});
+
+		}, {
+
+			var item = this.at(key);
+
+			item.stop;
+			childrenStopped[key] = true;
+
 		});
 	}
+
 	go {|time|
 		this.collect({|item|
 			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
@@ -129,30 +154,47 @@ InstrumentGroup : Event
 		if( something.isKindOf(I8TNode) ) {
 
 
-			super.put(key,something);
+			if( this.at(key).isNil, {
 
-			if( main.notNil ) {
-				main.updateMixerGroup( this );
-			};
+
+				super.put(key,something);
+
+				if( main.notNil ) {
+					main.updateMixerGroup( this );
+				};
+
+				childrenStopped[key] = false;
+
+			}, {
+
+				if( childrenStopped[key] == true ) {
+					this.at[key].play;
+					childrenStopped[key] = false;
+				};
+
+			});
 
 			^super.at(key)
 
 		};
 
-		if( something.isKindOf(InstrumentGroup) ) {
-
-			something.name = name + "_" + key;
-			something.main = main;
-
-			^super.put(key,something);
-
-		};
 		if( something.isNil ) {
-			var item = super.at(key).postln;
-			["at",key,item].postln;
+			var item = super.at(key);
 			^item
 		};
 
+		// if( something.isKindOf(InstrumentGroup) ) {
+		//
+		// 	["got group", key, something].postln;
+		//
+		// 	something.name = name ++ "_" ++ key;
+		// 	something.main = main;
+		//
+		// 	^super.put(key,something);
+		//
+		// };
 	}
+
+
 
 }

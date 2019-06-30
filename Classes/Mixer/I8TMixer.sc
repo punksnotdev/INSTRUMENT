@@ -181,7 +181,7 @@ I8TMixer : I8TNode
 		});
 
 
-		["Not a valid Source", node].postln;
+		// ["Not a valid Source", node].postln;
 
 		^nil
 
