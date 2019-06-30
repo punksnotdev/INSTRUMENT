@@ -69,7 +69,7 @@ SynthPlayer : SynthInstrument
 		// 	synth_parameters=IdentityDictionary.new;
 		// });
 
-		this.createSynth([\out,outbus]);
+		// this.createSynth([\out,outbus]);
 
 		^synthdef
 
