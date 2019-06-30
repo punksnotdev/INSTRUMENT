@@ -573,8 +573,6 @@ i.clap.fx=\reverb;
 ```SuperCollider
 
 
-(
-
 i = INSTRUMENT().play;
 
 
@@ -582,17 +580,19 @@ i.drums=(
 	kick: INSTRUMENT( i.synths.kick.choose ),
 	hihat: INSTRUMENT( i.synths.hihat.choose ),
 	snare: INSTRUMENT( i.synths.snare.choose ),
-)
+);
 
 i.drums.kick.seq("1");
 i.drums.hihat.seq(" 1").speed(2);
-i.drums.kick.seq(" 1").speed(1/2);
+i.drums.snare.seq(" 1").speed(1/2);
 
 i.drums.clock=1/2;
 i.drums.clock=2;
 i.drums.clock=1;
 i.drums.amp=1/2;
 i.drums.amp=1;
+i.drums.stop;
+i.drums.play;
 
 // add fx to group
 i.drums.fx = \reverb;
@@ -610,28 +610,10 @@ i.drums=(
 // restore
 
 i.drums=(
+
 	kick: INSTRUMENT( i.synths.kick.choose ),
 	hihat: INSTRUMENT( i.synths.hihat.choose ),
 	snare: INSTRUMENT( i.synths.snare.choose ),
-)
-
-
-
-// create group with already declared instruments
-
-i.kick=INSTRUMENT(\kickElectro);
-i.hihat=INSTRUMENT(\hihatElectro);
-i.clap=INSTRUMENT(\clapElectro);
-
-i.kick.seq("1xx :0.25 1xxx ").speed(2);
-i.hihat.seq(" 1").speed(4);
-i.clap.seq(" 1  :0.25 1xx").speed(2);
-
-
-i.drums2=[\kick,\hihat,\clap];
-
-i.drums2.amp=1/2;
-i.drums2.amp=1;
 )
 
 ```
