@@ -504,7 +504,20 @@ I8TMain : Event
 						},
 						{
 
-							currentGroup[childItemKey]=childItem;
+							if( childItem.isKindOf(I8TNode) ) {
+
+							  if( (nodes.includes( childItem ) == false), {
+
+								childItem.name=childItemKey;
+
+								this.setupMixerNode( childItem );
+
+							  });
+
+							  currentGroup.put( childItemKey, childItem );
+
+							};
+
 
 						});
 
@@ -525,6 +538,8 @@ I8TMain : Event
 
 
 					}, {
+
+						"downst exists".postln;
 
 						newGroup = InstrumentGroup.new;
 

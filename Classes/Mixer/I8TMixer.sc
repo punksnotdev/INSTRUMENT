@@ -115,9 +115,9 @@ I8TMixer : I8TNode
 							// ["Mixer: Instrument Group already exists",group.name].postln;
 							if( channelGroup.keys.includes( node.name ) == false, {
 								channel = I8TChannel(mixGroup);
-
 							}, {
-								// ["Mixer:", group.name, "already includes node key"].postln;
+								["Mixer:", group.name, "already includes node key"].postln;
+								channel = channelGroup[node.name];
 							})
 						}, {
 
