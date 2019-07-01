@@ -142,6 +142,7 @@ Sequencer : I8TNode
 
 	pause {
 		playing = false;
+		tdef.pause;
 	}
 
 	stop {
