@@ -206,6 +206,12 @@ InstrumentGroup : Event
 			};
 		});
 
+		if( newGroup.keys.size==0 && probability.asFloat > 0) {
+			var key = this.keys.choose;
+			newGroup[key]=this[key]
+		};
+
+
 		main.addMixerGroup( newGroup, name );
 
 	}

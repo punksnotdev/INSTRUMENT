@@ -568,7 +568,10 @@ i.clap.fx=\reverb;
 
 ```
 
-## Grouping INSTRUMENTS
+## Groups of INSTRUMENTS
+
+
+You can group instruments for easier manipulation, while retaining access to individual instruments
 
 ```SuperCollider
 
@@ -615,6 +618,18 @@ i.drums=(
 	hihat: INSTRUMENT( i.synths.hihat.choose ),
 	snare: INSTRUMENT( i.synths.snare.choose ),
 )
+
+
+// choose a subset of instruments, with a probability ( range: 0 - 1, default 0.5 )
+
+// when probability larger than 0, will always select at least 1 instrument
+
+i.drums.chooseInstrument
+i.drums.chooseInstrument(1)
+i.drums.chooseInstrument(0)
+i.drums.chooseInstrument(0.2)
+i.drums.chooseInstrument(0.8)
+i.drums.chooseInstrument(1)
 
 ```
 
