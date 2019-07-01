@@ -145,10 +145,13 @@ Sequencer : I8TNode
 	}
 
 	stop {
+		playing = false;
+		this.rewind();
 		tdef.stop;
 	}
 
 	rewind {
+		this.go(0);
 		clock = 0;
 	}
 
