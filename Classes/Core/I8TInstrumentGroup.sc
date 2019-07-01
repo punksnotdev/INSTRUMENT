@@ -196,6 +196,18 @@ InstrumentGroup : Event
 		// };
 	}
 
+	chooseInstrument {|probability=0.5|
 
+		var newGroup=();
+
+		this.collect({|v,k|
+			if( 1.0.rand > (1-probability.asFloat) ) {
+				newGroup[k]=v
+			};
+		});
+
+		main.addMixerGroup( newGroup, name );
+
+	}
 
 }
