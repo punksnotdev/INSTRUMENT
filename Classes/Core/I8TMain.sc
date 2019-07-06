@@ -517,7 +517,7 @@ I8TMain : Event
 			var allValid = true;
 
 			var key = key_;
-			// var key = group_.name;
+
 			group_.collect({|childItem|
 				if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
 					allValid = false;
@@ -601,7 +601,7 @@ I8TMain : Event
 
 							if( (nodes.includes( childItem ) == false), {
 
-							  childItem.name=childItemKey;
+							  childItem.name=key++'_'++childItemKey;
 
 							  this.setupMixerNode( childItem );
 

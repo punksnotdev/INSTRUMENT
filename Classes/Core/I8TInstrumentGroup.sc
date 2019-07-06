@@ -2,6 +2,7 @@ InstrumentGroup : Event
 {
 
 	var <amp;
+	var <octave;
 	var <>main;
 	var <clock;
 	var <baseClock;
@@ -75,6 +76,16 @@ InstrumentGroup : Event
 			};
 		});
 		amp = value_;
+	}
+
+	octave_ {|value_|
+
+		this.collect({|item|
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+				item.octave = value_;
+			};
+		});
+		octave = value_;
 	}
 
 
