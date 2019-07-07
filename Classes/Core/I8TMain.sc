@@ -7,6 +7,8 @@ I8TMain : Event
 	var awaitingReadyBeforePlay;
 
 	var <threadID;
+	var <>clock;
+
 	var <nodes;
 	var <rootNode;
 
@@ -60,6 +62,8 @@ I8TMain : Event
 
 	init {|createNew=false|
 
+
+		clock = TempoClock.new( TempoClock.default.tempo );
 
 		ready = false;
 
@@ -370,22 +374,18 @@ I8TMain : Event
 		^controllerManager.midi.devices;
 	}
 
-	clock {
-		^TempoClock.default.tempo;
-	}
+
 	tempo {
-		^TempoClock.default.tempo*120;
+		^clock.tempo*120;
 	}
 	bpm {
 		^this.tempo();
 	}
 
-	clock_ {|clock|
-		TempoClock.default.tempo = clock;
-	}
 	tempo_ {|bpm|
-		TempoClock.default.tempo = bpm/120;
+		clock.tempo = bpm/120;
 	}
+
 	bpm_ {|bpm|
 		this.tempo( bpm );
 	}

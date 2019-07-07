@@ -135,7 +135,7 @@ Sequencer : I8TNode
 			}
 
 
-		}).play;
+		}).play(main.clock);
 
 	}
 
@@ -240,7 +240,7 @@ Sequencer : I8TNode
 		if( instrument.isKindOf(Instrument), {
 
 			if( sequencer_tracks[instrument.name] == nil, {
-				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument, main.threadID);
+				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument, main );
 			}, {
 				sequencer_tracks[instrument.name].instrument = instrument;
 			});

@@ -6,7 +6,7 @@ SequencerTrack
 	classvar <>classSequencer;
 	var <sequencer;
 
-	var threadID;
+	var main;
 
 	var <>parameterTracks;
 
@@ -20,13 +20,13 @@ SequencerTrack
 	var currentSpeed;
 	var <>beats;
 
-	*new {|instrument_, threadID_|
-		^super.new.init(instrument_, threadID_);
+	*new {|instrument_, main_|
+		^super.new.init(instrument_, main_);
 	}
 
-	init {|instrument_, threadID_|
+	init {|instrument_, main_|
 
-		threadID = threadID_;
+		main = main_;
 
 		sequencer = classSequencer;
 
@@ -78,7 +78,7 @@ SequencerTrack
 		var patternEvent;
 
 		if( parameterTracks[ parameter ] == nil, {
-			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter, threadID );
+			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter, main );
 		});
 
 		patternEvent = parameterTracks[ parameter ].addPattern(key,pattern,play_parameters);
