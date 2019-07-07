@@ -3,7 +3,7 @@ ParameterTrack
 
 	var track;
 	var <>name;
-
+	var threadID;
 	var <patterns;
 	var <sequence;
 	var <patternEvents;
@@ -21,15 +21,16 @@ ParameterTrack
 
 	var <sequenceInfo;
 
-	*new{|track_,name_|
-		^super.new.init(track_,name_);
+	*new{|track_,name_,threadID_|
+		^super.new.init(track_,name_,threadID_);
 	}
-	init{|track_,name_|
+	init{|track_,name_,threadID_|
 
 				// netAddr = NetAddr("192.168.1.116",4567);
 
 		track = track_;
 		name = name_;
+		threadID = threadID_;
 
 		repeats = track.repeats;
 		speed = track.speed;
@@ -42,7 +43,7 @@ ParameterTrack
 		sequence = List.new();
 
 
-		durationSequencer = Tdef(("durationSequencer_"++name++"_"++track.instrument.name).asSymbol, {
+		durationSequencer = Tdef(("durationSequencer_" ++ threadID ++ "_" ++ name++"_"++track.instrument.name).asSymbol, {
 			inf.do {|i|
 
 
@@ -52,6 +53,7 @@ ParameterTrack
 				var beatPatternIndex;
 				var beatValue;
 				var currentPattern;
+
 
 				if( this.currentEvent().notNil, {
 

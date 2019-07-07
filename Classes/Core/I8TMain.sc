@@ -6,6 +6,7 @@ I8TMain : Event
 	var ready;
 	var awaitingReadyBeforePlay;
 
+	var <threadID;
 	var <nodes;
 	var <rootNode;
 
@@ -43,11 +44,11 @@ I8TMain : Event
 
 	classvar mainEvent;
 
-	*new {
+	*new {|createNew=false|
 
-		if( instance.isNil, {
+		if(( instance.isNil || createNew == true), {
 
-			^super.new.init();
+			^super.new.init(createNew);
 
 		}, {
 
@@ -57,14 +58,16 @@ I8TMain : Event
 
 	}
 
-	init {
+	init {|createNew=false|
 
 
 		ready = false;
 
 		if( Server.local.serverRunning, {
 
-			instance = this;
+			if( createNew==false ) {
+				instance = this;
+			};
 
 			CmdPeriod.add({
 				this.kill()
@@ -114,7 +117,16 @@ I8TMain : Event
 				this.play;
 			};
 
-			^instance
+			thisThread.randSeed = 10e6.rand;
+			threadID = 10e12.rand;
+
+			"I N S T R U M E N T".postln;
+
+			if( createNew == true, {
+				^this
+			}, {
+				^instance
+			});
 
 		}, {
 

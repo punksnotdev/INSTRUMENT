@@ -67,12 +67,11 @@ Sequencer : I8TNode
 
 		playing = true;
 
-		tdef = Tdef(\sequencer,{
+		tdef = Tdef(( "sequencer" ++ "_" ++ main.threadID).asSymbol,{
 
 			inf.do{|i|
 
 				if( i % 32 == 0, {
-
 
 					if( beats % 1 == 0 ) {
 
@@ -241,7 +240,7 @@ Sequencer : I8TNode
 		if( instrument.isKindOf(Instrument), {
 
 			if( sequencer_tracks[instrument.name] == nil, {
-				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument);
+				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument, main.threadID);
 			}, {
 				sequencer_tracks[instrument.name].instrument = instrument;
 			});

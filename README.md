@@ -568,10 +568,10 @@ i.clap.fx=\reverb;
 
 ```
 
-## Groups of INSTRUMENTS
+## Group
 
 
-You can group instruments for easier manipulation, while retaining access to individual instruments
+You can group Instruments for easier manipulation, while retaining access to individual instruments
 
 ```SuperCollider
 
@@ -624,12 +624,30 @@ i.drums=(
 
 // when probability larger than 0, will always select at least 1 instrument
 
-i.drums.chooseInstrument
-i.drums.chooseInstrument(1)
-i.drums.chooseInstrument(0)
-i.drums.chooseInstrument(0.2)
-i.drums.chooseInstrument(0.8)
-i.drums.chooseInstrument(1)
+i.drums.chooseInstrument;
+i.drums.chooseInstrument(1);
+i.drums.chooseInstrument(0);
+i.drums.chooseInstrument(0.2);
+i.drums.chooseInstrument(0.8);
+i.drums.chooseInstrument(1);
+
+
+// melodic synths:
+
+
+i.melodies=(
+	note1: INSTRUMENT( i.synths.note.distNote1 ),
+	note2: INSTRUMENT( i.synths.note.distNote2 )
+);
+
+i.melodies.note1.note("0 7  8");
+i.melodies.note2.note("12  15 13");
+
+i.melodies.octave=5;
+i.melodies.octave=6;
+i.melodies.octave=3;
+i.melodies.octave=4;
+
 
 ```
 

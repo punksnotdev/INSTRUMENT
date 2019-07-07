@@ -1,13 +1,13 @@
 INSTRUMENT {
 
-    *new {|source|
-        ^super.new.init(source);
+    *new {|source=nil,createNew=false|
+        ^super.new.init(source,createNew);
     }
 
-    init {|source|
-        if( source.isNil) {
-			"I N S T R U M E N T".postln;
-            ^I8TMain();
+    init {|source=nil,createNew=false|
+
+        if( (source.isNil || source.isKindOf(Boolean)) ) {
+			^I8TMain(createNew);
         };
 
         if( (source.isKindOf(Symbol) ), {
