@@ -1190,3 +1190,54 @@ SynthDef(\reverb, {
 }).store;
 
 ```
+
+
+### Multiple instances
+
+You can run multiple instances of INSTRUMENT in parallel.
+
+Normally, every time you create a new INSTRUMENT,
+it will only refer to the first declared instance.
+This is to prevent bugs while live coding sets.
+
+```
+i = INSTRUMENT()
+```
+
+
+However, you may wish to keep separate instances, so you can start, play, change tempo, configure, etc. them separately:
+
+```SuperCollider
+
+i=INSTRUMENT().play;
+
+i.kick=INSTRUMENT(i.synths.kick.kickSyn3);
+i.kick.seq("1");
+
+// use 'createNew: true' to create new instance
+h=INSTRUMENT(createNew:true).play;
+
+h.kick=INSTRUMENT(i.synths.kick.kickHard);
+h.kick.seq("1xxx :4 1 ").speed(4);
+
+// 'j' is the same instance as 'i'
+
+j=INSTRUMENT();
+i==i // true;
+j.kick.seq("1").speed(4);
+
+
+
+// you can change tempo separately:
+
+(
+	i.tempo=100;
+	h.tempo=200;
+)
+
+(
+	i.tempo=300;
+	h.tempo=150;
+)
+
+```
