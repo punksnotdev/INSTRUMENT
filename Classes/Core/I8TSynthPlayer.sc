@@ -385,9 +385,16 @@ SynthPlayer : SynthInstrument
 
 	set {|parameter,value|
 
-		if( parameter == \note, {
+
+		switch( parameter,
+		 \note, {
 			this.trigger( parameter, value );
-		}, {
+		},
+		\low, {
+			["implement low",mixerChannel].postln;
+			synth_parameters[\low] = value;
+		},
+		{
 			synth_parameters[parameter] = value;
 		});
 

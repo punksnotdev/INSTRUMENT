@@ -705,7 +705,7 @@ I8TMain : Event
 				// 	mixer[group.name] = group;
 				// };
 				//
-				// mixer.addChannel( node, group );
+				node.mixerChannel = mixer.addChannel( node );
 
 			};
 		};

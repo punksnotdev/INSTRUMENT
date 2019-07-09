@@ -12,6 +12,7 @@ Instrument : Sequenceable
 	var <>volume;
 	var <>octave;
 	var <main;
+    var <>mixerChannel;
 	// var synthGroup;
 	var outGroup;
 
