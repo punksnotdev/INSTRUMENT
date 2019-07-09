@@ -220,6 +220,10 @@ i.bass=INSTRUMENT(\tranceBazz);
 
 i.bass.seq(\note, "0 2 3 5");
 
+// you can also use note names:
+
+i.bass.seq(\note, "C D Eb F");
+
 
 ```
 
@@ -238,9 +242,11 @@ There are shorthands 'seq' methods for some common parameters, some of them:
 (
 i=INSTRUMENT().play;
 
-i.bass=INSTRUMENT(\tranceBazz);
+i.bass=INSTRUMENT(i.synths.trance.choose);
+
 
 i.bass.note("0 2 3 5");
+i.bass.note("C D Eb");
 
 
 i.bass.octave=3;

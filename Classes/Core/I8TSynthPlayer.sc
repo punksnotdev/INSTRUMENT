@@ -179,9 +179,34 @@ SynthPlayer : SynthInstrument
 				\note, {
 					// if is Event, get params
 					var event = value;
-					var note = event.val.asFloat;
 					var amp = event.amplitude;
 					var use_synth_parameters;
+					var note;
+					var noteStrings = ['A','B','C','D','E','F','G'];
+
+
+					if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
+						var notes = (
+							'C': 0,
+							'Db': 1,
+							'D': 2,
+							'Eb': 3,
+							'E': 4,
+							'F': 5,
+							'Gb': 6,
+							'G': 7,
+							'Ab': 8,
+							'A': 9,
+							'Bb': 10,
+							'B': 11,
+						);
+
+						note = notes[event.val.asSymbol];
+
+					}, {
+						note = event.val.asFloat;
+					});
+
 
 					if( event.amplitude.isNil ) {
 						amp = 0.5;
