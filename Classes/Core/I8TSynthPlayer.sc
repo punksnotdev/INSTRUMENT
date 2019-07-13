@@ -208,122 +208,126 @@ SynthPlayer : SynthInstrument
 					});
 
 
-					if( event.amplitude.isNil ) {
-						amp = 0.5;
-					};
+					if( (note > 0) && (note < 128) ) {
 
-					if( event.val != \r ) {
+						if( event.amplitude.isNil ) {
+							amp = 0.5;
+						};
 
-						use_synth_parameters = synth_parameters;
+						if( event.val != \r ) {
 
-						if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
-							var computed_params;
-							amp = amp * synth_parameters[\amp];
+							use_synth_parameters = synth_parameters;
 
-							computed_params = synth_parameters.copy;
-							computed_params.removeAt(\amp);
-							use_synth_parameters = computed_params;
-						});
+							if( ((synth_parameters.notNil) && (synth_parameters[\amp].notNil)), {
+								var computed_params;
+								amp = amp * synth_parameters[\amp];
 
-						if( amp.asFloat > 0, {
+								computed_params = synth_parameters.copy;
+								computed_params.removeAt(\amp);
+								use_synth_parameters = computed_params;
+							});
 
-							switch(mode,
+							if( amp.asFloat > 0, {
 
-								\poly, {
+								switch(mode,
 
-									this.createSynth([
-										\t_trig,1,
-										\freq,((octave*12)+note).midicps,
-										\note,(octave*12)+note,
-										\amp, amp,
-										\out, outbus
-										]++this.parameters_array(use_synth_parameters)
-									);
+									\poly, {
 
-								},
+										this.createSynth([
+											\t_trig,1,
+											\freq,((octave*12)+note).midicps,
+											\note,(octave*12)+note,
+											\amp, amp,
+											\out, outbus
+											]++this.parameters_array(use_synth_parameters)
+										);
 
-								\mono, {
+									},
 
-									if( synth.isKindOf(Synth), {
+									\mono, {
 
-										if( synth.isPlaying == false, {
-											synth = nil;
-										});
-									});
+										if( synth.isKindOf(Synth), {
 
-									pressedKeys[note] = true;
-
-									if( synth.isNil , {
-										if( creatingSynth == false, {
-
-											creatingSynth = true;
-
-											this.createSynth([
-												\t_trig,1,
-												\freq,((octave*12)+note).midicps,
-												\note,(octave*12)+note,
-												\amp, amp,
-												\legato,0,
-												\out, outbus
-												]++this.parameters_array(use_synth_parameters)
-											);
-
+											if( synth.isPlaying == false, {
+												synth = nil;
+											});
 										});
 
+										pressedKeys[note] = true;
 
-									}, {
+										if( synth.isNil , {
+											if( creatingSynth == false, {
 
-										if( synth.isKindOf(Synth) ) {
-											synth.set(\amp,amp);
-											synth.set(\gate,1);
+												creatingSynth = true;
 
-											if(pressedKeys.size==1, {
-
-												synth.set(\legato,0);
-
-											}, {
-
-												synth.set(\legato,use_synth_parameters[\legato]);
+												this.createSynth([
+													\t_trig,1,
+													\freq,((octave*12)+note).midicps,
+													\note,(octave*12)+note,
+													\amp, amp,
+													\legato,0,
+													\out, outbus
+													]++this.parameters_array(use_synth_parameters)
+												);
 
 											});
 
-											synth.set(\freq,note.midicps);
 
-										}
+										}, {
 
-									});
+											if( synth.isKindOf(Synth) ) {
+												synth.set(\amp,amp);
+												synth.set(\gate,1);
 
-								}
-							);
+												if(pressedKeys.size==1, {
+
+													synth.set(\legato,0);
+
+												}, {
+
+													synth.set(\legato,use_synth_parameters[\legato]);
+
+												});
+
+												synth.set(\freq,note.midicps);
+
+											}
+
+										});
+
+									}
+								);
 
 
-						}, { // note off
+							}, { // note off
 
 
-							switch( mode,
+								switch( mode,
 
-								\mono, {
+									\mono, {
 
-									pressedKeys.removeAt(note);
+										pressedKeys.removeAt(note);
 
-									if(pressedKeys.size<=0, {
+										if(pressedKeys.size<=0, {
 
-										if( synth.isKindOf(Synth) ) {
+											if( synth.isKindOf(Synth) ) {
 
-											synth.set(\gate,0);
-											creatingSynth = false;
-											pressedKeys = IdentityDictionary.new;
-										}
+												synth.set(\gate,0);
+												creatingSynth = false;
+												pressedKeys = IdentityDictionary.new;
+											}
 
-									});
+										});
 
-								}
-							);
+									}
+								);
 
-						});
+							});
+
+						}
+
 
 					}
-
 
 
 				},

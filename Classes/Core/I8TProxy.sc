@@ -58,7 +58,9 @@ Proxy : Instrument
 			// },
 				\octave, { octave = value },
 				\note, {
-					proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
+					if( (value > 0) && (value < 128) ) {
+						proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
+					};
 				},
 				\trigger, {
 					proxy.set(\t_trig,1,\amp,value);
