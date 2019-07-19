@@ -6,6 +6,6 @@ SynthDef(\delay1, { arg inBus=0, delay = 0.25, wet=0.75,lag=1.5;
             In.ar(inBus),
             8,
             Lag2.kr(delay,lag)
-        )/2)*wet)
+        ))*wet)
     )
 }).store;

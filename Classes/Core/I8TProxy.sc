@@ -58,8 +58,8 @@ Proxy : Instrument
 			// },
 				\octave, { octave = value },
 				\note, {
-					if( (value > 0) && (value < 128) ) {
-						proxy.set(\t_trig,1,\note,(octave*12)+value,\freq,((octave*12)+value).midicps);
+					if( (value >= 0) && (value < 128) ) {
+						proxy.set(\t_trig,1,\note,((octave*12)+value).min(128),\freq,((octave*12)+value).min(128).midicps);
 					};
 				},
 				\trigger, {
@@ -67,7 +67,7 @@ Proxy : Instrument
 				},
 				\chord, {
 					["chord",value].postln;
-					proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
+					proxy.setn(\notes,((octave*12)+value).min(128),\freqs,((octave*12)+value).min(128).midicps,\t_trig,1);
 				},
 				{ // default:
 					proxy.set(parameter.asSymbol,value);

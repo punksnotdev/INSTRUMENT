@@ -1,5 +1,5 @@
 SynthDef(\bassDist, {
-|freq=1.0, decayTime=0.5, amp=0.5, gain=0.5, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.2, rq=0.06, dist=1|
+|freq=1.0, decayTime=0.5, amp=0.5, gain=0.5, temp=100, out=0, done=2, pan=0, att=0.01, sus=0.1, rel=0.3, rq=0.06, dist=1|
 
 	var sig, env;
 

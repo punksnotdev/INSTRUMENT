@@ -6,6 +6,7 @@ I8TParser {
 
 */
 
+
 	*new {
 
 		^super.new.init();
@@ -13,7 +14,6 @@ I8TParser {
 	}
 
 	init {
-
 	}
 
 	*parse {|input|
@@ -31,6 +31,90 @@ I8TParser {
 		input.size.do({|index|
 
 			var char = input[ index ];
+
+
+			// if is not last character
+			if( index < (input.size - 1) ) {
+
+
+				// if current char is not a space
+				// append to current building group
+
+				if( char != Char.space ) {
+
+					if( lastChar == Char.space ) {
+
+						// if( char != $:, {
+
+							if( buildingGroupChars.size > 0 ) {
+
+								groupStrings.add( buildingGroupChars );
+								buildingGroupChars = "";
+
+							};
+
+						// }, {
+						//
+						// 	if( buildingGroupChars.size > 0 ) {
+						//
+						// 		groupStrings.add( buildingGroupChars );
+						// 		buildingGroupChars = "";
+						//
+						// 	};
+						//
+						// });
+
+					};
+
+					buildingGroupChars = buildingGroupChars ++ char;
+
+
+
+				};
+
+				// if current char is space
+
+				if( char == Char.space ) {
+
+					// if last char is also space
+
+					if( lastChar.notNil ) {
+
+						if( lastChar == Char.space ) {
+							// start new group with a space
+							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
+
+							// if( input.findBackwards( Char.space ).notNil ) {
+
+								// if this is last space in string
+								// if( input.findBackwards( Char.space ) <= index ) {
+								// 	buildingGroupChars = buildingGroupChars ++ Char.space;
+								// }
+							// }
+
+						};
+
+						// if current char is not a space
+						// create group from to current building chars
+
+						if( lastChar != Char.space ) {
+
+							groupStrings.add( buildingGroupChars );
+							buildingGroupChars = "";
+
+						}
+
+					};
+
+					if( lastChar.isNil, {
+
+						buildingGroupChars = buildingGroupChars ++ char;
+
+					});
+
+				};
+
+			};
 
 
 			// if is last character
@@ -81,80 +165,6 @@ I8TParser {
 
 			};
 
-			// if is not last character
-			if( index < (input.size - 1) ) {
-				// if current char is space
-
-				if( char == Char.space ) {
-
-					// if last char is also space
-
-					if( lastChar.notNil ) {
-
-						if( lastChar == Char.space ) {
-							// start new group with a space
-							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
-
-							// if( input.findBackwards( Char.space ).notNil ) {
-
-								// if this is last space in string
-								// if( input.findBackwards( Char.space ) <= index ) {
-								// 	[index,"this is last space in string"].postln;
-								// 	buildingGroupChars = buildingGroupChars ++ Char.space;
-								// }
-							// }
-
-						};
-
-						// if current char is not a space
-						// create group from to current building chars
-
-						if( lastChar != Char.space ) {
-
-							groupStrings.add( buildingGroupChars );
-							buildingGroupChars = "";
-
-						}
-
-					};
-
-					if( lastChar.isNil, {
-
-						buildingGroupChars = buildingGroupChars ++ char;
-
-					});
-
-				};
-
-
-				// if current char is not a space
-				// append to current building group
-
-				if( char != Char.space ) {
-
-					if( lastChar == Char.space ) {
-
-						if( char != $:, {
-
-							if( buildingGroupChars.size > 0 ) {
-
-								groupStrings.add( buildingGroupChars );
-								buildingGroupChars = "";
-
-							};
-
-						});
-
-					};
-
-					buildingGroupChars = buildingGroupChars ++ char;
-
-				};
-
-
-
-
-			};
 
 
 			lastChar = char;
@@ -197,6 +207,7 @@ I8TParser {
 	}
 
 
+
 	*extractParameters {|group|
 
 
@@ -209,6 +220,8 @@ I8TParser {
 		var operatorIndexes = SortedList.new;
 
 		var groupValue;
+
+
 
 		if( operators.size > 0 ) {
 
@@ -248,14 +261,12 @@ I8TParser {
 				if( repeatableOperators.includes( operator ) ) {
 
 					repetitions = this.getOperatorRepetitions(group,operator);
-
 				};
 
 
 				// if no repetitions, read value after operator:
 
-				if( repetitions==0, {
-
+				if( repetitions<=1, {
 					operatorIndexes.collect({|operatorIndex|
 
 						if( nextOperatorIndex.isNil ) {
@@ -292,6 +303,7 @@ I8TParser {
 						charsToRead = group.size - nextOperatorIndex - 1;
 
 					});
+
 
 				}, {
 
@@ -391,9 +403,12 @@ I8TParser {
 
 			var event = ();
 
+
+
 			parameterGroup.keysValuesDo({|k,v|
 
 				var hasValue = false;
+
 
 				switch( k,
 
@@ -424,6 +439,11 @@ I8TParser {
 						event.repetitions = v;
 
 					},
+
+					"x", {
+						event.repetitions = v;
+
+					},
 					// {
 					//
 					// 	event.val = v;
@@ -435,6 +455,8 @@ I8TParser {
 
 
 			});
+
+
 			if( event.duration.notNil, {
 				if( nextEventDuration.notNil ) {
 					if( event.val.isNil, {
@@ -467,7 +489,6 @@ I8TParser {
 			};
 
 
-			// event.postln;
 
 			// if( event.repetitions.notNil, {
 			// 	event.repetitions = event.repetitions * nextEventRepetitions;
@@ -485,20 +506,20 @@ I8TParser {
 
 		});
 
-
-		events.collect({|event|
+		events.collect({|event,i|
 			if( event.repetitions.notNil, {
-				if( event.repetitions.isInteger ) {
-					if( event.repetitions>0 ) {
 
-						event.repetitions.do({
-							var newEvent = event;
+				var repetitions = event.repetitions.asInteger;
 
-							newEvent.repetitions = nil;
-							eventsPost.add( newEvent );
-						});
+				if( repetitions>0 ) {
 
-					}
+					repetitions.asInteger.do({
+						var newEvent = event;
+
+						newEvent.repetitions = nil;
+						eventsPost.add( newEvent );
+					});
+
 				}
 			}, {
 				eventsPost.add( event );

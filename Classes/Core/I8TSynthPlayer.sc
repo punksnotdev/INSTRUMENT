@@ -204,11 +204,11 @@ SynthPlayer : SynthInstrument
 						note = notes[event.val.asSymbol];
 
 					}, {
-						note = event.val.asFloat;
+						note = event.val.asFloat.min(128);
 					});
 
 
-					if( (note > 0) && (note < 128) ) {
+					if( (note >= 0) && (note < 128) ) {
 
 						if( event.amplitude.isNil ) {
 							amp = 0.5;

@@ -357,4 +357,12 @@ Sequenceable : I8TNode
 
 	}
 
+	pattern {
+		^currentPattern
+	}
+
+	duration {
+		^currentPattern.collect({|e| e.duration }).sum()
+	}
+
 }
