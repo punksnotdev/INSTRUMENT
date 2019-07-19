@@ -300,9 +300,25 @@ The 'x' operator inside string Patterns allow for repetition of last value
 
 i=INSTRUMENT().play;
 
-i.kick.seq("1   0.5xxxx");
+i.kick=INSTRUMENT(\kickElectro);
 
-i.bass.note("0 2xx 3xxx");
+// repeat four times
+i.kick.seq("1 0.5x3");
+i.kick.duration;
+// lazy equivalent
+i.kick.seq("1 0.5xxx");
+
+i.kick.seq("1x6 :0.25 1  1x3  1  1x3");
+i.kick.duration;
+
+i.kick.seq("1x4 :0.5 1x8 :0.25 1x16 :0.125 1x32");
+
+i.bass=INSTRUMENT(i.synths.trance.choose);
+
+i.bass.note("0 2x2 3x3 7x2");
+i.bass.duration;
+
+
 
 
 ```
