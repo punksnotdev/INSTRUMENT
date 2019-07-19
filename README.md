@@ -319,7 +319,10 @@ i.kick.seq("1x6 :0.25 1  1x3  1  1x3");
 i.kick.duration;
 
 
-i.bass=INSTRUMENT(i.synths.trance.choose);
+i.bass=INSTRUMENT(i.synths.bassTrance3);
+i.bass.octave=3;
+i.bass.clock=3;
+i.bass.amp=2;
 
 i.bass.note("C   Dx2   Ebx3   Bbx2   Ax3   F  ");
 
