@@ -321,7 +321,8 @@ i.kick.duration;
 
 i.bass=INSTRUMENT(i.synths.trance.choose);
 
-i.bass.note("0 2x2 3x3 7x2");
+i.bass.note("C   Dx2   Ebx3   Bbx2   Ax3   F  ");
+
 i.bass.duration;
 
 
