@@ -420,6 +420,9 @@ I8TParser {
 		var nextEventRepetitions;
 		var nextEventAmp;
 
+		var ampRange = [4,4];
+		var pianoValue;
+		var forteValue;
 
 		parameterGroups.collect({|parameterGroup|
 
@@ -461,10 +464,16 @@ I8TParser {
 						event.repetitions = v;
 
 					},
-
 					"x", {
 						event.repetitions = v;
 
+					},
+
+					$p, {
+						event.piano = v;
+					},
+					$f, {
+						event.forte = v;
 					},
 					// {
 					//
@@ -521,16 +530,40 @@ I8TParser {
 			// },{
 			// 	event.amp = nextEventAmp;
 			// });
+
 			if( event.val.notNil ) {
 				events.add(event)
 			};
 
 		});
 
+		pianoValue = events.collect(_.piano).reject(_.isNil).maxItem;
+		forteValue = events.collect(_.forte).reject(_.isNil).maxItem;
+
+		if( ampRange.notNil ) {
+
+			if( pianoValue.notNil ) {
+				ampRange[0]=pianoValue.asString;
+			};
+			if( forteValue.notNil ) {
+				ampRange[1]=forteValue.asString;
+			};
+
+		};
+
+
+		if( ((ampRange[0]<4) && (ampRange[1]<4))) {
+			ampRange = nil;
+		};
+
 		events.collect({|event,i|
+
+			var repetitions;
+			var amplitude, piano, forte;
+
 			if( event.repetitions.notNil, {
 
-				var repetitions = event.repetitions.asInteger;
+				repetitions = event.repetitions.asInteger;
 
 				if( repetitions>0 ) {
 
@@ -545,6 +578,32 @@ I8TParser {
 			}, {
 				eventsPost.add( event );
 			});
+
+			if( ampRange.notNil ) {
+
+
+				amplitude = event.amplitude;
+				piano = event.piano;
+				forte = event.forte;
+
+
+				amplitude = 0.5;
+
+				if( piano.notNil ) {
+					amplitude = (0.5-((piano.asString.asInteger / ampRange[0].asString.asInteger) / 2.5));
+					amplitude = (0.5-((piano.asString.asInteger / ampRange[0].asString.asInteger) / 2.5));
+				};
+				if( forte.notNil ) {
+					amplitude = (0.5+((forte.asString.asInteger / ampRange[1].asString.asInteger) / 2.5 ));
+				};
+
+				if( amplitude.isNumber ) {
+					event.amplitude = amplitude.abs;
+				};
+
+			};
+
+
 		});
 
 		^eventsPost;
