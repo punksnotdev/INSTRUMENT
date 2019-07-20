@@ -5,7 +5,7 @@ SynthDef(\organ_reed, {
     // pulse with modulating width
     snd = Pulse.ar((Rand(-0.03, 0.05) + freq.cpsmidi).midicps, 0.48 + LFNoise1.kr(0.06, 0.1), 0.2);
     // store a little "grit" to the reed
-    snd = Disintegrator.ar(snd, 0.5, 0.7);
+    // snd = Disintegrator.ar(snd, 0.5, 0.7);
     // a little ebb and flow in volume
     snd = snd * LFNoise2.kr(5, 0.05, 1);
     // use the same signal to control both the resonant freq and the amplitude
