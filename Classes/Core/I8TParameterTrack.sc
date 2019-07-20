@@ -80,8 +80,7 @@ ParameterTrack
 
 					if( beatValue.notNil ) {
 
-						if( beatValue != \r, {
-
+						if((( beatValue.val != \r)&&(beatValue != nil)), {
 							track.instrument.trigger( name, beatValue );
 
 						});
@@ -157,7 +156,6 @@ ParameterTrack
 							});
 
 							if( ((theValue != \r)&&(theValue != nil)), {
-
 								track.instrument.trigger( name, theValue );
 
 							});

@@ -184,37 +184,36 @@ SynthPlayer : SynthInstrument
 					var note;
 					var noteStrings = ['A','B','C','D','E','F','G'];
 
+					if( ( (event.val != \r) && (event.val != nil ) ) ) {
 
-					if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
-						var notes = (
-							'C': 0,
-							'Db': 1,
-							'D': 2,
-							'Eb': 3,
-							'E': 4,
-							'F': 5,
-							'Gb': 6,
-							'G': 7,
-							'Ab': 8,
-							'A': 9,
-							'Bb': 10,
-							'B': 11,
-						);
+						if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
+							var notes = (
+								'C': 0,
+								'Db': 1,
+								'D': 2,
+								'Eb': 3,
+								'E': 4,
+								'F': 5,
+								'Gb': 6,
+								'G': 7,
+								'Ab': 8,
+								'A': 9,
+								'Bb': 10,
+								'B': 11,
+							);
 
-						note = notes[event.val.asSymbol];
+							note = notes[event.val.asSymbol];
 
-					}, {
-						note = event.val.asFloat.min(128);
-					});
+						}, {
+							note = event.val.asFloat.min(128);
+						});
 
 
-					if( (note >= 0) && (note < 128) ) {
+						if( (note >= 0) && (note < 128) ) {
 
-						if( event.amplitude.isNil ) {
-							amp = 0.5;
-						};
-
-						if( ( (event.val != \r) && (event.val != nil ) ) ) {
+							if( event.amplitude.isNil ) {
+								amp = 0.5;
+							};
 
 							use_synth_parameters = synth_parameters;
 
@@ -393,7 +392,6 @@ SynthPlayer : SynthInstrument
 
 
 	set {|parameter,value|
-		[parameter,value].postln;
 
 		if( ( (value != nil) && (value != \r) )) {
 
