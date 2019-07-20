@@ -3,15 +3,15 @@ SynthDef(\reverb, {
 	inBus=0,
 	outBus=0,
 	wet=0.5,
-	room=0.3,
-	damp=0.3,
+	room=0.75,
+	damp=0.75,
 	amp=1;
 
 	var sig;
 	var targetRoom, targetDamp, lag=0.3;
 	var dsp, mix;
 
-	sig = In.ar(inBus) * 2;
+	sig = In.ar(inBus) * 2.5;
 
 	dsp = FreeVerb.ar( sig, 1, room, damp );
 
