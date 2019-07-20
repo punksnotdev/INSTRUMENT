@@ -32,6 +32,7 @@ i.drums.clap.seq(" 1 :2 1 :0.25 1xxx ");
 
 i.drums.clock = 2;
 
+
 )
 
 
@@ -216,7 +217,7 @@ Lets pass a different parameter, *note*.
 
 i=INSTRUMENT().play;
 
-i.bass=INSTRUMENT(\tranceBazz);
+i.bass=INSTRUMENT(i.synths.trance.choose);
 
 i.bass.seq(\note, "0 2 3 5");
 
@@ -249,6 +250,8 @@ i.bass.note("0 2 3 7");
 i.bass.note("C D Eb G");
 
 i.bass.octave=4;
+i.bass.octave=3;
+i.bass.octave=5;
 
 )
 
@@ -263,12 +266,15 @@ i.bass.octave=4;
 i.tempo=180;
 i.tempo=140;
 i.tempo=120;
+i.tempo=220;
 
 ```
 
 ## Add silences
 
 ```SuperCollider
+
+i.kick=INSTRUMENT(i.synths.kick.choose);
 
 i.kick.seq("1   0.5");
 // array notation equivalent:
@@ -285,6 +291,7 @@ i.kick.seq([1, \r, \r, \r, 0.5]);
 i.kick.amp=1/2;
 i.kick.amp=3/4;
 i.kick.amp=1;
+i.kick.amp=2;
 
 i.kick.clock=2;
 i.bass.clock=4;
@@ -300,15 +307,32 @@ The 'x' operator inside string Patterns allow for repetition of last value
 
 i=INSTRUMENT().play;
 
-i.kick=INSTRUMENT(\kickElectro);
+
+
+(
+i.piano=INSTRUMENT(i.synths.piano.rhodes);
+
+i.piano.amp=4
+i.piano.note("0xx 2xxx 3xxxxx")
+i.piano.note("0x2 2x3 3x5")
+i.piano.duration
+
+i.kick=INSTRUMENT(i.synths.electro.kick);
 
 // repeat three times
 i.kick.seq("1 0.5x3");
+
 i.kick.duration;
 // lazy equivalent
 i.kick.seq("1 0.5xxx");
 
 // using different speeds
+i.kick.rm(\trigger)
+
+i.kick[0].seq("1");
+i.kick[1].seq("1    1");
+i.kick[2].seq("1x14  ").speed(16).x(1);
+
 i.kick.seq("1x4 :0.5 1x8 :0.25 1x16 :0.125 1x32");
 
 // add some silences
@@ -343,8 +367,10 @@ The ':duration' operator inside string Patterns allow for setting of duration of
 
 i=INSTRUMENT().play;
 
+
 i.kick.seq("1 :0.25 1xxx ");
-i.kick.seq("1 :0.25 1xxx :0.125 1xxx ");
+i.kick.seq("1x4 :0.25 1x4 :0.125 1x4 :2 1x4");
+i.kick.duration
 
 
 ```
@@ -361,8 +387,8 @@ i.kick=INSTRUMENT(\kickElectro);
 
 i.kick.clock=2;
 i.kick[0].seq("1");
-i.kick[1].seq("1xx  1");
-i.kick[2].seq("1  1xx  1 ").speed(2);
+i.kick[1].seq("1xx   1");
+i.kick[2].seq("1   1xx   1 ").speed(2);
 
 ```
 
@@ -476,6 +502,7 @@ i.bass.note("0 2 3");
 i.bass.set(\rel,2);
 i.bass.set(\rel,0.2);
 i.bass.set(\gain,0.1);
+i.bass.set(\gain,0.01);
 i.bass.set(\gain,2);
 
 ```
@@ -506,6 +533,13 @@ i=INSTRUMENT().play;
 i.kick=INSTRUMENT(\kickDeep);
 i.kick.seq("1");
 i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
+
+
+
+i.bass=INSTRUMENT(i.synths.trance.choose);
+i.bass.note("0 2 3");
+i.bass.synthdef([\bassTrance,\bassTrance2,\bassTrance3]);
+
 )
 
 

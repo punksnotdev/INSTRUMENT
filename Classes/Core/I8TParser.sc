@@ -177,6 +177,7 @@ I8TParser {
 			this.extractParameters(groupString)
 		});
 
+		parameterGroups.postln;
 
 		^this.getEventsList(parameterGroups);
 
@@ -266,7 +267,7 @@ I8TParser {
 
 				// if no repetitions, read value after operator:
 
-				if( repetitions<=1, {
+				if( repetitions<=0, {
 					operatorIndexes.collect({|operatorIndex|
 
 						if( nextOperatorIndex.isNil ) {
@@ -398,6 +399,7 @@ I8TParser {
 		var nextEventDuration;
 		var nextEventRepetitions;
 		var nextEventAmp;
+
 
 		parameterGroups.collect({|parameterGroup|
 

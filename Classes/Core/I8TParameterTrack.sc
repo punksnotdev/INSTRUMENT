@@ -156,7 +156,7 @@ ParameterTrack
 								theValue = beatValue.val;
 							});
 
-							if( theValue != \r, {
+							if( ((theValue != \r)&&(theValue != nil)), {
 
 								track.instrument.trigger( name, theValue );
 

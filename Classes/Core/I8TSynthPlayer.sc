@@ -77,7 +77,7 @@ SynthPlayer : SynthInstrument
 
 	createSynth{|parameters|
 
-		if( synthdef != \r, {
+		if( ( (synthdef != \r) && (synthdef != nil ) ), {
 
 			var s = Server.local;
 
@@ -157,7 +157,7 @@ SynthPlayer : SynthInstrument
 
 				\synthdef, {
 
-					if( value.val != \r ) {
+					if( ( (value.val != \r) || (value.val != nil ) ) ) {
 
 						synthdef = value.val;
 
@@ -214,7 +214,7 @@ SynthPlayer : SynthInstrument
 							amp = 0.5;
 						};
 
-						if( event.val != \r ) {
+						if( ( (event.val != \r) && (event.val != nil ) ) ) {
 
 							use_synth_parameters = synth_parameters;
 
@@ -369,12 +369,17 @@ SynthPlayer : SynthInstrument
 				// },
 				{ // default:
 
-					synth_parameters[parameter.asSymbol]=value.val;
 
-					if( value.val.isNil || value.val == 0, {}, {
-						if( synth.isKindOf(Synth) ) {
+					// if( (value.val.notNil && (value.val != 0) && (value.val.asSymbol !=\r)), {
+					if( (value.val.notNil && (value.val !=\r)), {
+
+						synth_parameters[parameter.asSymbol]=value.val.asFloat;
+
+
+						if( synth.isKindOf(Synth) && synth.isPlaying ) {
 							synth.set(parameter.asSymbol,value.val.asFloat);
 						}
+
 					});
 				},
 
@@ -388,26 +393,29 @@ SynthPlayer : SynthInstrument
 
 
 	set {|parameter,value|
+		[parameter,value].postln;
 
+		if( ( (value != nil) && (value != \r) )) {
 
-		switch( parameter,
-		 \note, {
-			this.trigger( parameter, value );
-		},
-		\low, {
-			["implement low",mixerChannel].postln;
-			synth_parameters[\low] = value;
-		},
-		{
-			synth_parameters[parameter] = value;
-		});
+			switch( parameter,
+			 \note, {
+				this.trigger( parameter, value );
+			},
+			\low, {
+				["implement low",mixerChannel].postln;
+				synth_parameters[\low] = value;
+			},
+			{
+				synth_parameters[parameter] = value;
+			});
 
-		if( synth.isKindOf(Synth) ) {
-			if( synth.isPlaying ) {
-				synth.set( parameter, value );
+			if( synth.isKindOf(Synth) ) {
+				if( synth.isPlaying ) {
+					synth.set( parameter, value );
+				}
 			}
-		}
 
+		}
 	}
 
 	amp_ {|value|
