@@ -385,8 +385,22 @@ i.kick.seq("1 :1/4 1x3 ");
 
 i.kick.seq("1x4 :1/4 1x4 :1/8 1x4:2 1x2");
 
-i.kick.duration
 
+
+
+```
+
+Using fractions allow some interesting rhythms:
+
+```SuperCollider
+
+	i=INSTRUMENT().play;
+
+	i.kick=INSTRUMENT(i.synths.kick.choose);
+	i.hihat=INSTRUMENT(i.synths.hihat.choose.postln);
+
+	i.kick.seq("1xx  :3/8 1x3  1x2 :1/4 1x3  1x2  :1/2 1xx");
+	i.hihat.seq("1xx  :1/3 1x3");
 
 ```
 
