@@ -225,6 +225,10 @@ i.bass.seq(\note, "0 2 3 5");
 
 i.bass.seq(\note, "C D Eb F");
 
+// you can choose octaves
+
+i.bass.seq(\note, "C3 D4 Eb5 F6");
+
 
 ```
 

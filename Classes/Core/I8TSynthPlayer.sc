@@ -188,6 +188,7 @@ SynthPlayer : SynthInstrument
 
 						if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
 							var notes = (
+								'Cb': -1,
 								'C': 0,
 								'Db': 1,
 								'D': 2,
@@ -202,11 +203,35 @@ SynthPlayer : SynthInstrument
 								'B': 11,
 							);
 
-							note = notes[event.val.asSymbol];
+
+							var noteNumber = 4;
+							var noteName = "";
+
+
+							event.val.do({|c|
+								if(c.isDecDigit, {
+									noteNumber = c.asString.asInteger;
+								}, {
+									noteName = noteName ++ c.asString;
+								});
+							});
+
+							note = notes[noteName.asSymbol];
+
+							if( note.notNil, {
+
+								note = (note + ((noteNumber-4)*12)).asInteger;
+
+							}, {
+								note = 0;
+							});
 
 						}, {
 							note = event.val.asFloat.min(128);
 						});
+
+						note = (octave*12)+note;
+
 
 
 						if( (note >= 0) && (note < 128) ) {
@@ -234,8 +259,8 @@ SynthPlayer : SynthInstrument
 
 										this.createSynth([
 											\t_trig,1,
-											\freq,((octave*12)+note).midicps,
-											\note,(octave*12)+note,
+											\freq,(note).midicps,
+											\note,note,
 											\amp, amp,
 											\out, outbus
 											]++this.parameters_array(use_synth_parameters)
@@ -261,8 +286,8 @@ SynthPlayer : SynthInstrument
 
 												this.createSynth([
 													\t_trig,1,
-													\freq,((octave*12)+note).midicps,
-													\note,(octave*12)+note,
+													\freq,(note).midicps,
+													\note,note,
 													\amp, amp,
 													\legato,0,
 													\out, outbus

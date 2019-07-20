@@ -257,15 +257,19 @@ I8TParser {
 
 				var currentIndex = group.find( operator );
 
+				var operatorParameter;
+
 				if( repeatableOperators.includes( operator ) ) {
 
 					repetitions = this.getOperatorRepetitions(group,operator);
+
 				};
 
 
-				// if no repetitions, read value after operator:
 
-				if( repetitions<=0, {
+				// if 1 repetition, read value after operator:
+				if( repetitions<=1 ) {
+
 					operatorIndexes.collect({|operatorIndex|
 
 						if( nextOperatorIndex.isNil ) {
@@ -304,25 +308,30 @@ I8TParser {
 					});
 
 
-				}, {
+					charsToRead.do({|index|
 
-					// if there are repetitions
+						if ( index + currentIndex < group.size ) {
 
-					operatorValue = repetitions;
+							operatorParameter = operatorParameter ++ group.at( index + 1 + currentIndex );
 
+						}
+
+
+					});
+
+				};
+
+
+				if( (operatorParameter.notNil && repetitions <= 1), {
+					operatorValue = operatorParameter.asString;
+				},
+				{
+					if( repetitions > 1 ) {
+						operatorValue = repetitions.asString;
+					};
 				});
 
-				charsToRead.do({|index|
-
-					if ( index + currentIndex < group.size ) {
-
-						operatorValue = operatorValue ++ group.at( index + 1 + currentIndex );
-
-					}
-
-
-				});
-
+				[operator,operatorValue].postln;
 
 				parameters[operator] = operatorValue;
 
