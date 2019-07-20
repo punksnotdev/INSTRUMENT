@@ -266,7 +266,6 @@ I8TParser {
 				};
 
 
-
 				// if 1 repetition, read value after operator:
 				if( repetitions<=1 ) {
 
@@ -307,31 +306,45 @@ I8TParser {
 
 					});
 
+					if( charsToRead > 0, {
+						charsToRead.do({|index|
 
-					charsToRead.do({|index|
+							if ( index + currentIndex < group.size ) {
 
-						if ( index + currentIndex < group.size ) {
+								operatorParameter = operatorParameter ++ group.at( index + 1 + currentIndex );
 
-							operatorParameter = operatorParameter ++ group.at( index + 1 + currentIndex );
+							}
 
-						}
 
+						});
+
+					}, {
+
+						operatorParameter = 1;
 
 					});
+
 
 				};
 
 
-				if( (operatorParameter.notNil && repetitions <= 1), {
+				if( (operatorParameter.notNil) && (repetitions <= 1), {
+
+					if(operatorParameter.asString.contains("/")){
+						var lh, rh;
+						lh = operatorParameter.split($/)[0];
+						rh = operatorParameter.split($/)[1];
+						operatorParameter = (lh.asFloat / rh.asFloat);
+					};
 					operatorValue = operatorParameter.asString;
 				},
 				{
 					if( repetitions > 1 ) {
 						operatorValue = repetitions.asString;
 					};
+
 				});
 
-				[operator,operatorValue].postln;
 
 				parameters[operator] = operatorValue;
 
@@ -464,7 +477,6 @@ I8TParser {
 
 
 			});
-
 
 			if( event.duration.notNil, {
 				if( nextEventDuration.notNil ) {

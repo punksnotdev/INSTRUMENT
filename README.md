@@ -316,10 +316,12 @@ i=INSTRUMENT().play;
 (
 i.piano=INSTRUMENT(i.synths.piano.rhodes);
 
-i.piano.amp=4
-i.piano.note("0xx 2xxx 3xxxxx")
-i.piano.note("0x2 2x3 3x5")
-i.piano.duration
+i.piano.amp=4;
+i.piano.note("0xx 2xxx 3xxxxx");
+i.piano.note("0x2 2x3 3x5");
+
+// get last pattern duration:
+i.piano.duration;
 
 i.kick=INSTRUMENT(i.synths.electro.kick);
 
@@ -363,7 +365,9 @@ i.bass.duration;
 ## Changing steps duration
 
 
-The ':duration' operator inside string Patterns allow for setting of duration of following values
+The ':' operator inside string Patterns allows for setting of duration any values following it.
+
+It requires a duration parameter, which must be a number (integer or fractionary).
 
 ```SuperCollider
 
@@ -371,9 +375,16 @@ The ':duration' operator inside string Patterns allow for setting of duration of
 
 i=INSTRUMENT().play;
 
+i.kick=INSTRUMENT(i.synths.kick.choose);
 
-i.kick.seq("1 :0.25 1xxx ");
-i.kick.seq("1x4 :0.25 1x4 :0.125 1x4 :2 1x4");
+// decimal representation
+i.kick.seq("1  1");
+
+// fraction representation
+i.kick.seq("1 :1/4 1x3 ");
+
+i.kick.seq("1x4 :1/4 1x4 :1/8 1x4:2 1x2");
+
 i.kick.duration
 
 
