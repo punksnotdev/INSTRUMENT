@@ -860,6 +860,8 @@ I8TMain : Event
 
 		var items = ();
 
+		var itemIndex;
+
 		if( path.notNil, {
 			files = path.pathMatch;
 		}, {
@@ -937,9 +939,33 @@ I8TMain : Event
 
 		});
 
+
+		itemIndex = 0;
+
 		items.keysValuesDo({|k,v|
 
+			var uniqueValues = Set.new();
+
 			folder[k]=v;
+			folder[itemIndex]=v;
+
+			folder.keysValuesDo({|key,value|
+
+				if( (key.isNumber) ) {
+					if( uniqueValues.includes(value)==true, {
+						["remove", key].postln;
+						folder.removeAt(key);
+					}, {
+						uniqueValues.add(value);
+						itemIndex=itemIndex+1;
+					});
+				};
+
+			});
+
+
+
+
 // should check if key exists, then create list!
 			parent[k] = v;
 

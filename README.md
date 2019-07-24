@@ -314,7 +314,7 @@ i=INSTRUMENT().play;
 
 
 (
-i.piano=INSTRUMENT(i.synths.piano.rhodes);
+i.piano=INSTRUMENT(i.synths.piano.rhodes1);
 
 i.piano.amp=4;
 i.piano.note("0xx 2xxx 3xxxxx");
@@ -378,7 +378,7 @@ i=INSTRUMENT().play;
 i.kick=INSTRUMENT(i.synths.kick.choose);
 
 // decimal representation
-i.kick.seq("1  1");
+i.kick.seq("1 :0.25 1x3 ");
 
 // fraction representation
 i.kick.seq("1 :1/4 1x3 ");

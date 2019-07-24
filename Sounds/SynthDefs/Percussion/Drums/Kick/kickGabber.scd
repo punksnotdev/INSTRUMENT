@@ -9,5 +9,5 @@ SynthDef(\kickGabber, {|amp=0.5, out=0|
    snd = RLPF.ar(snd, 8000, 0.7);
    snd = snd * EnvGen.kr(Env([0, 1, 0.7, 0.7, 0], [0.001, 0.01, 0.3, 0.02]),doneAction: 1);
    snd = (snd * 0.6).clip(-1, 1);
-   Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
+   Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 3);
 }).store;
