@@ -156,26 +156,35 @@ This line will be repeated throughout this document, so any individual fragment 
 
 ## Synths
 
-INSTRUMENT comes with some predefined SynthDefs that you can use.
-
-They are automatically added on startup, but you can manually re-load them, or load any path that contains SynthDefs or folders containing them.
+INSTRUMENT comes with some predefined SynthDefs that you can use. If you want to add more, see [**Loading more Synths**](#load-more-synths)
 
 
 ```SuperCollider
 
 i=INSTRUMENT().play;
 
-// load your own path with SynthDefs
-i.loadSynths("path/to/your/synthdefs/*");
-
-
 // creates a dictionary inside **i.synths**
 
+// access by name
+i.synths.bass.simpleBass;
+
+// access by index
 i.synths.drums.kick[0];
 i.synths.drums.kick[1];
+
+// index wraps around total synths number inside folder
+i.synths.drums.kick[99999];
+
+// access randomly
 i.synths.drums.kick.choose;
 i.synths.drums.snare.choose;
-i.synths.bass.simpleBass;
+
+
+// long vs short synth routes are equivalent:
+i.synths.percussion.drums.kick[3] == i.synths.kick[3]
+
+// each synth gets added to root folder
+i.synths.bass.simpleBass == i.synths.simpleBass;
 
 ```
 
@@ -1223,7 +1232,24 @@ i.synths.kick.kickDeep
 
 You can use your own Synthdefs. You need to have an **out** parameter for signal routing.
 
-Optionally, you can make them add themselves to the server by putting them inside INSTRUMENT's **Sounds/Synthdef** folder
+Optionally, you can make them add themselves to the server by putting them inside INSTRUMENT's **Sounds/Synthdef** folder.
+
+
+<a name="load-more-synths"></a>
+#### Loading More Synths
+
+They are automatically added on startup, but you can manually re-load them, or load any path that contains SynthDefs or folders containing them.
+
+
+```SuperCollider
+
+i=INSTRUMENT().play;
+
+// load your own path with SynthDefs
+i.loadSynths("path/to/your/synthdefs/*");
+
+```
+
 
 ```SuperCollider
 
