@@ -840,9 +840,6 @@ I8TMain : Event
 			});
 		};
 
-		if( item.isKindOf(String) ) {
-			item.postln;
-		};
 	}
 
 	synths {
@@ -959,9 +956,6 @@ I8TMain : Event
 		});
 
 
-		folder.keysValuesDo({|k,v|
-			[k,v].postln;
-		});
 
 		this.makeFolderIndexes(folder);
 
