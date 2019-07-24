@@ -858,9 +858,8 @@ I8TMain : Event
 		var scdFiles = List.new;
 		var folders = List.new;
 
-		var items = ();
+		var items = I8TFolder();
 
-		var itemIndex;
 
 		if( path.notNil, {
 			files = path.pathMatch;
@@ -869,10 +868,10 @@ I8TMain : Event
 		});
 
 		if( parent.isNil ) {
-			parent = ();
+			parent = I8TFolder();
 		};
 
-		folder = ();
+		folder = I8TFolder();
 
 
 		files.collect({|fileName, index|
@@ -940,31 +939,12 @@ I8TMain : Event
 		});
 
 
-		itemIndex = 0;
 
 		items.keysValuesDo({|k,v|
 
 			var uniqueValues = Set.new();
 
 			folder[k]=v;
-			folder[itemIndex]=v;
-
-			folder.keysValuesDo({|key,value|
-
-				if( (key.isNumber) ) {
-					if( uniqueValues.includes(value)==true, {
-						["remove", key].postln;
-						folder.removeAt(key);
-					}, {
-						uniqueValues.add(value);
-						itemIndex=itemIndex+1;
-					});
-				};
-
-			});
-
-
-
 
 // should check if key exists, then create list!
 			parent[k] = v;
@@ -978,9 +958,39 @@ I8TMain : Event
 			};
 		});
 
+
+		folder.keysValuesDo({|k,v|
+			[k,v].postln;
+		});
+
+		this.makeFolderIndexes(folder);
+
 		synths = folder;
 
 		^folder
+
+	}
+
+	makeFolderIndexes {|folder|
+
+		var synthDefs = List.new;
+
+		// delete numeric indexes
+		folder.keysValuesDo({|k,v|
+			if(k.isNumber||v.isNil) {
+				folder.removeAt(k);
+			};
+		});
+
+		(folder.values).collect({|value|
+			if(value.isKindOf(String)||value.isKindOf(Symbol)){
+				synthDefs.add(value);
+			};
+		});
+
+		synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
+			folder[i]=synthdef;
+		});
 
 	}
 
