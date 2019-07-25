@@ -112,12 +112,14 @@ ParameterTrack
 			}
 		});
 
+		durationSequencer.quant=[4,0.2375];
 	}
 
 	fwd{|i|
 		if( playing == true, {
 
 			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
+
 
 				var beatPatternIndex;
 				var beatValue;
@@ -134,7 +136,6 @@ ParameterTrack
 							durationSequencer.play(main.clock);
 						});
 
-
 					}, {
 
 						if( durationSequencer.isPlaying == false, {
@@ -144,7 +145,6 @@ ParameterTrack
 						beatPatternIndex = beats % currentPattern.pattern.size;
 
 						beatValue = currentPattern.pattern[ beatPatternIndex ];
-
 
 						if( beatValue.notNil, {
 							var theValue;
@@ -199,6 +199,9 @@ ParameterTrack
 
 	go {|time|
 		beats = time;
+		if(time==0) {
+			durationSequencer.reset();
+		}
 	}
 
 	addPattern {|key,pattern,play_parameters|
@@ -324,8 +327,8 @@ ParameterTrack
 			patterns.collect({|p,k|
 				if(p==k,{
 					patterns[k] = nil;
-									this.removePatternEvents(k);
-							})
+						this.removePatternEvents(k);
+					})
 			});
 		});
 
@@ -460,9 +463,9 @@ ParameterTrack
 		var nearestBeatCountKey;
 		var currentIndex;
 
-		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats + 1 );
+		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
 
-		currentIndex = sequenceInfo.indices.indexOfNearest( beats + 1 );
+		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
 
 
 		if( nearestBeatCountKey == nil, {

@@ -63,7 +63,8 @@ I8TMain : Event
 	init {|createNew=false|
 
 
-		clock = TempoClock.new( TempoClock.default.tempo );
+		clock = TempoClock.default;
+		// clock = TempoClock.new( TempoClock.default.tempo );
 
 		ready = false;
 

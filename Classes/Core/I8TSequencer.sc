@@ -71,7 +71,7 @@ Sequencer : I8TNode
 
 			inf.do{|i|
 
-				if( i % 32 == 0, {
+				if( (i % 32) == 0, {
 
 					if( beats % 1 == 0 ) {
 
@@ -98,7 +98,6 @@ Sequencer : I8TNode
 						});
 					};
 
-					beats = beats+1;
 
 
 					if( singleFunctions[beats].isKindOf(Function), {
@@ -121,13 +120,17 @@ Sequencer : I8TNode
 						});
 
 					});
+
+
+					beats = beats+1;
+
+
 				});
 
 				if( playing, {
 					sequencer_tracks.collect({|track|
 						track.fwd( i );
 					});
-
 				});
 
 				((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
@@ -135,7 +138,10 @@ Sequencer : I8TNode
 			}
 
 
-		}).play(main.clock);
+		});
+
+		tdef.quant=4;
+		tdef.play(main.clock);
 
 	}
 
@@ -163,6 +169,13 @@ Sequencer : I8TNode
 		sequencer_tracks.collect({|track|
 			track.go( time );
 		});
+
+		if(time == 0) {
+			tdef.reset();
+		};
+
+		// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
+
 
 	}
 
