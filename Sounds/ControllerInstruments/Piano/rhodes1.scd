@@ -24,6 +24,7 @@ SynthDef(\rhodey_sc, {
     snd = Mix((osc3 * (1 - mix)) + (osc1 * mix));
     snd = snd * (SinOsc.ar(lfoSpeed) * lfoDepth + 1);
 
+    snd = (snd*1.5).tanh/2.5;
     // using the doneAction: 2 on the other envs can create clicks (bc of the linear curve maybe?)
     snd = snd * EnvGen.ar(Env.asr(0, 1, 0.1), gate, doneAction: 2);
     snd = Pan2.ar(snd, pan, amp);

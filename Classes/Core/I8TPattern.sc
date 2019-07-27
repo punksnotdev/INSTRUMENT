@@ -7,6 +7,8 @@ I8TPattern
 	var <hasDurations;
 	var <totalDuration;
 
+	var <>played;
+
 	*new{|pattern_,parameters_|
 		^super.new.init(pattern_,parameters_);
 	}
@@ -14,6 +16,7 @@ I8TPattern
 	init{|pattern_,parameters_|
 
 		totalDuration = 0;
+		played = false;
 		if( pattern_.isString, {
 
 
@@ -85,7 +88,7 @@ I8TPattern
 					});
 				});
 
-				
+
 
 			}, {
 

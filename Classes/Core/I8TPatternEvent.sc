@@ -7,11 +7,14 @@ PatternEvent : SequencerEvent
 
 	var <> time;
 
+	var <> played;
+
 	*new{|pattern_,parameters_,name_|
 		^super.new.init( pattern_, parameters_, name_ );
 	}
 	init{|pattern_,parameters_,name_|
 		pattern = pattern_;
+		played = false;
 		^super.init( pattern_, parameters_, name_ );
 	}
 

@@ -21,6 +21,8 @@ ParameterTrack
 
 	var <sequenceInfo;
 
+	var waitOffset;
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -37,6 +39,7 @@ ParameterTrack
 		currentSpeed = speed;
 
 		beats = 0;
+		waitOffset=0;
 
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
@@ -83,7 +86,9 @@ ParameterTrack
 
 						if((( beatValue.val != \r)&&(beatValue != nil)), {
 							track.instrument.trigger( name, beatValue );
-
+							beatValue.played=true;
+							currentPattern.played=true;
+							this.currentEvent().played=true;
 						});
 
 
@@ -109,7 +114,15 @@ ParameterTrack
 				beats = beats + 1;
 				beats = beats % this.totalBeats();
 
-				dur.wait;
+				if( waitOffset == 0, {
+
+					dur.wait;
+
+				}, {
+					(dur+waitOffset).wait;
+					waitOffset = 0;
+
+				});
 
 			}
 		});
@@ -267,6 +280,17 @@ ParameterTrack
 		});
 
 		newPatternEvent.time=key;
+
+
+		if( sequence[key].notNil && newPatternEvent.notNil ) {
+			if( sequence[key].played==true ) {
+
+				waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
+				beats = (beats - waitOffset).asInteger;
+				waitOffset = waitOffset % 1;
+
+			};
+		};
 
 
 		if(sequence[key].notNil,{
@@ -501,4 +525,17 @@ ParameterTrack
 		}
 		^i;
 	}
+
+
+	calculateSyncOffset{|a,b|
+
+		var dA,dB;
+
+		dA=a.collect(_.duration).sum;
+		dB=b.collect(_.duration).sum;
+
+		^(dA - dB);
+
+	}
+
 }
