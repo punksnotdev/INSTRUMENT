@@ -15,10 +15,10 @@
 
 		sig = CompanderD.ar(sig,0.3,compGate);
 
-		sig = (sig*((Lag2.kr(gain,lag))*20)).distort.tanh;
+		sig = (sig*((Lag2.kr(gain,lag))*20)).distort.tanh/1.5;
 
-		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3) * 1.4;
-		ReplaceOut.ar(outBus,Pan2.ar(sig));
+		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3) / 1.4;
+		Out.ar(outBus,Pan2.ar(sig));
 
 
 	},

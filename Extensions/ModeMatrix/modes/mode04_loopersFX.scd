@@ -12,7 +12,7 @@ m.loadCallback = {
 			\reverbLPF,
 			\shineDestroy,
 			\delay1,
-			\moogFilter,
+			\delay2,
 			\pitchShift,
 		];
 

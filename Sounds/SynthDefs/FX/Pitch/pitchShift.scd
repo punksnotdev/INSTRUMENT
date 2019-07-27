@@ -8,7 +8,7 @@ SynthDef(\pitchShift, {
 	outBus=0,
 	compGate=1.7,
 	lag=1,
-	pitch;
+	pitch=0.5;
 
 
 	var sig, env;

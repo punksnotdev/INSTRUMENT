@@ -201,9 +201,9 @@ ParameterTrack
 	}
 
 	go {|time|
+		durationSequencer.reset();
 		beats = time;
 		// if(time==0) {
-		// 	durationSequencer.reset();
 		// }
 	}
 
