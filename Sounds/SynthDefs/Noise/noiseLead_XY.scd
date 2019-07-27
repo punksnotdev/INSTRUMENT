@@ -13,7 +13,7 @@ SynthDef(\noiseLead_XY, {
 
 	sig = Mix.new(sig.distort);
 
-	Out.ar(out, Pan2.ar( sig * amp, pan) / 2);
+	Out.ar(out, Pan2.ar( sig * Lag2.kr(amp,1/3), pan) / 2);
 
 }).store;
 )
