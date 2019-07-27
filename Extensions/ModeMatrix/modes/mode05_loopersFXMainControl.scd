@@ -14,7 +14,7 @@ m.loadCallback = {
 			\reverbLPF,
 			\shineDestroy,
 			\delay1,
-			\moogFilter,
+			\delay2,
 			\pitchShift,
 		];
 
@@ -48,6 +48,13 @@ m.loadCallback = {
 			parameterValue: nil// deprecated
 		);
 
+		i.data.loopFXMainControls[\delay2]		= (
+			parameter: \delay,
+			range: [0.02,2],
+			parameterValues: IdentityDictionary.new,
+			parameterValue: nil// deprecated
+		);
+
 		i.data.loopFXMainControls[\delay1]			= (
 			parameter: \delay,
 			range: [0.02,2],
@@ -55,16 +62,9 @@ m.loadCallback = {
 			parameterValue: nil// deprecated
 		);
 
-		i.data.loopFXMainControls[\moogFilter]		= (
-			parameter: \cutoff,
-			range: [60,2500],
-			parameterValues: IdentityDictionary.new,
-			parameterValue: nil// deprecated
-		);
-
 		i.data.loopFXMainControls[\pitchShift]		= (
 			parameter: \pitch,
-			range: [0,4],
+			range: [0.05,4],
 			parameterValues: IdentityDictionary.new,
 			parameterValue: nil// deprecated
 		);
