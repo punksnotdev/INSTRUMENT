@@ -1,4 +1,4 @@
-SynthDef(\prophet5pwmstrings,{|out= 0 freq = 440 amp = 1.0 gate=1 lforate = 10 lfowidth= 0.5 cutoff= 12000 rq=0.5 pan = 0.0|
+SynthDef(\prophet5pwmstrings,{|out= 0 freq = 440 amp = 1.0 gate=1 lforate = 10 lfowidth= 0.5 cutoff= 12000 rq=0.5 pan = 0.0,att=0.01,rel=0.3|
 
 	var lfo, pulse, filter, env;
 
@@ -8,7 +8,7 @@ SynthDef(\prophet5pwmstrings,{|out= 0 freq = 440 amp = 1.0 gate=1 lforate = 10 l
 
 	filter = RLPF.ar(pulse,cutoff,rq);
 
-	env = EnvGen.ar(Env.perc(1,1.0,0.5),doneAction:2);
+	env = EnvGen.ar(Env.perc(att,rel,0.5),doneAction:2);
 
 	Out.ar(out,Pan2.ar(Mix(filter)*env*amp*0.25,pan));
 

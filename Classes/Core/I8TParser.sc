@@ -177,6 +177,7 @@ I8TParser {
 			this.extractParameters(groupString)
 		});
 
+
 		^this.getEventsList(parameterGroups);
 
 	}

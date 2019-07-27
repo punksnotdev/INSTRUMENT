@@ -165,7 +165,7 @@ Sequenceable : I8TNode
 
 	go{|time|
 		if( time.isKindOf(Number)) {
-			^sequencer.sequencer_tracks[name].parameterTracks.collect{|track|
+			sequencer.sequencer_tracks[name].parameterTracks.collect{|track|
 				track.go(time)
 			};
 		};
@@ -270,7 +270,15 @@ Sequenceable : I8TNode
 	}
 
 	mirror {
-		currentPatternEvent.mirror;
+		currentPatternEvent.mirror();
+		this.updateSequence();
+	}
+	mirror1 {
+		currentPatternEvent.mirror1();
+		this.updateSequence();
+	}
+	mirror2 {
+		currentPatternEvent.mirror2();
 		this.updateSequence();
 	}
 

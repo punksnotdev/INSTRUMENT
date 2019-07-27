@@ -1,4 +1,4 @@
-SynthDef(\hihatClosed, {|amp=0.5,out=0, rel=0.125|
+SynthDef(\hihatClosed, {|amp=0.5,out=0, rel=0.125,pan=0|
 
 	    var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -10,7 +10,7 @@ SynthDef(\hihatClosed, {|amp=0.5,out=0, rel=0.125|
 	    hatoutput = (hatosc * hatenv)/2;
 
 	    Out.ar(out,
-	    Pan2.ar(hatoutput*amp, 0)
+	    Pan2.ar(hatoutput*amp, pan)
 
 	    )
 

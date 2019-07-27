@@ -5,6 +5,8 @@ PatternEvent : SequencerEvent
 
 	var <> initialWait;
 
+	var <> time;
+
 	*new{|pattern_,parameters_,name_|
 		^super.new.init( pattern_, parameters_, name_ );
 	}
@@ -38,6 +40,12 @@ PatternEvent : SequencerEvent
 	}
 	mirror {
 		pattern.pattern = pattern.pattern.mirror;
+	}
+	mirror1 {
+		pattern.pattern = pattern.pattern.mirror1;
+	}
+	mirror2 {
+		pattern.pattern = pattern.pattern.mirror2;
 	}
 	pyramid {
 		pattern.pattern = pattern.pattern.pyramid;

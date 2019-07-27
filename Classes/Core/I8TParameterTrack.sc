@@ -44,7 +44,7 @@ ParameterTrack
 
 
 		durationSequencer = Tdef(("durationSequencer_" ++ main.threadID ++ "_" ++ name ++"_"++track.instrument.name).asSymbol, {
-			inf.do {|i|
+			inf.do {
 
 
 				var dur = 1;
@@ -70,7 +70,8 @@ ParameterTrack
 
 					currentPattern = this.currentEvent().pattern;
 
-					beatPatternIndex = beats % currentPattern.pattern.size;
+					beatPatternIndex = (beats-sequenceInfo.indices[this.currentEvent().time]) % currentPattern.pattern.size;
+					// beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
@@ -104,6 +105,7 @@ ParameterTrack
 
 				});
 
+
 				beats = beats + 1;
 				beats = beats % this.totalBeats();
 
@@ -112,7 +114,7 @@ ParameterTrack
 			}
 		});
 
-		durationSequencer.quant=[4,0.2375];
+		durationSequencer.quant=[2,0.2375];
 	}
 
 	fwd{|i|
@@ -170,6 +172,7 @@ ParameterTrack
 
 						});
 
+
 						beats = beats + 1;
 						beats = beats % this.totalBeats();
 
@@ -199,9 +202,9 @@ ParameterTrack
 
 	go {|time|
 		beats = time;
-		if(time==0) {
-			durationSequencer.reset();
-		}
+		// if(time==0) {
+		// 	durationSequencer.reset();
+		// }
 	}
 
 	addPattern {|key,pattern,play_parameters|
@@ -263,6 +266,9 @@ ParameterTrack
 			patternEvents[key] = List.new;
 		});
 
+		newPatternEvent.time=key;
+
+
 		if(sequence[key].notNil,{
 
 			sequence[key] = newPatternEvent;
@@ -272,11 +278,11 @@ ParameterTrack
 		});
 
 
-		patternEvents[key].add(newPatternEvent);
+		// patternEvents[key].add(newPatternEvent);
 		patterns[ key ] = pattern;
 
 
-		patternEvents[key].add(newPatternEvent);
+		// patternEvents[key].add(newPatternEvent);
 
 		this.updateSequenceInfo();
 
@@ -331,6 +337,8 @@ ParameterTrack
 					})
 			});
 		});
+
+		this.updateSequenceInfo();
 
 	}
 
@@ -466,7 +474,6 @@ ParameterTrack
 		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
 
 		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
-
 
 		if( nearestBeatCountKey == nil, {
 			^nil;
