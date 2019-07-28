@@ -18,7 +18,7 @@ I8TMain : Event
 	var <>controllerManager;
 
 	var nodes;
-	var groups;
+	var <groups;
 
 	var midi;
 
