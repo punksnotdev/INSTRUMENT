@@ -270,7 +270,33 @@ InstrumentGroup : Event
 	}
 
 	trigger {|parameter,value|
+
 		["group trigger",parameter,value].postln;
 
+		if( parameter.notNil && value.notNil, {
+			switch(parameter,
+				\go, {
+					this.go(value.val.asInteger);
+				},
+				\set, {
+					this.set(value.val);
+				},
+				\amp, {
+					this.amp_(value.val.asFloat);
+				},
+				\octave, {
+					this.octave_(value.val.asInteger);
+				},
+				\clock, {
+					this.clock_(value.val.asFloat);
+				},
+				\fx, {
+					this.fx_(value.val.asSymbol);
+				},
+				\fxSet, {
+					this.fxSet(value.val.asFloat);
+				}
+			);
+		});
 	}
 }
