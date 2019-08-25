@@ -783,9 +783,16 @@ i.g[1].seq(\amp,"2 1").speed(2);
 // You can sequence any parameter:
 
 i.g[0].seq(\rel,"0.1 2").speed(1/4).x(2);
+i.g[1].seq(\rel,"0.1 0.3 0.5").speed(1/2);
+
 i.g[0].seq(\clock,"1 2 4 0.25").speed(1/4).x(2);
+i.g[1].seq(\clock,"1 2 4 0.25").speed(1/4).x(2);
+
 i.g[0].seq(\go,"13 0").speed(1/4).x(2);
+i.g[1].seq(\go,"3 2").speed(2).x(8);
+
 i.g[0].seq(\fx,[\reverbLPF,\gateDistort]).speed(1/4).x(2);
+i.g[1].seq(\fx,[nil,\reverb]).speed(1/4).x(2);
 
 
 ```
