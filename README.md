@@ -671,7 +671,7 @@ i.clap.fx=\reverb;
 
 ```
 
-## Group
+## InstrumentGroup
 
 
 You can group Instruments for easier manipulation, while retaining access to individual instruments
@@ -752,15 +752,20 @@ i.melodies.octave=3;
 i.melodies.octave=4;
 
 
+```
+
 ## Sequencing Group parameters
+
+Groups are also sequenceable.
+```SuperCollider
 
 i = INSTRUMENT().play;
 
 i.g=(
-	g1: INSTRUMENT(i.synths.hihat.choose),
-	g2: INSTRUMENT(i.synths.hihat.choose),
-	g3: INSTRUMENT(i.synths.hihat.choose),
-	g4: INSTRUMENT(i.synths.hihat.choose),
+	g1: INSTRUMENT(i.synths.kick[0]),
+	g2: INSTRUMENT(i.synths.hihat[0]),
+	g3: INSTRUMENT(i.synths.hihat[2]),
+	g4: INSTRUMENT(i.synths.snare[2]),
 );
 
 
@@ -778,9 +783,22 @@ i.g[1].seq(\amp,"2 1").speed(2);
 // You can sequence any parameter:
 
 i.g[0].seq(\rel,"0.1 2").speed(1/4).x(2);
+i.g[0].seq(\clock,"1 2 4 0.25").speed(1/4).x(2);
+i.g[0].seq(\go,"13 0").speed(1/4).x(2);
+i.g[0].seq(\fx,[\reverbLPF,\gateDistort]).speed(1/4).x(2);
 
 
 ```
+
+There are some main "group" parameters, but any parameter can be sequenced and passed directly to the group's instruments.
+
+Main parameters are:
+
+- **\go**: Integer: Jump to position
+- **\amp**: Float: Set group's instruments' amp
+- **\octave**: Integer: Set group's instruments' octave
+- **\clock**: Integer: Set group's instruments' clock
+- **\fx**: String: Set group's instruments' fx synthdef
 
 
 ## Array manipulation
