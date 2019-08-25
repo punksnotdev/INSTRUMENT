@@ -30,7 +30,7 @@ SequencerTrack
 
 		sequencer = classSequencer;
 
-		if( instrument_.isKindOf(Instrument), {
+		if( (instrument_.isKindOf(Instrument) || instrument_.isKindOf(InstrumentGroup)), {
 			instrument = instrument_;
 			name = instrument.name;
 		}, {

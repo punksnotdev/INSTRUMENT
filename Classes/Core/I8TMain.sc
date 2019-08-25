@@ -438,6 +438,13 @@ I8TMain : Event
 
 					item = this.addMixerGroup( something, key );
 
+					item.sequencer = sequencer;
+
+
+					sequencer.registerInstrument(item);
+
+					controllerManager.addInstrument( item, key );
+
 				};
 
 
@@ -552,7 +559,7 @@ I8TMain : Event
 						if( currentGroup.keys.includes(childItemKey) == true,
 						{
 							currentGroup.at(childItemKey).synthdef=childItem.synthdef;
-							currentGroup.at(childItemKey).play;
+							// currentGroup.at(childItemKey).play;
 						},
 						{
 
@@ -572,6 +579,9 @@ I8TMain : Event
 
 
 						});
+
+						"currentGroup.play;".postln;
+						currentGroup.play;
 
 					});
 

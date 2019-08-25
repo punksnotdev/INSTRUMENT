@@ -23,8 +23,8 @@ I8TNode : I8TeventListener
 
 		}, {
 
-
 			^super.new.init(this.graph,newKey);
+
 		})
 
 	}

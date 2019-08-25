@@ -50,8 +50,16 @@ Sequenceable : I8TNode
 
 		currentParameter = parameters.parameter;
 
-		if( sequencer.notNil ) {
+		[
+			name,
+			parameters.parameter,
+			nextPatternKey,
+			parameters.pattern,
+			parameters.play_parameters,
+			sequencer
+		].postln;
 
+		if( sequencer.notNil ) {
 			currentPatternEvent = sequencer.addPattern(
 				name,
 				parameters.parameter,

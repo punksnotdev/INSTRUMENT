@@ -229,15 +229,21 @@ ControllerManager {
 		// if( instruments[key].notNil, {
 		// 	this.removeInstrument( instruments[key] );
 		// });
+		if( instrument.isKindOf(I8TNode), {
 
-		instruments[key] = instrument;
+			instruments[key] = instrument;
 
-		if(controllerNames[ key ].notNil, {
+			if(controllerNames[ key ].notNil, {
 
-			ctlName = controllerNames[ key ];
+				ctlName = controllerNames[ key ];
 
-			controllers[ctlName].target.target = instrument;
+				controllers[ctlName].target.target = instrument;
 
+			});
+
+		}, {
+			// TODO: "I8TControllerManager: To Do: Implement Groups"
+			"I8TControllerManager: To Do: Implement Groups"
 		});
 
 	}

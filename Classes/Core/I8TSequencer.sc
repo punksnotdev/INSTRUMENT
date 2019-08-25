@@ -250,7 +250,7 @@ Sequencer : I8TNode
 
 	createTrack {|instrument|
 
-		if( instrument.isKindOf(Instrument), {
+		if( ( instrument.isKindOf(Instrument) || instrument.isKindOf(InstrumentGroup) ), {
 
 			if( sequencer_tracks[instrument.name] == nil, {
 				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument, main );
@@ -258,7 +258,7 @@ Sequencer : I8TNode
 				sequencer_tracks[instrument.name].instrument = instrument;
 			});
 
-		},{
+		}, { 
 
 			if( sequencer_tracks[instrument] == nil, {
 				sequencer_tracks[instrument] = SequencerTrack.new(instrument);
@@ -266,7 +266,7 @@ Sequencer : I8TNode
 
 		});
 
-		main.displayTracks();
+		// main.displayTracks();
 
 	}
 

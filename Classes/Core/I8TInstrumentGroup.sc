@@ -7,21 +7,34 @@ InstrumentGroup : Event
 	var <clock;
 	var <baseClock;
 	var <fx;
-	var <>name;
+	var <name;
+	var <sequenceable;
+	var <sequencer;
 
 	var <childrenStopped;
+
+	var dictionary;
 
 	*new {
 		^super.new.init;
 	}
 
 	init {
+		sequenceable = Sequenceable.new;
+		sequencer = sequenceable.sequencer;
+		dictionary = ();
 		childrenStopped = IdentityDictionary.new;
+	}
+
+	sequencer_ {|sequencer_|
+		sequencer = sequencer_;
+		sequenceable.sequencer = sequencer_;
 	}
 
 	play {
 
-		childrenStopped.postln;
+		sequenceable.play;
+
 		this.collect({|item,key|
 			if(( (childrenStopped[key] == true) || (childrenStopped[key].isNil == true)) ) {
 
@@ -32,6 +45,8 @@ InstrumentGroup : Event
 		});
 	}
 	stop {|key|
+
+		sequenceable.stop;
 
 		if( key.isNil, {
 
@@ -170,7 +185,7 @@ InstrumentGroup : Event
 			if( this.at(key).isNil, {
 
 
-				super.put(key,something);
+				dictionary.put(key,something);
 
 				if( main.notNil ) {
 					main.updateMixerGroup( this );
@@ -186,12 +201,12 @@ InstrumentGroup : Event
 
 			});
 
-			^super.at(key)
+			^dictionary.at(key)
 
 		};
 
 		if( something.isNil ) {
-			var item = super.at(key);
+			var item = dictionary.at(key);
 			^item
 		};
 
@@ -205,6 +220,28 @@ InstrumentGroup : Event
 		// 	^super.put(key,something);
 		//
 		// };
+	}
+
+	at {|key|
+
+		if(key.isNumber) {
+
+			^sequenceable.at(key);
+
+		};
+
+		^dictionary.at(key);
+
+	}
+
+
+	keysValuesDo {|func|
+		if( func.isKindOf(Function), {
+
+			^dictionary.keysValuesDo(func)
+		}, {
+			"I8TNodeInstrumentGroup: keysValuesDo input should be function".warn;
+		});
 	}
 
 	chooseInstrument {|probability=0.5|
@@ -227,4 +264,13 @@ InstrumentGroup : Event
 
 	}
 
+	name_ {|name_|
+		name = name_;
+		sequenceable.name = name;
+	}
+
+	trigger {|parameter,value|
+		["group trigger",parameter,value].postln;
+
+	}
 }
