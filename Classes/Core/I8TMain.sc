@@ -436,14 +436,7 @@ I8TMain : Event
 
 				if( something.isKindOf(Collection)) {
 
-					item = this.addMixerGroup( something, key );
-
-					item.sequencer = sequencer;
-
-
-					sequencer.registerInstrument(item);
-
-					controllerManager.addInstrument( item, key );
+					item = this.createGroup( something, key );
 
 				};
 
@@ -526,7 +519,7 @@ I8TMain : Event
 
 	}
 
-	addMixerGroup {|group_,key_|
+	createGroup {|group_,key_|
 
 		if( key_.notNil ) {
 
@@ -545,7 +538,6 @@ I8TMain : Event
 			});
 
 			if( allValid == true ) {
-
 
 				if( groups[key].notNil, {
 
@@ -579,9 +571,6 @@ I8TMain : Event
 
 
 						});
-
-						"currentGroup.play;".postln;
-						currentGroup.play;
 
 					});
 
@@ -670,6 +659,16 @@ I8TMain : Event
 
 					mixer.addChannel( newGroup );
 
+					
+					newGroup.sequencer = sequencer;
+
+					sequencer.registerInstrument(newGroup);
+
+					controllerManager.addInstrument( newGroup, key );
+
+					if( playing ) {
+						newGroup.play;
+					};
 
 				});
 
@@ -690,7 +689,7 @@ I8TMain : Event
 
 			if( group.name.notNil, {
 
-				^this.addMixerGroup(group,group.name);
+				^this.createGroup(group,group.name);
 
 			}, {
 

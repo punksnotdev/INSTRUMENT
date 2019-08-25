@@ -299,7 +299,7 @@ SynthPlayer : SynthInstrument
 
 										}, {
 
-											if( synth.isKindOf(Synth) ) {
+											if( (synth.isKindOf(Synth) && synth.isPlaying)) {
 												synth.set(\amp,amp);
 												synth.set(\gate,1);
 
@@ -334,7 +334,7 @@ SynthPlayer : SynthInstrument
 
 										if(pressedKeys.size<=0, {
 
-											if( synth.isKindOf(Synth) ) {
+											if(( synth.isKindOf(Synth) && synth.isPlaying)) {
 
 												synth.set(\gate,0);
 												creatingSynth = false;
@@ -445,14 +445,18 @@ SynthPlayer : SynthInstrument
 		if( value.notNil ) {
 
 			synth_parameters[\amp] = value;
-			synth.set( \amp, value );
+			if( synth.isPlaying ) {
+				synth.set( \amp, value );
+			};
 		}
 	}
 
 	amp {|value|
 		if( value.notNil ) {
 			synth_parameters[\amp] = value;
-			synth.set( \amp, value );
+			if( synth.isPlaying ) {
+				synth.set( \amp, value );
+			};
 		};
 		^amp;
 	}

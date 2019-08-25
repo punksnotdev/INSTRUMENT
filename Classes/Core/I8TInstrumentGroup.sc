@@ -270,16 +270,13 @@ InstrumentGroup : Event
 	}
 
 	trigger {|parameter,value|
+		// TODO: remove "FAILURE IN SERVER: /n_set Node xxxx not found" message
 
-		["group trigger",parameter,value].postln;
 
 		if( parameter.notNil && value.notNil, {
 			switch(parameter,
 				\go, {
 					this.go(value.val.asInteger);
-				},
-				\set, {
-					this.set(value.val);
 				},
 				\amp, {
 					this.amp_(value.val.asFloat);
@@ -295,6 +292,12 @@ InstrumentGroup : Event
 				},
 				\fxSet, {
 					this.fxSet(value.val.asFloat);
+				}, {
+
+					this.collect({|instrument|
+						instrument.set(parameter,value.val.asFloat);
+					});
+
 				}
 			);
 		});

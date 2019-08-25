@@ -752,6 +752,34 @@ i.melodies.octave=3;
 i.melodies.octave=4;
 
 
+## Sequencing Group parameters
+
+i = INSTRUMENT().play;
+
+i.g=(
+	g1: INSTRUMENT(i.synths.hihat.choose),
+	g2: INSTRUMENT(i.synths.hihat.choose),
+	g3: INSTRUMENT(i.synths.hihat.choose),
+	g4: INSTRUMENT(i.synths.hihat.choose),
+);
+
+i.g.g1.postln;
+s.volume=(-18);
+i.g.g1.seq("1");
+i.g.g2.seq(" 1").speed(2);
+
+i.g.g3.seq("  1").speed(4);
+i.g.g4.seq("  1").speed(3);
+
+
+i.g[0].seq(\amp,"0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8").x(1);
+i.g[1].seq(\amp,"2 1").speed(2);
+
+// You can sequence any parameter:
+
+i.g[0].seq(\rel,"0.1 2").speed(1/4).x(2);
+
+
 ```
 
 
