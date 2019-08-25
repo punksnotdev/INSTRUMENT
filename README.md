@@ -763,8 +763,7 @@ i.g=(
 	g4: INSTRUMENT(i.synths.hihat.choose),
 );
 
-i.g.g1.postln;
-s.volume=(-18);
+
 i.g.g1.seq("1");
 i.g.g2.seq(" 1").speed(2);
 
@@ -774,6 +773,7 @@ i.g.g4.seq("  1").speed(3);
 
 i.g[0].seq(\amp,"0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8").x(1);
 i.g[1].seq(\amp,"2 1").speed(2);
+
 
 // You can sequence any parameter:
 
