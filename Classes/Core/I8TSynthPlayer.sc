@@ -30,15 +30,21 @@ SynthPlayer : SynthInstrument
 		if( synthdef_.notNil, {
 			// [name_,synthdef_].postln;
 
-			if(synthdef_.isKindOf(Symbol), {
+			if(synthdef_.isKindOf(SynthDef), {
 				synthdef = synthdef_;
-			},{
-				synthdef = \test;
-			});
 
-			// this.createSynth([\out,outbus]);
-			synth_parameters = IdentityDictionary.new;
-			super.init(graph_,name_);
+				// this.createSynth([\out,outbus]);
+				synth_parameters = IdentityDictionary.new;
+
+				if( name_.notNil, {
+					super.init(graph_,name_);
+				}, {
+					super.init(graph_,synthdef.name.asSymbol);
+				});
+
+			},{
+				"Not a valid SynthDef".warn;
+			});
 
 		});
 

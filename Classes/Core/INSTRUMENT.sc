@@ -11,10 +11,12 @@ INSTRUMENT {
         };
 
         if( (source.isKindOf(Symbol) ), {
-            ^SynthPlayer(source);
+
+			"Not a valid SynthDef".warn;
+
         }, {
             if( source.isKindOf(SynthDef) ) {
-                ^SynthPlayer(source.name.asSymbol);
+                ^SynthPlayer(source);
             };
         });
 

@@ -177,7 +177,7 @@ InstrumentGroup : Event
 	}
 
 
-	put{|key,something|
+	put {|key,something|
 
 		if( something.isKindOf(I8TNode) ) {
 
@@ -270,7 +270,6 @@ InstrumentGroup : Event
 	}
 
 	trigger {|parameter,value|
-		// TODO: remove "FAILURE IN SERVER: /n_set Node xxxx not found" message
 
 
 		if( parameter.notNil && value.notNil, {

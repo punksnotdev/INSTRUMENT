@@ -10,7 +10,9 @@ SynthDef(\kickHollow, {|amp=0.5, out=0|
 
     sig = HPF.ar( sig, 70 );
 
-    sig = (sig*1.3).tanh!2;
+    sig = (sig*1.3).tanh;
+
+    sig = Mix.new((sig*1.3).tanh);
 
 
     Out.ar( out, Pan2.ar(sig * amp,0)/2 );

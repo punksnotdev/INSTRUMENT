@@ -4,9 +4,7 @@
 
 
 
-
-**Importante: Traducción al español en proceso...**
-
+	
 
 INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping, FX, signal routing, synthesis, etc.) and interfacing with musical instruments and controllers from inside the SuperCollider environment.
 

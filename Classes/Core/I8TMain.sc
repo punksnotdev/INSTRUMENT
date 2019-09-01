@@ -15,6 +15,7 @@ I8TMain : Event
 	var <playing;
 	var <>sequencer;
 	var <>mixer;
+
 	var <>controllerManager;
 
 	var nodes;
@@ -42,9 +43,8 @@ I8TMain : Event
 
 	var currentFolder;
 
-
-
 	classvar mainEvent;
+
 
 	*new {|createNew=false|
 
@@ -434,6 +434,13 @@ I8TMain : Event
 
 				});
 
+				if( something.isKindOf(SynthDef)) {
+
+					item = INSTRUMENT(something.name.asSymbol);
+					item.synthdef=something;
+
+				};
+
 				if( something.isKindOf(Collection)) {
 
 					item = this.createGroup( something, key );
@@ -659,7 +666,7 @@ I8TMain : Event
 
 					mixer.addChannel( newGroup );
 
-					
+
 					newGroup.sequencer = sequencer;
 
 					sequencer.registerInstrument(newGroup);
@@ -906,25 +913,25 @@ I8TMain : Event
 
 			var synthdef = fileSrc.load;
 
-			if( synthdef.isKindOf(SynthDef)) {
+			if( synthdef.isKindOf(SynthDef) ) {
+				if( this.validateSynthDef(synthdef) ) {
 
-				items[ fileName.asSymbol ]		= synthdef.name.asSymbol;
-				items[ items.keys.size - 1 ]	= synthdef.name.asSymbol;
+					items[ fileName.asSymbol ]		= synthdef;
+					items[ items.keys.size - 1 ]	= synthdef;
 
-				if( data.synths.parameters.isKindOf(Event) ) {
+					if( data.synths.parameters.isKindOf(Event) ) {
 
-					var parameterNames;
+						var parameterNames;
 
-					parameterNames = synthdef.allControlNames.collect({|ctl|
-						ctl.name.asSymbol
-					});
+						parameterNames = synthdef.allControlNames.collect({|ctl|
+							ctl.name.asSymbol
+						});
 
-					data.synths.parameters[synthdef.name] = parameterNames;
+						data.synths.parameters[synthdef.name] = parameterNames;
 
-					// parameterNames.postln;
+					};
 
 				};
-
 			};
 
 
@@ -966,7 +973,6 @@ I8TMain : Event
 		});
 
 
-
 		this.makeFolderIndexes(folder);
 
 		synths = folder;
@@ -996,6 +1002,27 @@ I8TMain : Event
 			folder[i]=synthdef;
 		});
 
+	}
+
+
+	validateSynthDef {|synthdef|
+		var isValid = true;
+		var outputs;
+
+		if(synthdef.isKindOf(SynthDef)==false) {
+			"Not a valid SynthDef".warn;
+			isValid=false;
+			^isValid;
+		};
+
+		outputs = SynthDescLib.global[synthdef.name.asSymbol].outputs;
+
+		if(outputs.size>1) {
+			// TODO: do not add multichannel synths?
+			// isValid = false;
+			("SynthDef "++ synthdef.name ++" has more than 1 output: Total " ++ outputs.size ).warn;
+		}
+		^isValid;
 	}
 
 
