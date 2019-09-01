@@ -18,7 +18,10 @@ SynthPlayer : SynthInstrument
 
 
 	*new{|synthdef_,name_|
-		^super.new.init(this.graph,synthdef_,name_);
+		var instance;
+		
+		instance = super.new(synthdef_.name.asSymbol);
+		^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
 	}
 
 	init{|graph_,synthdef_,name_|
@@ -28,22 +31,17 @@ SynthPlayer : SynthInstrument
 		mode = \poly;
 
 		if( synthdef_.notNil, {
-			// [name_,synthdef_].postln;
 
 			if(synthdef_.isKindOf(SynthDef), {
+
 				synthdef = synthdef_;
+				name = synthdef.name.asSymbol;
 
 				// this.createSynth([\out,outbus]);
 				synth_parameters = IdentityDictionary.new;
 
-				if( name_.notNil, {
-					super.init(graph_,name_);
-				}, {
-					super.init(graph_,synthdef.name.asSymbol);
-				});
+				^super.init(graph_,name);
 
-			},{
-				"Not a valid SynthDef".warn;
 			});
 
 		});
@@ -59,11 +57,10 @@ SynthPlayer : SynthInstrument
 
 	setContent {|synthplayer_|
 
-
 		if(synthplayer_.isKindOf(SynthPlayer), {
 			synthdef = synthplayer_.synthdef;
 		},{
-			synthdef = \test;
+			"setContent: Not a valid SynthPlayer".warn;
 		});
 	}
 
@@ -83,7 +80,7 @@ SynthPlayer : SynthInstrument
 
 	createSynth{|parameters|
 
-		if( ( (synthdef != \r) && (synthdef != nil ) ), {
+		if( synthdef.notNil, {
 
 			var s = Server.local;
 
@@ -127,11 +124,12 @@ SynthPlayer : SynthInstrument
 
 			if( fxSynth.isKindOf(Synth), {
 
-				synth = Synth.before( fxSynth, synthdef.asSymbol, parameters++[\out,fxBus] );
+				synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
 				synth.register;
 
 			}, {
-				synth = Synth.head( group, synthdef.asSymbol, parameters );
+
+				synth = Synth.head( group, synthdef.name.asSymbol, parameters );
 
 				synth.register;
 
@@ -165,8 +163,8 @@ SynthPlayer : SynthInstrument
 
 					if( ( (value.val != \r) || (value.val != nil ) ) ) {
 
-						synthdef = value.val;
-
+						synthdef = SynthDescLib.global.at(value.val);
+						main.postln;
 					}
 					// synth_parameters = IdentityDictionary.new;
 				},

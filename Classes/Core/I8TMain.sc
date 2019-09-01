@@ -145,6 +145,33 @@ I8TMain : Event
 
 	}
 
+	setupNode {|node,key|
+
+		var item;
+		if( node.notNil ) {
+
+			if( nodes[key].isNil, {
+
+				item = this.addNode(node,key);
+
+				if( playing == true ) {
+					item.play;
+				};
+
+				mixer.addChannel( node );
+
+			}, {
+
+				item = nodes[key];
+				item.setContent(node);
+
+			});
+
+		};
+		^item;
+
+	}
+
 	addNode {|node,key|
 
 		if( key.isNil) {
@@ -415,35 +442,29 @@ I8TMain : Event
 
 				if( something.isKindOf(I8TNode), {
 
-					if( nodes[key].isNil, {
-
-						item = this.addNode(something,key);
-
-						if( playing == true ) {
-							item.play;
-						};
-
-						mixer.addChannel( something );
-
-					}, {
-
-						item = nodes[key];
-						item.setContent(something);
-
-					});
+					item = this.setupNode( item, key );
 
 				});
 
 				if( something.isKindOf(SynthDef)) {
 
-					item = INSTRUMENT(something.name.asSymbol);
-					item.synthdef=something;
+					item = SynthPlayer(something);
+
+					item = this.setupNode(item, key);
+					// item.synthdef=something;
 
 				};
 
 				if( something.isKindOf(Collection)) {
 
 					item = this.createGroup( something, key );
+
+				};
+
+
+				if( something.isKindOf(NodeProxy)) {
+
+					item = Proxy(something);
 
 				};
 
@@ -918,6 +939,7 @@ I8TMain : Event
 
 					items[ fileName.asSymbol ]		= synthdef;
 					items[ items.keys.size - 1 ]	= synthdef;
+					["put", synthdef, items.keys.size - 1].postln;
 
 					if( data.synths.parameters.isKindOf(Event) ) {
 
@@ -987,18 +1009,20 @@ I8TMain : Event
 
 		// delete numeric indexes
 		folder.keysValuesDo({|k,v|
-			if(k.isNumber||v.isNil) {
+			if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
 				folder.removeAt(k);
 			};
 		});
 
 		(folder.values).collect({|value|
-			if(value.isKindOf(String)||value.isKindOf(Symbol)){
+			if(value.isKindOf(SynthDef)||value.isKindOf(String)||value.isKindOf(Symbol)){
 				synthDefs.add(value);
 			};
 		});
 
-		synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
+
+		// synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
+		synthDefs.as(Set).asArray.collect({|synthdef,i|
 			folder[i]=synthdef;
 		});
 
@@ -1009,8 +1033,8 @@ I8TMain : Event
 		var isValid = true;
 		var outputs;
 
-		if(synthdef.isKindOf(SynthDef)==false) {
-			"Not a valid SynthDef".warn;
+		if( synthdef.isKindOf(SynthDef)==false ) {
+			"I8TMain: validateSynthDef: Not a valid SynthDef".warn;
 			isValid=false;
 			^isValid;
 		};

@@ -10,19 +10,22 @@ INSTRUMENT {
 			^I8TMain(createNew);
         };
 
-        if( (source.isKindOf(Symbol) ), {
+        if( (source.isKindOf(SynthDef)||source.isKindOf(NodeProxy))==false, {
 
-			"Not a valid SynthDef".warn;
+			"INSTRUMENT: Not a valid SynthDef".warn;
 
         }, {
-            if( source.isKindOf(SynthDef) ) {
-                ^SynthPlayer(source);
+
+            // if( source.isKindOf(SynthDef) ) {
+            //     ^SynthPlayer(source);
+            // };
+
+            if( source.isKindOf(NodeProxy) ) {
+                ^Proxy(source);
             };
+
         });
 
-        if( source.isKindOf(NodeProxy) ) {
-            ^Proxy(source);
-        }
 
     }
 
