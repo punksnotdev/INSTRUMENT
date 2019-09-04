@@ -1,13 +1,29 @@
-SynthDef(\reverbG, {
-	arg out = 0, gate = 1, roomsize = 100, revtime = 1, damping = 0.6, inputbw = 0.5, spread = 15, drylevel = 1, earlyreflevel = 0.7, taillevel = 0.5, maxroomsize = 300, amp = 0.5;
-	var source = In.ar(out,8);
-	var reverb;
-	var env = Linen.kr(gate, 0.1, 1, 0.1, 2);
+SynthDef(\reverb, {
+	arg
+	inBus=0,
+	outBus=0,
+	wet=0.5,
+	room=0.75,
+	damp=0.75,
+	amp=1;
 
+	var sig;
+	var targetRoom, targetDamp, lag=0.3;
+	var dsp, mix;
 
-	reverb = GVerb.ar(source, roomsize, revtime, damping, inputbw, spread, drylevel, earlyreflevel, taillevel, maxroomsize);
-	reverb = reverb * amp ;
-	XOut.ar(out,env,reverb);
-//By Zé Craum
+	sig = In.ar(inBus) * 2.5;
 
-}).store;
+	dsp = FreeVerb.ar( sig, 1, room, damp );
+
+	mix = (sig * (1-wet)) + (dsp * wet);
+
+	Out.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
+
+},
+variants: (
+	infinite: [ wet: 1, room: 0.99, damp: 0.99 ],
+	large: [ wet: 0.85, room: 0.85, damp: 0.85 ],
+	medium: [ wet: 0.75, room: 1/2, damp: 1/2 ],
+	small: [ wet: 0.75, room: 0.05, damp: 0.05 ],
+)
+).store;

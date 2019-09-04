@@ -66,22 +66,35 @@ SynthInstrument : Instrument
 
 
 	fx_ {|synthdef_|
+        ["fx_ got:",synthdef_].postln;
 
+        if( (synthdef_.isKindOf(SynthDef) || (synthdef_.isKindOf(Symbol)&&(synthdef_ != "nil".asSymbol ))  ), {
 
-        if( ((synthdef_.notNil) && (synthdef_ != "nil".asSymbol )), {
-			if( fxSynth.notNil, {
-				fxSynth.free;
-				// fxSynth = Synth.replace(fxSynth,synthdef_);
-			}, {
-				// fxSynth = Synth.new(synthdef_);
-			});
+            var synthdefName;
+
+            if( synthdef_.isKindOf(SynthDef) ) {
+                synthdefName = synthdef_.name;
+            };
+
+            if( synthdef_.isKindOf(Symbol) ) {
+                synthdefName = synthdef_;
+            };
+
+            // if( fxSynth.notNil, {
+            //     fxSynth.free;
+            //     fxSynth = Synth.replace(fxSynth,synthdefName);
+            // }, {
+            if( fxSynth.notNil ) {
+                fxSynth.free;
+                fxSynth=nil;
+            };
 
             if( group.isKindOf(Group), {
-                fxSynth = Synth.head(group,synthdef_.asSymbol,this.parameters_array(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
+                fxSynth = Synth.head(group,synthdefName,this.parameters_array(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
             }, {
-	             fxSynth = Synth.new(synthdef_.asSymbol,this.parameters_array(fx_parameters)++[\inBus,fxBus]);
+                 fxSynth = Synth.new(synthdefName,this.parameters_array(fx_parameters)++[\inBus,fxBus]);
             });
-
+            // });
 
 		}, {
 			"clear currentFX".postln;

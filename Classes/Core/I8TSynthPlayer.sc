@@ -19,7 +19,7 @@ SynthPlayer : SynthInstrument
 
 	*new{|synthdef_,name_|
 		var instance;
-		
+
 		instance = super.new(synthdef_.name.asSymbol);
 		^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
 	}
@@ -121,12 +121,9 @@ SynthPlayer : SynthInstrument
 
 				// parameters=parameters++[\clock,main.clock];
 
-
 			if( fxSynth.isKindOf(Synth), {
-
 				synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
 				synth.register;
-
 			}, {
 
 				synth = Synth.head( group, synthdef.name.asSymbol, parameters );
@@ -170,6 +167,7 @@ SynthPlayer : SynthInstrument
 				},
 				\octave, { octave = value.val },
 				\fx, {
+
 					this.fx_( value.val );
 
 				},
