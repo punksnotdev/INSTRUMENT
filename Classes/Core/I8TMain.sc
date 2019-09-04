@@ -166,6 +166,8 @@ I8TMain : Event
 				item = nodes[key];
 				item.setContent(node);
 
+				("SET CONTENT:"++node.name).warn;
+
 			});
 
 			^item;
@@ -445,7 +447,7 @@ I8TMain : Event
 
 				if( something.isKindOf(I8TNode), {
 
-					item = this.setupNode( item, key );
+					item = this.setupNode( something, key );
 
 				});
 
@@ -454,20 +456,21 @@ I8TMain : Event
 					var synthdef = synths[something.asSymbol];
 
 					if(synthdef.notNil) {
+					if(nodes[synthdef].notNil, {
 
-						item = SynthPlayer(synthdef);
+						item = this.setupNode(something, key);
 
-						item = this.setupNode(item, key);
+					}, {
 
-					}
+						item = this.setupNode(SynthPlayer(synthdef), key);
+					});
+				}
 
 				};
 
 				if( something.isKindOf(SynthDef)) {
 
-					item = SynthPlayer(something);
-
-					item = this.setupNode(item, key);
+					item = this.setupNode(SynthPlayer(something), key);
 
 				};
 
@@ -562,6 +565,7 @@ I8TMain : Event
 			});
 
 	}
+
 
 	createGroup {|group_,key_|
 
@@ -720,7 +724,7 @@ I8TMain : Event
 
 							  childItem.name=key++'_'++childItemKey;
 
-							  this.setupNode( childItem );
+							  this.setupNode( childItem, childItem.name );
 
 							});
 
