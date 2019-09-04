@@ -4,7 +4,7 @@
 
 
 
-	
+
 
 INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping, FX, signal routing, synthesis, etc.) and interfacing with musical instruments and controllers from inside the SuperCollider environment.
 
@@ -749,6 +749,86 @@ i.melodies.octave=6;
 i.melodies.octave=3;
 i.melodies.octave=4;
 
+
+```
+
+
+##### Playing with groups (Example)
+
+```SuperCollider
+
+(
+
+i=INSTRUMENT().play;
+
+
+i.drums=(
+	k:i.synths.kick[3],
+	h:\hihatClosed,
+	s:i.synths.snare[2],
+);
+
+i.drums.k.seq("1x3  1x3  1x3  :2  1").speed(4);
+i.drums.h.seq("1x2  1 ").speed(8);
+i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
+
+)
+
+i.drums=(
+	k:i.synths.kick[4],
+	h:"kickHard",
+	s:i.synths.snare[2],
+);
+
+
+i.drums=(
+	// k:i.synths.electro.kick,
+	h:"kickHard",
+	s:i.synths.snare[5],
+);
+
+
+(
+
+i.drums=(
+	k:i.synths.electro.kick,
+	h:"kickHard",
+	hh:i.synths.hihat[0],
+	s:i.synths.snare[2],
+);
+
+i.drums.k.seq("1").speed(2);
+i.drums.hh.clock=2;
+i.drums.hh.seq("1x7  1x6  ").speed(4);
+
+)
+
+i.drums.hh=i.synths.hihat[2];
+i.drums.k=i.synths.hihat[3];
+// wait a bit:
+i.drums.k=i.synths.electro.kick;
+
+
+(
+	i.drums.clock=1/8;
+	i.drums.fx="reverb.infinite";
+)
+
+(
+	i.drums.clock=2;
+	// i.drums.fx=i.synths.reverb;
+	i.drums.fx="reverb.small";
+)
+
+(
+	i.drums.k.seq("1").speed(2);
+	i.drums.fx=nil;
+	i.drums.clock=1;
+	i.drums.go(0);
+)
+
+
+i.drums.stop;
 
 ```
 
