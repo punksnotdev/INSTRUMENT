@@ -49,9 +49,7 @@ SynthPlayer : SynthInstrument
 
 					 synthdef = graph.synths[synthdef_.asSymbol];
 					 name = synthdef_.asSymbol;
-
-					 [synthdef,name].postln;
-
+					 
 				 }, {
 
 					 ("SynthDef "++synthdef_++" doesn't exit in Library").warn;
