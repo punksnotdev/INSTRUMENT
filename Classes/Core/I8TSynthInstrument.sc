@@ -5,6 +5,8 @@ SynthInstrument : Instrument
 
   var fx_parameters;
 
+  var synthdef;
+
   var <fxSynth;
   var fx;
   var fxBus;
@@ -145,6 +147,36 @@ SynthInstrument : Instrument
 
     checkIsValidSequence {|sequence|
         ^ (sequence.isKindOf(Collection) || sequence.isKindOf(String))
+    }
+
+
+    getSynthDefVariants {
+
+        var variantsList = List.new;
+        var variantsEvent = ();
+
+        synthdef.variants.collect({|v,k|
+            var newEvent = v.asEvent;
+            newEvent.key=k;
+            variantsEvent[k]=newEvent;
+            variantsEvent[variantsList.size]=newEvent;
+            variantsList.add(newEvent);
+        });
+
+        ^variantsEvent
+
+    }
+
+    getVariantKey {|key|
+
+        var variant = this.getSynthDefVariants()[key];
+
+        if( variant.isNil, {
+            ^synthdef.name;
+        }, {
+            ^synthdef.name++"."++variant.key;
+        });
+        
     }
 
 }

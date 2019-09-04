@@ -3,7 +3,6 @@ SynthPlayer : SynthInstrument
 
 	var nodeID;
 	var nodeIDs;
-	var synthdef;
 	var <>mode;
 
 	var synth_parameters;
