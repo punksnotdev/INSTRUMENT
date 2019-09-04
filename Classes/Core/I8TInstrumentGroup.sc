@@ -44,6 +44,8 @@ InstrumentGroup : Event
 			};
 		});
 	}
+
+
 	stop {|key|
 
 		sequenceable.stop;
@@ -136,7 +138,6 @@ InstrumentGroup : Event
 			}
 
 		}
-
 
 
 	}

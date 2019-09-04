@@ -10,7 +10,7 @@ INSTRUMENT {
 			^I8TMain(createNew);
         };
 
-        if( (source.isKindOf(SynthDef)||source.isKindOf(NodeProxy))==false, {
+        if( (source.isKindOf(String)||source.isKindOf(Symbol)||source.isKindOf(SynthDef)||source.isKindOf(NodeProxy))==false, {
 
 			"INSTRUMENT: Not a valid SynthDef".warn;
 

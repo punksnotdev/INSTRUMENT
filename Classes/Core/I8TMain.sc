@@ -148,7 +148,8 @@ I8TMain : Event
 	setupNode {|node,key|
 
 		var item;
-		if( node.notNil ) {
+
+		if( node.isKindOf(I8TNode) ) {
 
 			if( nodes[key].isNil, {
 
@@ -158,7 +159,7 @@ I8TMain : Event
 					item.play;
 				};
 
-				mixer.addChannel( node );
+				node.mixerChannel = mixer.addChannel( node );
 
 			}, {
 
@@ -167,8 +168,10 @@ I8TMain : Event
 
 			});
 
+			^item;
+
 		};
-		^item;
+
 
 	}
 
@@ -452,12 +455,10 @@ I8TMain : Event
 
 					if(synthdef.notNil) {
 
-						synthdef.postln;
-
 						item = SynthPlayer(synthdef);
 
 						item = this.setupNode(item, key);
-						
+
 					}
 
 				};
@@ -575,13 +576,23 @@ I8TMain : Event
 			var key = key_;
 
 			group_.collect({|childItem|
-				if( (( childItem.isKindOf(SynthDef) ) || ( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
+				if( (
+						( childItem.isKindOf(SynthDef) )
+						||
+						(this.validateSynthName(childItem))
+						||
+						( childItem.isKindOf(I8TNode) )
+					) == false) {
+
+					("Not a valid Group item"++childItem.asString).warn;
+
 					allValid = false;
 				};
 			});
 
-			if( allValid == true ) {
+			if( allValid == true, {
 
+				// if group already exists
 				if( groups[key].notNil, {
 
 					var currentGroup = groups[key];
@@ -591,20 +602,35 @@ I8TMain : Event
 
 					group_.collect({|childItem,childItemKey|
 
+						// if key already exists in group:
 						if( currentGroup.keys.includes(childItemKey) == true,
+
 						{
-							currentGroup.at(childItemKey).synthdef=childItem.synthdef;
-							// currentGroup.at(childItemKey).play;
+							var synthdef;
+
+							if( childItem.isKindOf(I8TNode) ) {
+								synthdef = childItem.synthdef;
+							};
+							if( childItem.isKindOf(SynthDef) ) {
+								synthdef = childItem;
+							};
+							if( this.validateSynthName(childItem) ) {
+								synthdef = synths[childItem.asSymbol];
+							};
+
+							currentGroup.at(childItemKey).synthdef = synthdef;
+
+							currentGroup.at(childItemKey).play;
 						},
 						{
+							// if new key:
 
 							if( childItem.isKindOf(I8TNode) ) {
 
 							  if( (nodes.includes( childItem ) == false), {
 
-								childItem.name=childItemKey;
 
-								this.setupMixerNode( childItem );
+								this.setupNode( childItem, childItem.name );
 
 							  });
 
@@ -612,15 +638,14 @@ I8TMain : Event
 
 							};
 
-							if( (childItem.isKindOf(SynthDef)||childItem.isKindOf(Symbol)) ) {
+							if( childItem.isKindOf(SynthDef) ) {
 
-								childItem = INSTRUMENT(childItem);
+								childItem = SynthPlayer(childItem);
 
 								if( (nodes.includes( childItem ) == false), {
 
-									childItem.name=childItemKey;
 
-									this.setupMixerNode( childItem );
+									this.setupNode( childItem, childItem.name );
 
 								});
 
@@ -628,9 +653,28 @@ I8TMain : Event
 
 							};
 
+							if( this.validateSynthName(childItem) ) {
+
+								if( nodes[childItemKey].notNil, {
+							  		newGroup.put( childItemKey, nodes[childItem] );
+								},
+								{
+
+									var newNode = SynthPlayer(synths[childItem.asSymbol]);
+
+									childItem.name=childItem;
+
+									this.setupNode( newNode, childItem );
+
+									currentGroup.put( childItemKey, newNode );
+
+								});
+
+
+							};
+
 
 						});
-
 					});
 
 					currentGroup.collect({|childItem,childItemKey|
@@ -648,6 +692,8 @@ I8TMain : Event
 					item = currentGroup;
 
 				}, {
+
+					// if is new group
 
 
 					if( group_.isKindOf(InstrumentGroup), {
@@ -674,7 +720,7 @@ I8TMain : Event
 
 							  childItem.name=key++'_'++childItemKey;
 
-							  this.setupMixerNode( childItem );
+							  this.setupNode( childItem );
 
 							});
 
@@ -688,7 +734,7 @@ I8TMain : Event
 							};
 						  };
 
-						  if( childItem.isKindOf(Symbol)) {
+						  if( this.validateSynthName(childItem) ) {
 
 							var childItemName = childItem;
 
@@ -699,6 +745,12 @@ I8TMain : Event
 							  if( groups[childItemName].notNil, {
 								// add its childItems
 								newGroup.put( childItemName, groups[childItemName] );
+							  }, {
+								  // if no node and no group found
+								  var newNode = SynthPlayer(synths[childItem.asSymbol]);
+								  this.setupNode(newNode,childItemName);
+								  newGroup.put( childItemKey, newNode );
+
 							  });
 							});
 
@@ -744,7 +796,9 @@ I8TMain : Event
 				});
 
 
-			};
+			}, {
+				"Not a valid InstrumentGroup".warn;
+			});
 
 
 			^item;
@@ -772,26 +826,6 @@ I8TMain : Event
 
 	}
 
-	setupMixerNode {|node|
-		if( node.isKindOf( I8TNode ) ) {
-			if( nodes.includes( node ) == false ) {
-
-				this.addNode( node, node.name );
-
-				if( playing == true ) {
-					node.play;
-				};
-
-				// if( mixer[group.name].isNil ) {
-				// 	mixer[group.name] = group;
-				// };
-				//
-				node.mixerChannel = mixer.addChannel( node );
-
-			};
-		};
-
-	}
 
 
 	synths_ {|list|
@@ -1070,6 +1104,12 @@ I8TMain : Event
 
 	}
 
+	validateSynthName{|synthName|
+		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
+			^synths[synthName.asSymbol].notNil
+		};
+		^false;
+	}
 
 	validateSynthDef {|synthdef|
 		var isValid = true;
