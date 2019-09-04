@@ -20,10 +20,13 @@ SynthPlayer : SynthInstrument
 		var instance;
 
 		instance = super.new(synthdef_.name.asSymbol);
+
 		^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
 	}
 
 	init{|graph_,synthdef_,name_|
+
+		["init",synthdef_].postln;
 
 		nodeIDs=IdentityDictionary.new;
 
@@ -31,17 +34,36 @@ SynthPlayer : SynthInstrument
 
 		if( synthdef_.notNil, {
 
-			if(synthdef_.isKindOf(SynthDef), {
-
+			if(synthdef_.isKindOf(SynthDef)) {
 				synthdef = synthdef_;
 				name = synthdef.name.asSymbol;
+			};
+			if(
+				(
+					synthdef_.isKindOf(Symbol)
+					||
+					synthdef_.isKindOf(String)
+				)
+			) {
+				 if(graph.synths[synthdef_].notNil, {
 
-				// this.createSynth([\out,outbus]);
-				synth_parameters = IdentityDictionary.new;
+					 synthdef = graph.synths[synthdef_.asSymbol];
+					 name = synthdef_.asSymbol;
 
-				^super.init(graph_,name);
+					 [synthdef,name].postln;
 
-			});
+				 }, {
+
+					 ("SynthDef "++synthdef_++" doesn't exit in Library").warn;
+
+				 });
+
+			};
+
+			// this.createSynth([\out,outbus]);
+			synth_parameters = IdentityDictionary.new;
+
+			^super.init(graph_,name);
 
 		});
 
@@ -54,14 +76,6 @@ SynthPlayer : SynthInstrument
 
 	}
 
-	setContent {|synthplayer_|
-
-		if(synthplayer_.isKindOf(SynthPlayer), {
-			synthdef = synthplayer_.synthdef;
-		},{
-			"setContent: Not a valid SynthPlayer".warn;
-		});
-	}
 
 
 	synthdef_{|synthdef_|

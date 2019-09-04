@@ -195,9 +195,7 @@ InstrumentGroup : Event
 
 			}, {
 
-				if(something.isKindOf(I8TNode)) {
-					this.at(key).synthdef = something.synthdef;
-				};
+				this.at(key).setContent(something);
 
 				if( childrenStopped[key] == true ) {
 					this.at[key].play;

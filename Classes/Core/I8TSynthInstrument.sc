@@ -176,7 +176,17 @@ SynthInstrument : Instrument
         }, {
             ^synthdef.name++"."++variant.key;
         });
-        
+
     }
+
+    setContent {|synthinstrument_|
+
+        if(synthinstrument_.isKindOf(SynthPlayer), {
+            synthdef = synthinstrument_.synthdef;
+        },{
+            "setContent: Not a valid SynthPlayer".warn;
+        });
+    }
+
 
 }
