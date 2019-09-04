@@ -446,16 +446,31 @@ I8TMain : Event
 
 				});
 
+				if( something.isKindOf(Symbol)||something.isKindOf(String)) {
+
+					var synthdef = synths[something.asSymbol];
+
+					if(synthdef.notNil) {
+
+						synthdef.postln;
+
+						item = SynthPlayer(synthdef);
+
+						item = this.setupNode(item, key);
+						
+					}
+
+				};
+
 				if( something.isKindOf(SynthDef)) {
 
 					item = SynthPlayer(something);
 
 					item = this.setupNode(item, key);
-					// item.synthdef=something;
 
 				};
 
-				if( something.isKindOf(Collection)) {
+				if( (something.isKindOf(Collection) && (something.isKindOf(String)==false))) {
 
 					item = this.createGroup( something, key );
 
@@ -598,7 +613,7 @@ I8TMain : Event
 							};
 
 							if( (childItem.isKindOf(SynthDef)||childItem.isKindOf(Symbol)) ) {
-								["got",childItem].postln;
+
 								childItem = INSTRUMENT(childItem);
 
 								if( (nodes.includes( childItem ) == false), {
