@@ -19,4 +19,11 @@ SynthDef(\reverb, {
 
 	Out.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
 
-}).store;
+},
+variants: (
+	"infinite": [ wet: 1, room: 0.99, damp: 0.99 ],
+	"large": [ wet: 0.85, room: 0.85, damp: 0.85 ],
+	"medium": [ wet: 0.75, room: 1/2, damp: 1/2 ],
+	"small": [ wet: 0.75, room: 0.05, damp: 0.05 ],
+)
+).store;

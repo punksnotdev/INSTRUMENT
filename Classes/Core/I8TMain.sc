@@ -560,7 +560,7 @@ I8TMain : Event
 			var key = key_;
 
 			group_.collect({|childItem|
-				if( (( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
+				if( (( childItem.isKindOf(SynthDef) ) || ( childItem.isKindOf(Symbol) ) || ( childItem.isKindOf(I8TNode) )) == false) {
 					allValid = false;
 				};
 			});
@@ -594,6 +594,22 @@ I8TMain : Event
 							  });
 
 							  currentGroup.put( childItemKey, childItem );
+
+							};
+
+							if( (childItem.isKindOf(SynthDef)||childItem.isKindOf(Symbol)) ) {
+								["got",childItem].postln;
+								childItem = INSTRUMENT(childItem);
+
+								if( (nodes.includes( childItem ) == false), {
+
+									childItem.name=childItemKey;
+
+									this.setupMixerNode( childItem );
+
+								});
+
+								currentGroup.put( childItemKey, childItem );
 
 							};
 
@@ -671,7 +687,19 @@ I8TMain : Event
 							  });
 							});
 
-						  }
+						};
+
+						if( childItem.isKindOf(SynthDef)) {
+
+							var newNodeKey = key++'_'++childItemKey;
+
+							this.put( newNodeKey, childItem );
+
+							if( nodes[newNodeKey].notNil, {
+							  newGroup.put( childItemKey, nodes[newNodeKey] );
+							});
+
+						};
 
 						});
 
@@ -939,7 +967,6 @@ I8TMain : Event
 
 					items[ fileName.asSymbol ]		= synthdef;
 					items[ items.keys.size - 1 ]	= synthdef;
-					["put", synthdef, items.keys.size - 1].postln;
 
 					if( data.synths.parameters.isKindOf(Event) ) {
 
