@@ -180,7 +180,7 @@ InstrumentGroup : Event
 
 	put {|key,something|
 
-		if( something.isKindOf(I8TNode) ) {
+		if( something.isKindOf(I8TNode), {
 
 
 			if( this.at(key).isNil, {
@@ -195,6 +195,10 @@ InstrumentGroup : Event
 
 			}, {
 
+				if(something.isKindOf(I8TNode)) {
+					this.at(key).synthdef = something.synthdef;
+				};
+
 				if( childrenStopped[key] == true ) {
 					this.at[key].play;
 					childrenStopped[key] = false;
@@ -204,7 +208,18 @@ InstrumentGroup : Event
 
 			^dictionary.at(key)
 
-		};
+		}, {
+
+			if(something.isKindOf(SynthDef)) {
+				this.at(key).synthdef = something;
+			};
+			if(something.isKindOf(Symbol)||something.isKindOf(Symbol)) {
+				if( sequenceable.graph.synths[something.asSymbol].notNil ) {
+					this.at(key).synthdef=sequenceable.graph.synths[something.asSymbol];
+				};
+			};
+
+		});
 
 		if( something.isNil ) {
 			var item = dictionary.at(key);

@@ -66,9 +66,16 @@ SynthInstrument : Instrument
 
 
 	fx_ {|synthdef_|
-        ["fx_ got:",synthdef_].postln;
 
-        if( (synthdef_.isKindOf(SynthDef) || (synthdef_.isKindOf(Symbol)&&(synthdef_ != "nil".asSymbol ))  ), {
+        if(
+            (
+                synthdef_.isKindOf(SynthDef)
+                ||
+                (synthdef_.isKindOf(String) || synthdef_.isKindOf(Symbol))
+            )
+            &&
+            (synthdef_ != "nil".asSymbol )
+        , {
 
             var synthdefName;
 
@@ -76,7 +83,7 @@ SynthInstrument : Instrument
                 synthdefName = synthdef_.name;
             };
 
-            if( synthdef_.isKindOf(Symbol) ) {
+            if( synthdef_.isKindOf(Symbol)||synthdef_.isKindOf(String) ) {
                 synthdefName = synthdef_;
             };
 
