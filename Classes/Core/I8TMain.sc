@@ -1091,7 +1091,7 @@ I8TMain : Event
 			};
 		});
 
-		this.organizeByFamilies(folder,folder);
+		folder.organizeByFamilies(folder);
 
 		folder.makeIndexes();
 
@@ -1102,25 +1102,7 @@ I8TMain : Event
 
 	}
 
-	organizeByFamilies{|folder,rootFolder|
 
-		folder.keysValuesDo({|k,v|
-
-			if(v.isKindOf(I8TFolder)) {
-				this.organizeByFamilies(v,folder);
-			};
-
-			if(v.isKindOf(SynthDef)) {
-				if(k.isKindOf(Number)==false) {
-					if(rootFolder[k].isKindOf(I8TFolder)){
-						rootFolder[k].ref(folder.name,v);
-					}
-				}
-			};
-
-		});
-
-	}
 
 	validateSynthName{|synthName|
 		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
