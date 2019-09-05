@@ -1,5 +1,5 @@
 # INSTRUMENT
-### v0.1.alpha.0
+### pre-alpha
 #### afterthought
 
 
@@ -57,7 +57,7 @@ i.drums.stop;
 # IMPORTANT
 
 
-INSTRUMENT is now publicly available as an alpha release.
+INSTRUMENT is now publicly available as an pre-alpha release.
 
 Please try this tool and [get in touch](mailto:furenku@gmail.com).
 
@@ -84,7 +84,7 @@ For questions, inquiries, help, or fun conversations, please contact me at furen
 ## Disclaimers:
 
 - Full Documentation + Tutorial coming soon.
-- INSTRUMENT is in alpha phase. The API is subject to change in the near future.
+- INSTRUMENT is in pre-alpha phase. The API is subject to change in the near future.
 
 
 # Installation:
@@ -1431,22 +1431,51 @@ i.loop1.stop;
 
 
 
+## i.synths
 ### Automatic Synth Loading
-INSTRUMENT comes with a group of SynthDefs that you can easily add by running 'Sounds/load-synths.scd';
 
 
-**loadFunction** will read any folder and create a dictionary with SynthDefs inside its internal folder structure.
+INSTRUMENT comes with a group of SynthDefs that are automatically loaded when a new instance of INSTRUMENT is created.
 
+You can access them via **i.synths**
 
 ```SuperCollider
 
-i.synths = i.loadSynths(Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*");
+
+i=INSTRUMENT();
+
+
+i.synths.postln;
+
+(
+Tdef(\do,{
+	i.synths.keys.asArray.size.do{|h|
+		[h,i.synths.keys.asArray.sort[h]].postln;
+		0.02.wait;
+	}
+}).play;
+)
 
 // Multiple hierarchies support.
 
 i.synths.percussion.drums == i.synths.drums
 i.synths.percussion.drums.kick == i.synths.kick
 i.synths.percussion.drums.kick.kickDeep == i.synths.kickDeep
+
+// smart indexing
+
+i.synths.electro.kick===i.synths.kick.electro;
+i.synths.kick.hard===i.synths.kickHard;
+
+// numerical indexing based on alphabetical order
+(
+Tdef(\do,{
+	30.do{|h|
+		[h,i.synths.kick[h].name].postln;
+		0.02.wait;
+	}
+}).play;
+)
 
 // choose one Synthdef at random
 
@@ -1456,6 +1485,12 @@ i.synths.bass.choose.postln;
 // a specific SynthDef
 i.synths.kick.kickDeep
 
+```
+
+You can load your own SynthDef paths:
+
+```SuperCollider
+i.loadSynths("path/to/synths");
 ```
 
 
