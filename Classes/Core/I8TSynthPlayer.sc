@@ -26,8 +26,6 @@ SynthPlayer : SynthInstrument
 
 	init{|graph_,synthdef_,name_|
 
-		["init",synthdef_].postln;
-
 		nodeIDs=IdentityDictionary.new;
 
 		mode = \poly;
@@ -38,6 +36,7 @@ SynthPlayer : SynthInstrument
 				synthdef = synthdef_;
 				name = synthdef.name.asSymbol;
 			};
+
 			if(
 				(
 					synthdef_.isKindOf(Symbol)
@@ -49,7 +48,7 @@ SynthPlayer : SynthInstrument
 
 					 synthdef = graph.synths[synthdef_.asSymbol];
 					 name = synthdef_.asSymbol;
-					 
+
 				 }, {
 
 					 ("SynthDef "++synthdef_++" doesn't exit in Library").warn;
