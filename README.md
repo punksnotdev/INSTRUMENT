@@ -885,6 +885,67 @@ Main parameters are:
 - **\fx**: String: Set group's instruments' fx synthdef
 
 
+
+# i.clear
+
+You can stop all playing groups and instruments, so you can easily create quick changes:
+
+```SuperCollider
+
+s.boot;
+i=INSTRUMENT().play;
+
+(
+	i.drums=(
+		k:i.synths.kick[3],
+		h:i.synths.hihat[2]
+		s:i.synths.snare[2],
+	);
+
+	i.drums.k.seq("1x3  1x3  1x3  :2  1").speed(4);
+	i.drums.h.seq("1x2  1 ").speed(8);
+	i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
+
+	i.piano = i.synths.piano[1];
+	i.piano.note("0 2 3");
+	i.piano.fx="gateDistort.extreme";
+	i.piano.octave=3;
+	i.piano.amp=2;
+)
+(
+	// Clear previous sounds
+	i.clear;
+
+	i.drums2=(
+		k:i.synths.kick[0],
+		s:i.synths.snare[4],
+	);
+	i.drums2.k.seq("1x2  1x4  1x3").speed(8);
+	i.drums2.s.seq(" 1x2  :2 1  :1/2  1x3  1x2 ").speed(4);
+)
+(
+	// restore first group
+	i.clear;
+	i.drums=(
+		k:i.synths.kick[3],
+		h:i.synths.hihat[2]
+		s:i.synths.snare[2],
+	);
+
+	i.drums.k.seq("1x3  1x3  1x3  :2  1").speed(4);
+	i.drums.h.seq("1x2  1 ").speed(8);
+	i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
+
+	i.piano = i.synths.piano[1];
+	i.piano.note("0 2 3");
+	i.piano.fx="gateDistort.extreme";
+	i.piano.octave=3;
+	i.piano.amp=2;
+)
+
+```
+
+
 ## Array manipulation
 ```SuperCollider
 
