@@ -1,5 +1,7 @@
 I8TFolder : Event
 {
+	var <> name;
+
 	at {|key|
 
 		if(key.isNumber, {
@@ -13,4 +15,5 @@ I8TFolder : Event
 			^super.at(key);
 		});
 	}
+
 }

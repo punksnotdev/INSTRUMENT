@@ -1051,7 +1051,6 @@ I8TMain : Event
 
 		});
 
-		// TODO: CHECAR POR QUE NO SE GUARDAN EN / QUIZAS FALTA ITERAR POR TOOS AL FINAL O ALGO
 		folders.collect({|folderSrc, index|
 
 			var pathName = PathName( folderSrc );
@@ -1063,6 +1062,7 @@ I8TMain : Event
 			// "-------".postln;
 
 			items[folderName]=this.loadSynths( folderSrc++"*", folder, parent, grandparent );
+			items[folderName].name = folderName;
 
 		});
 
@@ -1086,12 +1086,37 @@ I8TMain : Event
 			};
 		});
 
+		this.organizeByFamilies(folder,folder);
 
 		this.makeFolderIndexes(folder);
 
 		synths = folder;
 
 		^folder
+
+	}
+
+	organizeByFamilies{|folder,rootFolder|
+
+		folder.keysValuesDo({|k,v|
+
+			if(v.isKindOf(I8TFolder)) {
+				this.organizeByFamilies(v,folder);
+			};
+
+			if(v.isKindOf(SynthDef)) {
+				if(k.isKindOf(Number)==false) {
+					if( k == 'kick' ) {
+						["check kick",k,v.name,folder[k.asSymbol]].postln;
+						if(rootFolder[k.asSymbol].isKindOf(I8TFolder)){
+							["add to folder.name",folder.name].postln;
+							rootFolder[k][folder.name]=v;
+						}
+					}
+				}
+			};
+
+		});
 
 	}
 
