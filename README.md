@@ -898,7 +898,7 @@ i=INSTRUMENT().play;
 (
 	i.drums=(
 		k:i.synths.kick[3],
-		h:i.synths.hihat[2]
+		h:i.synths.hihat[2],
 		s:i.synths.snare[2],
 	);
 
@@ -928,8 +928,8 @@ i=INSTRUMENT().play;
 	i.clear;
 	i.drums=(
 		k:i.synths.kick[3],
-		h:i.synths.hihat[2]
-		s:i.synths.snare[2],
+		h:i.synths.hihat[2|,
+		s:i.synths.snare[2|,
 	);
 
 	i.drums.k.seq("1x3  1x3  1x3  :2  1").speed(4);
