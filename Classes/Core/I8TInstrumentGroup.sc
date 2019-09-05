@@ -68,6 +68,28 @@ InstrumentGroup : Event
 		});
 	}
 
+	pause {|key|
+
+		sequenceable.pause;
+
+		if( key.isNil, {
+
+			this.collect({|item|
+				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+					item.pause;
+				};
+			});
+
+		}, {
+
+			var item = this.at(key);
+
+			item.pause;
+			childrenStopped[key] = true;
+
+		});
+	}
+
 	go {|time|
 		this.collect({|item|
 			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {

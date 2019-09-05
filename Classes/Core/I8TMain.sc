@@ -159,14 +159,20 @@ I8TMain : Event
 					item.play;
 				};
 
+				if( item.playing == true ) {
+					item.play;
+				};
+
 				node.mixerChannel = mixer.addChannel( node );
 
 			}, {
 
 				item = nodes[key];
-				item.setContent(node);
 
-				("SET CONTENT:"++node.name).warn;
+				if( item.playing == true ) {
+					item.play;
+				};
+				item.setContent(node);
 
 			});
 
@@ -237,10 +243,18 @@ I8TMain : Event
 			awaitingReadyBeforePlay = true;
 		});
 	}
+
 	pause {
 		playing=false;
 		sequencer.pause;
 	}
+
+	clear {
+		groups.collect({|g| g.pause; });
+		nodes.collect({|n| n.pause; });
+		this.go(0);
+	}
+
 	stop {
 
 		playing=false;
@@ -451,20 +465,17 @@ I8TMain : Event
 
 				});
 
-				if( something.isKindOf(Symbol)||something.isKindOf(String)) {
+				if( (something.isKindOf(Symbol)||something.isKindOf(String)) ) {
 
 					var synthdef = synths[something.asSymbol];
-
+					[something,synthdef].postln;
 					if(synthdef.notNil) {
-					if(nodes[synthdef].notNil, {
-
-						item = this.setupNode(something, key);
-
-					}, {
-
-						item = this.setupNode(SynthPlayer(synthdef), key);
-					});
-				}
+						if(nodes[synthdef].notNil, {
+							item = this.setupNode(nodes[synthdef], key);
+						}, {
+							item = this.setupNode(SynthPlayer(synthdef), key);
+						});
+					}
 
 				};
 
@@ -1016,6 +1027,7 @@ I8TMain : Event
 			var synthdef = fileSrc.load;
 
 			if( synthdef.isKindOf(SynthDef) ) {
+
 				if( this.validateSynthDef(synthdef) ) {
 
 					items[ fileName.asSymbol ]		= synthdef;
@@ -1039,7 +1051,7 @@ I8TMain : Event
 
 		});
 
-
+		// TODO: CHECAR POR QUE NO SE GUARDAN EN / QUIZAS FALTA ITERAR POR TOOS AL FINAL O ALGO
 		folders.collect({|folderSrc, index|
 
 			var pathName = PathName( folderSrc );

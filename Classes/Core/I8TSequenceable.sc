@@ -162,6 +162,16 @@ Sequenceable : I8TNode
 			^sequencer.playInstrument( this, position );
 		}
 	}
+	
+	pause {|position|
+
+		playing = true;
+
+		if( sequencer.notNil ) {
+			^sequencer.stopInstrument( this );
+		}
+	}
+
 	stop {|position|
 
 		playing = false;
