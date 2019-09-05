@@ -26,7 +26,13 @@ INSTRUMENT {
 
         }, {
 
-            if( source.isKindOf(SynthDef) ) {
+            if(
+                source.isKindOf(String)
+                ||
+                source.isKindOf(Symbol)
+                ||
+                source.isKindOf(SynthDef)    
+            ) {
                 ^SynthPlayer(source);
             };
 
