@@ -1075,25 +1075,26 @@ I8TMain : Event
 
 		items.keysValuesDo({|k,v|
 
-			var uniqueValues = Set.new();
-
 			folder[k]=v;
 
-// should check if key exists, then create list!
-			parent[k] = v;
+			// should check if key exists, then create list!
+			folder.folderParent = parent;
+
+			parent.ref(k,v);
 
 			if( grandparent.notNil ) {
-				grandparent[k] = v;
+				grandparent.ref(k,v);
 			};
 
 			if( greatgrandparent.notNil ) {
-				greatgrandparent[k] = v;
+				greatgrandparent.ref(k,v);
 			};
 		});
 
 		this.organizeByFamilies(folder,folder);
 
-		this.makeFolderIndexes(folder);
+		folder.makeIndexes();
+
 
 		synths = folder;
 
@@ -1112,57 +1113,12 @@ I8TMain : Event
 			if(v.isKindOf(SynthDef)) {
 				if(k.isKindOf(Number)==false) {
 					if(rootFolder[k].isKindOf(I8TFolder)){
-						rootFolder[k][folder.name]=v;
+						rootFolder[k].ref(folder.name,v);
 					}
 				}
 			};
 
 		});
-
-	}
-
-	makeFolderIndexes {|folder|
-
-		if(folder.name!='root'){
-
-			var synthDefs = List.new;
-			var keys=List.new;
-
-			// delete numeric indexes
-			folder.keysValuesDo({|k,v|
-				if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
-					folder.removeAt(k);
-				};
-
-				folder.keys.as(Set).asArray.do({|k|
-					if(k.isNumber==false){
-						keys.add(k);
-					}
-				});
-
-				keys = keys.as(Set).asArray.sort;
-
-				keys.collect({|k,i|
-					folder[i]=folder[k];
-				});
-
-				// add simplified keys that remove folder name from any synths that include it
-				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
-					var kLowerCase = k.asString.toLower;
-					var fLowerCase = folder.name.asString.toLower;
-					if(kLowerCase.contains(fLowerCase)) {
-						var newKey = kLowerCase.replace(fLowerCase,"").asSymbol;
-						folder[newKey] = v;
-						if(newKey.asInteger>0) {
-							folder[("s_"++newKey).asSymbol]=v;
-						}
-					};
-				};
-			});
-
-
-
-		};
 
 	}
 

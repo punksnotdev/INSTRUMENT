@@ -1445,16 +1445,8 @@ You can access them via **i.synths**
 i=INSTRUMENT();
 
 
-i.synths.postln;
+i.synths.list();
 
-(
-Tdef(\do,{
-	i.synths.keys.asArray.size.do{|h|
-		[h,i.synths.keys.asArray.sort[h]].postln;
-		0.02.wait;
-	}
-}).play;
-)
 
 // Multiple hierarchies support.
 
