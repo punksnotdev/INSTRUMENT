@@ -1000,6 +1000,11 @@ I8TMain : Event
 
 		folder = I8TFolder();
 
+		if( path.notNil, {
+			folder.name=PathName(path).folderName;
+		}, {
+			folder.name='root';
+		});
 
 		files.collect({|fileName, index|
 
@@ -1106,12 +1111,8 @@ I8TMain : Event
 
 			if(v.isKindOf(SynthDef)) {
 				if(k.isKindOf(Number)==false) {
-					if( k == 'kick' ) {
-						["check kick",k,v.name,folder[k.asSymbol]].postln;
-						if(rootFolder[k.asSymbol].isKindOf(I8TFolder)){
-							["add to folder.name",folder.name].postln;
-							rootFolder[k][folder.name]=v;
-						}
+					if(rootFolder[k].isKindOf(I8TFolder)){
+						rootFolder[k][folder.name]=v;
 					}
 				}
 			};
@@ -1122,26 +1123,41 @@ I8TMain : Event
 
 	makeFolderIndexes {|folder|
 
-		var synthDefs = List.new;
+		if(folder.name!='root'){
 
-		// delete numeric indexes
-		folder.keysValuesDo({|k,v|
-			if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
-				folder.removeAt(k);
-			};
-		});
+			var synthDefs = List.new;
 
-		(folder.values).collect({|value|
-			if(value.isKindOf(SynthDef)||value.isKindOf(String)||value.isKindOf(Symbol)){
-				synthDefs.add(value);
-			};
-		});
+			// delete numeric indexes
+			folder.keysValuesDo({|k,v|
+				if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
+					folder.removeAt(k);
+				};
+				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
+					var kLowerCase = k.asString.toLower;
+					var fLowerCase = folder.name.asString.toLower;
+					if(kLowerCase.contains(fLowerCase)) {
+						var newKey = kLowerCase.replace(fLowerCase,"").asSymbol;
+						folder[newKey] = v;
+						if(newKey.asInteger>0) {
+							folder[("s_"++newKey).asSymbol]=v;
+						}
+					};
+				};
+			});
+
+			(folder.values).collect({|value|
+				if(value.isKindOf(SynthDef)||value.isKindOf(String)||value.isKindOf(Symbol)){
+					synthDefs.add(value);
+				};
+			});
 
 
-		// synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
-		synthDefs.as(Set).asArray.collect({|synthdef,i|
-			folder[i]=synthdef;
-		});
+			// synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
+			synthDefs.as(Set).asArray.collect({|synthdef,i|
+				folder[i]=synthdef;
+			});
+
+		};
 
 	}
 
