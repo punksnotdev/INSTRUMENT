@@ -1126,12 +1126,27 @@ I8TMain : Event
 		if(folder.name!='root'){
 
 			var synthDefs = List.new;
+			var keys=List.new;
 
 			// delete numeric indexes
 			folder.keysValuesDo({|k,v|
 				if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
 					folder.removeAt(k);
 				};
+
+				folder.keys.as(Set).asArray.do({|k|
+					if(k.isNumber==false){
+						keys.add(k);
+					}
+				});
+
+				keys = keys.as(Set).asArray.sort;
+
+				keys.collect({|k,i|
+					folder[i]=folder[k];
+				});
+
+				// add simplified keys that remove folder name from any synths that include it
 				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
 					var kLowerCase = k.asString.toLower;
 					var fLowerCase = folder.name.asString.toLower;
@@ -1145,17 +1160,7 @@ I8TMain : Event
 				};
 			});
 
-			(folder.values).collect({|value|
-				if(value.isKindOf(SynthDef)||value.isKindOf(String)||value.isKindOf(Symbol)){
-					synthDefs.add(value);
-				};
-			});
 
-
-			// synthDefs.as(Set).asArray.sort.collect({|synthdef,i|
-			synthDefs.as(Set).asArray.collect({|synthdef,i|
-				folder[i]=synthdef;
-			});
 
 		};
 
@@ -1183,7 +1188,7 @@ I8TMain : Event
 		if(outputs.size>1) {
 			// TODO: do not add multichannel synths?
 			// isValid = false;
-			("SynthDef "++ synthdef.name ++" has more than 1 output: Total " ++ outputs.size ).warn;
+			// ("SynthDef "++ synthdef.name ++" has more than 1 output: Total " ++ outputs.size ).warn;
 		}
 		^isValid;
 	}
