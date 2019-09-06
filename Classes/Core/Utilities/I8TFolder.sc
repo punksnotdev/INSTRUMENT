@@ -33,7 +33,7 @@ I8TFolder : Event
 			^record
 		};
 
-		if(key.asString!="forward"){
+		if(((name!='root')&&(key.asString!="forward"))){
 			("Key \""++key++"\" not found in folder: "++name).warn;
 		};
 		^nil
@@ -46,22 +46,59 @@ I8TFolder : Event
 
 	list {
 
-		("-------------------------").postln;
-		("List: "++name).postln;
-		Tdef(\do,{
-			this.keysValuesDo{|k,v|
-				if( v.isKindOf(I8TFolder) ) {
-					("> "++k++v.name++": "++ v.size.postln++ " items:").postln;
-					v.list();
+		arg expand=false,recursive=false;
 
-				};
-				if( v.isKindOf(SynthDef) ) {
-					("    - "++" "++k++": "++v.name).postln;
-				};
-				0.02.wait;
-			}
-		}).play;
+		var folders=List.new;
+		var items=List.new;
+		var padding="";
 
+		(this.getAncestors.size-1).max(0).do({padding=padding++"······";});
+
+		("\n"++padding++"-------------------------").postln;
+		(padding++"> "++name++": "++ this.keys.size++ " items:").postln;
+
+		this.keysValuesDo{|k,v|
+			if( v.isKindOf(I8TFolder) ) {
+				folders.add(v);
+			};
+			if( v.isKindOf(SynthDef) ) {
+				items.add(v)
+			};
+
+		};
+
+		items.do({|item,index| item.isNil ?? { items.removeAt(index)}});
+		folders.do({|folder,index| folder.isNil ?? { folders.removeAt(index)}});
+
+		items = items.asArray.sort({|a,b|this.sortName(a,b)});
+		folders = folders.asArray.sort({|a,b|this.sortName(a,b)});
+
+		folders.do({|folder|
+			(padding++"> "++" "++folder.name++": "++folder.size ++ " items").postln;
+		});
+		items.do{|item,index|
+			var thisItemRefs = refs.collect({|v,k| if(v===item, { k }, { nil }); })
+			.keys
+			.reject(_.isNumber)
+			.reject({|k|k.asString=="0"});
+			thisItemRefs = thisItemRefs ++ this.keys.reject({|itemKey|this.at(itemKey)!==item}).asArray;
+
+			thisItemRefs=thisItemRefs.asArray.sort.reject(_===item.name).collect(name++"."++_)
+			;
+			(padding++"······ "++index++": "++item.name++": "++thisItemRefs).postln;
+		};
+
+		folders.do({|folder|
+			if( expand == true ) {
+				folder.list(recursive,recursive);
+			};
+		});
+		^"-------------------------"
+	}
+
+	tree {|recursive|
+		this.list(true,recursive);
+		^"-------------------------"
 	}
 
 	getParent {
@@ -88,7 +125,25 @@ I8TFolder : Event
 
 
 
+	organizeByFamilies{|rootFolder|
 
+	  this.keysValuesDo({|k,v|
+
+	    if(v.isKindOf(I8TFolder)) {
+	      v.organizeByFamilies(rootFolder);
+	    };
+
+	    if(v.isKindOf(SynthDef)) {
+	      if(k.isKindOf(Number)==false) {
+			if(rootFolder[k].isKindOf(I8TFolder)){
+	          rootFolder[k].ref(name,v);
+		  	};
+	      }
+	    };
+
+	  });
+
+	}
 
 	makeIndexes {
 
@@ -120,15 +175,18 @@ I8TFolder : Event
 				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
 					var kLowerCase = k.asString.toLower;
 					var fLowerCase = name.asString.toLower;
+					if(fLowerCase.contains("neuro")){
+						"NEUROOOO".warn;
+					};
 					if(kLowerCase.contains(fLowerCase)) {
 
 						var newKey = kLowerCase.replace(fLowerCase,"").asSymbol;
 
-						this.ref(newKey,v);
-
-						if(newKey.asInteger>=0) {
-							this.ref(("s"++(newKey.asInteger+1).asString).asSymbol,v);
-						}
+						if((newKey!="0"&&newKey.asInteger>0), {
+							this.ref(("s"++newKey).asSymbol,v);
+						},{
+							this.ref(newKey,v);
+						});
 
 					};
 				};
@@ -140,6 +198,8 @@ I8TFolder : Event
 
 	}
 
-
+	sortName {|a,b|
+		^(a.name < b.name)
+	}
 
 }

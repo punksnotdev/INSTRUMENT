@@ -1445,7 +1445,10 @@ You can access them via **i.synths**
 i=INSTRUMENT();
 
 
-i.synths.list();
+i.synths.list;
+
+// list one folder, including its subfolders:
+i.synths.percussion.tree(true);
 
 
 // Multiple hierarchies support.

@@ -1038,17 +1038,18 @@ I8TMain : Event
 					items[ fileName.asSymbol ]		= synthdef;
 					items[ items.keys.size - 1 ]	= synthdef;
 
-					if( data.synths.parameters.isKindOf(Event) ) {
 
-						var parameterNames;
-
-						parameterNames = synthdef.allControlNames.collect({|ctl|
-							ctl.name.asSymbol
-						});
-
-						data.synths.parameters[synthdef.name] = parameterNames;
-
-					};
+					// if( data.synths.parameters.isKindOf(Event) ) {
+					//
+					// 	var parameterNames;
+					//
+					// 	parameterNames = synthdef.allControlNames.collect({|ctl|
+					// 		ctl.name.asSymbol
+					// 	});
+					//
+					// 	data.synths.parameters[synthdef.name] = parameterNames;
+					//
+					// };
 
 				};
 			};
@@ -1074,8 +1075,9 @@ I8TMain : Event
 
 
 		items.keysValuesDo({|k,v|
-
 			folder[k]=v;
+
+			
 
 			// should check if key exists, then create list!
 			folder.folderParent = parent;
