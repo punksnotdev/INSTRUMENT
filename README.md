@@ -1453,18 +1453,28 @@ i.synths.percussion.tree(true);
 
 // Multiple hierarchies support.
 
-i.synths.percussion.drums == i.synths.drums
-i.synths.percussion.drums.kick == i.synths.kick
-i.synths.percussion.drums.kick.kickDeep == i.synths.kickDeep
 
-// smart indexing
+// all synths accesible via root:
+i.synths.kickdeep == i.synths.kickdeep
 
+// multiple hierarchy access:
+i.synths.drums == i.synths.percussion.drums
+
+// redundant names are removed:
+i.synths.kickdeep==i.synths.percussion.drums.kick.deep
+
+
+// smart indexing:
 i.synths.electro.kick===i.synths.kick.electro;
-i.synths.kick.hard===i.synths.kickHard;
+i.synths.damp===i.synths.kick.kickdamp;
 
-// numerical indexing based on alphabetical order
+// numeric indexes are fixed by prefixing an 's'
+i.synths.kick.syn.s1===i.synths.kicksyn1;
+i.synths.kick.s808===i.synths.kick808;
+
+// numerical indexing based on alphabetical order. number wraps around item size
 (
-Tdef(\do,{
+Task.new({
 	30.do{|h|
 		[h,i.synths.kick[h].name].postln;
 		0.02.wait;

@@ -22,7 +22,7 @@ I8TFolder : Event
 			var refKey = key;
 
 			if( key.isNumber ) {
-				refKey = key%this.size;
+				refKey = key%this.reject(_.isKindOf(I8TFolder)).size;
 			};
 
 			record = refs.at(refKey);
@@ -34,11 +34,9 @@ I8TFolder : Event
 				this.collect({|v,k|
 					if(record.isNil) {
 						if(v.isKindOf(I8TFolder)) {
-							var valid = (
-								(v[key].isKindOf(SynthDef))
-								||
-								(v[key].isKindOf(I8TFolder))
-							);
+							var valid = (v[key].isKindOf(SynthDef));
+							valid = (valid && (v[key].isKindOf(I8TFolder)));
+
 							if(valid) {
 								break.value(v[key]);
 							};
@@ -72,13 +70,13 @@ I8TFolder : Event
 	}
 
 	// put {|key,value|
-
-		// if(((value.isKindOf(SynthDef))||(value.isKindOf(I8TFolder))), {
-		// 	^super.put(key,value);
-		// }, {
-		// 	"I8TFolder: value must be SynthDef or I8TFolder type"
-		// });
-
+	//
+	// 	if(((value.isKindOf(SynthDef))||(value.isKindOf(I8TFolder))), {
+	// 		^super.put(key,value);
+	// 	}, {
+	// 		"I8TFolder: value must be SynthDef or I8TFolder type"
+	// 	});
+	//
 	// }
 
 	ref {|key,value|
@@ -92,11 +90,16 @@ I8TFolder : Event
 		var folders=List.new;
 		var items=List.new;
 		var padding="";
-
+		var totalItems=this.keys.size;
+		this.do({|v|
+			if( v.isKindOf(I8TFolder) ) {
+				totalItems = totalItems + v.size;
+			}
+		});
 		(this.getAncestors.size-1).max(0).do({padding=padding++"······";});
 
 		("\n"++padding++"-------------------------").postln;
-		(padding++"> "++name++": "++ this.keys.size++ " items:").postln;
+		(padding++"> "++name++": "++ totalItems ++ " items:").postln;
 
 		this.keysValuesDo{|k,v|
 			if( v.isKindOf(I8TFolder) ) {
@@ -177,10 +180,11 @@ I8TFolder : Event
 	  this.keysValuesDo({|k,v|
 
 	    if(v.isKindOf(SynthDef)) {
-	      if(k.isKindOf(Number)==false) {
+	      if((k.isNumber==false)) {
 			  this.getAncestors().do({|a|
-				  if(a[name].isKindOf(I8TFolder)){
-					  a[name].ref(name,v);
+				  if(a[k].isKindOf(I8TFolder)){
+					  a[k].put(name,v);
+					  a[k].makeIndexes();
 				  };
 			  })
 	      }
@@ -200,6 +204,7 @@ I8TFolder : Event
 
 			var synthDefs = List.new;
 			var newKeys=List.new;
+			var numKeys=List.new;
 
 			// delete numeric indexes
 			this.keysValuesDo({|k,v|
@@ -211,13 +216,15 @@ I8TFolder : Event
 
 				this.keys.as(Set).asArray.do({|k|
 					if(k.isKindOf(Symbol)){
-						newKeys.add(k);
+						if( this.at(k).isKindOf(SynthDef)) {
+							numKeys.add(k);
+						}
 					}
 				});
 
-				newKeys = newKeys.as(Set).asArray.sort;
+				numKeys = numKeys.as(Set).asArray.sort;
 
-				newKeys.collect({|k,i|
+				numKeys.collect({|k,i|
 					this.ref(i,this[k]);
 					this.refInAncestors(i,this[k]);
 				});
@@ -252,8 +259,13 @@ I8TFolder : Event
 
 
 	refInAncestors {|key,value|
-		this.getAncestors().collect({|a|
+		this.getAncestors().do({|a|
 			a.ref(key,value);
+			if(value.isKindOf(I8TFolder)){
+				value.keysValuesDo({|vk,vv|
+					a.ref(vk,vv);
+				});
+			};
 		});
 	}
 

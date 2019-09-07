@@ -1060,8 +1060,8 @@ I8TMain : Event
 		Task.new({
 			0.1.wait;
 			folder.refInAncestors(folder.name, folder);
-			folder.makeIndexes();
 			folder.organizeByFamilies();
+			folder.makeIndexes();
 		}).play;
 
 		if( parent.isNil, {
