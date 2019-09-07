@@ -82,9 +82,6 @@ I8TFolder : Event
 	// }
 
 	ref {|key,value|
-		if(value.isKindOf(I8TFolder)){
-			["ref",key,value.name,"in",name].postln;
-		};
 		^refs.put(key,value);
 	}
 
@@ -182,7 +179,6 @@ I8TFolder : Event
 	    if(v.isKindOf(SynthDef)) {
 	      if(k.isKindOf(Number)==false) {
 			  this.getAncestors().do({|a|
-				  ["wtf",v.name,k,a.name].postln;
 				  if(a[name].isKindOf(I8TFolder)){
 					  a[name].ref(name,v);
 				  };
@@ -207,13 +203,14 @@ I8TFolder : Event
 
 			// delete numeric indexes
 			this.keysValuesDo({|k,v|
+
 				if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
 					this.removeAt(k);
 					refs.removeAt(k);
 				};
 
 				this.keys.as(Set).asArray.do({|k|
-					if(k.isNumber==false){
+					if(k.isKindOf(Symbol)){
 						newKeys.add(k);
 					}
 				});
@@ -230,11 +227,13 @@ I8TFolder : Event
 
 					var newKey = k.asString;
 
-					([this]++this.getAncestors).collect({|value|
+					this.getAncestors.collect({|value|
 						newKey=newKey.replace(value.name.asString.toLower,"");
 					});
 
-					if((newKey!="0"&&newKey.asInteger>0), {
+					newKey=newKey.replace(name.asString.toLower,"");
+
+					if(((newKey!="0")&&(newKey.asInteger>0)), {
 						this.ref(("s"++newKey).asSymbol,v);
 						this.refInAncestors(("s"++newKey).asSymbol,v);
 					},{
