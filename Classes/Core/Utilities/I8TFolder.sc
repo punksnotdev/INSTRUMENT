@@ -29,18 +29,62 @@ I8TFolder : Event
 
 		};
 
+		if(record.isNil) {
+			var blockResult = block {|break|
+				this.collect({|v,k|
+					if(record.isNil) {
+						if(v.isKindOf(I8TFolder)) {
+							var valid = (
+								(v[key].isKindOf(SynthDef))
+								||
+								(v[key].isKindOf(I8TFolder))
+							);
+							if(valid) {
+								break.value(v[key]);
+							};
+						};
+					};
+				});
+			};
+
+			if(
+				(
+					(blockResult.isKindOf(SynthDef))
+					||
+					(blockResult.isKindOf(I8TFolder))
+				)
+			) {
+				record = blockResult;
+			};
+		};
+
+
 		if( record.notNil ) {
 			^record
 		};
 
 		if(((name!='root')&&(key.asString!="forward"))){
-			("Key \""++key++"\" not found in folder: "++name).warn;
+			("Key \""++key.asString++"\" not found in folder: "++name.asString).warn;
 		};
+
 		^nil
 
 	}
 
+	// put {|key,value|
+
+		// if(((value.isKindOf(SynthDef))||(value.isKindOf(I8TFolder))), {
+		// 	^super.put(key,value);
+		// }, {
+		// 	"I8TFolder: value must be SynthDef or I8TFolder type"
+		// });
+
+	// }
+
 	ref {|key,value|
+		if(value.isKindOf(I8TFolder)){
+			["ref",key,value.name,"in",name].postln;
+		};
 		^refs.put(key,value);
 	}
 
@@ -113,7 +157,7 @@ I8TFolder : Event
 
 		nextParent !? {
 
-			ancestors.add(nextParent.name);
+			ancestors.add(nextParent);
 
 			nextParent.getAncestors.do({ arg a; a !? { ancestors.add(a); }})
 
@@ -125,21 +169,30 @@ I8TFolder : Event
 
 
 
-	organizeByFamilies{|rootFolder|
+	organizeByFamilies{
+	/*
+	For each key in this event,
+	looks for a same-named folder inside ancestor folders.
+
+	For each found folder, adds the value  associated with key in that folder
+	*/
 
 	  this.keysValuesDo({|k,v|
 
-	    if(v.isKindOf(I8TFolder)) {
-	      v.organizeByFamilies(rootFolder);
-	    };
-
 	    if(v.isKindOf(SynthDef)) {
 	      if(k.isKindOf(Number)==false) {
-			if(rootFolder[k].isKindOf(I8TFolder)){
-	          rootFolder[k].ref(name,v);
-		  	};
+			  this.getAncestors().do({|a|
+				  ["wtf",v.name,k,a.name].postln;
+				  if(a[name].isKindOf(I8TFolder)){
+					  a[name].ref(name,v);
+				  };
+			  })
 	      }
 	    };
+
+		// if(v.isKindOf(I8TFolder)) {
+		// 	v.organizeByFamilies();
+		// };
 
 	  });
 
@@ -169,26 +222,26 @@ I8TFolder : Event
 
 				newKeys.collect({|k,i|
 					this.ref(i,this[k]);
+					this.refInAncestors(i,this[k]);
 				});
 
 				// add simplified keys that remove this folder name from any synths that include it
 				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
-					var kLowerCase = k.asString.toLower;
-					var fLowerCase = name.asString.toLower;
-					if(fLowerCase.contains("neuro")){
-						"NEUROOOO".warn;
-					};
-					if(kLowerCase.contains(fLowerCase)) {
 
-						var newKey = kLowerCase.replace(fLowerCase,"").asSymbol;
+					var newKey = k.asString;
 
-						if((newKey!="0"&&newKey.asInteger>0), {
-							this.ref(("s"++newKey).asSymbol,v);
-						},{
-							this.ref(newKey,v);
-						});
+					([this]++this.getAncestors).collect({|value|
+						newKey=newKey.replace(value.name.asString.toLower,"");
+					});
 
-					};
+					if((newKey!="0"&&newKey.asInteger>0), {
+						this.ref(("s"++newKey).asSymbol,v);
+						this.refInAncestors(("s"++newKey).asSymbol,v);
+					},{
+						this.ref(newKey.asSymbol,v);
+						this.refInAncestors(newKey.asSymbol,v);
+					});
+
 				};
 			});
 
@@ -196,6 +249,13 @@ I8TFolder : Event
 
 		};
 
+	}
+
+
+	refInAncestors {|key,value|
+		this.getAncestors().collect({|a|
+			a.ref(key,value);
+		});
 	}
 
 	sortName {|a,b|

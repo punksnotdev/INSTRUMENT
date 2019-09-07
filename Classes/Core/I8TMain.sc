@@ -468,7 +468,7 @@ I8TMain : Event
 				if( (something.isKindOf(Symbol)||something.isKindOf(String)) ) {
 
 					var synthdef = synths[something.asSymbol];
-					[something,synthdef].postln;
+					["add synth by name", something,synthdef].postln;
 					if(synthdef.notNil) {
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
@@ -976,7 +976,7 @@ I8TMain : Event
 		^synths
 	}
 
-	loadSynths {|path, parent, grandparent, greatgrandparent|
+	loadSynths {|path, parent|
 
 
 		var files;
@@ -985,26 +985,22 @@ I8TMain : Event
 		var scdFiles = List.new;
 		var folders = List.new;
 
-		var items = I8TFolder();
+		var items = ();
 
+		folder = I8TFolder();
 
 		if( path.notNil, {
 			files = path.pathMatch;
+			folder.name=PathName(path).folderName;
 		}, {
 			files = (Platform.userExtensionDir++"/INSTRUMENT/Sounds/SynthDefs/*").pathMatch;
+			folder.name='root';
 		});
 
 		if( parent.isNil ) {
 			parent = I8TFolder();
 		};
 
-		folder = I8TFolder();
-
-		if( path.notNil, {
-			folder.name=PathName(path).folderName;
-		}, {
-			folder.name='root';
-		});
 
 		files.collect({|fileName, index|
 
@@ -1024,7 +1020,6 @@ I8TMain : Event
 
 
 		scdFiles.collect({|fileSrc, index|
-
 			var pathName = PathName( fileSrc );
 
 			var fileName = pathName.fileNameWithoutExtension;
@@ -1032,73 +1027,46 @@ I8TMain : Event
 			var synthdef = fileSrc.load;
 
 			if( synthdef.isKindOf(SynthDef) ) {
-
 				if( this.validateSynthDef(synthdef) ) {
-
-					items[ fileName.asSymbol ]		= synthdef;
-					items[ items.keys.size - 1 ]	= synthdef;
-
-
-					// if( data.synths.parameters.isKindOf(Event) ) {
-					//
-					// 	var parameterNames;
-					//
-					// 	parameterNames = synthdef.allControlNames.collect({|ctl|
-					// 		ctl.name.asSymbol
-					// 	});
-					//
-					// 	data.synths.parameters[synthdef.name] = parameterNames;
-					//
-					// };
-
+					items[ fileName.toLower.replace(" ","_").asSymbol ] = synthdef;
 				};
 			};
-
-
 		});
 
 		folders.collect({|folderSrc, index|
 
 			var pathName = PathName( folderSrc );
 
-			var folderName = pathName.folderName.toLower.asSymbol;
+			var folderName = pathName.folderName.toLower.replace(" ","_").asSymbol;
 
 			// "-------".postln;
 			// folderName.postln;
 			// "-------".postln;
 
-			items[folderName]=this.loadSynths( folderSrc++"*", folder, parent, grandparent );
+			items[folderName]=this.loadSynths( folderSrc++"*", folder );
 			items[folderName].name = folderName;
+			items[folderName].folderParent = folder;
 
 		});
 
 
 
-		items.keysValuesDo({|k,v|
-			folder[k]=v;
+		items.keysValuesDo({|k,v| folder[k]=v; });
 
-			
 
-			// should check if key exists, then create list!
-			folder.folderParent = parent;
 
-			parent.ref(k,v);
 
-			if( grandparent.notNil ) {
-				grandparent.ref(k,v);
-			};
 
-			if( greatgrandparent.notNil ) {
-				greatgrandparent.ref(k,v);
-			};
+		Task.new({
+			0.1.wait;
+			folder.refInAncestors(folder.name, folder);
+			folder.makeIndexes();
+			folder.organizeByFamilies();
+		}).play;
+
+		if( parent.isNil, {
+			synths = folder;
 		});
-
-		folder.organizeByFamilies(folder);
-
-		folder.makeIndexes();
-
-
-		synths = folder;
 
 		^folder
 
