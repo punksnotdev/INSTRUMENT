@@ -177,9 +177,10 @@ I8TFolder : Event
 	organizeByFamilies{
 		this.keysValuesDo({|k,v|
 			if(this.getRootFolder.notNil) {
-
 				if(this.getRootFolder[k].isKindOf(I8TFolder)) {
-					this.getRootFolder[k].put(name,v);
+					if(v.isKindOf(SynthDef)) {
+						this.getRootFolder[k].put(name,v);
+					}
 				}
 			}
 		})
