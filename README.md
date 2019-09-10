@@ -1447,8 +1447,6 @@ i=INSTRUMENT();
 
 i.synths.list;
 
-// list one folder, including its subfolders:
-i.synths.percussion.tree(true);
 
 
 // Multiple hierarchies support.
@@ -1466,8 +1464,7 @@ i.synths.kickdeep==i.synths.percussion.drums.kick.deep
 
 // smart indexing:
 i.synths.electro.kick===i.synths.kick.electro;
-i.synths.electro
-i.synths.kick.list
+
 ===
 i.synths.kick
 i.synths.electro.name
@@ -1484,6 +1481,7 @@ i.synths.kick[0].name
 i.synths.kick[1].name
 i.synths.kick[2].name
 i.synths.kick[3].name
+
 (
 Task.new({
 	30.do{|h|
