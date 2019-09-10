@@ -997,9 +997,6 @@ I8TMain : Event
 			folder.name='root';
 		});
 
-		if( parent.isNil ) {
-			parent = I8TFolder();
-		};
 
 
 		files.collect({|fileName, index|
@@ -1052,9 +1049,6 @@ I8TMain : Event
 
 
 		items.keysValuesDo({|k,v| folder[k]=v; });
-
-
-
 
 
 		Task.new({

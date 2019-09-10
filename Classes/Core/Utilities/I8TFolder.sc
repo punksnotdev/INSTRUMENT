@@ -80,7 +80,9 @@ I8TFolder : Event
 	// }
 
 	ref {|key,value|
-		^refs.put(key,value);
+		if( refs.at(key).isNil ) {
+			^refs.put(key,value);
+		};
 	}
 
 	list {
@@ -168,34 +170,19 @@ I8TFolder : Event
 	}
 
 
+	getRootFolder {
+		^this.getAncestors.reject({|a|a.folderParent.notNil})[0]
+	}
 
 	organizeByFamilies{
-	/*
-	For each key in this event,
-	looks for a same-named folder inside ancestor folders.
+		this.keysValuesDo({|k,v|
+			if(this.getRootFolder.notNil) {
 
-	For each found folder, adds the value  associated with key in that folder
-	*/
-
-	  this.keysValuesDo({|k,v|
-
-	    if(v.isKindOf(SynthDef)) {
-	      if((k.isNumber==false)) {
-			  this.getAncestors().do({|a|
-				  if(a[k].isKindOf(I8TFolder)){
-					  a[k].put(name,v);
-					  a[k].makeIndexes();
-				  };
-			  })
-	      }
-	    };
-
-		// if(v.isKindOf(I8TFolder)) {
-		// 	v.organizeByFamilies();
-		// };
-
-	  });
-
+				if(this.getRootFolder[k].isKindOf(I8TFolder)) {
+					this.getRootFolder[k].put(name,v);
+				}
+			}
+		})
 	}
 
 	makeIndexes {

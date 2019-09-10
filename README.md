@@ -1466,6 +1466,13 @@ i.synths.kickdeep==i.synths.percussion.drums.kick.deep
 
 // smart indexing:
 i.synths.electro.kick===i.synths.kick.electro;
+i.synths.electro
+i.synths.kick.list
+===
+i.synths.kick
+i.synths.electro.name
+i.synths.kick.list;
+
 i.synths.damp===i.synths.kick.kickdamp;
 
 // numeric indexes are fixed by prefixing an 's'
@@ -1473,6 +1480,10 @@ i.synths.kick.syn.s1===i.synths.kicksyn1;
 i.synths.kick.s808===i.synths.kick808;
 
 // numerical indexing based on alphabetical order. number wraps around item size
+i.synths.kick[0].name
+i.synths.kick[1].name
+i.synths.kick[2].name
+i.synths.kick[3].name
 (
 Task.new({
 	30.do{|h|
