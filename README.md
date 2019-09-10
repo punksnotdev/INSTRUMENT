@@ -1439,6 +1439,7 @@ INSTRUMENT comes with a group of SynthDefs that are automatically loaded when a 
 
 You can access them via **i.synths**
 
+
 ```SuperCollider
 
 
@@ -1446,15 +1447,16 @@ i=INSTRUMENT();
 
 
 i.synths.list;
+i.synths.percussion.list;
 
 // list one folder, including its subfolders:
 i.synths.percussion.tree(true);
 
-
 // Multiple hierarchies support.
 
 
-// all synths accesible via root:
+// all synths accesible using their names:
+// (Currently, synthnames are converted to lowercase).
 i.synths.kickdeep == i.synths.kickdeep
 
 // multiple hierarchy access:
@@ -1464,11 +1466,11 @@ i.synths.drums == i.synths.percussion.drums
 i.synths.kickdeep==i.synths.percussion.drums.kick.deep
 
 
-// smart indexing:
+// smart indexing
 i.synths.electro.kick===i.synths.kick.electro;
-i.synths.electro
-i.synths.kick.list
-===
+
+
+
 i.synths.kick
 i.synths.electro.name
 i.synths.kick.list;
@@ -1484,6 +1486,7 @@ i.synths.kick[0].name
 i.synths.kick[1].name
 i.synths.kick[2].name
 i.synths.kick[3].name
+
 (
 Task.new({
 	30.do{|h|
@@ -1499,7 +1502,7 @@ i.synths.kick.choose.postln;
 i.synths.bass.choose.postln;
 
 // a specific SynthDef
-i.synths.kick.kickDeep
+i.synths.kick.kickdeep
 
 ```
 
