@@ -1469,6 +1469,10 @@ i.synths.kickdeep==i.synths.percussion.drums.kick.deep
 // smart organization
 i.synths.electro.kick===i.synths.kick.electro;
 
+i.synths.kick
+i.synths.electro.name
+i.synths.kick.list;
+
 
 
 
@@ -1490,7 +1494,7 @@ i.synths.kick[0]===i.synths.kick[i.synths.kick.size]
 Task.new({
 	30.do{|h|
 		[h,i.synths.kick[h].name].postln;
-		0.02.wait;
+		0.01.wait;
 	}
 }).play;
 )
