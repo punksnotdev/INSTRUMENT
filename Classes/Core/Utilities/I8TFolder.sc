@@ -250,6 +250,37 @@ I8TFolder : Event
 			});
 
 
+			// add variants information
+			this.keysValuesDo({|k,v|
+				if(this[k].isKindOf(SynthDef)) {
+					if( this[k].variants.notNil ) {
+
+						var synthFolder = I8TFolder();
+						var folderKey = k.asString.replace(name.asString,"").asSymbol;
+						synthFolder.name = folderKey;
+
+						synthFolder.put(folderKey,this[k]);
+
+						this[k].variants.keysValuesDo({|vk,vv|
+							synthFolder.put(vk,(
+								name: vk,
+								parameters: vv
+							));
+						});
+
+						synthFolder.parent = this;
+
+						// this.refInAncestors(k,synthFolder);
+						// synthFolder.organizeByFamilies;
+						// synthFolder.makeRefs;
+
+						this[folderKey]=synthFolder;
+
+
+					}
+				}
+			});
+
 
 		};
 

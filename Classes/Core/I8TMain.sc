@@ -138,8 +138,8 @@ I8TMain : Event
 			"SuperCollider server not running".warn;
 
 			^this
+			});
 
-		});
 
 
 
@@ -150,7 +150,7 @@ I8TMain : Event
 		var item;
 
 		if( node.isKindOf(I8TNode) ) {
-
+			["exists",nodes[key].notNil].postln;
 			if( nodes[key].isNil, {
 
 				item = this.addNode(node,key);
@@ -485,7 +485,23 @@ I8TMain : Event
 
 				};
 
-				if( (something.isKindOf(Collection) && (something.isKindOf(String)==false))) {
+				if( something.isKindOf(I8TFolder) ) {
+
+					if( this.validateSynthDef( something.at(something.name) ) ) {
+						"OK".warn;
+						SynthPlayer(something.at(something.name)).postln;
+						item = this.setupNode(SynthPlayer(something.at(something.name)), key);
+					};
+
+				};
+
+				if((
+					something.isKindOf(Collection)
+					&&
+					(something.isKindOf(I8TFolder)==false)
+					&&
+					(something.isKindOf(String)==false)
+				)) {
 
 					item = this.createGroup( something, key );
 
@@ -1025,9 +1041,7 @@ I8TMain : Event
 			var synthdef = fileSrc.load;
 
 			if( synthdef.isKindOf(SynthDef) ) {
-				if( this.validateSynthDef(synthdef) ) {
-					items[ fileName.toLower.replace(" ","_").asSymbol ] = synthdef;
-				};
+				items[ fileName.toLower.replace(" ","_").asSymbol ] = synthdef;
 			};
 		});
 
