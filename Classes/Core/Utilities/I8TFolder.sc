@@ -22,7 +22,7 @@ I8TFolder : Event
 			var refKey = key;
 
 			if( key.isNumber ) {
-				refKey = key%this.reject(_.isKindOf(I8TFolder)).size;
+				refKey = key%(this.reject(_.isKindOf(I8TFolder)).size);
 			};
 
 			record = refs.at(refKey);
@@ -198,6 +198,7 @@ I8TFolder : Event
 			var synthDefs = List.new;
 			var newKeys=List.new;
 			var numKeys=List.new;
+			var keysOrder=Event();
 
 			// delete numeric indexes
 			this.keysValuesDo({|k,v|
@@ -217,10 +218,16 @@ I8TFolder : Event
 					}
 				});
 
-				numKeys = numKeys.as(Set).asArray.sort;
+				numKeys.as(Set).asArray.collect({|k|
+					var orderKey = k.asString.replace(name.asString,"").asSymbol;
+					keysOrder[orderKey]=k;
+				});
 
-				numKeys.collect({|nk,i|
-					this.ref(i,this[nk]);
+				keysOrder.keys.postln;
+
+				keysOrder.keys.asArray.sort.collect({|nk,i|
+					// [i,nk].postln;
+					this.ref(i,this[keysOrder[nk]]);
 				});
 
 				// add simplified keys that remove this folder name from any synths that include it
