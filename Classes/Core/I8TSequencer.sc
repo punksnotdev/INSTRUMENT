@@ -218,8 +218,10 @@ Sequencer : I8TNode
 			);
 
 			main.displayNextPattern(patternInfo);
-
-			("Pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
+			Task.new({
+				0.01.wait;
+				("Pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
+			}).play;
 
 		}
 		^patternEvent;
@@ -258,7 +260,7 @@ Sequencer : I8TNode
 				sequencer_tracks[instrument.name].instrument = instrument;
 			});
 
-		}, { 
+		}, {
 
 			if( sequencer_tracks[instrument] == nil, {
 				sequencer_tracks[instrument] = SequencerTrack.new(instrument);

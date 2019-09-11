@@ -465,11 +465,11 @@ I8TMain : Event
 
 				});
 
-				if( (something.isKindOf(Symbol)||something.isKindOf(String)) ) {
+				if( this.validateSynthName(something) ) {
 
-					var synthdef = synths[something.asSymbol];
-					["add synth by name", something,synthdef].postln;
-					if(synthdef.notNil) {
+					var synthdef = this.getSynthDefByName(something);
+
+					if(this.validateSynthDef(synthdef)) {
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
 						}, {
@@ -629,8 +629,10 @@ I8TMain : Event
 							if( childItem.isKindOf(SynthDef) ) {
 								synthdef = childItem;
 							};
+
 							if( this.validateSynthName(childItem) ) {
-								synthdef = synths[childItem.asSymbol];
+								synthdef = this.getSynthDefByName(childItem);
+
 							};
 
 							currentGroup.at(childItemKey).synthdef = synthdef;
@@ -658,10 +660,7 @@ I8TMain : Event
 								childItem = SynthPlayer(childItem);
 
 								if( (nodes.includes( childItem ) == false), {
-
-
 									this.setupNode( childItem, childItem.name );
-
 								});
 
 								currentGroup.put( childItemKey, childItem );
@@ -674,8 +673,9 @@ I8TMain : Event
 							  		newGroup.put( childItemKey, nodes[childItem] );
 								},
 								{
+									var synthdef = this.getSynthDefByName(childItem);
 
-									var newNode = SynthPlayer(synths[childItem.asSymbol]);
+									var newNode = SynthPlayer(synthdef);
 
 									childItem.name=childItem;
 
@@ -762,7 +762,8 @@ I8TMain : Event
 								newGroup.put( childItemName, groups[childItemName] );
 							  }, {
 								  // if no node and no group found
-								  var newNode = SynthPlayer(synths[childItem.asSymbol]);
+								  var synthdef = this.getSynthDefByName(childItem);
+								  var newNode = SynthPlayer(synthdef);
 								  this.setupNode(newNode,childItemName);
 								  newGroup.put( childItemKey, newNode );
 
@@ -1071,17 +1072,39 @@ I8TMain : Event
 
 
 	validateSynthName{|synthName|
+		var synthdef;
+
 		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
-			^synths[synthName.asSymbol].notNil
+
+			^this.getSynthDefByName(synthName).notNil
+
 		};
+
 		^false;
+	}
+
+	getSynthDefByName{|synthName|
+
+		var synthdef;
+
+		synthdef = synths[synthName.asString.toLower.asSymbol];
+
+		if((synthdef.isNil)||synthdef.isKindOf(Event)) {
+			synthdef = SynthDescLib.default.at(synthName.asSymbol);
+		};
+
+		^synthdef
+
+
 	}
 
 	validateSynthDef {|synthdef|
 		var isValid = true;
 		var outputs;
 
-		if( synthdef.isKindOf(SynthDef)==false ) {
+		var isSynth = (synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDesc));
+
+		if( isSynth == false) {
 			"I8TMain: validateSynthDef: Not a valid SynthDef".warn;
 			isValid=false;
 			^isValid;

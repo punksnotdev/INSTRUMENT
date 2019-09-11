@@ -32,7 +32,11 @@ SynthPlayer : SynthInstrument
 
 		if( synthdef_.notNil, {
 
-			if(synthdef_.isKindOf(SynthDef)) {
+			if((
+				synthdef_.isKindOf(SynthDef)
+				||
+				synthdef_.isKindOf(SynthDesc)
+			)) {
 				synthdef = synthdef_;
 				name = synthdef.name.asSymbol;
 			};
@@ -147,6 +151,8 @@ SynthPlayer : SynthInstrument
 			nodeIDs[nodeID]=true;
 
 
+		}, {
+			"SynthDef is nil".warn;
 		});
 
 		creatingSynth = false;
@@ -169,7 +175,7 @@ SynthPlayer : SynthInstrument
 				\synthdef, {
 
 					if( ( (value.val != \r) || (value.val != nil ) ) ) {
-
+						// TODO: Check that this is working:
 						synthdef = SynthDescLib.global.at(value.val);
 						main.postln;
 					}

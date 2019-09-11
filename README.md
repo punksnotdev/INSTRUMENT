@@ -1451,23 +1451,23 @@ i.synths.percussion.list;
 i.synths.percussion.drums.list;
 
 
+// all synths accesible using their names:
+// (Currently, synthnames are converted to lowercase).
+i.synths.kickdeep == i.synths.kickdeep;
+
+
+// references are created without redundant names:
+i.synths.kickdeep==i.synths.percussion.drums.kick.deep;
+
+
 // Multiple hierarchies support.
-i.synths.drums.list;
 i.synths.drums == i.synths.percussion.drums;
 i.synths.electro == i.synths.percussion.drums.kits.electro;
 
 
-// all synths accesible using their names:
-// (Currently, synthnames are converted to lowercase).
-i.synths.kickdeep == i.synths.kickdeep
-
-
-// references are created without redundant names:
-i.synths.kickdeep==i.synths.percussion.drums.kick.deep
-
-
 // smart organization
 i.synths.electro.kick===i.synths.kick.electro;
+
 
 
 // numeric indexes are fixed by prefixing an 's'
