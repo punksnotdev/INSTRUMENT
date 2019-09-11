@@ -223,10 +223,7 @@ I8TFolder : Event
 					keysOrder[orderKey]=k;
 				});
 
-				keysOrder.keys.postln;
-
 				keysOrder.keys.asArray.sort.collect({|nk,i|
-					// [i,nk].postln;
 					this.ref(i,this[keysOrder[nk]]);
 				});
 
