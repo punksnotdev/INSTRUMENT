@@ -1055,7 +1055,7 @@ I8TMain : Event
 			0.1.wait;
 			folder.refInAncestors(folder.name, folder);
 			folder.organizeByFamilies();
-			folder.makeIndexes();
+			folder.makeRefs();
 		}).play;
 
 		if( parent.isNil, {

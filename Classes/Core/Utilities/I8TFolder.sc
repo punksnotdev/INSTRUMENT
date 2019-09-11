@@ -80,7 +80,7 @@ I8TFolder : Event
 	// }
 
 	ref {|key,value|
-		if( refs.at(key).isNil ) {
+		if( (refs.at(key).isNil||refs.at(key).isKindOf(SynthDef)) ) {
 			^refs.put(key,value);
 		};
 	}
@@ -118,21 +118,26 @@ I8TFolder : Event
 
 		items = items.asArray.sort({|a,b|this.sortName(a,b)});
 		folders = folders.asArray.sort({|a,b|this.sortName(a,b)});
+		Task.new({
 
-		folders.do({|folder|
-			(padding++"> "++" "++folder.name++": "++folder.size ++ " items").postln;
-		});
-		items.do{|item,index|
-			var thisItemRefs = refs.collect({|v,k| if(v===item, { k }, { nil }); })
-			.keys
-			.reject(_.isNumber)
-			.reject({|k|k.asString=="0"});
-			thisItemRefs = thisItemRefs ++ this.keys.reject({|itemKey|this.at(itemKey)!==item}).asArray;
+			folders.do({|folder|
+				(padding++"> "++" "++folder.name++": "++folder.size ++ " items").postln;
+				0.002.wait;
+			});
+			items.do{|item,index|
+				var thisItemRefs = refs.collect({|v,k| if(v===item, { k }, { nil }); })
+				.keys
+				.reject(_.isNumber)
+				.reject({|k|k.asString=="0"});
+				thisItemRefs = thisItemRefs ++ this.keys.reject({|itemKey|this.at(itemKey)!==item}).asArray;
 
-			thisItemRefs=thisItemRefs.asArray.sort.reject(_===item.name).collect(name++"."++_)
-			;
-			(padding++"······ "++index++": "++item.name++": "++thisItemRefs).postln;
-		};
+				thisItemRefs=thisItemRefs.asArray.sort.reject(_===item.name).collect(name++"."++_)
+				;
+				(padding++"······ "++index++": "++item.name++": "++thisItemRefs).postln;
+				0.002.wait;
+			};
+
+		}).play;
 
 		folders.do({|folder|
 			if( expand == true ) {
@@ -186,7 +191,7 @@ I8TFolder : Event
 		})
 	}
 
-	makeIndexes {
+	makeRefs {
 
 		if(name!='root'){
 
@@ -205,16 +210,17 @@ I8TFolder : Event
 				this.keys.as(Set).asArray.do({|k|
 					if(k.isKindOf(Symbol)){
 						if( this.at(k).isKindOf(SynthDef)) {
-							numKeys.add(k);
+							if(numKeys.includes(k)==false) {
+								numKeys.add(k);
+							}
 						}
 					}
 				});
 
 				numKeys = numKeys.as(Set).asArray.sort;
 
-				numKeys.collect({|k,i|
-					this.ref(i,this[k]);
-					this.refInAncestors(i,this[k]);
+				numKeys.collect({|nk,i|
+					this.ref(i,this[nk]);
 				});
 
 				// add simplified keys that remove this folder name from any synths that include it
@@ -255,6 +261,7 @@ I8TFolder : Event
 				});
 			};
 		});
+
 	}
 
 	sortName {|a,b|

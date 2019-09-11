@@ -1439,6 +1439,7 @@ INSTRUMENT comes with a group of SynthDefs that are automatically loaded when a 
 
 You can access them via **i.synths**
 
+
 ```SuperCollider
 
 
@@ -1446,41 +1447,44 @@ i=INSTRUMENT();
 
 
 i.synths.list;
-
+i.synths.percussion.list;
+i.synths.percussion.drums.list;
 
 
 // Multiple hierarchies support.
+i.synths.drums.list;
+i.synths.drums == i.synths.percussion.drums;
+i.synths.electro == i.synths.percussion.drums.kits.electro;
 
 
-// all synths accesible via root:
+// all synths accesible using their names:
+// (Currently, synthnames are converted to lowercase).
 i.synths.kickdeep == i.synths.kickdeep
 
-// multiple hierarchy access:
-i.synths.drums == i.synths.percussion.drums
 
-// redundant names are removed:
+// references are created without redundant names:
 i.synths.kickdeep==i.synths.percussion.drums.kick.deep
 
 
-// smart indexing:
+// smart organization
 i.synths.electro.kick===i.synths.kick.electro;
 
-===
-i.synths.kick
-i.synths.electro.name
-i.synths.kick.list;
 
-i.synths.damp===i.synths.kick.kickdamp;
+
 
 // numeric indexes are fixed by prefixing an 's'
 i.synths.kick.syn.s1===i.synths.kicksyn1;
 i.synths.kick.s808===i.synths.kick808;
 
-// numerical indexing based on alphabetical order. number wraps around item size
+
+// numerical indexing based on alphabetical order.
 i.synths.kick[0].name
 i.synths.kick[1].name
 i.synths.kick[2].name
 i.synths.kick[3].name
+
+// (number wraps around item size)
+i.synths.kick[0]===i.synths.kick[i.synths.kick.size]
 
 (
 Task.new({
@@ -1497,7 +1501,7 @@ i.synths.kick.choose.postln;
 i.synths.bass.choose.postln;
 
 // a specific SynthDef
-i.synths.kick.kickDeep
+i.synths.kick.kickdeep
 
 ```
 
