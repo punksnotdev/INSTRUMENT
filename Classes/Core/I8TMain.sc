@@ -485,6 +485,12 @@ I8TMain : Event
 
 				};
 
+				if( something.isKindOf(SynthDefVariant)) {
+
+					item = this.setupNode(SynthPlayer(something.name), key);
+
+				};
+
 				if( something.isKindOf(I8TFolder) ) {
 
 					if( this.validateSynthDef( something.at(something.name) ) ) {
@@ -1073,6 +1079,7 @@ I8TMain : Event
 			folder.organizeByFamilies();
 			0.1.wait;
 			folder.makeRefs();
+			folder.addVariants();
 		}).play;
 
 		if( parent.isNil, {
@@ -1116,7 +1123,7 @@ I8TMain : Event
 		var isValid = true;
 		var outputs;
 
-		var isSynth = (synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDesc));
+		var isSynth = (synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDesc)||synthdef.isKindOf(SynthDefVariant));
 
 		if( isSynth == false) {
 			"I8TMain: validateSynthDef: Not a valid SynthDef".warn;
