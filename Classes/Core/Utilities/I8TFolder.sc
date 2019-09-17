@@ -107,7 +107,7 @@ I8TFolder : Event
 			if( v.isKindOf(I8TFolder) ) {
 				folders.add(v);
 			};
-			if( v.isKindOf(SynthDef) ) {
+			if( (v.isKindOf(SynthDef)||v.isKindOf(SynthDefVariant)) ) {
 				items.add(v)
 			};
 
@@ -121,19 +121,58 @@ I8TFolder : Event
 		Task.new({
 
 			folders.do({|folder|
-				(padding++"> "++" "++folder.name++": "++folder.size ++ " items").postln;
+				var folderString = (padding++"> "++" "++folder.name++": "++folder.size ++ " ");
+
+				if( folder.hasVariants() == false ) {
+					folderString = folderString ++ "items";
+					folderString.postln;
+				};
+
+
 				0.002.wait;
+
 			});
+
 			items.do{|item,index|
+				var itemString;
+
 				var thisItemRefs = refs.collect({|v,k| if(v===item, { k }, { nil }); })
 				.keys
 				.reject(_.isNumber)
 				.reject({|k|k.asString=="0"});
+
 				thisItemRefs = thisItemRefs ++ this.keys.reject({|itemKey|this.at(itemKey)!==item}).asArray;
 
 				thisItemRefs=thisItemRefs.asArray.sort.reject(_===item.name).collect(name++"."++_)
 				;
-				(padding++"······ "++index++": "++item.name++": "++thisItemRefs).postln;
+
+
+				itemString = padding++"······ "++index++": ";
+				itemString=itemString++item.name++": ";
+
+				if( item.isKindOf(SynthDefVariant), {
+					var paramString;
+					itemString.postln;
+					item.parameters.do({|param,paramIndex|
+						if( param.notNil ) {
+
+							if((paramIndex%2==0), {
+								paramString = padding++"······ "++"       ";
+	 							paramString = paramString ++ "\\"++ param;
+							}, {
+								paramString = paramString ++ ": " ++ param;
+								paramString.postln;
+								paramString="";
+							});
+						};
+					});
+				}, {
+					itemString=itemString++thisItemRefs;
+					itemString.postln;
+				});
+
+
+
 				0.002.wait;
 			};
 
