@@ -104,10 +104,16 @@ I8TFolder : Event
 		(padding++"> "++name++": "++ totalItems ++ " items:").postln;
 
 		this.keysValuesDo{|k,v|
-			if( v.isKindOf(I8TFolder) ) {
+			if( (v.isKindOf(I8TFolder)&&(v.hasVariants()==false)) ) {
 				folders.add(v);
 			};
-			if( (v.isKindOf(SynthDef)||v.isKindOf(SynthDefVariant)) ) {
+			if(
+				(
+					(v.isKindOf(SynthDef)||v.isKindOf(SynthDefVariant))
+					||
+					(v.isKindOf(I8TFolder)&&(v.hasVariants()==true))
+				)
+			) {
 				items.add(v)
 			};
 
@@ -118,6 +124,7 @@ I8TFolder : Event
 
 		items = items.asArray.sort({|a,b|this.sortName(a,b)});
 		folders = folders.asArray.sort({|a,b|this.sortName(a,b)});
+
 		Task.new({
 
 			folders.do({|folder|
@@ -149,6 +156,13 @@ I8TFolder : Event
 
 				itemString = padding++"······ "++index++": ";
 				itemString=itemString++item.name++": ";
+
+
+
+				if( item.isKindOf(I8TFolder) ) {
+					var variantList = [item.name]++item.keys.asArray.reject(_==item.name).sort;
+					thisItemRefs = (item.size.asString ++ " variants: " ++ variantList.asString );
+				};
 
 				if( item.isKindOf(SynthDefVariant), {
 					var paramString;
