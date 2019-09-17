@@ -10,4 +10,8 @@
 		}
 
 	}
+
+	hasVariants {
+		^false
+	}
 }

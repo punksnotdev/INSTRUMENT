@@ -23,8 +23,8 @@ I8TFolder : Event
 
 			if( key.isNumber ) {
 				refKey = key%(this.reject(_.isKindOf(I8TFolder)).size);
-			};
 
+			};
 			record = refs.at(refKey);
 
 		};
@@ -200,32 +200,20 @@ I8TFolder : Event
 			var numKeys=List.new;
 			var keysOrder=Event();
 
+			var keysToRef = this.keys;
+
 			// delete numeric indexes
 			this.keysValuesDo({|k,v|
 
-				if((k.isNumber||(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
+				if((k.isNumber||(v.isKindOf(SynthDefVariant)==false)&&(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
 					this.removeAt(k);
 					refs.removeAt(k);
 				};
+				// if( folderParent.notNil ){
+				// 	["parent is ", folderParent.name].postln;
+				// };
 
-				this.keys.as(Set).asArray.do({|k|
-					if(k.isKindOf(Symbol)){
-						if( this.at(k).isKindOf(SynthDef)) {
-							if(numKeys.includes(k)==false) {
-								numKeys.add(k);
-							}
-						}
-					}
-				});
 
-				numKeys.as(Set).asArray.collect({|k|
-					var orderKey = k.asString.replace(name.asString,"").asSymbol;
-					keysOrder[orderKey]=k;
-				});
-
-				keysOrder.keys.asArray.sort.collect({|nk,i|
-					this.ref(i,this[keysOrder[nk]]);
-				});
 
 				// add simplified keys that remove this folder name from any synths that include it
 				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
@@ -250,6 +238,59 @@ I8TFolder : Event
 			});
 
 
+			// generate numeric indexes:
+
+
+			// if this folder includes variants,
+			if( this.hasVariants(), {
+				// it should include a synthdef with the same name as this folder.
+				// make that the first index
+
+				this.keysValuesDo({|k,v|
+					if( ((this.at(name).notNil) && (k===name))) {
+						numKeys.add(v);
+						keysToRef.remove(name);
+					};
+				});
+
+				// then add other indexes alphabetically
+				keysToRef.asArray.sort.do({|rk|
+					if(rk.isKindOf(Symbol)){
+						if( (this.at(rk).isKindOf(SynthDef)||this.at(rk).isKindOf(SynthDefVariant))) {
+							if(numKeys.includes(this.at(rk))==false) {
+								numKeys.add(this.at(rk));
+							}
+						}
+					}
+				});
+
+
+			}, {
+
+				this.keysValuesDo({|k,v|
+
+					keysToRef.asArray.sort.do({|rk|
+						if(rk.isKindOf(Symbol)){
+							if( (this.at(rk).isKindOf(SynthDef)||this.at(rk).isKindOf(SynthDefVariant))) {
+								if(numKeys.includes(v)==false) {
+									numKeys.add(v);
+								}
+							}
+						}
+					});
+
+				});
+
+			});
+
+
+
+
+			numKeys.do({|synthdef,index|
+				this.ref(index,synthdef);
+			});
+
+
 		};
 
 	}
@@ -261,12 +302,15 @@ I8TFolder : Event
 				if( this[k].variants.notNil ) {
 
 					var synthFolder = I8TFolder();
+
 					var folderKey = k.asString.replace(name.asString,"").asSymbol;
+
 					synthFolder.name = folderKey;
 
 					synthFolder.put(folderKey,this[k]);
 
 					this[k].variants.keysValuesDo({|vk,vv|
+
 						var synthDefVariant = SynthDefVariant(
 							(this[k].name.asString++"."++vk).asString,
 							vv,
@@ -274,17 +318,19 @@ I8TFolder : Event
 						);
 
 						synthFolder.put(vk,synthDefVariant);
+
 						this.getRootFolder.ref((this[k].name.asString++"."++vk).asSymbol,synthDefVariant);
 
 					});
 
-					synthFolder.parent = this;
-					// this.refInAncestors(k,synthFolder);
-					// synthFolder.organizeByFamilies;
-					// synthFolder.makeRefs;
+					["synthFolder",synthFolder.name,synthFolder].postln;
+
+					synthFolder.folderParent = this;
+					this.refInAncestors(k,synthFolder);
+					// synthFolder.addVariants();
+					synthFolder.makeRefs();
 
 					this[folderKey]=synthFolder;
-
 
 				}
 			}
@@ -306,6 +352,23 @@ I8TFolder : Event
 
 	sortName {|a,b|
 		^(a.name < b.name)
+	}
+
+	hasVariants {
+
+		var result = false;
+
+		block{|break|
+			this.do({|v|
+				if(v.isKindOf(SynthDefVariant)) {
+					result = true;
+					break.value(true)
+				}
+			})
+		};
+
+		^result;
+
 	}
 
 }

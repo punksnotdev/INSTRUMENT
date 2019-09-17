@@ -63,8 +63,8 @@ I8TMain : Event
 	init {|createNew=false|
 
 
-		clock = TempoClock.default;
-		// clock = TempoClock.new( TempoClock.default.tempo );
+		// clock = TempoClock.default;
+		clock = TempoClock.new( TempoClock.default.tempo );
 
 		ready = false;
 
@@ -1078,8 +1078,9 @@ I8TMain : Event
 			0.1.wait;
 			folder.organizeByFamilies();
 			0.1.wait;
-			folder.makeRefs();
 			folder.addVariants();
+			0.2.wait;
+			folder.makeRefs();
 		}).play;
 
 		if( parent.isNil, {
