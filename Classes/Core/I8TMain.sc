@@ -151,7 +151,7 @@ I8TMain : Event
 
 		if( node.isKindOf(I8TNode) ) {
 
-			["setupNode: node exists?",nodes[key].notNil].postln;
+
 
 			if( nodes[key].isNil, {
 
@@ -174,6 +174,7 @@ I8TMain : Event
 				if( item.playing == true ) {
 					item.play;
 				};
+
 				item.setContent(node);
 
 			});
@@ -481,21 +482,22 @@ I8TMain : Event
 
 				};
 
-				if( something.isKindOf(SynthDef)) {
+				if( (
+						something.isKindOf(SynthDef)
+						||
+						something.isKindOf(SynthDefVariant)
+					)
+				) {
 
 					item = this.setupNode(SynthPlayer(something), key);
 
 				};
 
-				if( something.isKindOf(SynthDefVariant)) {
-					item = this.setupNode(SynthPlayer(something), key);
-
-				};
 
 				if( something.isKindOf(I8TFolder) ) {
 
 					if( this.validateSynthDef( something.at(something.name) ) ) {
-						"OK".warn;
+
 						SynthPlayer(something.at(something.name)).postln;
 						item = this.setupNode(SynthPlayer(something.at(something.name)), key);
 					};
@@ -621,6 +623,8 @@ I8TMain : Event
 				if( (
 						( childItem.isKindOf(SynthDef) )
 						||
+						( childItem.isKindOf(SynthDefVariant) )
+						||
 						(this.validateSynthName(childItem))
 						||
 						( childItem.isKindOf(I8TNode) )
@@ -653,7 +657,11 @@ I8TMain : Event
 							if( childItem.isKindOf(I8TNode) ) {
 								synthdef = childItem.synthdef;
 							};
-							if( childItem.isKindOf(SynthDef) ) {
+							if( (
+								childItem.isKindOf(SynthDef)
+								||
+								childItem.isKindOf(SynthDefVariant)
+							) ) {
 								synthdef = childItem;
 							};
 
@@ -682,7 +690,11 @@ I8TMain : Event
 
 							};
 
-							if( childItem.isKindOf(SynthDef) ) {
+							if( (
+								childItem.isKindOf(SynthDef)
+								||
+								childItem.isKindOf(SynthDefVariant)
+							) ) {
 
 								childItem = SynthPlayer(childItem);
 
@@ -799,7 +811,11 @@ I8TMain : Event
 
 						};
 
-						if( childItem.isKindOf(SynthDef)) {
+						if( (
+							childItem.isKindOf(SynthDef)
+							||
+							childItem.isKindOf(SynthDefVariant)
+						) ) {
 
 							var newNodeKey = key++'_'++childItemKey;
 
@@ -1102,6 +1118,7 @@ I8TMain : Event
 
 		var synthdef;
 
+		["should validate", synthName].postln;
 		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
 
 			^this.getSynthDefByName(synthName).notNil
@@ -1111,13 +1128,28 @@ I8TMain : Event
 		^false;
 	}
 
-	getSynthDefByName{|synthName|
+	getSynthDefByName {|synthName|
 
 		var synthdef;
 
 		synthdef = synths[synthName.asString.toLower.asSymbol];
-		["is in synths",synthdef.notNil].postln;
-		if((synthdef.isNil)||synthdef.isKindOf(Event)) {
+
+		if( synthdef.isNil ) {
+			synthdef = synths[synthName.asSymbol];
+		};
+
+
+		if(
+			(
+				synthdef.isNil
+				||
+				(
+					synthdef.isKindOf(Event)
+					&&
+					(synthdef.isKindOf(SynthDefVariant)==false)
+				)
+			)
+		) {
 			synthdef = SynthDescLib.default.at(synthName.asSymbol);
 		};
 
@@ -1138,13 +1170,18 @@ I8TMain : Event
 			^isValid;
 		};
 
-		outputs = SynthDescLib.global[synthdef.name.asSymbol].outputs;
+		if( synthdef.isKindOf(SynthDef) ) {
 
-		if(outputs.size>1) {
-			// TODO: do not add multichannel synths?
-			// isValid = false;
-			// ("SynthDef "++ synthdef.name ++" has more than 1 output: Total " ++ outputs.size ).warn;
-		}
+			outputs = SynthDescLib.global[synthdef.name.asSymbol].outputs;
+
+			if(outputs.size>1) {
+				// TODO: do not add multichannel synths?
+				// isValid = false;
+				// ("SynthDef "++ synthdef.name ++" has more than 1 output: Total " ++ outputs.size ).warn;
+			}
+
+		};
+
 		^isValid;
 	}
 

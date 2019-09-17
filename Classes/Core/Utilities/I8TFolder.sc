@@ -318,6 +318,7 @@ I8TFolder : Event
 						synthFolder.put(vk.asString.toLower.asSymbol,synthDefVariant);
 
 						this.getRootFolder.ref((this[k].name.asString++"."++vk).toLower.asSymbol,synthDefVariant);
+						this.getRootFolder.ref((this[k].name.asString++"."++vk).asSymbol,synthDefVariant);
 
 					});
 
