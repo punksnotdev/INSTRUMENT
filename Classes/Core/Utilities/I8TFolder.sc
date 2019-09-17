@@ -254,7 +254,7 @@ I8TFolder : Event
 				});
 
 				// then add other indexes alphabetically
-				keysToRef.asArray.do({|rk|
+				keysToRef.asArray.sort.do({|rk|
 					if(rk.isKindOf(Symbol)){
 						if( (this.at(rk).isKindOf(SynthDef)||this.at(rk).isKindOf(SynthDefVariant))) {
 							if(numKeys.includes(this.at(rk))==false) {
