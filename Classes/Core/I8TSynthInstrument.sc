@@ -99,9 +99,9 @@ SynthInstrument : Instrument
             };
 
             if( group.isKindOf(Group), {
-                fxSynth = Synth.head(group,synthdefName,this.parameters_array(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
+                fxSynth = Synth.head(group,synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
             }, {
-                 fxSynth = Synth.new(synthdefName,this.parameters_array(fx_parameters)++[\inBus,fxBus]);
+                 fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus]);
             });
             // });
 

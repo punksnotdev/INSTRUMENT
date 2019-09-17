@@ -42,7 +42,7 @@ Instrument : Sequenceable
 	}
 
 
-	parameters_array {|array|
+	createParametersArray {|array|
 		var parameters_array = List.new;
 
 		array.keysValuesDo({|key,value|

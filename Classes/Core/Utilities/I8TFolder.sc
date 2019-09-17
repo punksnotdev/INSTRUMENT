@@ -254,7 +254,7 @@ I8TFolder : Event
 				});
 
 				// then add other indexes alphabetically
-				keysToRef.asArray.sort.do({|rk|
+				keysToRef.asArray.do({|rk|
 					if(rk.isKindOf(Symbol)){
 						if( (this.at(rk).isKindOf(SynthDef)||this.at(rk).isKindOf(SynthDefVariant))) {
 							if(numKeys.includes(this.at(rk))==false) {
@@ -284,8 +284,6 @@ I8TFolder : Event
 			});
 
 
-
-
 			numKeys.do({|synthdef,index|
 				this.ref(index,synthdef);
 			});
@@ -303,7 +301,7 @@ I8TFolder : Event
 
 					var synthFolder = I8TFolder();
 
-					var folderKey = k.asString.replace(name.asString,"").asSymbol;
+					var folderKey = k.asString.replace(name.asString,"").toLower.asSymbol;
 
 					synthFolder.name = folderKey;
 
@@ -312,20 +310,20 @@ I8TFolder : Event
 					this[k].variants.keysValuesDo({|vk,vv|
 
 						var synthDefVariant = SynthDefVariant(
-							(this[k].name.asString++"."++vk).asString,
+							(this[k].name.asString++"."++vk).asString.asSymbol,
 							vv,
 							this[k]
 						);
 
-						synthFolder.put(vk,synthDefVariant);
+						synthFolder.put(vk.asString.toLower.asSymbol,synthDefVariant);
 
-						this.getRootFolder.ref((this[k].name.asString++"."++vk).asSymbol,synthDefVariant);
+						this.getRootFolder.ref((this[k].name.asString++"."++vk).toLower.asSymbol,synthDefVariant);
 
 					});
 
-					["synthFolder",synthFolder.name,synthFolder].postln;
 
 					synthFolder.folderParent = this;
+
 					this.refInAncestors(k,synthFolder);
 					// synthFolder.addVariants();
 					synthFolder.makeRefs();

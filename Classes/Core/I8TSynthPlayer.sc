@@ -36,9 +36,15 @@ SynthPlayer : SynthInstrument
 				synthdef_.isKindOf(SynthDef)
 				||
 				synthdef_.isKindOf(SynthDesc)
+				||
+				synthdef_.isKindOf(SynthDefVariant)
 			)) {
 				synthdef = synthdef_;
 				name = synthdef.name.asSymbol;
+			};
+
+			if( synthdef_.isKindOf(SynthDefVariant) ) {
+				synth_parameters=synth_parameters++synthdef_.parameters;
 			};
 
 			if(
@@ -92,7 +98,7 @@ SynthPlayer : SynthInstrument
 
 	}
 
-	createSynth{|parameters|
+	createSynth {|parameters|
 
 		if( synthdef.notNil, {
 
@@ -281,7 +287,7 @@ SynthPlayer : SynthInstrument
 											\note,note,
 											\amp, amp,
 											\out, outbus
-											]++this.parameters_array(use_synth_parameters)
+											]++this.createParametersArray(use_synth_parameters)
 										);
 
 									},
@@ -309,7 +315,7 @@ SynthPlayer : SynthInstrument
 													\amp, amp,
 													\legato,0,
 													\out, outbus
-													]++this.parameters_array(use_synth_parameters)
+													]++this.createParametersArray(use_synth_parameters)
 												);
 
 											});
@@ -401,7 +407,7 @@ SynthPlayer : SynthInstrument
 							computed_params.removeAt(\amp);
 							use_synth_parameters = computed_params;
 						});
-						this.createSynth([\t_trig,1,\amp,amp,\out,outbus]++this.parameters_array(use_synth_parameters));
+						this.createSynth([\t_trig,1,\amp,amp,\out,outbus]++this.createParametersArray(use_synth_parameters));
 					}
 				},
 				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },

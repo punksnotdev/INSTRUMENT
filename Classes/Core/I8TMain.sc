@@ -150,7 +150,9 @@ I8TMain : Event
 		var item;
 
 		if( node.isKindOf(I8TNode) ) {
-			["exists",nodes[key].notNil].postln;
+
+			["setupNode: node exists?",nodes[key].notNil].postln;
+
 			if( nodes[key].isNil, {
 
 				item = this.addNode(node,key);
@@ -486,8 +488,7 @@ I8TMain : Event
 				};
 
 				if( something.isKindOf(SynthDefVariant)) {
-
-					item = this.setupNode(SynthPlayer(something.name), key);
+					item = this.setupNode(SynthPlayer(something), key);
 
 				};
 
@@ -502,7 +503,11 @@ I8TMain : Event
 				};
 
 				if((
-					something.isKindOf(Collection)
+					(
+						something.isKindOf(Collection)
+						&&
+						(something.isKindOf(SynthDefVariant)==false)
+					)
 					&&
 					(something.isKindOf(I8TFolder)==false)
 					&&
@@ -1094,6 +1099,7 @@ I8TMain : Event
 
 
 	validateSynthName{|synthName|
+
 		var synthdef;
 
 		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
@@ -1110,7 +1116,7 @@ I8TMain : Event
 		var synthdef;
 
 		synthdef = synths[synthName.asString.toLower.asSymbol];
-
+		["is in synths",synthdef.notNil].postln;
 		if((synthdef.isNil)||synthdef.isKindOf(Event)) {
 			synthdef = SynthDescLib.default.at(synthName.asSymbol);
 		};
