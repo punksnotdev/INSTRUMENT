@@ -1118,7 +1118,6 @@ I8TMain : Event
 
 		var synthdef;
 
-		["should validate", synthName].postln;
 		if( synthName.isKindOf(String) || synthName.isKindOf(Symbol) ) {
 
 			^this.getSynthDefByName(synthName).notNil
