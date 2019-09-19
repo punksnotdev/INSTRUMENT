@@ -37,9 +37,15 @@ I8THarmony {
     }
 
 
+    getInterval {|a,b|
+        if(a<b, {
+            ^b-a
+        }, {
+            ^a-b
+        });
+    }
 
-
-    checkParallel {|array1,array2,step,against|
+    checkParallel {|array1,array2,step|
 
         var isParallel = false;
 
@@ -51,13 +57,7 @@ I8THarmony {
             var thisInterval = array1[step] - array2[step];
 
                 if( (thisInterval == lastInterval) ) {
-                    if( against.notNil, {
-                        if( against.includes(thisInterval.abs) ) {
-                            isParallel = true;
-                        }
-                    }, {
-                        isParallel = true;
-                    });
+                    isParallel = true;
                     ("is Parallel"++thisInterval.asString).warn;
                 };
 
@@ -99,7 +99,17 @@ I8THarmony {
                 newVoice2 = baseNote - ( (6-baseNote).rand*(direction*(-1)));
                 newVoice2 = newVoice2.max(0);
 
-                while({this.checkParallel(voices[0],voices[1]++newVoice2, step, rejectParallel)}, {
+                while({
+                    (
+                        this.checkParallel(voices[0],voices[1]++newVoice2, step)
+                        &&
+                        (   // check for parallel 5ths and 8ths
+                            (this.getInterval(voices[0][step],newVoice2)==4)
+                            &&
+                            (this.getInterval(voices[0][step],newVoice2)==7)
+                        )
+                    )
+                }, {
 
                     // newVoice2 = 7.rand*(this.getDirection(voices[0],step)*1).max(0);
                     newVoice2 = 7.rand;
