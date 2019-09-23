@@ -50,14 +50,14 @@ Sequenceable : I8TNode
 
 		currentParameter = parameters.parameter;
 
-		[
-			name,
-			parameters.parameter,
-			nextPatternKey,
-			parameters.pattern,
-			parameters.play_parameters,
-			sequencer
-		].postln;
+		// [
+		// 	name,
+		// 	parameters.parameter,
+		// 	nextPatternKey,
+		// 	parameters.pattern,
+		// 	parameters.play_parameters,
+		// 	sequencer
+		// ].postln;
 
 		if( sequencer.notNil ) {
 			currentPatternEvent = sequencer.addPattern(
@@ -162,7 +162,7 @@ Sequenceable : I8TNode
 			^sequencer.playInstrument( this, position );
 		}
 	}
-	
+
 	pause {|position|
 
 		playing = true;

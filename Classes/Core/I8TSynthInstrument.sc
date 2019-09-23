@@ -106,7 +106,7 @@ SynthInstrument : Instrument
             // });
 
 		}, {
-			"clear currentFX".postln;
+			// "clear currentFX".postln;
 			fxSynth.free;
 			fxSynth = nil;
 		});

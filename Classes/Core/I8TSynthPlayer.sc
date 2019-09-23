@@ -183,7 +183,7 @@ SynthPlayer : SynthInstrument
 					if( ( (value.val != \r) || (value.val != nil ) ) ) {
 						// TODO: Check that this is working:
 						synthdef = SynthDescLib.global.at(value.val);
-						main.postln;
+						// main.postln;
 					}
 					// synth_parameters = IdentityDictionary.new;
 				},

@@ -221,7 +221,8 @@ Sequencer : I8TNode
 
 			Task.new({
 				0.1.wait;
-				("Pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
+				(track++"."++parameter++": "++key).postln;
+				("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
 			}).play;
 
 		}
