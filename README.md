@@ -1594,64 +1594,98 @@ SynthDef(\reverb, {
 
 # Harmony
 
+(work in progress)
 
 ```SuperCollider
-Task({
+(
 
-h=I8THarmony();
-
-v=h.generateVoicings();
-
-
-h=v.collect(_.collect(Scale.minor.degrees.at(_)));
-
-
-	i=INSTRUMENT().play;
-
-		2.wait;
-
-		i.h1=i.synths.piano[1];
-		i.h2=i.synths.piano[3];
-
-		i.h1.note(h[0]);
-		i.h2.note(h[1]);
-
-		i.h2.octave=5;
-		i.h1.octave=6;
+	/*
+	random harmony generator
+	following simple rules:
+	- no parallel fifths or octaves in first 2 voices
+	- when first two do move parallelly,
+	move third direction in opposite direction
+	*/
+	
+	s.boot;
+	s.doWhenBooted({
 
 
-		i.h2.set(\rel,2);
-		i.h1.set(\rel,2);
 
-		i.h1.fx="reverb.small";
-		i.h2.fx="reverb.medium";
 
-			i.every(8, {
+		    Task({
 
-					h=I8THarmony();
-		v=h.generateVoicings();
-		h=v.collect({|voicing|
-		voicing.collect({|value|
-			(value%7).postln;
-			Scale.minor.degrees.at((value%7).asInteger)
-		});
-	});
+				h=I8THarmony();
 
-					i.h1.note(h[0]);
-					i.h2.note(h[1]);
+				v=h.generateVoicings();
 
-					c=[2,4,8,16,1/2,3,1/4].choose;
-				i.h1.clock=c;
-				i.h2.clock=c;
 
+				h=v.collect(_.collect(Scale.minor.degrees.at(_)));
+
+
+			    i=INSTRUMENT().play;
+
+		        2.wait;
+
+		        i.h1=i.synths.piano[1];
+		        i.h2=i.synths.piano[3];
+		        i.h3=i.synths.piano[3];
+
+		        i.h1.note(h[0]);
+		        i.h2.note(h[1]);
+		        i.h2.note(h[2]);
+
+				i.h1.octave=5;
+		        i.h2.octave=5;
+				i.h3.octave=5;
+
+
+
+				i.h1.set(\rel,2);
+		        i.h2.set(\rel,2);
+		        i.h3.set(\rel,2);
+
+		        i.h1.fx="reverb.small";
+		        i.h2.fx="reverb.large";
+		        i.h3.fx="reverb.medium";
+
+	            i.every(8, {
+
+	                h=I8THarmony();
+	    			v=h.generateVoicings();
+	    			h=v.collect({|voicing|
+						voicing.collect({|value|
+							(value%7).postln;
+							Scale.major.degrees.at((value%7).asInteger)
+						});
+					});
+
+	                i.h1.note(h[0]);
+	                i.h2.note(h[1]);
+	                i.h3.note(h[2]);
+
+	                c=[2,4,8,16,1/2,3,1/4].choose;
+	    	        i.h1.clock=c;
+	    	        i.h2.clock=c;
+	    	        i.h3.clock=c;
+
+	                i.h1.set(\rel,c.reciprocal);
 					i.h2.set(\rel,c.reciprocal);
-					i.h1.set(\rel,c.reciprocal);
+					i.h3.set(\rel,c.reciprocal);
 
+	    	        i.h1.octave=3+4.rand;
 					i.h2.octave=3+4.rand;
-				i.h1.octave=3+4.rand;
+					i.h3.octave=3+4.rand;
 
 
-			});
-}).play;
+	            });
+		    }).play;
 
+
+			s.volume=(-12);
+
+
+	})
+
+)
 ```
