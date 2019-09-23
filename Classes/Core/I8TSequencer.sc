@@ -218,8 +218,9 @@ Sequencer : I8TNode
 			);
 
 			main.displayNextPattern(patternInfo);
+
 			Task.new({
-				0.01.wait;
+				0.1.wait;
 				("Pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
 			}).play;
 

@@ -58,7 +58,6 @@ I8THarmony {
 
                 if( (thisInterval == lastInterval) ) {
                     isParallel = true;
-                    ("is Parallel"++thisInterval.asString).warn;
                 };
 
         });
@@ -68,7 +67,7 @@ I8THarmony {
     }
 
 
-    generateVoicings {|numVoices=2|
+    generateVoicings {|numVoices=3|
 
         var voices = List.new;
         var scale = Scale.minor;
@@ -80,9 +79,9 @@ I8THarmony {
         16.do{|step|
 
             var newVoice1;
-            var rejectParallel = [ 4, 7 ];
-            var direction;
             var newVoice2;
+            var newVoice3;
+
 
             newVoice1 = 7.rand;
 
@@ -92,7 +91,7 @@ I8THarmony {
 
                 var baseNote = 7.rand;
 
-                direction = this.getDirection(voices[0],step);
+                var direction = this.getDirection(voices[0],step);
 
                 // TODO: implement smart decrement
 
@@ -113,7 +112,6 @@ I8THarmony {
 
                     // newVoice2 = 7.rand*(this.getDirection(voices[0],step)*1).max(0);
                     newVoice2 = 7.rand;
-                    newVoice2.postln;
 
                 });
 
@@ -126,9 +124,39 @@ I8THarmony {
 
             voices[1].add(newVoice2.abs);
 
+            // add third voice
+
+            if( this.checkParallel(voices[0],voices[1],step), {
+
+                var direction = this.getDirection(voices[0],step);
+
+                newVoice3 = this.generateRandomNote(voices[2][step-1],direction);
+
+            }, {
+                newVoice3 = 7.rand;
+            });
+
+            voices[2].add(newVoice3);
+
         };
 
         ^voices
+
+    }
+
+
+    generateRandomNote {|previousNote, direction|
+
+        var newNote;
+
+        if( direction >= 0, {
+            newNote = (7-previousNote).rand.min(1)
+        }, {
+            newNote = (previousNote - 1).rand;
+        })
+
+
+        ^newNote
 
     }
 
