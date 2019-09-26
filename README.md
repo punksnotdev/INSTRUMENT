@@ -14,24 +14,28 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 // Create a beat
 
 // First, evaluate following block
-(
-
-i = INSTRUMENT().play;
-
-i.drums = (
-	kick: INSTRUMENT(i.synths.electro.kick),
-	hihat: INSTRUMENT(i.synths.electro.hihat),
-	clap: INSTRUMENT(i.synths.electro.clap)
-);
-
-i.drums.kick.seq("1 :0.5 1xx");
-i.drums.hihat.seq(" 1").speed(2);
-i.drums.clap.seq(" 1 :2 1 :0.25 1xxx ");
-
-i.drums.clock = 2;
+Task.new({
 
 
-)
+	i = INSTRUMENT().play;
+
+	2.wait;
+
+	i.drums = (
+		kick: INSTRUMENT(i.synths.electro.kick),
+		hihat: INSTRUMENT(i.synths.electro.hihat),
+		clap: INSTRUMENT(i.synths.electro.clap)
+	);
+
+	i.drums.kick.seq("1  1xx");
+	i.drums.hihat.seq(" 1").speed(2);
+	i.drums.clap.seq("   1   1xx");
+
+	i.drums.clock = 2;
+
+
+
+}).play;
 
 
 // Play with clock
@@ -40,7 +44,7 @@ i.drums.clock = 4;
 
 // Add FX and slow down
 (
-i.drums.fx=\reverbLPF;
+i.drums.fx="reverb";
 i.drums.clock = 1;
 )
 
@@ -164,18 +168,32 @@ i=INSTRUMENT().play;
 // creates a dictionary inside **i.synths**
 
 // access by name
-i.synths.bass.simpleBass;
+
+i.kick="kickElectro";
+i.kick.seq("1");
+
+// use the dictionary
+i.kick=i.synths.electro.kick;
+
+// replace sounds
+
+i.kick=i.synths.electro.hihat;
+
+
 
 // access by index
-i.synths.drums.kick[0];
-i.synths.drums.kick[1];
+i.kick=i.synths.drums.kick[0];
+i.kick=i.synths.drums.kick[1];
 
 // index wraps around total synths number inside folder
-i.synths.drums.kick[99999];
+i.kick=i.synths.drums.kick[99999];
 
 // access randomly
-i.synths.drums.kick.choose;
-i.synths.drums.snare.choose;
+i.kick=i.synths.drums.kick.choose;
+i.kick=i.synths.drums.kick.choose;
+
+i.kick=i.synths.drums.snare.choose;
+i.kick=i.synths.drums.snare.choose;
 
 
 // long vs short synth routes are equivalent:
@@ -199,15 +217,13 @@ See [**Synthesizers**](#synthesizers), at the end of this document, for more inf
 
 
 i=INSTRUMENT().play;
-i.kick=INSTRUMENT(\kickElectro);
+i.kick="kickElectro";
 i.kick.seq("1");
 
 
 // trigger synths with different amp values:
 i.kick.seq("1 0.1 0.75");
 
-// this also works
-i.kick.seq([1, 0.1, 0.75]);
 
 i.kick.stop;
 

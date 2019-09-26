@@ -20,7 +20,7 @@ Sequencer : I8TNode
 	var beats;
 
 	var <singleFunctions;
-	var <repeatFunctions;
+	var <>repeatFunctions;
 
 	var main;
 
@@ -103,7 +103,6 @@ Sequencer : I8TNode
 					if( singleFunctions[beats].isKindOf(Function), {
 						singleFunctions[beats].value();
 					});
-
 					repeatFunctions.collect({|f,k|
 
 						f.collect({|rf,l|

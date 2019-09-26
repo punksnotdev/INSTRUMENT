@@ -45,6 +45,9 @@ I8TMain : Event
 
 	classvar mainEvent;
 
+	var clearedGroups;
+	var clearedNodes;
+	var clearedFunctions;
 
 	*new {|createNew=false|
 
@@ -237,8 +240,11 @@ I8TMain : Event
 		if( ready == true, {
 
 			playing = true;
+
 			nodes.collect({|node|
-				node.play;
+				if(clearedNodes.includes(node)==false){
+					node.play;
+				};
 			});
 			sequencer.play;
 
@@ -253,9 +259,41 @@ I8TMain : Event
 	}
 
 	clear {
-		groups.collect({|g| g.pause; });
+
+		clearedGroups=groups.copy;
+		clearedNodes=List.new;
+
+		clearedNodes=nodes.values.copy;
+		clearedFunctions=sequencer.repeatFunctions.copy;
+
+		groups.collect({|g|
+			g.pause;
+			g.collect({|gnode|
+				clearedNodes.push(gnode);
+			});
+		 });
 		nodes.collect({|n| n.pause; });
+
+		this.clearSequencerFunctions();
+
 		this.go(0);
+
+	}
+
+	restore {
+
+		sequencer.repeatFunctions=clearedFunctions.copy;
+
+		clearedNodes.collect({|n|
+			n.play;
+		});
+		clearedGroups.collect({|g|
+			g.play;
+		});
+
+
+		this.go(0);
+
 	}
 
 	stop {
