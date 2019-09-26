@@ -45,7 +45,8 @@ I8TParser {
 					if( lastChar == Char.space ) {
 
 						// if( char != $:, {
-
+							// if last char wast space and current isn't,
+							// then last group is closed and we start a a new one
 							if( buildingGroupChars.size > 0 ) {
 
 								groupStrings.add( buildingGroupChars );
@@ -608,6 +609,30 @@ I8TParser {
 		});
 
 		^eventsPost;
+
+	}
+
+	getPatternGroups {|input|
+
+		if( input.find( $( ).notNil ) {
+			var splitString = input.split($();
+			var rightHand = splitString[1];
+
+			var group;
+
+
+			if( rightHand.find( $) ).notNil ) {
+				var splitRightHand = rightHand.split($));
+				var operatorString = splitRightHand[1];
+				group = $(++splitRightHand[0]++$);
+
+				^(
+					group: group,
+					operators: I8TParser.extractParameters(operatorString)
+				);
+
+			}
+		}
 
 	}
 
