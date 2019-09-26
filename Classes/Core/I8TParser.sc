@@ -27,151 +27,158 @@ I8TParser {
 
 		var parameterGroups;
 
+		var subsequences;
 
-		input.size.do({|index|
+		subsequences = [ input ];
 
-			var char = input[ index ];
+		subsequences.do({|subsequence|
+
+			subsequence.size.do({|index|
+
+				var char = input[ index ];
 
 
-			// if is not last character
-			if( index < (input.size - 1) ) {
+				// if is not last character
+				if( index < (input.size - 1) ) {
 
 
-				// if current char is not a space
-				// append to current building group
+					// if current char is not a space
+					// append to current building group
 
-				if( char != Char.space ) {
+					if( char != Char.space ) {
 
-					if( lastChar == Char.space ) {
+						if( lastChar == Char.space ) {
 
-						// if( char != $:, {
-							// if last char wast space and current isn't,
-							// then last group is closed and we start a a new one
-							if( buildingGroupChars.size > 0 ) {
+							// if( char != $:, {
+								// if last char wast space and current isn't,
+								// then last group is closed and we start a a new one
+								if( buildingGroupChars.size > 0 ) {
+
+									groupStrings.add( buildingGroupChars );
+									buildingGroupChars = "";
+
+								};
+
+							// }, {
+							//
+							// 	if( buildingGroupChars.size > 0 ) {
+							//
+							// 		groupStrings.add( buildingGroupChars );
+							// 		buildingGroupChars = "";
+							//
+							// 	};
+							//
+							// });
+
+						};
+
+						buildingGroupChars = buildingGroupChars ++ char;
+
+
+
+					};
+
+					// if current char is space
+
+					if( char == Char.space ) {
+
+						// if last char is also space
+
+						if( lastChar.notNil ) {
+
+							if( lastChar == Char.space ) {
+								// start new group with a space
+								buildingGroupChars = buildingGroupChars ++ Char.space;//char;
+
+								// if( input.findBackwards( Char.space ).notNil ) {
+
+									// if this is last space in string
+									// if( input.findBackwards( Char.space ) <= index ) {
+									// 	buildingGroupChars = buildingGroupChars ++ Char.space;
+									// }
+								// }
+
+							};
+
+							// if current char is not a space
+							// create group from to current building chars
+
+							if( lastChar != Char.space ) {
 
 								groupStrings.add( buildingGroupChars );
 								buildingGroupChars = "";
 
-							};
-
-						// }, {
-						//
-						// 	if( buildingGroupChars.size > 0 ) {
-						//
-						// 		groupStrings.add( buildingGroupChars );
-						// 		buildingGroupChars = "";
-						//
-						// 	};
-						//
-						// });
-
-					};
-
-					buildingGroupChars = buildingGroupChars ++ char;
-
-
-
-				};
-
-				// if current char is space
-
-				if( char == Char.space ) {
-
-					// if last char is also space
-
-					if( lastChar.notNil ) {
-
-						if( lastChar == Char.space ) {
-							// start new group with a space
-							buildingGroupChars = buildingGroupChars ++ Char.space;//char;
-
-							// if( input.findBackwards( Char.space ).notNil ) {
-
-								// if this is last space in string
-								// if( input.findBackwards( Char.space ) <= index ) {
-								// 	buildingGroupChars = buildingGroupChars ++ Char.space;
-								// }
-							// }
+							}
 
 						};
 
-						// if current char is not a space
-						// create group from to current building chars
+						if( lastChar.isNil, {
+
+							buildingGroupChars = buildingGroupChars ++ char;
+
+						});
+
+					};
+
+				};
+
+
+				// if is last character
+
+				if( index >= (input.size - 1) ) {
+
+
+
+					if( char != Char.space ) {
+
+						if( lastChar == Char.space ) {
+
+							if( buildingGroupChars.compare("")!=0) {
+
+								groupStrings.add( buildingGroupChars );
+
+							};
+
+							buildingGroupChars = "";
+
+						};
+
+					};
+
+					if( char == Char.space ) {
+
 
 						if( lastChar != Char.space ) {
 
 							groupStrings.add( buildingGroupChars );
+
 							buildingGroupChars = "";
 
+						};
+
+						if( lastChar == Char.space ) {
+							buildingGroupChars = buildingGroupChars ++ Char.space;
 						}
 
 					};
 
-					if( lastChar.isNil, {
 
-						buildingGroupChars = buildingGroupChars ++ char;
+					buildingGroupChars = buildingGroupChars ++ char;
 
-					});
+					groupStrings.add( buildingGroupChars );
 
-				};
-
-			};
-
-
-			// if is last character
-
-			if( index >= (input.size - 1) ) {
-
-
-
-				if( char != Char.space ) {
-
-					if( lastChar == Char.space ) {
-
-						if( buildingGroupChars.compare("")!=0) {
-
-							groupStrings.add( buildingGroupChars );
-
-						};
-
-						buildingGroupChars = "";
-
-					};
-
-				};
-
-				if( char == Char.space ) {
-
-
-					if( lastChar != Char.space ) {
-
-						groupStrings.add( buildingGroupChars );
-
-						buildingGroupChars = "";
-
-					};
-
-					if( lastChar == Char.space ) {
-						buildingGroupChars = buildingGroupChars ++ Char.space;
-					}
+					buildingGroupChars = "";
 
 				};
 
 
-				buildingGroupChars = buildingGroupChars ++ char;
 
-				groupStrings.add( buildingGroupChars );
-
-				buildingGroupChars = "";
-
-			};
+				lastChar = char;
 
 
-
-			lastChar = char;
+			});
 
 		});
-
 
 
 		parameterGroups = groupStrings.collect({|groupString|
@@ -612,7 +619,72 @@ I8TParser {
 
 	}
 
-	getPatternGroups {|input|
+
+
+	validateMatching{|input,openingSymbol=$(,closingSymbol=$)|
+
+
+			var opening=input.findAll(openingSymbol);
+			var closing=input.findAll(closingSymbol);
+
+			var correct = true;
+
+			if(opening.size===closing.size, {
+
+				opening.size.do({|index|
+					
+					if( opening[index] > closing[index] ) {
+						correct = false;
+						"must open ( before closing )".warn;
+					};
+					if( index < (opening.size - 1) ) {
+						if( opening[index+1] < closing[index] ) {
+							correct = false;
+							"must close ) before opening (".warn;
+						};
+					};
+				});
+
+
+			}, {
+				"number of ( and ) not matching".warn;
+			});
+
+			^correct;
+
+	}
+
+	getSubsequences {|input|
+
+		var subsequences = List.new;
+
+		var indexOpening = input.asString.find($();
+		var indexClosing = input.asString.find($));
+
+		if( ((indexOpening.notNil)&&(indexClosing.notNil))) {
+			if( indexClosing > indexOpening ) {
+
+				var subsequence = input.split($();
+				var rest;
+				["subsequence",subsequence].postln;
+				subsequence = subsequence[1];
+				subsequence = subsequence.split($));
+				["subsequence",subsequence].postln;
+				rest = subsequence[1];
+				subsequence = subsequence[0];
+
+				subsequences.add(subsequence);
+				["rest",rest].postln;
+				subsequences = subsequences ++ this.getSubsequences(rest);
+			}
+		};
+
+		^subsequences;
+
+	}
+
+
+	getSubsequenceEvents {|input|
 
 		if( input.find( $( ).notNil ) {
 			var splitString = input.split($();
