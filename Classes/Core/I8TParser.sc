@@ -620,6 +620,7 @@ I8TParser {
 	}
 
 
+	// TODO: implement nested subsequence checking
 
 	validateMatching{|input,openingSymbol=$(,closingSymbol=$)|
 
@@ -632,7 +633,7 @@ I8TParser {
 			if(opening.size===closing.size, {
 
 				opening.size.do({|index|
-					
+
 					if( opening[index] > closing[index] ) {
 						correct = false;
 						"must open ( before closing )".warn;
@@ -658,25 +659,21 @@ I8TParser {
 
 		var subsequences = List.new;
 
-		var indexOpening = input.asString.find($();
-		var indexClosing = input.asString.find($));
+		var opening = input.findAll($();
+		var closing = input.findAll($));
 
-		if( ((indexOpening.notNil)&&(indexClosing.notNil))) {
-			if( indexClosing > indexOpening ) {
+		if( this.validateMatching(input) ) {
+			opening.size.do({|index|
+				var subsequence = "";
+				var total = (closing[index] - opening[index])-1;
+				total.do({|eachIndex|
 
-				var subsequence = input.split($();
-				var rest;
-				["subsequence",subsequence].postln;
-				subsequence = subsequence[1];
-				subsequence = subsequence.split($));
-				["subsequence",subsequence].postln;
-				rest = subsequence[1];
-				subsequence = subsequence[0];
+					subsequence = subsequence + input[ eachIndex + opening[index] + 1 ];
+
+				});
 
 				subsequences.add(subsequence);
-				["rest",rest].postln;
-				subsequences = subsequences ++ this.getSubsequences(rest);
-			}
+			});
 		};
 
 		^subsequences;
