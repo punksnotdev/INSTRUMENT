@@ -668,6 +668,13 @@ I8TParser {
 		var closing = input.findAll($));
 
 		if( this.validateMatching(input) ) {
+
+			if( opening[0] > 0 ) {
+				subsequences.add((
+					pattern: input.copyFromStart(opening[0]-1)
+				));
+			};
+
 			opening.size.do({|index|
 				var subsequence = input.copyRange(opening[index]+1,closing[index]-1);
 				// var total = (closing[index] - opening[index])-1;
@@ -679,6 +686,13 @@ I8TParser {
 					operators: operators
 				));
 			});
+
+			if( closing[closing.size-1] < (input.size-1) ) {
+				subsequences.add((
+					pattern: input.copyToEnd(closing[closing.size-1]+1)
+				));
+			};
+
 		};
 
 		^subsequences;
