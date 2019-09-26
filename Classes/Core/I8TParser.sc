@@ -17,181 +17,189 @@ I8TParser {
 	}
 
 	*parse {|input|
+		if( input.notNil ) {
 
-		var groupStrings = List.new;
-		var lastChar;
+			var groupStrings = List.new;
+			var lastChar;
 
-		var buildingGroupChars = "";
+			var buildingGroupChars = "";
 
-		var index = 0;
+			var index = 0;
 
-		var parameterGroups;
+			var parameterGroups;
 
-		var subsequences;
+			var subsequences;
 
-		// if contains opening and closing brackets
-		if( this.validateMatching(input), {
-			subsequences = this.getSubsequences(input);
-		}, {
-			subsequences =  [input];
-		});
+			// if contains opening and closing brackets
+			if( I8TParser.validateMatching(input), {
+				subsequences = I8TParser.getSubsequences(input);
+			}, {
+				subsequences =  [(
+					pattern: input,
+					operators: ""
+				)];
+			});
 
-		subsequences.do({|subsequence|
+			subsequences.do({|subsequence|
 
-			subsequence.size.do({|index|
+				var pattern = subsequence.pattern.asString;
 
-				var char = input[ index ];
-
-
-				// if is not last character
-				if( index < (input.size - 1) ) {
+				pattern.size.do({|index|
 
 
-					// if current char is not a space
-					// append to current building group
+					var char = pattern[ index ];
 
-					if( char != Char.space ) {
 
-						if( lastChar == Char.space ) {
+					// if is not last character
+					if( index < (pattern.size - 1) ) {
 
-							// if( char != $:, {
-								// if last char wast space and current isn't,
-								// then last group is closed and we start a a new one
-								if( buildingGroupChars.size > 0 ) {
+
+						// if current char is not a space
+						// append to current building group
+
+						if( char != Char.space ) {
+
+							if( lastChar == Char.space ) {
+
+								// if( char != $:, {
+									// if last char wast space and current isn't,
+									// then last group is closed and we start a a new one
+									if( buildingGroupChars.size > 0 ) {
+
+										groupStrings.add( buildingGroupChars );
+										buildingGroupChars = "";
+
+									};
+
+								// }, {
+								//
+								// 	if( buildingGroupChars.size > 0 ) {
+								//
+								// 		groupStrings.add( buildingGroupChars );
+								// 		buildingGroupChars = "";
+								//
+								// 	};
+								//
+								// });
+
+							};
+
+							buildingGroupChars = buildingGroupChars ++ char;
+
+
+
+						};
+
+						// if current char is space
+
+						if( char == Char.space ) {
+
+							// if last char is also space
+
+							if( lastChar.notNil ) {
+
+								if( lastChar == Char.space ) {
+									// start new group with a space
+									buildingGroupChars = buildingGroupChars ++ Char.space;//char;
+
+									// if( pattern.findBackwards( Char.space ).notNil ) {
+
+										// if this is last space in string
+										// if( pattern.findBackwards( Char.space ) <= index ) {
+										// 	buildingGroupChars = buildingGroupChars ++ Char.space;
+										// }
+									// }
+
+								};
+
+								// if current char is not a space
+								// create group from to current building chars
+
+								if( lastChar != Char.space ) {
 
 									groupStrings.add( buildingGroupChars );
 									buildingGroupChars = "";
 
-								};
-
-							// }, {
-							//
-							// 	if( buildingGroupChars.size > 0 ) {
-							//
-							// 		groupStrings.add( buildingGroupChars );
-							// 		buildingGroupChars = "";
-							//
-							// 	};
-							//
-							// });
-
-						};
-
-						buildingGroupChars = buildingGroupChars ++ char;
-
-
-
-					};
-
-					// if current char is space
-
-					if( char == Char.space ) {
-
-						// if last char is also space
-
-						if( lastChar.notNil ) {
-
-							if( lastChar == Char.space ) {
-								// start new group with a space
-								buildingGroupChars = buildingGroupChars ++ Char.space;//char;
-
-								// if( input.findBackwards( Char.space ).notNil ) {
-
-									// if this is last space in string
-									// if( input.findBackwards( Char.space ) <= index ) {
-									// 	buildingGroupChars = buildingGroupChars ++ Char.space;
-									// }
-								// }
+								}
 
 							};
 
-							// if current char is not a space
-							// create group from to current building chars
+							if( lastChar.isNil, {
+
+								buildingGroupChars = buildingGroupChars ++ char;
+
+							});
+
+						};
+
+					};
+
+
+					// if is last character
+
+					if( index >= (pattern.size - 1) ) {
+
+
+
+						if( char != Char.space ) {
+
+							if( lastChar == Char.space ) {
+
+								if( buildingGroupChars.compare("")!=0) {
+
+									groupStrings.add( buildingGroupChars );
+
+								};
+
+								buildingGroupChars = "";
+
+							};
+
+						};
+
+						if( char == Char.space ) {
+
 
 							if( lastChar != Char.space ) {
 
 								groupStrings.add( buildingGroupChars );
+
 								buildingGroupChars = "";
 
+							};
+
+							if( lastChar == Char.space ) {
+								buildingGroupChars = buildingGroupChars ++ Char.space;
 							}
 
 						};
 
-						if( lastChar.isNil, {
 
-							buildingGroupChars = buildingGroupChars ++ char;
+						buildingGroupChars = buildingGroupChars ++ char;
 
-						});
+						groupStrings.add( buildingGroupChars );
 
-					};
-
-				};
-
-
-				// if is last character
-
-				if( index >= (input.size - 1) ) {
-
-
-
-					if( char != Char.space ) {
-
-						if( lastChar == Char.space ) {
-
-							if( buildingGroupChars.compare("")!=0) {
-
-								groupStrings.add( buildingGroupChars );
-
-							};
-
-							buildingGroupChars = "";
-
-						};
-
-					};
-
-					if( char == Char.space ) {
-
-
-						if( lastChar != Char.space ) {
-
-							groupStrings.add( buildingGroupChars );
-
-							buildingGroupChars = "";
-
-						};
-
-						if( lastChar == Char.space ) {
-							buildingGroupChars = buildingGroupChars ++ Char.space;
-						}
+						buildingGroupChars = "";
 
 					};
 
 
-					buildingGroupChars = buildingGroupChars ++ char;
 
-					groupStrings.add( buildingGroupChars );
-
-					buildingGroupChars = "";
-
-				};
+					lastChar = char;
 
 
-
-				lastChar = char;
-
+				});
 
 			});
 
-		});
+
+			parameterGroups = groupStrings.collect({|groupString|
+				this.extractParameters(groupString)
+			});
 
 
-		parameterGroups = groupStrings.collect({|groupString|
-			this.extractParameters(groupString)
-		});
-
-
-		^this.getEventsList(parameterGroups);
+			^this.getEventsList(parameterGroups);
+		}
 
 	}
 
@@ -627,7 +635,7 @@ I8TParser {
 
 	// TODO: implement nested subsequence checking
 
-	validateMatching{|input,openingSymbol=$(,closingSymbol=$)|
+	*validateMatching{|input,openingSymbol=$(,closingSymbol=$)|
 
 
 			var opening=input.findAll(openingSymbol);
@@ -635,51 +643,72 @@ I8TParser {
 
 			var correct = true;
 
-			if(opening.size===closing.size, {
+			if(opening.size>0, {
+				if(opening.size===closing.size, {
 
-				opening.size.do({|index|
+					opening.size.do({|index|
 
-					if( opening[index] > closing[index] ) {
-						correct = false;
-						"must open ( before closing )".warn;
-					};
-					if( index < (opening.size - 1) ) {
-						if( opening[index+1] < closing[index] ) {
+						if( opening[index] > closing[index] ) {
 							correct = false;
-							"must close ) before opening (".warn;
+							"must open ( before closing )".warn;
 						};
-					};
+						if( index < (opening.size - 1) ) {
+							if( opening[index+1] < closing[index] ) {
+								correct = false;
+								"must close ) before opening (".warn;
+							};
+						};
+					});
+
+
+				}, {
+					"number of ( and ) not matching".warn;
 				});
-
-
 			}, {
-				"number of ( and ) not matching".warn;
+				correct = false;
 			});
 
 			^correct;
 
 	}
 
-	getSubsequences {|input|
+	// TODO: implement pattern variables using { and }
+	*getSubsequences {|input, openingSymbol=$(, closingSymbol=$)|
 
 		var subsequences = List.new;
 
-		var opening = input.findAll($();
-		var closing = input.findAll($));
+		var opening = input.findAll(openingSymbol);
+		var closing = input.findAll(closingSymbol);
 
-		if( this.validateMatching(input) ) {
+		if( I8TParser.validateMatching(input) ) {
 
+			// add any pattern before first bracket
 			if( opening[0] > 0 ) {
 				subsequences.add((
-					pattern: input.copyFromStart(opening[0]-1)
+					pattern: input.copyFromStart(opening[0]-1),
+					operators: ""
 				));
 			};
 
 			opening.size.do({|index|
-				var subsequence = input.copyRange(opening[index]+1,closing[index]-1);
 				// var total = (closing[index] - opening[index])-1;
+				var subsequence = input.copyRange(opening[index]+1,closing[index]-1);
+
 				var checkEnd = input.copyToEnd(closing[index]+1);
-				var operators = checkEnd.copyFromStart(checkEnd.find(Char.space));
+				var operators = "";
+
+				if(checkEnd.size>0) {
+					if(checkEnd.find(Char.space).notNil, {
+						operators = checkEnd.copyFromStart(checkEnd.find(Char.space));
+					}, {
+						// if is last bracket
+						if(index==(opening.size-1), {
+							operators = checkEnd;
+						}, {
+							operators = "";
+						});
+					});
+				};
 
 				subsequences.add((
 					pattern: subsequence,
@@ -690,16 +719,25 @@ I8TParser {
 				if( index < (opening.size - 1) ) {
 					if( ( opening[index+1] - (closing[index]+operators.size) ) > 1 ) {
 						subsequences.add((
-							pattern: input.copyRange(closing[index]+operators.size+1,opening[index+1]-1),
+							pattern: input.copyRange(
+								closing[index] + operators.size + 1,
+								opening[index+1]-1
+							),
 							operators: ""
 						));
 					}
 				}
 			});
 
+			// add any patterns after last bracket
 			if( closing[closing.size-1] < (input.size-1) ) {
 				subsequences.add((
-					pattern: input.copyToEnd(closing[closing.size-1]+subsequences[subsequences.size-1].operators.size+1)
+					pattern: input.copyToEnd(
+						closing[closing.size-1]
+						+ subsequences[subsequences.size-1].operators.size
+						+ 1
+					),
+					operators: ""
 				));
 			};
 
