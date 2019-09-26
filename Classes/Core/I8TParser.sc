@@ -685,11 +685,21 @@ I8TParser {
 					pattern: subsequence,
 					operators: operators
 				));
+
+				// add in between subsequences:
+				if( index < (opening.size - 1) ) {
+					if( ( opening[index+1] - (closing[index]+operators.size) ) > 1 ) {
+						subsequences.add((
+							pattern: input.copyRange(closing[index]+operators.size+1,opening[index+1]-1),
+							operators: ""
+						));
+					}
+				}
 			});
 
 			if( closing[closing.size-1] < (input.size-1) ) {
 				subsequences.add((
-					pattern: input.copyToEnd(closing[closing.size-1]+1)
+					pattern: input.copyToEnd(closing[closing.size-1]+subsequences[subsequences.size-1].operators.size+1)
 				));
 			};
 
