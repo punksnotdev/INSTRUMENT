@@ -224,10 +224,8 @@ I8TParser {
 
 			eventsList=eventsList.collect({
 				arg event;
-				["event",event].postln;
 				if((event.val.isNil) || (event.val == "")) {
 					event.val='r';
-					"replace R".warn;
 				};
 				event
 			});
