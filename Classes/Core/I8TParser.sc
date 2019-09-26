@@ -618,18 +618,44 @@ I8TParser {
 			var splitString = input.split($();
 			var rightHand = splitString[1];
 
-			var group;
+			var content;
 
 
 			if( rightHand.find( $) ).notNil ) {
+
 				var splitRightHand = rightHand.split($));
 				var operatorString = splitRightHand[1];
-				group = $(++splitRightHand[0]++$);
+				var operators = I8TParser.extractParameters(operatorString);
+				var events;
 
-				^(
-					group: group,
-					operators: I8TParser.extractParameters(operatorString)
-				);
+				content = splitRightHand[0];
+
+				events = I8TParser.parse(content);
+
+				if( operators.isKindOf(IdentityDictionary) ) {
+
+					if( operators[$:].notNil ) {
+
+						var duration = operators[$:].asFloat;
+						var durations = events.collect({|event|
+							event.duration.asFloat * duration.asFloat;
+						});
+						events.do({|event,index| event.duration = durations[index]})
+					};
+
+					if( operators[$x].notNil ) {
+						var repetitions = operators[$x].asInteger;
+						if((repetitions-1)>0) {
+							(repetitions-1).do({
+								events = events ++ events;
+							});
+						}
+					};
+
+					// TODO: implement other operators
+				};
+
+				^events;
 
 			}
 		}
