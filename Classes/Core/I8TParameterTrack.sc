@@ -531,8 +531,8 @@ ParameterTrack
 
 		var dA,dB;
 
-		dA=a.collect(_.duration).sum;
-		dB=b.collect(_.duration).sum;
+		dA=a.collect({|item|if(item.duration.notNil, {item.duration}, {1})}).sum;
+		dB=b.collect({|item|if(item.duration.notNil, {item.duration}, {1})}).sum;
 
 		^(dA - dB);
 

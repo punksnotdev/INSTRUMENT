@@ -342,6 +342,7 @@ Sequenceable : I8TNode
 		if( parameter_.isKindOf(Symbol) == true, {
 
 			parameter = parameter_;
+
 			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
 
 				pattern = pattern_;

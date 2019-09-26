@@ -215,6 +215,7 @@ See [**Synthesizers**](#synthesizers), at the end of this document, for more inf
 
 ```SuperCollider
 
+s.boot;
 
 i=INSTRUMENT().play;
 i.kick="kickElectro";
@@ -222,7 +223,9 @@ i.kick.seq("1");
 
 
 // trigger synths with different amp values:
-i.kick.seq("1 0.1 0.75");
+i.kick.seq("1 0.3 0.75 2");
+
+i.kick.seq([1, 0.3, 0.75, 2]);
 
 
 i.kick.stop;
@@ -482,6 +485,7 @@ i.kick.clock=2;
 i.kick[0].seq("1");
 i.kick[1].seq("1xx   1");
 i.kick[2].seq("1   1xx   1 ").speed(2);
+
 
 ```
 
@@ -1531,7 +1535,7 @@ s.doWhenBooted({
 			// create 3 voices:
 			i.voices=(
 				v1:i.synths.piano[1],
-				v2:i.synths.piano[2].name,
+				v2:i.synths.piano[2],
 				v3:i.synths.piano[3],
 			);
 
@@ -1553,9 +1557,9 @@ s.doWhenBooted({
 
 
 
-			i.voices.v1.set(\rel,2);
-			i.voices.v2.set(\rel,2);
-			i.voices.v3.set(\rel,2);
+			i.voices.set(\rel,0.3);
+			i.voices.v1.set(\rel,4);
+			i.voices.v3.set(\rel,1);
 
 			i.voices.v1.fx="reverb.small";
 			i.voices.v2.fx="reverb.large";
@@ -1569,6 +1573,22 @@ s.doWhenBooted({
 
 })
 
+)
+
+(
+i.every(32,{
+	var nextScale = Scale.choose;
+	h=I8THarmony();
+	v=h.generateVoicings();
+	h=v.collect(_.collect(nextScale.degrees.at(_)));
+
+	i.voices.v1.note(h[0]);
+	i.voices.v2.note(h[1]);
+	i.voices.v2.note(h[2]);
+
+	["nextScale", nextScale.name].postln;
+});
+""
 )
 ```
 
