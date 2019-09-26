@@ -228,13 +228,16 @@ i.bass=INSTRUMENT(i.synths.trance.choose);
 
 i.bass.seq(\note, "0 2 3 5");
 
+// shorthand:
+i.bass.note("0 2 3 5");
+
 // you can also use note names:
 
-i.bass.seq(\note, "C D Eb F");
+i.bass.note("C D Eb F");
 
 // you can choose octaves
 
-i.bass.seq(\note, "C3 D4 Eb5 F6");
+i.bass.note("C3 D4 Eb5 F6");
 
 
 ```
@@ -268,6 +271,38 @@ i.bass.octave=5;
 
 
 ```
+
+
+## Subsequences
+
+You can group patterns inside patterns using parenthesis. This is useful for playing parts of patterns with different durations and repetitions.
+
+```SuperCollider
+
+
+i=INSTRUMENT().play;
+
+i.bass = i.synths.bass.trance[2];
+i.bass.clock=4;
+// repeat subsequence times
+i.bass.note("Cx3 (Dx2 Gx2)x2 A");
+i.bass.note("(Dx2 Gx2)x3  F A ");
+// change subsequence duration
+i.bass.note("(Dx2 Gx2):0.5  F A ");
+// same:
+i.bass.note("(Dx2 Gx2):1/2  F A ");
+i.bass.note("(Dx3 Gx2  B  Cx7):1/3  F A");
+
+// change both duration and repetition
+i.bass.note("(Dx2 Gx2):1/2x4  F A ");
+// multiple subselections
+i.bass.note("(Dx2 Gx2):1/2x4  (F A)x3 ");
+// between patterns
+i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
+
+```
+
+
 
 ## Set tempo
 

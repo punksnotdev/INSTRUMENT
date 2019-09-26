@@ -19,7 +19,6 @@ I8TParser {
 	*parse {|input|
 		if( input.notNil ) {
 
-			var groupStrings = List.new;
 			var lastChar;
 
 			var buildingGroupChars = "";
@@ -29,6 +28,8 @@ I8TParser {
 			var parameterGroups;
 
 			var subsequences;
+
+			var eventsList = List.new;
 
 			// if contains opening and closing brackets
 			if( I8TParser.validateMatching(input), {
@@ -43,6 +44,8 @@ I8TParser {
 			subsequences.do({|subsequence|
 
 				var pattern = subsequence.pattern.asString;
+
+				var groupStrings = List.new;
 
 				pattern.size.do({|index|
 
@@ -190,15 +193,46 @@ I8TParser {
 
 				});
 
+				subsequence.groupStrings = groupStrings;
+
 			});
 
 
-			parameterGroups = groupStrings.collect({|groupString|
-				this.extractParameters(groupString)
+			// parameterGroups = List.new;
+			subsequences.do({|subsequence|
+				var subsequenceParameterGroups = List.new;
+				var subsequencesEventsList;
+				subsequence.groupStrings.do({|groupString|
+					subsequenceParameterGroups.add(this.extractParameters(groupString));
+				});
+				subsequencesEventsList = this.getEventsList(subsequenceParameterGroups);
+
+				if((subsequencesEventsList.notNil && subsequence.operators.notNil)) {
+					if(subsequence.operators != "" ) {
+
+						subsequencesEventsList = I8TParser.applyOperators(
+							subsequencesEventsList,
+							this.extractParameters(subsequence.operators)
+						);
+
+					};
+				};
+
+				eventsList = eventsList ++ subsequencesEventsList;
+
 			});
 
+			eventsList=eventsList.collect({
+				arg event;
+				["event",event].postln;
+				if((event.val.isNil) || (event.val == "")) {
+					event.val='r';
+					"replace R".warn;
+				};
+				event
+			});
+			^eventsList;
 
-			^this.getEventsList(parameterGroups);
 		}
 
 	}
@@ -685,7 +719,7 @@ I8TParser {
 			// add any pattern before first bracket
 			if( opening[0] > 0 ) {
 				subsequences.add((
-					pattern: input.copyFromStart(opening[0]-1),
+					pattern: input.copyFromStart(opening[0]-2),
 					operators: ""
 				));
 			};
@@ -748,53 +782,32 @@ I8TParser {
 	}
 
 
-	getSubsequenceEvents {|input|
+	*applyOperators {|events, operators|
+		if( operators.isKindOf(IdentityDictionary) ) {
 
-		if( input.find( $( ).notNil ) {
-			var splitString = input.split($();
-			var rightHand = splitString[1];
+			if( operators[$:].notNil ) {
+				var duration = operators[$:].asFloat;
+				var durations = events.collect({|event|
+					event.duration.asFloat * duration.asFloat;
+				});
+				events.do({|event,index| event.duration = durations[index]})
+			};
 
-			var content;
+			if( operators[$x].notNil ) {
+				var repetitions = operators[$x].asInteger;
+				var original = events.copy;
+				if((repetitions-1)>0) {
+					(repetitions-1).do({
+						events = events ++ original;
+					});
+				}
+			};
 
+			// TODO: implement other operators
 
-			if( rightHand.find( $) ).notNil ) {
+		};
 
-				var splitRightHand = rightHand.split($));
-				var operatorString = splitRightHand[1];
-				var operators = I8TParser.extractParameters(operatorString);
-				var events;
-
-				content = splitRightHand[0];
-
-				events = I8TParser.parse(content);
-
-				if( operators.isKindOf(IdentityDictionary) ) {
-
-					if( operators[$:].notNil ) {
-
-						var duration = operators[$:].asFloat;
-						var durations = events.collect({|event|
-							event.duration.asFloat * duration.asFloat;
-						});
-						events.do({|event,index| event.duration = durations[index]})
-					};
-
-					if( operators[$x].notNil ) {
-						var repetitions = operators[$x].asInteger;
-						if((repetitions-1)>0) {
-							(repetitions-1).do({
-								events = events ++ events;
-							});
-						}
-					};
-
-					// TODO: implement other operators
-				};
-
-				^events;
-
-			}
-		}
+		^events;
 
 	}
 
