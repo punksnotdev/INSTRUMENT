@@ -269,7 +269,7 @@ I8TMain : Event
 		groups.collect({|g|
 			g.pause;
 			g.collect({|gnode|
-				clearedNodes.push(gnode);
+				clearedNodes.add(gnode);
 			});
 		 });
 		nodes.collect({|n| n.pause; });

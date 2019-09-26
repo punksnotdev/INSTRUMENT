@@ -240,7 +240,7 @@ Lets pass a different parameter, *note*.
 
 i=INSTRUMENT().play;
 
-i.bass=INSTRUMENT(i.synths.trance.choose);
+i.bass=i.synths.trance.choose;
 
 i.bass.seq(\note, "0 2 3 5");
 
@@ -273,7 +273,7 @@ There are shorthands 'seq' methods for some common parameters, some of them:
 (
 i=INSTRUMENT().play;
 
-i.bass=INSTRUMENT(i.synths.trance.choose);
+i.bass=i.synths.trance.choose;
 
 
 i.bass.note("0 2 3 7");
@@ -304,11 +304,9 @@ i.tempo=220;
 
 ```SuperCollider
 
-i.kick=INSTRUMENT(i.synths.kick.choose);
+i.kick=i.synths.kick.choose;
 
 i.kick.seq("1   0.5");
-// array notation equivalent:
-i.kick.seq([1, \r, \r, \r, 0.5]);
 
 
 ```
@@ -328,6 +326,7 @@ i.bass.clock=4;
 
 ```
 
+
 ## Repeating events:
 
 
@@ -338,11 +337,11 @@ The 'x' operator inside string Patterns allow for repetition of last value
 i=INSTRUMENT().play;
 
 
-
 (
-i.piano=INSTRUMENT(i.synths.piano.rhodes1);
+i.piano=i.synths.piano.rhodes1;
 
 i.piano.amp=4;
+i.piano.clock=2;
 i.piano.note("0xx 2xxx 3xxxxx");
 i.piano.note("0x2 2x3 3x5");
 
@@ -358,7 +357,7 @@ i.kick.duration;
 // lazy equivalent
 i.kick.seq("1 0.5xxx");
 
-// using different speeds
+// clear patterns
 i.kick.rm(\trigger)
 
 i.kick[0].seq("1");
@@ -368,14 +367,14 @@ i.kick[2].seq("1x14  ").speed(16).x(1);
 i.kick.seq("1x4 :0.5 1x8 :0.25 1x16 :0.125 1x32");
 
 // add some silences
-i.kick.seq("1x6 :0.25 1  1x3  1  1x3");
+i.kick.seq("1x5 :0.25 1  1x3   1  1x3");
 
 // check duration
 
 i.kick.duration;
 
 
-i.bass=INSTRUMENT(i.synths.bassTrance3);
+i.bass=i.synths.bass.trance[2];
 i.bass.octave=3;
 i.bass.clock=3;
 i.bass.amp=2;
@@ -399,9 +398,10 @@ It requires a duration parameter, which must be a number (integer or fractionary
 
 // all subsequent events are affected
 
+
 i=INSTRUMENT().play;
 
-i.kick=INSTRUMENT(i.synths.kick.choose);
+i.kick=i.synths.kick.choose;
 
 // decimal representation
 i.kick.seq("1 :0.25 1x3 ");
@@ -475,7 +475,7 @@ i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
 // Ctrl/Cmd + Period
 
 i=INSTRUMENT().play;
-i.kick=INSTRUMENT(\kickElectro);
+i.kick="kickElectro";
 
 
 i.kick.clock=2;
@@ -491,6 +491,7 @@ i.kick[2].seq("1   1xx   1 ").speed(2);
 
 
 i.kick.rm(\seq,0);
+i.kick.rm(\trigger,0);
 i.kick.rm(\trigger,1);
 i.kick.rm(\trigger,2);
 
@@ -527,15 +528,27 @@ i.kick[2].seq("1").speed(4).x(16);
 
 
 
+i = INSTRUMENT().play;
 (
-	i = INSTRUMENT().play;
-	i.hihat=INSTRUMENT(\hihatElectro);
+	i.hihat="hihatElectro";
 	i.hihat.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
+	i.kick="kickElectro";
+	i.kick.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(1/3);
 )
 
-i.hihat.go(0);
-i.hihat.go(4);
 
+// repeteadly evaluate this group:
+(
+i.hihat.go(0);
+i.kick.go(0);
+)
+
+
+// again:
+(
+i.hihat.go(13);
+i.kick.go(13);
+)
 
 ```
 
@@ -549,9 +562,9 @@ i.hihat.go(4);
 i = INSTRUMENT().play;
 
 i.drums = (
-	kick: INSTRUMENT(i.synths.electro.kick),
-	hihat: INSTRUMENT(i.synths.electro.hihat),
-	clap: INSTRUMENT(i.synths.electro.clap)
+	kick: i.synths.electro.kick,
+	hihat: i.synths.electro.hihat,
+	clap: i.synths.electro.clap
 );
 
 i.drums.kick.seq("1");
@@ -565,18 +578,6 @@ i.drums.clock = 2;
 
 
 
-(
-i = INSTRUMENT().play;
-i.kick=INSTRUMENT(\kickElectro);
-i.hihat=INSTRUMENT(\hihatElectro);
-i.clap=INSTRUMENT(\clapElectro);
-
-i.kick.seq("1").speed(2);
-i.hihat.seq(" 1").speed(4);
-i.clap.seq(" 1").speed(2);
-)
-
-
 ```
 
 ## Setting parameters
@@ -588,15 +589,18 @@ i.clap.seq(" 1").speed(2);
 
 i = INSTRUMENT().play;
 
-i.bass=INSTRUMENT(\tranceBazz);
+i.bass=i.synths.trance[2];
 i.bass.note("0 2 3");
 )
 
 i.bass.set(\rel,2);
 i.bass.set(\rel,0.2);
-i.bass.set(\gain,0.1);
-i.bass.set(\gain,0.01);
-i.bass.set(\gain,2);
+i.bass.set(\dist,2);
+i.bass.set(\dist,1);
+i.bass.set(\dist,4);
+i.bass.set(\dist,14);
+i.bass.set(\dist,1);
+i.bass.set(\rel,1/2);
 
 ```
 
@@ -621,17 +625,18 @@ i.bass.seq(\rel,[2,0.2,\r,\r,1]);
 
 ```SuperCollider
 
-(
 i=INSTRUMENT().play;
-i.kick=INSTRUMENT(\kickDeep);
+(
+
+i.kick="kickDeep";
 i.kick.seq("1");
 i.kick.synthdef([\kickSyn1,\kickSyn2,\kickSyn3]);
 
 
 
-i.bass=INSTRUMENT(i.synths.trance.choose);
+i.bass=i.synths.trance.choose;
 i.bass.note("0 2 3");
-i.bass.synthdef([\bassTrance,\bassTrance2,\bassTrance3]);
+i.bass.synthdef([\bassTrance1,\bassTrance2,\bassTrance3]);
 
 )
 
@@ -646,38 +651,48 @@ i.bass.synthdef([\bassTrance,\bassTrance2,\bassTrance3]);
 (
 	i=INSTRUMENT().play;
 
-	i.clap=INSTRUMENT(\clapElectro);
+	i.piano=i.synths.piano[1];
+	i.piano.note("0 2 3 5");
 
-	i.clap.note("0 2 3 5");
 
-
-	i.clap.octave=3;
+	i.piano.octave=3;
 
 )
 
-i.clap.fx=\reverb;
+i.piano.fx="reverb";
+// variants
+i.piano.fx="reverb.large";
+i.piano.fx="reverb.small";
 
-i.clap.fxSet(\wet,0);
-i.clap.fxSet(\wet,1);
-i.clap.fxSet(\wet,3/4);
-
-i.clap.fxSet(\room,7/8);
-i.clap.fxSet(\damp,7/8);
-
-i.clap.fxSet(\room,1/8);
-i.clap.fxSet(\damp,1/8);
+(
+i.piano.clock=1/4;
+i.piano.fx="reverb.infinite";
+)
 
 
-i.clap.fxSet(\room,1);
-i.clap.fxSet(\damp,1);
+i.piano.clock=1;
+i.piano.fxSet(\wet,0);
+i.piano.fxSet(\wet,1);
+i.piano.fxSet(\wet,3/4);
+i.piano.fxSet(\wet,1/4);
+
+i.piano.fxSet(\room,7/8);
+i.piano.fxSet(\damp,7/8);
+
+i.piano.fxSet(\room,1/8);
+i.piano.fxSet(\damp,1/8);
 
 
-i.clap.stop;
+i.piano.fxSet(\room,1);
+i.piano.fxSet(\damp,1);
 
-i.clap.fx=nil;
-i.clap.play;
 
-i.clap.fx=\reverb;
+i.piano.stop;
+
+i.piano.fx=nil;
+i.piano.play;
+
+i.piano.fx=i.synths.fx.reverb[2];
 
 
 ```
@@ -692,16 +707,16 @@ i.clap.fx=\reverb;
 (
 	i = INSTRUMENT().play;
 
-	i.clap=INSTRUMENT(\clapElectro);
+	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
 	i.clap.fx = \reverbLPF;
 	i.clap.fxSet([
-		(cutoff:3000),
+		(cutoff:3000, lag:1/3),
 		(cutoff:1000),
 		(cutoff:2000),
 		// more than one parameter:
-		(cutoff:3000,q:0.1),
+		(cutoff:3000,q:0.1,lag:0),
 		(cutoff:300,q:0.01),
 	]).speed(1/2);
 )
@@ -719,7 +734,7 @@ i.clap.fx=\reverb;
 	i.clap=INSTRUMENT(\clapElectro);
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
-	i.clap.fx([\reverb,\reverbLPF,\delay2]).speed(1/4);
+	i.clap.fx([\reverb,\reverbLPF,\gateDistort]).speed(1/4);
 )
 
 
@@ -764,38 +779,26 @@ i.drums.fx = nil;
 
 
 i.drums=(
-	hihat: INSTRUMENT( i.synths.hihat.choose ),
+	hihat: i.synths.hihat.choose,
 )
-
 
 // restore
 
 i.drums=(
-
-	kick: INSTRUMENT( i.synths.kick.choose ),
-	hihat: INSTRUMENT( i.synths.hihat.choose ),
-	snare: INSTRUMENT( i.synths.snare.choose ),
+	kick: i.synths.kick.choose,
+	hihat: i.synths.hihat.choose,
+	snare: i.synths.snare.choose,
 )
 
 
-// choose a subset of instruments, with a probability ( range: 0 - 1, default 0.5 )
-
-// when probability larger than 0, will always select at least 1 instrument
-
-i.drums.chooseInstrument;
-i.drums.chooseInstrument(1);
-i.drums.chooseInstrument(0);
-i.drums.chooseInstrument(0.2);
-i.drums.chooseInstrument(0.8);
-i.drums.chooseInstrument(1);
 
 
 // melodic synths:
 
 
 i.melodies=(
-	note1: INSTRUMENT( i.synths.note.distNote1 ),
-	note2: INSTRUMENT( i.synths.note.distNote2 )
+	note1: i.synths.note.dist[0],
+	note2: i.synths.note.dist[1]
 );
 
 i.melodies.note1.note("0 7  8");
@@ -821,7 +824,7 @@ i=INSTRUMENT().play;
 
 i.drums=(
 	k:i.synths.kick[3],
-	h:\hihatClosed,
+	h:i.synths.hihat[2],
 	s:i.synths.snare[2],
 );
 
@@ -833,14 +836,14 @@ i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
 
 i.drums=(
 	k:i.synths.kick[4],
-	h:"kickHard",
+	h:"kickDeep",
 	s:i.synths.snare[2],
 );
 
 
 i.drums=(
 	// k:i.synths.electro.kick,
-	h:"kickHard",
+	h:"hihatClosed",
 	s:i.synths.snare[5],
 );
 
@@ -849,7 +852,7 @@ i.drums=(
 
 i.drums=(
 	k:i.synths.electro.kick,
-	h:"kickHard",
+	h:"kickDamp",
 	hh:i.synths.hihat[0],
 	s:i.synths.snare[2],
 );
@@ -861,7 +864,8 @@ i.drums.hh.seq("1x7  1x6  ").speed(4);
 )
 
 i.drums.hh=i.synths.hihat[2];
-i.drums.k=i.synths.hihat[3];
+i.drums.k=i.synths.hihat[0];
+
 // wait a bit:
 i.drums.k=i.synths.electro.kick;
 
@@ -888,6 +892,9 @@ i.drums.stop;
 
 ```
 
+
+
+
 ## Sequencing Group parameters
 
 Groups are also sequenceable.
@@ -896,10 +903,10 @@ Groups are also sequenceable.
 i = INSTRUMENT().play;
 
 i.g=(
-	g1: INSTRUMENT(i.synths.kick[0]),
-	g2: INSTRUMENT(i.synths.hihat[0]),
-	g3: INSTRUMENT(i.synths.hihat[2]),
-	g4: INSTRUMENT(i.synths.snare[2]),
+	g1: i.synths.kick[0],
+	g2: i.synths.hihat[0],
+	g3: "hihatOpen",
+	g4: i.synths.snare[2],
 );
 
 
@@ -911,7 +918,7 @@ i.g.g4.seq("  1").speed(3);
 
 
 i.g[0].seq(\amp,"0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8").x(1);
-i.g[1].seq(\amp,"2 1").speed(2);
+i.g[1].seq(\amp,"2 1 0.3").speed(2);
 
 
 // You can sequence any parameter:
@@ -943,9 +950,15 @@ Main parameters are:
 
 
 
-# i.clear
+# Clear and Restore
+## i.clear
+## i.restore
 
-You can stop all playing groups and instruments, so you can easily create quick changes:
+
+Use **i.clear** to stop running instruments,, so you can easily create quick changes without pausing main thread.
+You can use **i.restore** to bring back cleared instruments and sequencer functions.
+
+
 
 ```SuperCollider
 
@@ -963,11 +976,14 @@ i=INSTRUMENT().play;
 	i.drums.h.seq("1x2  1 ").speed(8);
 	i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
 
-	i.piano = i.synths.piano[1];
-	i.piano.note("0 2 3");
-	i.piano.fx="gateDistort.extreme";
-	i.piano.octave=3;
-	i.piano.amp=2;
+	i.bass = i.synths.bass.trance[2];
+	i.bass.note("0 2 3");
+	i.bass.fx="reverb";
+	i.bass.octave=3;
+	i.bass.amp=1.5;
+
+	i.every(2,{ c=[2,4,8].choose; i.bass.clock=c; ["chose",c].postln; })
+
 )
 (
 	// Clear previous sounds
@@ -980,25 +996,13 @@ i=INSTRUMENT().play;
 	i.drums2.k.seq("1x2  1x4  1x3").speed(8);
 	i.drums2.s.seq(" 1x2  :2 1  :1/2  1x3  1x2 ").speed(4);
 )
-(
-	// restore first group
-	i.clear;
-	i.drums=(
-		k:i.synths.kick[3],
-		h:i.synths.hihat[2|,
-		s:i.synths.snare[2|,
-	);
 
-	i.drums.k.seq("1x3  1x3  1x3  :2  1").speed(4);
-	i.drums.h.seq("1x2  1 ").speed(8);
-	i.drums.s.seq(" 1x3  1x2  :2 1  :1/2  1x3  1x2 ").speed(2);
+// restore first group
+i.restore;
 
-	i.piano = i.synths.piano[1];
-	i.piano.note("0 2 3");
-	i.piano.fx="gateDistort.extreme";
-	i.piano.octave=3;
-	i.piano.amp=2;
-)
+i.drums2.stop;
+
+i.stop;
 
 ```
 
@@ -1007,16 +1011,17 @@ i=INSTRUMENT().play;
 ```SuperCollider
 
 
-(
 
 i = INSTRUMENT().play;
 
-i.bass=INSTRUMENT(\tranceBazz);
-i.hihat=INSTRUMENT(\hihatElectro);
+(
+i.bass=\bassTrance1;
+i.hihat=\hihatElectro;
+i.bass.clock=4;
+i.bass.note("0 2 3");
 )
 
 i.bass.note("0 2 3").pyramid.mirror;
-
 // randomness
 i.bass.note("0 2 3 5 7 10 12").random;
 i.bass.note("0 2 3 5 7 10 12").random;
@@ -1025,7 +1030,10 @@ i.bass.note("0 2 3 5 7 10 12").random;
 i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.5); // default value
 i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.25);
 i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0); // never play
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(1); // always play
 
+i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.35);
 
 ```
 
@@ -1035,17 +1043,17 @@ A small composition:
 ```SuperCollider
 // Ctrl/Cmd + .
 
+i = INSTRUMENT().play;
 
 (
 
-i = INSTRUMENT().play;
 
 i.voices = (
 
-	a: INSTRUMENT(\distPad1),
-	b: INSTRUMENT(\distPad2),
-	c: INSTRUMENT(\distNote1),
-	d: INSTRUMENT(\distNote2),
+	a: i.synths.pad.dist[0],
+	b: i.synths.pad.dist[1],
+	c: i.synths.note.dist[0],
+	d: i.synths.note.dist[1],
 
 );
 
@@ -1076,6 +1084,11 @@ i.voices.d.amp=1/3;
 
 ```SuperCollider
 
+
+i = INSTRUMENT().play;
+
+i.hihat = i.synths.hihat.choose;
+
 i.every(4,{
 
 	i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
@@ -1084,6 +1097,13 @@ i.every(4,{
 
 
 ```
+
+
+
+
+
+
+
 
 ## Using ProxySpace
 
@@ -1128,6 +1148,8 @@ i.z=INSTRUMENT(~z);
 
 // automatic mapping of note to 'freq and t_trig':
 i.z.note("0 2 3");
+i.z.clock=1;
+i.z.octave=3;
 
 ```
 
@@ -1138,8 +1160,8 @@ i = INSTRUMENT().play;
 p=ProxySpace.push(s);
 
 ~sound.play;
-~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 4 ! 2 };
-~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 4 ! 2 };
+~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 6 ! 2 };
+~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 10 ! 2 };
 
 
 i.notes=INSTRUMENT(~sound);
@@ -1247,9 +1269,9 @@ This mixer adds a three-band EQ per channel, as well as a flexible fx chain
 (
 	i=INSTRUMENT().play;
 
-	i.kick=INSTRUMENT(\kickElectro);
-	i.hihat=INSTRUMENT(\hihatElectro);
-	i.snare=INSTRUMENT(\snareElectro);
+	i.kick="kickElectro";
+	i.hihat="hihatElectro";
+	i.snare="snareElectro";
 
 	i.kick.seq("1");
 	i.snare.seq("1").speed(2);
@@ -1481,6 +1503,76 @@ i.loop1.stop;
 
 
 
+# Harmony
+
+(work in progress)
+
+```SuperCollider
+
+/*
+random harmony generator
+following simple rules:
+- no parallel fifths or octaves in first 2 voices
+- when first two do move parallelly,
+move third direction in opposite direction
+*/
+
+(
+s.boot;
+s.doWhenBooted({
+
+		Task({
+
+
+			i=INSTRUMENT().play;
+
+			2.wait;
+
+			// create 3 voices:
+			i.voices=(
+				v1:i.synths.piano[1],
+				v2:i.synths.piano[2].name,
+				v3:i.synths.piano[3],
+			);
+
+
+			h=I8THarmony();
+			v=h.generateVoicings();
+			h=v.collect(_.collect(Scale.minor.degrees.at(_)));
+
+			i.voices.v1.note(h[0]);
+			i.voices.v2.note(h[1]);
+			i.voices.v2.note(h[2]);
+
+
+
+			// set parameters:
+
+			i.voices.octave=5;
+
+
+
+
+			i.voices.v1.set(\rel,2);
+			i.voices.v2.set(\rel,2);
+			i.voices.v3.set(\rel,2);
+
+			i.voices.v1.fx="reverb.small";
+			i.voices.v2.fx="reverb.large";
+			i.voices.v3.fx="reverb.medium";
+
+		}).play;
+
+
+		s.volume=(-12);
+
+
+})
+
+)
+```
+
+
 
 <a name="synthesizers"></a>
 
@@ -1646,70 +1738,4 @@ SynthDef(\reverb, {
 
 }).store;
 
-```
-
-
-# Harmony
-
-(work in progress)
-
-```SuperCollider
-(
-
-/*
-random harmony generator
-following simple rules:
-- no parallel fifths or octaves in first 2 voices
-- when first two do move parallelly,
-move third direction in opposite direction
-*/
-
-s.boot;
-s.doWhenBooted({
-
-		Task({
-
-			h=I8THarmony();
-
-			v=h.generateVoicings();
-
-
-			h=v.collect(_.collect(Scale.minor.degrees.at(_)));
-
-
-			i=INSTRUMENT().play;
-
-			2.wait;
-
-			i.h1=i.synths.piano[1];
-			i.h2=i.synths.piano[3];
-			i.h3=i.synths.piano[3];
-
-			i.h1.note(h[0]);
-			i.h2.note(h[1]);
-			i.h2.note(h[2]);
-
-			i.h1.octave=5;
-			i.h2.octave=5;
-			i.h3.octave=5;
-
-
-
-			i.h1.set(\rel,2);
-			i.h2.set(\rel,2);
-			i.h3.set(\rel,2);
-
-			i.h1.fx="reverb.small";
-			i.h2.fx="reverb.large";
-			i.h3.fx="reverb.medium";
-
-		}).play;
-
-
-		s.volume=(-12);
-
-
-})
-
-)
 ```

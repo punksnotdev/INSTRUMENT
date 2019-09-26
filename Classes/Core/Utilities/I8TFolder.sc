@@ -336,8 +336,8 @@ I8TFolder : Event
 
 			});
 
-
-			numKeys.do({|synthdef,index|
+			numKeys=numKeys.reject(_.isKindOf(I8TFolder)).sort({|a,b| b.name<a.name});
+			numKeys.reverse.do({|synthdef,index|
 				this.ref(index,synthdef);
 			});
 
