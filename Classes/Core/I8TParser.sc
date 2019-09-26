@@ -29,7 +29,12 @@ I8TParser {
 
 		var subsequences;
 
-		subsequences = [ input ];
+		// if contains opening and closing brackets
+		if( this.validateMatching(input), {
+			subsequences = this.getSubsequences(input);
+		}, {
+			subsequences =  [input];
+		});
 
 		subsequences.do({|subsequence|
 
@@ -664,15 +669,15 @@ I8TParser {
 
 		if( this.validateMatching(input) ) {
 			opening.size.do({|index|
-				var subsequence = "";
-				var total = (closing[index] - opening[index])-1;
-				total.do({|eachIndex|
+				var subsequence = input.copyRange(opening[index]+1,closing[index]-1);
+				// var total = (closing[index] - opening[index])-1;
+				var checkEnd = input.copyToEnd(closing[index]+1);
+				var operators = checkEnd.copyFromStart(checkEnd.find(Char.space));
 
-					subsequence = subsequence + input[ eachIndex + opening[index] + 1 ];
-
-				});
-
-				subsequences.add(subsequence);
+				subsequences.add((
+					pattern: subsequence,
+					operators: operators
+				));
 			});
 		};
 
