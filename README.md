@@ -351,7 +351,7 @@ i.piano.note("0x2 2x3 3x5");
 // get last pattern duration:
 i.piano.duration;
 
-i.kick=INSTRUMENT(i.synths.electro.kick);
+i.kick=i.synths.electro.kick;
 
 // repeat three times
 i.kick.seq("1 0.5x3");
@@ -425,8 +425,8 @@ Using fractions allow some interesting rhythms:
 
 	i=INSTRUMENT().play;
 
-	i.kick=INSTRUMENT(i.synths.kick.choose);
-	i.hihat=INSTRUMENT(i.synths.hihat.choose.postln);
+	i.kick=i.synths.kick.choose;
+	i.hihat=i.synths.hihat.choose.postln;
 
 	i.kick.seq("1xx  :3/8 1x3  1x2 :1/4 1x3  1x2  :1/2 1xx");
 	i.hihat.seq("1xx  :1/3 1x3");
@@ -735,7 +735,7 @@ i.piano.fx=i.synths.fx.reverb[2];
 (
 	i = INSTRUMENT().play;
 
-	i.clap=INSTRUMENT(\clapElectro);
+	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
 	i.clap.fx([\reverb,\reverbLPF,\gateDistort]).speed(1/4);
@@ -757,9 +757,9 @@ i = INSTRUMENT().play;
 
 
 i.drums=(
-	kick: INSTRUMENT( i.synths.kick.choose ),
-	hihat: INSTRUMENT( i.synths.hihat.choose ),
-	snare: INSTRUMENT( i.synths.snare.choose ),
+	kick: i.synths.kick.choose,
+	hihat: i.synths.hihat.choose,
+	snare: i.synths.snare.choose,
 );
 
 i.drums.kick.seq("1");
