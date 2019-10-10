@@ -18,11 +18,11 @@ I8TChannel : Sequenceable
 	var synthGroup;
 
 
-	*new {|synthGroup_,outbus_|
-		^super.new(this.graph,synthGroup_,outbus_);
+	*new {|synthGroup_,outbus_,inbus_|
+		^super.new(this.graph,synthGroup_,outbus_,inbus_);
 	}
 
-	init {|graph_,synthGroup_,outbus_|
+	init {|graph_,synthGroup_,outbus_,inbus_|
 
 
 		if( synthGroup_.isKindOf(Group), {
@@ -34,12 +34,17 @@ I8TChannel : Sequenceable
 		fxChain = IdentityDictionary.new;
 
 		bus = Bus.audio(Server.local,2);
-		inbus = Bus.audio(Server.local,2);
 
 		if(outbus_.notNil, {
 			outbus=outbus_;
 		}, {
 			outbus=Server.local.outputBus;
+		});
+
+		if(inbus_.notNil, {
+			inbus=inbus_;
+		}, {
+			inbus = Bus.audio(Server.local,2);
 		});
 
 

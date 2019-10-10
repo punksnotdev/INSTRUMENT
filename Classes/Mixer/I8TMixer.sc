@@ -47,7 +47,7 @@ I8TMixer : I8TNode
 
 		var masterChannels = Array.fill(2,{|index|
 
-			var masterChannel = I8TChannel(masterGroup, outbus);
+			var masterChannel = I8TChannel(masterGroup, outbus, bus);
 
 			var channelName = ("system_out_" ++ index).asSymbol;
 
@@ -55,8 +55,6 @@ I8TMixer : I8TNode
 			masterChannel.setPan( index.linlin(0,1,-1,1) );
 
 			masterChannel.setName( channelName );
-
-			masterChannel.setInbus( bus );
 
 			masterChannel.addOutput(
 				( name: channelName, channel: index )
