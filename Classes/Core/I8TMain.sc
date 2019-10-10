@@ -84,7 +84,10 @@ I8TMain : Event
 
 			nodes = Dictionary.new;
 			sequencer = Sequencer.new(this);
+
 			mixer = I8TMixer.new(this);
+			mixer.setupMaster();
+
 			controllerManager = ControllerManager.new(this);
 
 			nodes = IdentityDictionary.new;

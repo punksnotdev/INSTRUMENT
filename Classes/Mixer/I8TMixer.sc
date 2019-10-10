@@ -30,20 +30,24 @@ I8TMixer : I8TNode
 
 		bus = Bus.audio(Server.local,2);
 
-		masterGroup = Group.tail(Server.default.defaultGroup);
-		mixGroup = Group.tail(masterGroup);
-
-
-		master = this.createMasterChannels()
 
 	}
 
+	setupMaster {
+
+		mixGroup = Group.tail(masterGroup);
+		masterGroup = Group.tail(Server.default.defaultGroup);
+
+		master = this.createMasterChannels()
+
+
+	}
 
 	createMasterChannels {
 
-		var masterGroup = Array.fill(2,{|index|
+		var masterChannels = Array.fill(2,{|index|
 
-			var masterChannel = I8TChannel(masterGroup);
+			var masterChannel = I8TChannel(masterGroup, outbus);
 
 			var channelName = ("system_out_" ++ index).asSymbol;
 
@@ -52,7 +56,7 @@ I8TMixer : I8TNode
 
 			masterChannel.setName( channelName );
 
-			masterChannel.setOutbus( outbus );
+			masterChannel.setInbus( bus );
 
 			masterChannel.addOutput(
 				( name: channelName, channel: index )
@@ -62,7 +66,7 @@ I8TMixer : I8TNode
 
 		});
 
-		^masterGroup
+		^masterChannels
 
 	}
 
@@ -121,7 +125,7 @@ I8TMixer : I8TNode
 							})
 						}, {
 
-							channel = I8TChannel(mixGroup);
+							channel = I8TChannel(mixGroup,bus);
 							channelGroups[ group.name ] = IdentityDictionary.new;
 							channelGroup=channelGroups[ group.name ];
 
@@ -132,7 +136,7 @@ I8TMixer : I8TNode
 						if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
 
 							// ["Mixer: no group", node.name].postln;
-							channel = I8TChannel(mixGroup);
+							channel = I8TChannel(mixGroup, bus);
 
 							channelGroups[node.name]=IdentityDictionary.new;
 							channelGroup = channelGroups[node.name];
