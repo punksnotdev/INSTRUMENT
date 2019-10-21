@@ -8,14 +8,14 @@ I8TMixer : I8TNode
 	var sends;
 	var returns;
 
-	var bus;
-	var outbus;
+	var <bus;
+	var <outbus;
 	var busSynth;
 	var <mixGroup;
 	var <masterGroup;
 
 	*new {|main_|
-		^super.new(main_);
+		^super.new.init(main_);
 	}
 
 
@@ -35,8 +35,9 @@ I8TMixer : I8TNode
 
 	setupMaster {
 
-		mixGroup = Group.tail(masterGroup);
 		masterGroup = Group.tail(Server.default.defaultGroup);
+		// masterGroup = Group.tail(Server.default.defaultGroup);
+		mixGroup = Group.tail(masterGroup);
 
 		master = this.createMasterChannels()
 
@@ -59,6 +60,8 @@ I8TMixer : I8TNode
 			masterChannel.addOutput(
 				( name: channelName, channel: index )
 			);
+
+			// masterChannel.addFx(\eq);
 
 			masterChannel;
 
@@ -116,7 +119,7 @@ I8TMixer : I8TNode
 						if( channelGroup.isKindOf( IdentityDictionary ), {
 							// ["Mixer: Instrument Group already exists",group.name].postln;
 							if( channelGroup.keys.includes( node.name ) == false, {
-								channel = I8TChannel(mixGroup);
+								channel = I8TChannel(mixGroup,bus);
 							}, {
 								// ["Mixer:", group.name, "already includes node key"].postln;
 								channel = channelGroup[node.name];
@@ -134,6 +137,7 @@ I8TMixer : I8TNode
 						if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
 
 							// ["Mixer: no group", node.name].postln;
+							["create channel", mixGroup, bus, node].postln;
 							channel = I8TChannel(mixGroup, bus);
 
 							channelGroups[node.name]=IdentityDictionary.new;
@@ -145,8 +149,8 @@ I8TMixer : I8TNode
 
 					channelGroup[node.name]=channel;
 
-
-					this.setupChannel( node, channel );
+					channel.setInput( node );
+					channel.setName( node.name );
 
 					^channelGroup[node.name];
 
@@ -190,20 +194,6 @@ I8TMixer : I8TNode
 	}
 
 
-
-	setupChannel{|node, channel|
-		if( node.isKindOf(I8TNode)){
-
-			channel.setSynthGroup( mixGroup );
-			channel.setInput( node );
-			channel.addOutput( master[0] );
-			channel.addOutput( master[1] );
-			channel.setName( node.name );
-			channel.setAmp( node.amp );
-			channel.setOutbus( master[0].getBus );
-
-		}
-	}
 
 	getMasterChannels {
 		^master

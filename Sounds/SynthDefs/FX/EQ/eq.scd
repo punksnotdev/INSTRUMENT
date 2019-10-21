@@ -39,6 +39,6 @@ SynthDef(\eq, {
 
 	sig = (wet * (1 - lowCut)) + (HPF.ar(wet,lowCutFreq)*lowCut);
 
-	Out.ar(outBus, Pan2.ar(sig,pan))
+	ReplaceOut.ar(outBus, Pan2.ar(sig,pan))
 
 }).store;

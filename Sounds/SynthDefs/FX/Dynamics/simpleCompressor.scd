@@ -8,9 +8,12 @@ SynthDef(\simpleCompressor, {
 
 	var dsp = CompanderD.ar(
 		sig,
-		0.9,
+		3/4,
 		1,
-		0.8
+		1/3,
+		0.01,
+		0.2,
+		1.5
 	);
 
 	var mix = (sig * (1-wet)) + (dsp * wet);

@@ -157,8 +157,6 @@ I8TMain : Event
 
 		if( node.isKindOf(I8TNode) ) {
 
-
-
 			if( nodes[key].isNil, {
 
 				item = this.addNode(node,key);

@@ -59,7 +59,7 @@ I8TChannel : Sequenceable
 		= Synth.after(
 			inSynth,
 			\eq,
-			[\inBus,bus,\outBus,outbus]
+			[\inBus,bus,\outBus,bus]
 		);
 
 
@@ -76,11 +76,11 @@ I8TChannel : Sequenceable
 		// 	[\in,bus,\out,bus]
 		// );
 
-		// fxChain[\comp] = Synth.tail(
-		// 	synthGroup,
-		// 	\simpleCompressor,
-		// 	[\in,bus,\out,bus]
-		// );
+		fxChain[\comp] = Synth.tail(
+			synthGroup,
+			\simpleCompressor,
+			[\in,bus,\out,bus]
+		);
 
 
 		outSynth = Synth.tail(
@@ -165,6 +165,7 @@ I8TChannel : Sequenceable
 	getSynthGroup {
 		^synthGroup
 	}
+
 	setSynthGroup {|synthGroup_|
 		if(synthGroup_.isKindOf(Group)) {
 			synthGroup=synthGroup_;
@@ -177,6 +178,9 @@ I8TChannel : Sequenceable
 
 		if( ( parameter.notNil && value.notNil ) ) {
 			if( (value.isKindOf(Number)||value.isKindOf(String)), {
+
+				["set",parameter.asSymbol,value].postln;
+
 				switch( parameter.asSymbol,
 					\amp, {
 						this.setAmp(value.asFloat);
@@ -253,7 +257,7 @@ I8TChannel : Sequenceable
 			fxChain[fx_] = Synth.before(
 				outSynth,
 				fx_,
-				[\inBus,bus,\outBus,outbus]
+				[\inBus,bus,\outBus,bus]
 			);
 		}
 	}
