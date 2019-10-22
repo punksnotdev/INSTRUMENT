@@ -449,7 +449,7 @@ SynthPlayer : SynthInstrument
 				this.trigger( parameter, value );
 			},
 			\low, {
-				["implement low",mixerChannel].postln;
+				["implement low",channel].postln;
 				synth_parameters[\low] = value;
 			},
 			{
