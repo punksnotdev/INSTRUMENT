@@ -9,6 +9,8 @@ I8TChannel : Sequenceable
 
 	var fxChain;
 
+	var eq, locut, compressor;
+
 	var sends;
 
 	var <bus;
@@ -18,11 +20,11 @@ I8TChannel : Sequenceable
 	var synthGroup;
 
 
-	*new {|synthGroup_,outbus_,inbus_|
+	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 		^super.new(this.graph,synthGroup_,outbus_,inbus_);
 	}
 
-	init {|graph_,synthGroup_,outbus_,inbus_|
+	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
 
 		if( synthGroup_.isKindOf(Group), {
@@ -55,32 +57,17 @@ I8TChannel : Sequenceable
 		);
 
 
-		fxChain[\eq]
-		= Synth.after(
-			inSynth,
-			\eq,
-			[\inBus,bus,\outBus,bus]
-		);
+		if( eq_ === true ) {
+			eq = this.setup(\eq);
+		};
 
+		if( locut_ === true ) {
+			locut = this.setup(\locut);
+		};
 
-		// fxChain[\lpf] = Synth.tail(
-		// 	synthGroup,
-		// 	\lpf,
-		// 	[\in,bus,\out,bus]
-		// );
-
-
-		// fxChain[\dist] = Synth.tail(
-		// 	synthGroup,
-		// 	\gateDistort,
-		// 	[\in,bus,\out,bus]
-		// );
-
-		fxChain[\comp] = Synth.tail(
-			synthGroup,
-			\simpleCompressor,
-			[\in,bus,\out,bus]
-		);
+		if( compressor_ === true ) {
+			compressor = this.setup(\compressor);
+		};
 
 
 		outSynth = Synth.tail(
@@ -191,15 +178,15 @@ I8TChannel : Sequenceable
 						^this
 					},
 					\low, {
-						this.fxSet(\eq,parameter,value.asFloat);
+						eq.set(parameter.asSymbol,value.asFloat);
 						^this
 					},
 					\middle, {
-						this.fxSet(\eq,parameter,value.asFloat);
+						eq.set(parameter.asSymbol,value.asFloat);
 						^this
 					},
 					\high, {
-						this.fxSet(\eq,parameter,value.asFloat);
+						eq.set(parameter.asSymbol,value.asFloat);
 						^this
 					}
 				);
@@ -248,7 +235,36 @@ I8TChannel : Sequenceable
 		^fxChain
 	}
 	setFxChain {|fxChain_|
-		fxChain = fxChain_;
+		if( fxChain_.isNil ) {
+			fxChain.collect({|fx,key|
+				fx.free;
+				fxChain.removeAt(key);
+			});
+			^nil;
+		};
+		if( fxChain_.isKindOf(IdentityDictionary), {
+			fxChain = fxChain_;
+		}, {
+			if( fxChain_.isKindOf(Collection), {
+				var notValid = fxChain_.reject(
+					(_.isKindOf(String)||_.isKindOf(Symbol))
+				);
+				if(notValid.size==0, {
+
+					fxChain.collect({|fx,key|
+						fx.free;
+						fxChain.removeAt(key);
+					});
+
+					fxChain = IdentityDictionary.new;
+					fxChain_.collect({|fx|
+						this.addFx(fx);
+					});
+				}, {
+					"Invalid FX Chain".warn;
+				})
+			});
+		});
 	}
 
 	addFx {|fx_|
@@ -294,6 +310,105 @@ I8TChannel : Sequenceable
 	}
 	removeFromSends {|key|
 		//remove from sends
+	}
+
+
+	toggle {|module, on|
+
+		switch(module,
+			\eq, {
+				if( on.isNil, {
+					if( eq.notNil,
+						{ this.free(\eq); },
+						{ eq = this.setup(\eq); }
+					);
+				}, {
+					if( on === false ) { this.free(\eq); };
+					if( on === true ) { eq = this.setup(\eq); };
+				});
+			},
+			\compressor, {
+				if( on.isNil, {
+					if( compressor.notNil,
+						{ this.free(\compressor); },
+						{ compressor = this.setup(\compressor); }
+					);
+				}, {
+					if( on === false ) { this.free(\compressor); };
+					if( on === true ) { compressor = this.setup(\compressor); };
+				});
+			},
+			\locut, {
+				if( on.isNil, {
+					if( locut.notNil,
+						{ this.free(\locut); },
+						{ locut = this.setup(\locut); }
+					);
+				}, {
+					if( on === false ) { this.free(\locut); };
+					if( on === true ) { locut = this.setup(\locut); };
+				});
+			}
+		);
+
+	}
+
+
+
+	free {|module|
+		switch(module,
+			\eq, {
+				eq.free; eq=nil;
+			},
+			\compressor, {
+				compressor.free; compressor=nil;
+			},
+			\locut, {
+				locut.free; locut=nil;
+			}
+		);
+	}
+
+
+	setup {|module|
+
+		switch(module,
+			\eq, {
+
+				if( eq.notNil ) {
+					eq.free;
+					eq = nil;
+				};
+				^eq = Synth.after(
+					inSynth,
+					\eq,
+					[\inBus,bus,\outBus,bus]
+				);
+			},
+			\compressor, {
+				if( compressor.notNil ) {
+					compressor.free;
+					compressor = nil;
+				};
+				^compressor = Synth.tail(
+					synthGroup,
+					\simpleCompressor,
+					[\in,bus,\out,bus]
+				);
+			},
+			\locut, {
+				if( locut.notNil ) {
+					locut.free;
+					locut = nil;
+				};
+				^locut = Synth.tail(
+					synthGroup,
+					\hpf,
+					[\in,bus,\out,bus]
+				);
+			}
+		);
+
 	}
 
 
