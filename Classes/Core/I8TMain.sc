@@ -170,7 +170,10 @@ I8TMain : Event
 				};
 
 				node.channel = mixer.addChannel( node );
-
+				if( node.name.asString.find("kick").notNil ) {
+					node.channel.free(\locut);
+					Task.new({ 0.1.wait; (node.name++":  default locut bypass for kicks").warn; }).play;
+				};
 			}, {
 
 				item = nodes[key];
