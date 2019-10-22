@@ -36,7 +36,7 @@
 
 		sig = (sig * 1.2).tanh/2.5;
 
-		Out.ar(outBus,Pan2.ar(sig));
+		ReplaceOut.ar(outBus,Pan2.ar(sig));
 
 
 	}).store;

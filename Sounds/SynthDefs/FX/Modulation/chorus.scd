@@ -1,5 +1,5 @@
-SynthDef(\choruscompresseffect, {|out =0 gate= 1|
-	var source = In.ar(out,2);
+SynthDef(\chorus, {|inBus=0,outBus=0, gate= 1|
+	var source = In.ar(inBus,2);
 	var chorus;
 	var env = Linen.kr(gate, 0.1, 1, 0.1, 2);
 
@@ -9,9 +9,7 @@ SynthDef(\choruscompresseffect, {|out =0 gate= 1|
 		DelayC.ar(source[0], maxdelaytime,LFNoise1.kr(Rand(0.1,0.6),0.25*maxdelaytime,0.75*maxdelaytime) )
 	}));
 
-	chorus = Compander.ar(4*(source + chorus),source,0.4,1,4);
-
-	XOut.ar(out,env,chorus);
+	ReplaceOut.ar(outBus,Pan2.ar(env*chorus));
 
 //From Steal This Sound SC Example
 //By Nick Collins
