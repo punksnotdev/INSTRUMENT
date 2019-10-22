@@ -1,6 +1,6 @@
-SynthDef(\hpf, { arg inBus=0, cutoff=70,q=0.3, wet=0.75;
-    Out.ar(
-        [0,1],
+SynthDef(\hpf, { arg inBus=0, outBus=0,cutoff=40,q=0.3, wet=0.75;
+    ReplaceOut.ar(
+        outBus,
         (In.ar(inBus) * (1-wet))+
         (RHPF.ar(
 			In.ar(inBus), cutoff, q
