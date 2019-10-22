@@ -238,33 +238,35 @@ I8TChannel : Sequenceable
 		if( fxChain_.isNil ) {
 			fxChain.collect({|fx,key|
 				fx.free;
-				fxChain.removeAt(key);
 			});
-			^nil;
+			fxChain=IdentityDictionary.new;
+			^fxChain;
 		};
-		if( fxChain_.isKindOf(IdentityDictionary), {
-			fxChain = fxChain_;
-		}, {
-			if( fxChain_.isKindOf(Collection), {
-				var notValid = fxChain_.reject(
-					(_.isKindOf(String)||_.isKindOf(Symbol))
-				);
-				if(notValid.size==0, {
-
-					fxChain.collect({|fx,key|
-						fx.free;
-						fxChain.removeAt(key);
-					});
-
-					fxChain = IdentityDictionary.new;
-					fxChain_.collect({|fx|
-						this.addFx(fx);
-					});
-				}, {
-					"Invalid FX Chain".warn;
-				})
-			});
+		if( (fxChain_.isKindOf(Symbol)|| fxChain_.isKindOf(String)), {
+			fxChain = IdentityDictionary.new;
+			this.addFx(fxChain_);
 		});
+		if( fxChain_.isKindOf(Collection), {
+			var notValid = fxChain_.reject(
+				(_.isKindOf(String)||_.isKindOf(Symbol))
+			);
+			if(notValid.size==0, {
+
+				fxChain.collect({|fx,key|
+					fx.free;
+					fxChain.removeAt(key);
+				});
+
+				fxChain = IdentityDictionary.new;
+				fxChain_.collect({|fx|
+					this.addFx(fx);
+				});
+			}, {
+				"Invalid FX Chain".warn;
+			})
+		});
+
+		^fxChain;
 	}
 
 	addFx {|fx_|

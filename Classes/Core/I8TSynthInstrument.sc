@@ -56,15 +56,6 @@ SynthInstrument : Instrument
       autostart=value;
     }
 
-	fx {|pattern|
-
-        if(pattern.notNil, {
-        	^this.seq(\fx,pattern);
-		});
-
-		^fx;
-
-	}
 
 
 	fx_ {|synthdef_|
@@ -186,6 +177,36 @@ SynthInstrument : Instrument
         },{
             "setContent: Not a valid SynthPlayer".warn;
         });
+    }
+
+    set {|parameter, value|
+
+        switch(parameter.asSymbol,
+            \low, {
+                channel.set(\low,value);
+            },
+            \middle, {
+                channel.set(\middle,value);
+            },
+            \high, {
+                channel.set(\high,value);
+            },
+        )
+    }
+
+    fx {|fx|
+
+        if(
+            (
+                fx.isKindOf(Collection)
+                || fx.isKindOf(Symbol)
+                || fx.isKindOf(String)
+                || fx.isNil
+            )
+        ) {
+            channel.setFxChain(fx);
+        };
+
     }
 
 

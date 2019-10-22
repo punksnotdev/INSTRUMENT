@@ -441,16 +441,17 @@ SynthPlayer : SynthInstrument
 
 
 	set {|parameter,value|
+		if( [\low,\middle,\high].includes(parameter.asSymbol)) {
+			super.set(parameter,value);
+			synth_parameters[parameter] = value;
+			^value;
+		};
 
 		if( ( (value != nil) && (value != \r) )) {
 
 			switch( parameter,
 			 \note, {
 				this.trigger( parameter, value );
-			},
-			\low, {
-				["implement low",channel].postln;
-				synth_parameters[\low] = value;
 			},
 			{
 				synth_parameters[parameter] = value;
