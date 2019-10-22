@@ -15,7 +15,7 @@ I8TMixer : I8TNode
 	var <masterGroup;
 
 	*new {|main_|
-		^super.new.init(main_);
+		^super.new(main_);
 	}
 
 
@@ -28,15 +28,14 @@ I8TMixer : I8TNode
 
 		outbus = Server.local.outputBus;
 
-		bus = Bus.audio(Server.local,2);
-
+		bus = Bus.audio(Server.local,1);
 
 	}
 
 	setupMaster {
 
 		masterGroup = Group.tail(Server.default.defaultGroup);
-		// masterGroup = Group.tail(Server.default.defaultGroup);
+
 		mixGroup = Group.tail(masterGroup);
 
 		master = this.createMasterChannels()
@@ -46,26 +45,35 @@ I8TMixer : I8TNode
 
 	createMasterChannels {
 
+
+
 		var masterChannels = Array.fill(2,{|index|
 
 			var masterChannel = I8TChannel(masterGroup, outbus, bus);
 
 			var channelName = ("system_out_" ++ index).asSymbol;
 
-			masterChannel.setAmp( 1 );
-			masterChannel.setPan( index.linlin(0,1,-1,1) );
+			if(masterChannel.notNil) {
 
-			masterChannel.setName( channelName );
+				masterChannel.setAmp( 1 );
+				masterChannel.setPan( index.linlin(0,1,-1,1) );
 
-			masterChannel.addOutput(
-				( name: channelName, channel: index )
-			);
+				masterChannel.setName( channelName );
 
-			// masterChannel.addFx(\eq);
+				masterChannel.addOutput(
+					( name: channelName, channel: index )
+				);
 
-			masterChannel;
+				// masterChannel.addFx(\eq);
 
+				masterChannel;
+
+				[index,masterChannel].postln;
+
+			}
 		});
+
+
 
 		^masterChannels
 

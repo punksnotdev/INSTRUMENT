@@ -21,61 +21,63 @@ I8TChannel : Sequenceable
 
 
 	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
-		^super.new(this.graph,synthGroup_,outbus_,inbus_);
+		^super.new.init(this.graph,synthGroup_,outbus_,inbus_);
 	}
 
 	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
+		if( outbus_.notNil, {
 
-		if( synthGroup_.isKindOf(Group), {
-			synthGroup = Group.tail(synthGroup_);
+			if( synthGroup_.isKindOf(Group), {
+				synthGroup = Group.tail(synthGroup_);
+			}, {
+				synthGroup = Group.tail(Server.default.defaultGroup);
+			});
+
+			fxChain = IdentityDictionary.new;
+
+			bus = Bus.audio(Server.local,1);
+
+
+			if(inbus_.notNil, {
+				inbus=inbus_;
+			}, {
+				inbus = Bus.audio(Server.local,1);
+			});
+
+
+
+			inSynth = Synth.tail(
+				synthGroup,
+				\audioBus,
+				[\inBus,inbus,\outBus,bus]
+			);
+
+
+			if( eq_ === true ) {
+				eq = this.setup(\eq);
+			};
+
+			if( locut_ === true ) {
+				locut = this.setup(\locut);
+			};
+
+			if( compressor_ === true ) {
+				compressor = this.setup(\compressor);
+			};
+
+
+			outSynth = Synth.tail(
+				synthGroup,
+				\audioBus,
+				[\inBus,bus,\outBus,outbus]
+			);
+
+			^this;
+
 		}, {
-			synthGroup = Group.tail(Server.default.defaultGroup);
+			// "no outbus"
 		});
-
-		fxChain = IdentityDictionary.new;
-
-		bus = Bus.audio(Server.local,2);
-
-		if(outbus_.notNil, {
-			outbus=outbus_;
-		}, {
-			outbus=Server.local.outputBus;
-		});
-
-		if(inbus_.notNil, {
-			inbus=inbus_;
-		}, {
-			inbus = Bus.audio(Server.local,2);
-		});
-
-
-		inSynth = Synth.tail(
-			synthGroup,
-			\audioBus,
-			[\inBus,inbus,\outBus,bus]
-		);
-
-
-		if( eq_ === true ) {
-			eq = this.setup(\eq);
-		};
-
-		if( locut_ === true ) {
-			locut = this.setup(\locut);
-		};
-
-		if( compressor_ === true ) {
-			compressor = this.setup(\compressor);
-		};
-
-
-		outSynth = Synth.tail(
-			synthGroup,
-			\audioBus,
-			[\inBus,bus,\outBus,outbus]
-		);
-
 
 
 	}
