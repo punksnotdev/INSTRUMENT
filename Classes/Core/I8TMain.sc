@@ -169,7 +169,7 @@ I8TMain : Event
 					item.play;
 				};
 
-				node.mixerChannel = mixer.addChannel( node );
+				node.channel = mixer.addChannel( node );
 
 			}, {
 

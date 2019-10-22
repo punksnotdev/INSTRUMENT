@@ -12,7 +12,7 @@ Instrument : Sequenceable
 	var <>volume;
 	var <>octave;
 	var <main;
-    var <>mixerChannel;
+    var <>channel;
 	// var synthGroup;
 	var outGroup;
 
@@ -60,10 +60,12 @@ Instrument : Sequenceable
   	}
 
 
-	  	outbus_ {|outbus_|
-	  		outbus = outbus_;
-	  	}
-	  	outbus {
-	  		^outbus;
-	  	}
+  	outbus_ {|outbus_|
+  		outbus = outbus_;
+  	}
+  	outbus {
+  		^outbus;
+  	}
+
+    
 }
