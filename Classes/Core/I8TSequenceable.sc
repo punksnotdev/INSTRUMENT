@@ -16,11 +16,10 @@ Sequenceable : I8TNode
 	var minSpeed;
 
 	*new{|graph_,name_|
-		^super.new.init(this.graph,name_);
+		^super.new(this.graph,name_);
 	}
 
 	init{|graph_,name_|
-		super.init(graph_,name_);
 		clock = 1;
 		nextPatternKey = 0;
 		minSpeed=1/32;
