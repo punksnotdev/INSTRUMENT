@@ -144,8 +144,6 @@ I8TMixer : I8TNode
 						// no group
 						if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
 
-							// ["Mixer: no group", node.name].postln;
-							["create channel", mixGroup, bus, node].postln;
 							channel = I8TChannel(mixGroup, bus);
 
 							channelGroups[node.name]=IdentityDictionary.new;
