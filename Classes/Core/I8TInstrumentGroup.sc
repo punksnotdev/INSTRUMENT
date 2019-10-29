@@ -6,7 +6,7 @@ InstrumentGroup : Event
 	var <>main;
 	var <clock;
 	var <baseClock;
-	var <fx;
+	var fx;
 	var <name;
 	var <sequenceable;
 	var <sequencer;
@@ -161,6 +161,27 @@ InstrumentGroup : Event
 
 		}
 
+
+	}
+
+
+	fx {|value_|
+
+		this.collect({|item|
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+				if(
+					(
+						value_.isKindOf(SynthDef)
+						|| value_.isKindOf(Collection)
+						|| value_.isKindOf(SynthDefVariant)
+						|| value_.isKindOf(Symbol)
+						|| value_.isNil
+					)
+				) {
+					item.fx(value_);
+				};
+			};
+		});
 
 	}
 

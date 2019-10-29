@@ -1,6 +1,7 @@
 I8TMixer : I8TNode
 {
 
+	var channels;
 	var channelGroups;
 	var <master;
 	var main;
@@ -23,6 +24,7 @@ I8TMixer : I8TNode
 
 		main = main_;
 
+		channels = IdentityDictionary.new;
 		channelGroups = IdentityDictionary.new;
 
 
@@ -64,11 +66,8 @@ I8TMixer : I8TNode
 					( name: channelName, channel: index )
 				);
 
-				// masterChannel.addFx(\eq);
-
 				masterChannel;
 
-				[index,masterChannel].postln;
 
 			}
 		});
@@ -122,44 +121,51 @@ I8TMixer : I8TNode
 
 					if( group.isKindOf(InstrumentGroup), {
 
+						channel = channels[ node.name ];
+
+						if(( channel.isKindOf( I8TChannel ) == false ), {
+							channel  = I8TChannel(mixGroup,bus);
+						});
+
+
 						channelGroup = channelGroups[ group.name ];
 
 						if( channelGroup.isKindOf( IdentityDictionary ), {
-							// ["Mixer: Instrument Group already exists",group.name].postln;
+
 							if( channelGroup.keys.includes( node.name ) == false, {
-								channel = I8TChannel(mixGroup,bus);
-							}, {
-								// ["Mixer:", group.name, "already includes node key"].postln;
-								channel = channelGroup[node.name];
-							})
+
+								channelGroup[ node.name ] = channel;
+
+							});
+
 						}, {
 
-							channel = I8TChannel(mixGroup,bus);
 							channelGroups[ group.name ] = IdentityDictionary.new;
-							channelGroup=channelGroups[ group.name ];
 
-							// ["Mixer: Instrument Group doesn't exist",group.name].postln;
+							channelGroup = channelGroups[ group.name ];
+
+							channelGroup[ node.name ] = channel;
+
 						});
+
 					}, {
 						// no group
-						if( channelGroups[node.name].isKindOf( IdentityDictionary ) == false ) {
+						if( channels[node.name].isKindOf( I8TChannel ) == false ) {
 
 							channel = I8TChannel(mixGroup, bus);
 
-							channelGroups[node.name]=IdentityDictionary.new;
-							channelGroup = channelGroups[node.name];
+							channels[node.name]=channel;
+
+							channel = channels[node.name];
 
 						};
 
 					});
 
-					channelGroup[node.name]=channel;
-
 					channel.setInput( node );
 					channel.setName( node.name );
 
-					^channelGroup[node.name];
-
+					^channel;
 
 				};
 
@@ -170,16 +176,23 @@ I8TMixer : I8TNode
 
 					if( channelGroup.isKindOf(IdentityDictionary) == false )
 					{
-						// ["Mixer: added new group", instrumentGroup.name ].postln;
 						channelGroup = IdentityDictionary.new;
 						channelGroups[instrumentGroup.name] = channelGroup;
 					};
 
-					instrumentGroup.keysValuesDo({|k,v|
-						if(channelGroups[instrumentGroup.name][ k ].isKindOf(I8TChannel)==false) {
-							// ["Mixer: add new group child", node.name, k, v, channelGroups[instrumentGroup.name]].postln;
-							this.addChannel( v, instrumentGroup );
+					instrumentGroup.keysValuesDo({|k,groupedNode|
+
+						var channel = channels[k];
+
+						if(channel.isKindOf(I8TChannel)==false) {
+							channel = this.addChannel( groupedNode, instrumentGroup );
 						};
+
+						channel.setInput( groupedNode );
+						channel.setName( groupedNode.name );
+
+						^channel;
+
 					});
 
 				};
@@ -193,7 +206,6 @@ I8TMixer : I8TNode
 		});
 
 
-		// ["Not a valid Source", node].postln;
 
 		^nil
 
