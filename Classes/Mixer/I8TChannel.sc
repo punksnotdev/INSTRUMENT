@@ -236,6 +236,8 @@ I8TChannel : Sequenceable
 	getFxChain {
 		^fxChain
 	}
+
+
 	setFxChain {|fxChain_|
 		if( fxChain_.isNil ) {
 			fxChain.collect({|fx,key|
@@ -244,20 +246,33 @@ I8TChannel : Sequenceable
 			fxChain=IdentityDictionary.new;
 			^fxChain;
 		};
+
 		if( (fxChain_.isKindOf(Symbol)|| fxChain_.isKindOf(String)), {
+			fxChain.collect({|fx,key|
+				fx.free;
+			});
 			fxChain = IdentityDictionary.new;
 			this.addFx(fxChain_);
 		});
+
 		if( fxChain_.isKindOf(Collection), {
+
+
 			var notValid = fxChain_.reject(
 				(_.isKindOf(String)||_.isKindOf(Symbol))
 			);
+
+
 			if(notValid.size==0, {
+				// Task.new({
 
 				fxChain.collect({|fx,key|
 					fx.free;
-					fxChain.removeAt(key);
 				});
+
+
+
+				// }).play;
 
 				fxChain = IdentityDictionary.new;
 				fxChain_.collect({|fx|
