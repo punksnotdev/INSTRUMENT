@@ -34,7 +34,7 @@ I8TChannel : Sequenceable
 				synthGroup = Group.tail(Server.default.defaultGroup);
 			});
 
-			fxChain = IdentityDictionary.new;
+			fxChain = I8TFXChain.new;
 
 			bus = Bus.audio(Server.local,1);
 
@@ -168,8 +168,6 @@ I8TChannel : Sequenceable
 		if( ( parameter.notNil && value.notNil ) ) {
 			if( (value.isKindOf(Number)||value.isKindOf(String)), {
 
-				["set",parameter.asSymbol,value].postln;
-
 				switch( parameter.asSymbol,
 					\amp, {
 						this.setAmp(value.asFloat);
@@ -243,7 +241,7 @@ I8TChannel : Sequenceable
 			fxChain.collect({|fx,key|
 				fx.free;
 			});
-			fxChain=IdentityDictionary.new;
+			fxChain=I8TFXChain.new;
 			^fxChain;
 		};
 
@@ -251,7 +249,7 @@ I8TChannel : Sequenceable
 			fxChain.collect({|fx,key|
 				fx.free;
 			});
-			fxChain = IdentityDictionary.new;
+			fxChain = I8TFXChain.new;
 			this.addFx(fxChain_);
 		});
 
@@ -274,7 +272,7 @@ I8TChannel : Sequenceable
 
 				// }).play;
 
-				fxChain = IdentityDictionary.new;
+				fxChain = I8TFXChain.new;
 				fxChain_.collect({|fx|
 					this.addFx(fx);
 				});
@@ -304,7 +302,11 @@ I8TChannel : Sequenceable
 	}
 
 	fx {|name|
-		^fxChain[name]
+		if(name.isNil, {
+			^fxChain
+		}, {		
+			^fxChain[name];
+		})
 	}
 
 	fxSet {|name,parameter,value|
