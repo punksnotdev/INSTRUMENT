@@ -1,4 +1,4 @@
-I8TFXChain : IdentityDictionary
+I8TFXChain : Event
 {
 	set{|parameter,value|
 		this.collect({|fx|

@@ -1,4 +1,4 @@
-SynthDef(\organ_tonewheel4,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.1 cutoff= 5000 rq=0.25 pan = 0.0|
+SynthDef(\organ_tonewheel4,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.1 filterHz= 5000 rq=0.25 pan = 0.0|
 //Subtractive tonewheel organ from Steal this Sound example
 	var lfo, pulse, filter, env;
 
@@ -8,7 +8,7 @@ SynthDef(\organ_tonewheel4,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 l
 
 	env = EnvGen.ar(Env.adsr(0.0,0.0,1.0,0.1),gate,doneAction:2);
 
-	filter = BLowPass4.ar(pulse,cutoff,rq);
+	filter = BLowPass4.ar(pulse,filterHz,rq);
 
 	filter= BPeakEQ.ar(filter,500,1.0,3);
 

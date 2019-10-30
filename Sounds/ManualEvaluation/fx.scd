@@ -1,10 +1,10 @@
-SynthDef(\reverbLPF, { arg inBus=0, outBus=0, cutoff=1500,q=0.075, room=0.4,damp=0.6, wet=0.5, lag=2;
+SynthDef(\reverbLPF, { arg inBus=0, outBus=0, filterHz=1500,q=0.075, room=0.4,damp=0.6, wet=0.5, lag=2;
     ReplaceOut.ar(
         outBus,(
 
             (In.ar(inBus) * (1-wet))+
             (RLPF.ar(
-                (FreeVerb.ar(In.ar(inBus),room,damp)*3).tanh, Lag2.kr(cutoff,lag), q
+                (FreeVerb.ar(In.ar(inBus),room,damp)*3).tanh, Lag2.kr(filterHz,lag), q
             )*wet
 
         )*0.75);
@@ -19,7 +19,7 @@ SynthDef(\shineDestroy, {
 	gain=3.3,
 	freq=440,
 	t_trig=1,
-	cutoff=3500,
+	filterHz=3500,
 	res=10,
 	att=1,
 	decay=3,
@@ -37,7 +37,7 @@ SynthDef(\shineDestroy, {
 
 	sig = (sig*3.3).tanh;
 
-	sig = Mix.new(RLPF.ar(sig,cutoff,res.reciprocal*LFSaw.kr(1/8).linlin(-1,1,0.1,1)));
+	sig = Mix.new(RLPF.ar(sig,filterHz,res.reciprocal*LFSaw.kr(1/8).linlin(-1,1,0.1,1)));
 
 
 	sig = sig * SinOsc.kr(4).linlin(-1,1,0.3,[1,1.3]);
@@ -55,11 +55,11 @@ SynthDef(\shineDestroy, {
 
 
 
-SynthDef(\distortion, { arg inBus=0, gain = 3,cutoff=12000,q=0.1, wet=0.75;
+SynthDef(\distortion, { arg inBus=0, gain = 3,filterHz=12000,q=0.1, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
-        (((RLPF.ar(In.ar(inBus),cutoff,q)*gain).tanh/4))
+        (((RLPF.ar(In.ar(inBus),filterHz,q)*gain).tanh/4))
     )
 }).store;
 
@@ -122,48 +122,48 @@ SynthDef(\simpleCompressor, {
 
 
 
-SynthDef(\hpf, { arg inBus=0, cutoff=70,q=0.3, wet=0.75;
+SynthDef(\hpf, { arg inBus=0, filterHz=70,q=0.3, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
         (RHPF.ar(
-			In.ar(inBus), cutoff, q
+			In.ar(inBus), filterHz, q
 		)*wet);
     )
 }).store;
 
 
 
-SynthDef(\lpf, { arg inBus=0,outBus=0, cutoff=777,q=0.1, wet=0.5;
+SynthDef(\lpf, { arg inBus=0,outBus=0, filterHz=777,q=0.1, wet=0.5;
     ReplaceOut.ar(
         outBus,
         (In.ar(inBus).tanh * (1-wet))+
         (RLPF.ar(
-			In.ar(inBus), cutoff, q
+			In.ar(inBus), filterHz, q
 		).tanh*wet);
     )
 }).store;
 
 
 
-SynthDef(\moogFilter, { arg inBus=0, cutoff=1500,q=0.3, wet=0.25,lag=1;
+SynthDef(\moogFilter, { arg inBus=0, filterHz=1500,q=0.3, wet=0.25,lag=1;
     ReplaceOut.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
         (((MoogFF.ar(
-			In.ar(inBus), Lag2.kr(cutoff,lag),3.5+(q*0.47)
+			In.ar(inBus), Lag2.kr(filterHz,lag),3.5+(q*0.47)
 		)).tanh*1.5)*wet);
     )
 }).store;
 
 
 
-SynthDef(\resonz, { arg inBus=0, cutoff=1500,q=0.3, wet=0.75;
+SynthDef(\resonz, { arg inBus=0, filterHz=1500,q=0.3, wet=0.75;
     Out.ar(
         [0,1],
         (In.ar(inBus) * (1-wet))+
         (((Resonz.ar(
-			In.ar(inBus), cutoff, q
+			In.ar(inBus), filterHz, q
 		)*4).tanh*0.75)*wet);
     )
 }).store;

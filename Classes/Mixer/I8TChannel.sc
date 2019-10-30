@@ -237,7 +237,7 @@ I8TChannel : Sequenceable
 
 
 	setFxChain {|fxChain_|
-		if( fxChain_.isNil ) {
+		if( (fxChain_===false) ) {
 			fxChain.collect({|fx,key|
 				fx.free;
 			});
@@ -304,7 +304,7 @@ I8TChannel : Sequenceable
 	fx {|name|
 		if(name.isNil, {
 			^fxChain
-		}, {		
+		}, {
 			^fxChain[name];
 		})
 	}

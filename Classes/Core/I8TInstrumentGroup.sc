@@ -167,21 +167,40 @@ InstrumentGroup : Event
 
 	fx {|value_|
 
-		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
-				if(
-					(
-						value_.isKindOf(SynthDef)
-						|| value_.isKindOf(Collection)
-						|| value_.isKindOf(SynthDefVariant)
-						|| value_.isKindOf(Symbol)
-						|| value_.isNil
-					)
-				) {
-					item.fx(value_);
+		var fxChains = I8TFXChain.new;
+
+		if( value_.notNil ) {
+			this.collect({|item|
+				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+
+
+					if(
+						(
+							value_.isKindOf(SynthDef)
+							|| value_.isKindOf(Collection)
+							|| value_.isKindOf(SynthDefVariant)
+							|| value_.isKindOf(Symbol)
+							|| (value_===false)
+						)
+					) {
+						item.fx(value_);
+					};
 				};
-			};
+			});
+
+		};
+
+		this.collect({|item,key|
+			fxChains.put(key,item.fx);
+			item.fx.collect({|chainItem,cIKey|
+				if( fxChains[cIKey].isNil) {
+					fxChains[cIKey] = I8TFXChain.new;
+				};
+				fxChains[cIKey][key]=chainItem;
+			})
 		});
+
+		^fxChains;
 
 	}
 

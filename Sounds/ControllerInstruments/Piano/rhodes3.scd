@@ -1,4 +1,4 @@
-SynthDef(\manual_everythingrhodes,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.5 cutoff= 2000 rq=0.5 pan = 0.0, att=0.0,decay=1.0,sus=0.8,rel=3.0|
+SynthDef(\manual_everythingrhodes,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.5 filterHz= 2000 rq=0.5 pan = 0.0, att=0.0,decay=1.0,sus=0.8,rel=3.0|
 
 //Electric Piano
 	var pulse, filter, env;
@@ -7,8 +7,8 @@ SynthDef(\manual_everythingrhodes,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate =
 
 	env = EnvGen.ar(Env.adsr(att,decay,sus,rel),gate,doneAction:2);
 
-	//keyboard tracking filter cutoff
-	filter = BLowPass4.ar(pulse,(cutoff*(env.squared))+200+freq,rq);
+	//keyboard tracking filter filterHz
+	filter = BLowPass4.ar(pulse,(filterHz*(env.squared))+200+freq,rq);
 
 	Out.ar(out,Pan2.ar(Mix(filter)*env*amp,pan));
 

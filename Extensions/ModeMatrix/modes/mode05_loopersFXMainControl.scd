@@ -35,7 +35,7 @@ m.loadCallback = {
 		);
 
 		i.data.loopFXMainControls[\reverbLPF]		= (
-			parameter: \cutoff,
+			parameter: \filterHz,
 			range: [260,2500],
 			parameterValues: IdentityDictionary.new,
 			parameterValue: nil// deprecated

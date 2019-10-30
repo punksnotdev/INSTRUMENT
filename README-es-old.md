@@ -411,12 +411,12 @@ i.clap.fx=\reverb;
 
 	i.clap.fx = \reverbLPF;
 	i.clap.fxSet([
-		(cutoff:3000),
-		(cutoff:1000),
-		(cutoff:2000),
+		(filterHz:3000),
+		(filterHz:1000),
+		(filterHz:2000),
 		// more than one parameter:
-		(cutoff:3000,q:0.1),
-		(cutoff:300,q:0.01),
+		(filterHz:3000,q:0.1),
+		(filterHz:300,q:0.01),
 	]).speed(1/2);
 )
 
@@ -718,16 +718,16 @@ i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
 
 
 i.mixer.getChannel(\snare).fxSet(\lpf,\q,0.025);
-i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,1900);
-i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,900);
-i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,500);
-i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,300);
+i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,1900);
+i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,900);
+i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,500);
+i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,300);
 
 
 i.mixer.getChannel(\snare).addFx(\gateDistort)
 i.mixer.getChannel(\snare).fxSet(\gateDistort,\gain,3**4)
 
-i.mixer.getChannel(\snare).fxSet(\lpf,\cutoff,3000);
+i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,3000);
 
 i.mixer.getChannel(\snare).removeFx(\gateDistort)
 
@@ -830,8 +830,8 @@ i.loop1.fxSet(\rv2,1);
 i.loop2.fxSet(\gain,33.3);
 
 i.loop1.fx=\revlpf;
-i.loop1.fxSet(\cutoff,200)
-i.loop1.fxSet(\cutoff,1200)
+i.loop1.fxSet(\filterHz,200)
+i.loop1.fxSet(\filterHz,1200)
 
 
 i.loop1.amp(0.5,0)
@@ -870,7 +870,7 @@ i.loop2.rate(5/4,1);
 i.loop2.fx=\distortion;
 i.loop2.fxSet(\wet,1/2);
 i.loop2.amp(0.01);
-i.loop2.fxSet(\cutoff,1440);
+i.loop2.fxSet(\filterHz,1440);
 i.loop2.fx=nil
 i.loop2.amp(0.5);
 i.loop2.rate(1);

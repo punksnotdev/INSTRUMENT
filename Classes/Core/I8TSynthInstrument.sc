@@ -201,11 +201,13 @@ SynthInstrument : Instrument
                 fx.isKindOf(Collection)
                 || fx.isKindOf(Symbol)
                 || fx.isKindOf(String)
-                || fx.isNil
+                || (fx===false)
             )
         ) {
             channel.setFxChain(fx);
         };
+
+        ^channel.fx
 
     }
 
