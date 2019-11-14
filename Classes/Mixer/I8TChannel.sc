@@ -297,40 +297,66 @@ I8TChannel : Sequenceable
 	addFx {|fx_|
 
 		var synthdef;
+		var synthdefKey;
 		if( graph.validateSynthName(fx_), {
 			synthdef = fx_;
+			synthdefKey = fx_;
+			if(synthdef.asString.contains($.)){
+				synthdefKey=synthdef.asString.split($.)[0].asSymbol;
+			};
+
 		}, {
 
 
 			if( graph.validateSynthDef(fx_) ) {
-				if( fx_.isKindOf(Dictionary), {
-					synthdef = fx_.values.detect(_.isKindOf(SynthDef));
-					if(synthdef.isNil) {
-						synthdef = fx_.values.detect(_.isKindOf(SynthDefVariant));
-					};
-					if(synthdef.notNil) {
-						synthdef = synthdef.name.asSymbol;
-					};
-				}, {
+				if( fx_.isKindOf(SynthDefVariant), {
 					synthdef = fx_.name.asSymbol;
+					synthdefKey = fx_.name.asSymbol;
+					if(synthdef.asString.contains($.)){
+						synthdefKey=synthdef.asString.split($.)[0].asSymbol;
+					};
+				},{
+
+					if( fx_.isKindOf(Dictionary), {
+
+						synthdef = fx_.values.detect(_.isKindOf(SynthDef));
+						if(synthdef.notNil) {
+							synthdefKey = synthdef.name.asSymbol;
+						};
+
+						["synthdefKey1",synthdef,synthdefKey].postln;
+						if(synthdef.isNil) {
+							var variant = fx_.values.detect(_.isKindOf(SynthDefVariant));
+							synthdef = variant;
+							// synthdefKey = variant.synthdef.name.asSymbol;
+							["synthdefKey",synthdef].postln;
+						};
+						// if(synthdef.notNil) {
+						// 	synthdef = synthdef.name.asSymbol;
+						// };
+					});
+
 				});
 			};
 
 		});
 
-		this.removeFx(fx_);
-		fxChain[synthdef] = Synth.before(
-			outSynth,
-			synthdef,
-			[\inBus,bus,\outBus,bus]
-		);
+		this.removeFx(synthdefKey);
+		if(synthdef.notNil) {
+
+			fxChain[synthdefKey] = Synth.before(
+				outSynth,
+				synthdef,
+				[\inBus,bus,\outBus,bus]
+			);
+		};
 
 	}
 
-	removeFx {|fx_|
-		if( fxChain[ fx_ ].isKindOf(Synth)) {
-			fxChain[ fx_ ].free;
-			fxChain.removeAt( fx_ )
+	removeFx {|key|
+		if( fxChain[ key ].isKindOf(Synth)) {
+			fxChain[ key ].free;
+			fxChain.removeAt( key )
 		};
 	}
 
