@@ -6,7 +6,7 @@ InstrumentGroup : Event
 	var <>main;
 	var <clock;
 	var <baseClock;
-	var <fx;
+	var fx;
 	var <name;
 	var <sequenceable;
 	var <sequencer;
@@ -165,9 +165,26 @@ InstrumentGroup : Event
 	}
 
 
-	fx_ {|value_|
+	fx {
 
 		var fxChains = I8TFXChain.new;
+
+		this.collect({|item,key|
+			fxChains.put(key,item.fx);
+			item.fx.collect({|chainItem,cIKey|
+				if( fxChains[cIKey].isNil) {
+					fxChains[cIKey] = I8TFXChain.new;
+				};
+				fxChains[cIKey][key]=chainItem;
+			})
+		});
+
+
+		^fxChains;
+
+	}
+	fx_ {|value_|
+
 
 		this.collect({|item|
 
@@ -189,20 +206,6 @@ InstrumentGroup : Event
 				};
 			};
 		});
-
-
-		this.collect({|item,key|
-			fxChains.put(key,item.fx);
-			item.fx.collect({|chainItem,cIKey|
-				if( fxChains[cIKey].isNil) {
-					fxChains[cIKey] = I8TFXChain.new;
-				};
-				fxChains[cIKey][key]=chainItem;
-			})
-		});
-
-
-		^fxChains;
 
 	}
 

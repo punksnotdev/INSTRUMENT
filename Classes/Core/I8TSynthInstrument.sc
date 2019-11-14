@@ -8,7 +8,7 @@ SynthInstrument : Instrument
   var synthdef;
 
   var <fxSynth;
-  var <fx;
+  var fx;
   var fxBus;
 
   var autostart;
@@ -194,6 +194,10 @@ SynthInstrument : Instrument
         )
     }
 
+    fx {
+        ^channel.fx
+    }
+
     fx_ {|fx|
 
         if(
@@ -209,8 +213,6 @@ SynthInstrument : Instrument
         ) {
             channel.setFxChain(fx);
         };
-
-        ^channel.fx
 
     }
 
