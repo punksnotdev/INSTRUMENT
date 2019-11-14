@@ -271,7 +271,6 @@ I8TChannel : Sequenceable
 					)
 				);
 
-
 				if(notValid.size==0, {
 					// Task.new({
 
@@ -334,6 +333,11 @@ I8TChannel : Sequenceable
 						// if(synthdef.notNil) {
 						// 	synthdef = synthdef.name.asSymbol;
 						// };
+					}, {
+
+						synthdef = fx_.name.asSymbol;
+						synthdefKey = synthdef;
+
 					});
 
 				});
@@ -343,7 +347,6 @@ I8TChannel : Sequenceable
 
 		this.removeFx(synthdefKey);
 		if(synthdef.notNil) {
-
 			fxChain[synthdefKey] = Synth.before(
 				outSynth,
 				synthdef,
@@ -357,6 +360,14 @@ I8TChannel : Sequenceable
 		if( fxChain[ key ].isKindOf(Synth)) {
 			fxChain[ key ].free;
 			fxChain.removeAt( key )
+		};
+		if( fxChain[ key ].isKindOf(Collection)) {
+
+			fxChain[ key ].collect({|v,k|
+				v.free;
+				fxChain[key].removeAt( k )
+			});
+
 		};
 	}
 
