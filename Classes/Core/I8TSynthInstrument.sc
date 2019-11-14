@@ -8,7 +8,7 @@ SynthInstrument : Instrument
   var synthdef;
 
   var <fxSynth;
-  var fx;
+  var <fx;
   var fxBus;
 
   var autostart;
@@ -58,58 +58,58 @@ SynthInstrument : Instrument
 
 
 
-	fx_ {|synthdef_|
-
-        if(
-            (
-                synthdef_.isKindOf(SynthDef)
-                ||
-                (synthdef_.isKindOf(String) || synthdef_.isKindOf(Symbol))
-            )
-            &&
-            (synthdef_ != "nil".asSymbol )
-        , {
-
-            var synthdefName;
-
-            if( synthdef_.isKindOf(SynthDef) ) {
-                synthdefName = synthdef_.name;
-            };
-
-            if( synthdef_.isKindOf(Symbol)||synthdef_.isKindOf(String) ) {
-                synthdefName = synthdef_;
-            };
-
-            // if( fxSynth.notNil, {
-            //     fxSynth.free;
-            //     fxSynth = Synth.replace(fxSynth,synthdefName);
-            // }, {
-            if( fxSynth.notNil ) {
-                fxSynth.free;
-                fxSynth=nil;
-            };
-
-            if( group.isKindOf(Group), {
-                fxSynth = Synth.head(group,synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
-            }, {
-                 fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus]);
-            });
-            // });
-
-		}, {
-			// "clear currentFX".postln;
-			fxSynth.free;
-			fxSynth = nil;
-		});
-
-
-        if( autostart == true ) {
-            this.start();
-        }
-
-		// ^fxSynth;
-
-	}
+	// fx_ {|synthdef_|
+    //
+    //     if(
+    //         (
+    //             synthdef_.isKindOf(SynthDef)
+    //             ||
+    //             (synthdef_.isKindOf(String) || synthdef_.isKindOf(Symbol))
+    //         )
+    //         &&
+    //         (synthdef_ != "nil".asSymbol )
+    //     , {
+    //
+    //         var synthdefName;
+    //
+    //         if( synthdef_.isKindOf(SynthDef) ) {
+    //             synthdefName = synthdef_.name;
+    //         };
+    //
+    //         if( synthdef_.isKindOf(Symbol)||synthdef_.isKindOf(String) ) {
+    //             synthdefName = synthdef_;
+    //         };
+    //
+    //         // if( fxSynth.notNil, {
+    //         //     fxSynth.free;
+    //         //     fxSynth = Synth.replace(fxSynth,synthdefName);
+    //         // }, {
+    //         if( fxSynth.notNil ) {
+    //             fxSynth.free;
+    //             fxSynth=nil;
+    //         };
+    //
+    //         if( group.isKindOf(Group), {
+    //             fxSynth = Synth.head(group,synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
+    //         }, {
+    //              fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus]);
+    //         });
+    //         // });
+    //
+	// 	}, {
+	// 		// "clear currentFX".postln;
+	// 		fxSynth.free;
+	// 		fxSynth = nil;
+	// 	});
+    //
+    //
+    //     if( autostart == true ) {
+    //         this.start();
+    //     }
+    //
+	// 	// ^fxSynth;
+    //
+	// }
 
 
     restart {
@@ -194,13 +194,16 @@ SynthInstrument : Instrument
         )
     }
 
-    fx {|fx|
+    fx_ {|fx|
 
         if(
             (
-                fx.isKindOf(Collection)
+                fx.isKindOf(SynthDef)
+                || fx.isKindOf(Collection)
+                || fx.isKindOf(SynthDefVariant)
                 || fx.isKindOf(Symbol)
                 || fx.isKindOf(String)
+                || fx.isNil
                 || (fx===false)
             )
         ) {

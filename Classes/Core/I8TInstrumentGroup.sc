@@ -6,7 +6,7 @@ InstrumentGroup : Event
 	var <>main;
 	var <clock;
 	var <baseClock;
-	var fx;
+	var <fx;
 	var <name;
 	var <sequenceable;
 	var <sequencer;
@@ -165,30 +165,31 @@ InstrumentGroup : Event
 	}
 
 
-	fx {|value_|
+	fx_ {|value_|
 
 		var fxChains = I8TFXChain.new;
 
-		if( value_.notNil ) {
-			this.collect({|item|
-				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+		this.collect({|item|
+
+			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
 
 
-					if(
-						(
-							value_.isKindOf(SynthDef)
-							|| value_.isKindOf(Collection)
-							|| value_.isKindOf(SynthDefVariant)
-							|| value_.isKindOf(Symbol)
-							|| (value_===false)
-						)
-					) {
-						item.fx(value_);
-					};
+				if(
+					(
+						value_.isKindOf(SynthDef)
+						|| value_.isKindOf(Collection)
+						|| value_.isKindOf(SynthDefVariant)
+						|| value_.isKindOf(Symbol)
+						|| value_.isKindOf(String)
+						|| value_.isNil
+						|| (value_===false)
+					)
+				) {
+					item.fx = value_;
 				};
-			});
+			};
+		});
 
-		};
 
 		this.collect({|item,key|
 			fxChains.put(key,item.fx);
@@ -200,19 +201,11 @@ InstrumentGroup : Event
 			})
 		});
 
+
 		^fxChains;
 
 	}
 
-
-	fx_ {|value_|
-		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
-				item.fx=value_;
-			};
-		});
-		fx = value_;
-	}
 
 
 	fxSet{|parameter_,value_|

@@ -1204,7 +1204,26 @@ I8TMain : Event
 		var isValid = true;
 		var outputs;
 
-		var isSynth = (synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDesc)||synthdef.isKindOf(SynthDefVariant));
+		var isSynth = (
+			(
+				synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDesc)||synthdef.isKindOf(SynthDefVariant)
+			)
+
+
+		);
+
+		if( (
+				(isSynth == false) &&
+				synthdef.isKindOf(Dictionary)
+			)
+		) {
+			isSynth = (
+				synthdef.values.select(_.isKindOf(SynthDef)||_.isKindOf(SynthDefVariant)).size > 0
+			);
+		};
+
+
+
 
 		if( isSynth == false) {
 			"I8TMain: validateSynthDef: Not a valid SynthDef".warn;
