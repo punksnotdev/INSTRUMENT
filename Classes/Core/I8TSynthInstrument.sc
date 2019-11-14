@@ -194,8 +194,8 @@ SynthInstrument : Instrument
         )
     }
 
-    fx {
-        ^channel.fx
+    fx {|key|
+        ^channel.fx(key)
     }
 
     fx_ {|fx|

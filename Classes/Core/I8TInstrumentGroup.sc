@@ -183,60 +183,84 @@ InstrumentGroup : Event
 				});
 
 			}, {
+
 				if( key.isKindOf(I8TFolder), {
-					var synthdef = key.values.detect(_.isKindOf(SynthDef));
-					if( synthdef.notNil ) {
-						fxChains.put(itemKey,item.fx[synthdef.name.asSymbol]);
+					var synthdef = key.values.detect(_.isKindOf(SynthDef)).name.asSymbol;
+					if( item.fx[synthdef].notNil ) {
+						fxChains.put(itemKey,item.fx[synthdef]);
 					};
 				}, {
-					fxChains.put(itemKey,item.fx);
-				});
+				// 	fxChains.put(itemKey,item.fx);
 
-				if(
-					(
-						main.validateSynthDef(key)
-						||
-						main.validateSynthName(key)
-					)
-				,{
+					if(
+						(
+							main.validateSynthDef(key)
+							||
+							main.validateSynthName(key)
+						)
+					,{
 
-					var chainItem = item.fx[key];
+						var chainItem;
+						var fxKey;
 
-					if( fxChains[itemKey].isNil) {
-						fxChains[itemKey] = I8TFXChain.new;
-					};
-					if(chainItem.notNil) {
-						if(chainItem.isKindOf(Collection), {
-							"isEvent".warn;
-							chainItem = chainItem.values.select(_.isKindOf(SynthDef));
-							if(chainItem.notNil) {
 
-								fxChains[itemKey][key]=chainItem;
+						if(( key.isKindOf(SynthDef)||key.isKindOf(SynthDefVariant)),{
+							fxKey = key.name.asSymbol;
+						}, {
+							fxKey = key.asSymbol;
+						});
 
+						chainItem = item.fx[fxKey];
+
+
+
+						if( fxChains[itemKey].isNil) {
+							fxChains[itemKey] = I8TFXChain.new;
+						};
+						if(chainItem.notNil, {
+							// if(chainItem.isKindOf(Collection), {
+							// 	"isEvent".warn;
+							// 	chainItem = chainItem.values.select(_.isKindOf(SynthDef));
+							// 	if(chainItem.notNil) {
+							//
+							fxChains[itemKey][fxKey]=chainItem;
+							//
+							// 	};
+							// }, {
+							//
+							// });
+						}, {
+							if( item.fx.isKindOf(Dictionary)) {
+
+								var chainItem = item.fx[key];
+
+								fxChains[itemKey][fxKey]=chainItem;
+								["not found!", item.fx, key].postln;
 							};
 						});
-					};
 
 
 
-				}, {
+					}, {
 
-					if( key.isKindOf(Array) ) {
+						if( key.isKindOf(Array) ) {
 
-						key.collect({|listKey|
+							key.collect({|listKey|
 
-							var chainItem = item.fx[listKey];
+								var chainItem = item.fx[listKey];
 
-							if(chainItem.notNil) {
-								if( fxChains[itemKey].isNil) {
-									fxChains[itemKey] = I8TFXChain.new;
+								if(chainItem.notNil) {
+									if( fxChains[itemKey].isNil) {
+										fxChains[itemKey] = I8TFXChain.new;
+									};
+									fxChains[itemKey][listKey]=chainItem;
 								};
-								fxChains[itemKey][listKey]=chainItem;
-							};
 
-						});
+							});
 
-					};
+						};
+
+					});
 
 				});
 

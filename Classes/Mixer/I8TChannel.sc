@@ -297,17 +297,17 @@ I8TChannel : Sequenceable
 	addFx {|fx_|
 
 		var synthdef;
-
 		if( graph.validateSynthName(fx_), {
 			synthdef = fx_;
 		}, {
 
 
 			if( graph.validateSynthDef(fx_) ) {
-				"try".postln;
 				if( fx_.isKindOf(Dictionary), {
-					synthdef = fx_.values.detect(_.isKindOf(SynthDef)||_.isKindOf(SynthDefVariant));
-					["found",synthdef,fx_.values].postln;
+					synthdef = fx_.values.detect(_.isKindOf(SynthDef));
+					if(synthdef.isNil) {
+						synthdef = fx_.values.detect(_.isKindOf(SynthDefVariant));
+					};
 					if(synthdef.notNil) {
 						synthdef = synthdef.name.asSymbol;
 					};
@@ -319,7 +319,7 @@ I8TChannel : Sequenceable
 		});
 
 		this.removeFx(fx_);
-		fxChain[fx_] = Synth.before(
+		fxChain[synthdef] = Synth.before(
 			outSynth,
 			synthdef,
 			[\inBus,bus,\outBus,bus]
@@ -334,11 +334,33 @@ I8TChannel : Sequenceable
 		};
 	}
 
-	fx {|name|
-		if(name.isNil, {
+	fx {|key|
+		if(key.isNil, {
 			^fxChain
 		}, {
-			^fxChain[name];
+			if( fxChain[key].isNil, {
+				if( graph.validateSynthName(key) ) {
+					var fxKey;
+					// var synthdefKeys =
+					fxChain.keysValuesDo({|k,v|
+						if(k.isKindOf(SynthDef)) {
+							if( k.name.asSymbol == key ) {
+								^v;
+							}
+						};
+						if(k.isKindOf(I8TFolder)) {
+							if(k[key].isKindOf(SynthDef)) {
+								if(k[key].name==k) {
+									^v;
+								};
+							}
+						};
+					});
+
+				};
+			}, {
+				^fxChain[key];
+			});
 		})
 	}
 
