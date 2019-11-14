@@ -165,18 +165,83 @@ InstrumentGroup : Event
 	}
 
 
-	fx {
+	fx {|key|
 
 		var fxChains = I8TFXChain.new;
 
-		this.collect({|item,key|
-			fxChains.put(key,item.fx);
-			item.fx.collect({|chainItem,cIKey|
-				if( fxChains[cIKey].isNil) {
-					fxChains[cIKey] = I8TFXChain.new;
-				};
-				fxChains[cIKey][key]=chainItem;
-			})
+		this.collect({|item,itemKey|
+
+			if( key.isNil, {
+
+				item.fx.collect({|chainItem,cIKey|
+					if( fxChains[cIKey].isNil) {
+						fxChains[cIKey] = I8TFXChain.new;
+					};
+
+					fxChains[cIKey][itemKey]=chainItem;
+
+				});
+
+			}, {
+				if( key.isKindOf(I8TFolder), {
+					var synthdef = key.values.detect(_.isKindOf(SynthDef));
+					if( synthdef.notNil ) {
+						fxChains.put(itemKey,item.fx[synthdef.name.asSymbol]);
+					};
+				}, {
+					fxChains.put(itemKey,item.fx);
+				});
+
+				if(
+					(
+						main.validateSynthDef(key)
+						||
+						main.validateSynthName(key)
+					)
+				,{
+
+					var chainItem = item.fx[key];
+
+					if( fxChains[itemKey].isNil) {
+						fxChains[itemKey] = I8TFXChain.new;
+					};
+					if(chainItem.notNil) {
+						if(chainItem.isKindOf(Collection), {
+							"isEvent".warn;
+							chainItem = chainItem.values.select(_.isKindOf(SynthDef));
+							if(chainItem.notNil) {
+
+								fxChains[itemKey][key]=chainItem;
+
+							};
+						});
+					};
+
+
+
+				}, {
+
+					if( key.isKindOf(Array) ) {
+
+						key.collect({|listKey|
+
+							var chainItem = item.fx[listKey];
+
+							if(chainItem.notNil) {
+								if( fxChains[itemKey].isNil) {
+									fxChains[itemKey] = I8TFXChain.new;
+								};
+								fxChains[itemKey][listKey]=chainItem;
+							};
+
+						});
+
+					};
+
+				});
+
+
+			});
 		});
 
 

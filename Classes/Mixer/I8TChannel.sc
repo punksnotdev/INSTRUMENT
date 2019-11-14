@@ -250,40 +250,45 @@ I8TChannel : Sequenceable
 			||
 			graph.validateSynthDef(fxChain_)
 		), {
+
 			fxChain.collect({|fx,key|
 				fx.free;
 			});
+
 			fxChain = I8TFXChain.new;
 			this.addFx(fxChain_);
-		});
 
-		if( fxChain_.isKindOf(Collection), {
+		}, {
 
-
-			var notValid = fxChain_.reject(
-				(
-					graph.validateSynthName(_)
-					||
-					graph.validateSynthDef(_)
-				)
-			);
+			if( fxChain_.isKindOf(Array), {
 
 
-			if(notValid.size==0, {
-				// Task.new({
+				var notValid = fxChain_.reject(
+					(
+						graph.validateSynthName(_)
+						||
+						graph.validateSynthDef(_)
+					)
+				);
 
-				fxChain.collect({|fx,key|
-					fx.free;
-				});
+
+				if(notValid.size==0, {
+					// Task.new({
+
+					fxChain.collect({|fx,key|
+						fx.free;
+					});
 
 
-				fxChain = I8TFXChain.new;
-				fxChain_.collect({|fx|
-					this.addFx(fx);
-				});
-			}, {
-				"Invalid FX Chain".warn;
-			})
+					fxChain = I8TFXChain.new;
+					fxChain_.collect({|fx|
+						this.addFx(fx);
+					});
+				}, {
+					"Invalid FX Chain".warn;
+				})
+			});
+
 		});
 
 		^fxChain;
@@ -293,17 +298,19 @@ I8TChannel : Sequenceable
 
 		var synthdef;
 
-		['fx',fx_,graph.validateSynthName(fx_)].postln;
-
 		if( graph.validateSynthName(fx_), {
 			synthdef = fx_;
 		}, {
 
 
 			if( graph.validateSynthDef(fx_) ) {
+				"try".postln;
 				if( fx_.isKindOf(Dictionary), {
 					synthdef = fx_.values.detect(_.isKindOf(SynthDef)||_.isKindOf(SynthDefVariant));
-					synthdef = synthdef.name.asSymbol;
+					["found",synthdef,fx_.values].postln;
+					if(synthdef.notNil) {
+						synthdef = synthdef.name.asSymbol;
+					};
 				}, {
 					synthdef = fx_.name.asSymbol;
 				});
