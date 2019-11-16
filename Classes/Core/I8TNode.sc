@@ -11,6 +11,9 @@ I8TNode : I8TeventListener
 	var <>inputs;
 	var <>outputs;
 
+	var <parameters;
+
+
 	*new {|graph_,name_|
 
 		var newKey=name_;
@@ -50,7 +53,7 @@ I8TNode : I8TeventListener
 
 		name = newKey;
 
-
+		parameters = IdentityDictionary.new;
 	}
 
 	setContent {|content_| }
@@ -102,5 +105,35 @@ I8TNode : I8TeventListener
 	removeOutput{|key|
 		outputs.removeAt(key);
 	}
+
+
+
+    doesNotUnderstand {
+
+        arg selector ... args;
+
+		var value = args[0];
+
+
+        if (selector.isSetter) {
+
+			if( parameters.isNil ) {
+				parameters = IdentityDictionary.new;
+				parameters[selector.asGetter] = value;
+			};
+			
+			// TODO: check for  existing params only
+			// if( parameters.keys.includes(selector.asGetter) ) {
+				parameters[selector.asGetter] = value;
+				this.set(selector.asGetter, value);
+			// };
+
+			^nil
+
+		};
+
+		^nil
+
+    }
 
 }

@@ -13,6 +13,7 @@ SynthInstrument : Instrument
 
   var autostart;
 
+
   *new{|name_|
     ^super.new.init(name_,this.graph);
   }
@@ -173,10 +174,12 @@ SynthInstrument : Instrument
     setContent {|synthinstrument_|
 
         if(synthinstrument_.isKindOf(SynthPlayer), {
+            "SET CONTENT".warn;
             synthdef = synthinstrument_.synthdef;
         },{
             "setContent: Not a valid SynthPlayer".warn;
         });
+
     }
 
     set {|parameter, value|
@@ -215,6 +218,7 @@ SynthInstrument : Instrument
         };
 
     }
+
 
 
 }

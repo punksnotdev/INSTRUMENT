@@ -1,8 +1,8 @@
-SynthDef(\kickGabber, {|amp=0.5, out=0|
+SynthDef(\kickGabber, {|amp=0.5, out=0,gain=10|
    var snd;
    snd = SinOsc.ar(Env([1000, 69, 60], [0.015, 0.1], \exp).ar * [-0.1, 0, 0.1].midiratio);
    snd = Mix(snd);
-   snd = (snd * 10).tanh;
+   snd = (snd * gain).tanh;
    snd = (snd * 5.1).atan;
    snd = BPeakEQ.ar(snd, XLine.kr(2000, 100, 0.3), 2.0, 8);
    snd = snd + DelayC.ar(snd, 0.01, SinOsc.ar(4).range(0.0, 0.001));

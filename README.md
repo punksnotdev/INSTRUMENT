@@ -597,14 +597,14 @@ i.bass=i.synths.trance[2];
 i.bass.note("0 2 3");
 )
 
-i.bass.set(\rel,2);
-i.bass.set(\rel,0.2);
-i.bass.set(\dist,2);
-i.bass.set(\dist,1);
-i.bass.set(\dist,4);
-i.bass.set(\dist,14);
-i.bass.set(\dist,1);
-i.bass.set(\rel,1/2);
+i.bass.rel=2;
+i.bass.rel=0.2;
+i.bass.dist=2;
+i.bass.dist=1;
+i.bass.dist=4;
+i.bass.dist=14;
+i.bass.dist=1;
+i.bass.rel=1/2;
 
 ```
 

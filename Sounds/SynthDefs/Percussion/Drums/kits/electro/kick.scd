@@ -1,5 +1,5 @@
 SynthDef(\kickElectro, {
-    |out = 0, pan = 0, amp = 0.3|
+    |out = 0, pan = 0, amp = 0.3,rel=0.3|
     var body, bodyFreq, bodyAmp;
     var pop, popFreq, popAmp;
     var click, clickAmp;
@@ -7,7 +7,7 @@ SynthDef(\kickElectro, {
 
     // body starts midrange, quickly drops down to low freqs, and trails off
     bodyFreq = EnvGen.ar(Env([261, 120, 51], [0.035, 0.08], curve: \exp));
-    bodyAmp = EnvGen.ar(Env.linen(0.005, 0.1, 0.3), doneAction: 2);
+    bodyAmp = EnvGen.ar(Env.linen(0.005, 0.1, rel), doneAction: 2);
     body = SinOsc.ar(bodyFreq) * bodyAmp;
     // pop sweeps over the midrange
     popFreq = XLine.kr(750, 261, 0.02);
