@@ -298,9 +298,28 @@ I8TChannel : Sequenceable
 		var synthdef;
 		var synthdefName;
 		var synthdefKey;
+
+
 		if( graph.validateSynthName(fx_), {
 
-			synthdef = graph.synths.at(fx_.asString.toLower);
+			synthdef = graph.synths.at(fx_.asString.toLower.asSymbol);
+
+			if( synthdef.isKindOf(I8TFolder) ) {
+				var def = synthdef.values.detect(_.isKindOf(SynthDef));
+				synthdef.values.collect({|v,k|
+				});
+				if(def.isNil) {
+					var variant = synthdef.values.detect(_.isKindOf(SynthDefVariant));
+					def = variant;
+					if(def.notNil) {
+					};
+				};
+				if(def.notNil) {
+					// synthdefName = def.name;
+					synthdef=def;
+				};
+
+			};
 
 			synthdefName = fx_;
 
@@ -314,6 +333,7 @@ I8TChannel : Sequenceable
 
 
 			if( graph.validateSynthDef(fx_) ) {
+
 				if( fx_.isKindOf(SynthDefVariant), {
 					synthdef = fx_;
 					synthdefName = fx_.name.asSymbol;
@@ -323,10 +343,9 @@ I8TChannel : Sequenceable
 					};
 				},{
 
-					if( fx_.isKindOf(Dictionary), {
+					if( fx_.isKindOf(I8TFolder), {
 
 						synthdef = fx_.values.detect(_.isKindOf(SynthDef));
-
 						if(synthdef.isNil) {
 							var variant = fx_.values.detect(_.isKindOf(SynthDefVariant));
 							synthdef = variant;
@@ -352,15 +371,11 @@ I8TChannel : Sequenceable
 
 		this.removeFx(synthdefKey);
 
-		if(synthdefName.notNil) {
+		if(synthdef.notNil) {
 
-			// if(synthdef.notNil) {
-				["def is", synthdef, synthdef.class].postln;
-			// };
-
-			fxChain[synthdefKey] = Synth.before(
+			fxChain[synthdefKey] = I8TSynth.before(
 				outSynth,
-				synthdefName,
+				synthdef,
 				[\inBus,bus,\outBus,bus]
 			);
 

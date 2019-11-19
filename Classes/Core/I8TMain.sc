@@ -1184,12 +1184,12 @@ I8TMain : Event
 		if(
 			(
 				synthdef.isNil
-				// ||
-				// (
-				// 	synthdef.isKindOf(Event)
-				// 	&&
-				// 	(synthdef.isKindOf(SynthDefVariant)==false)
-				// )
+				||
+				(
+					synthdef.isKindOf(Event)
+					&&
+					(synthdef.isKindOf(SynthDefVariant)==false)
+				)
 			)
 		) {
 			synthdef = SynthDescLib.default.at(synthName.asSymbol);
@@ -1207,8 +1207,8 @@ I8TMain : Event
 		var isSynth = (
 			(
 				synthdef.isKindOf(SynthDef)
-				// ||
-				// synthdef.isKindOf(SynthDesc)
+				||
+				synthdef.isKindOf(SynthDesc)
 				||
 				synthdef.isKindOf(SynthDefVariant)
 			)
@@ -1230,7 +1230,6 @@ I8TMain : Event
 
 
 		if( isSynth == false) {
-			"I8TMain: validateSynthDef: Not a valid SynthDef".warn;
 			isValid=false;
 			^isValid;
 		};

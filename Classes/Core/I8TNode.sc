@@ -54,6 +54,7 @@ I8TNode : I8TeventListener
 		name = newKey;
 
 		parameters = IdentityDictionary.new;
+
 	}
 
 	setContent {|content_| }
@@ -121,7 +122,7 @@ I8TNode : I8TeventListener
 				parameters = IdentityDictionary.new;
 				parameters[selector.asGetter] = value;
 			};
-			
+
 			// TODO: check for  existing params only
 			// if( parameters.keys.includes(selector.asGetter) ) {
 				parameters[selector.asGetter] = value;
@@ -132,6 +133,11 @@ I8TNode : I8TeventListener
 
 		};
 
+		if (selector.isKindOf(Symbol)) {
+			if( parameters[selector].notNil ) {
+				^parameters[selector]
+			};
+		}
 		^nil
 
     }

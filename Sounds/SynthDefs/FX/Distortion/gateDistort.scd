@@ -15,19 +15,19 @@
 
 		sig = CompanderD.ar(sig,0.3,compGate);
 
-		sig = (sig*((Lag2.kr(gain,lag))*20)).distort.tanh/1.5;
+		sig = (sig*((Lag2.kr(gain,lag))*20));
 
-		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3) / 1.4;
+		sig = CompanderD.ar( sig, 0.4,0.6,0.7,0.01,0.3).distort.tanh/1.5;
 
 		ReplaceOut.ar(outBus,Pan2.ar(sig));
 
 
 	},
 	variants: (
-		overdrive: [gain: 0.1, compGate: 1.5],
+		overdrive: [gain: 3.1, compGate: 1.5],
 		hardcore: [gain: 83, compGate: 3.5],
 		extreme: [gain: 3330, compGate: 4.5],
-		crunch: [gain: 0.4, compGate: 2.9]
+		crunch: [gain: 1.4, compGate: 2.9]
 	)
 ).store;
 
