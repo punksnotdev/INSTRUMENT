@@ -296,12 +296,18 @@ I8TChannel : Sequenceable
 	addFx {|fx_|
 
 		var synthdef;
+		var synthdefName;
 		var synthdefKey;
 		if( graph.validateSynthName(fx_), {
-			synthdef = fx_;
+
+			synthdef = graph.synths.at(fx_.asString.toLower);
+
+			synthdefName = fx_;
+
 			synthdefKey = fx_;
-			if(synthdef.asString.contains($.)){
-				synthdefKey=synthdef.asString.split($.)[0].asSymbol;
+
+			if(synthdefName.asString.contains($.)){
+				synthdefKey=synthdefName.asString.split($.)[0].asSymbol;
 			};
 
 		}, {
@@ -309,33 +315,32 @@ I8TChannel : Sequenceable
 
 			if( graph.validateSynthDef(fx_) ) {
 				if( fx_.isKindOf(SynthDefVariant), {
-					synthdef = fx_.name.asSymbol;
+					synthdef = fx_;
+					synthdefName = fx_.name.asSymbol;
 					synthdefKey = fx_.name.asSymbol;
-					if(synthdef.asString.contains($.)){
-						synthdefKey=synthdef.asString.split($.)[0].asSymbol;
+					if(synthdefName.asString.contains($.)){
+						synthdefKey=synthdefName.asString.split($.)[0].asSymbol;
 					};
 				},{
 
 					if( fx_.isKindOf(Dictionary), {
 
 						synthdef = fx_.values.detect(_.isKindOf(SynthDef));
-						if(synthdef.notNil) {
-							synthdefKey = synthdef.name.asSymbol;
-						};
 
-						["synthdefKey1",synthdef,synthdefKey].postln;
 						if(synthdef.isNil) {
 							var variant = fx_.values.detect(_.isKindOf(SynthDefVariant));
 							synthdef = variant;
-							// synthdefKey = variant.synthdef.name.asSymbol;
-							["synthdefKey",synthdef].postln;
+							synthdefName = variant.name;
 						};
-						// if(synthdef.notNil) {
-						// 	synthdef = synthdef.name.asSymbol;
-						// };
+
+						if(synthdef.notNil) {
+							synthdefName = synthdef.name;
+							synthdefKey = synthdef.name.asSymbol;
+						};
+
 					}, {
 
-						synthdef = fx_.name.asSymbol;
+						synthdefName = fx_.name.asSymbol;
 						synthdefKey = synthdef;
 
 					});
@@ -346,12 +351,19 @@ I8TChannel : Sequenceable
 		});
 
 		this.removeFx(synthdefKey);
-		if(synthdef.notNil) {
+
+		if(synthdefName.notNil) {
+
+			// if(synthdef.notNil) {
+				["def is", synthdef, synthdef.class].postln;
+			// };
+
 			fxChain[synthdefKey] = Synth.before(
 				outSynth,
-				synthdef,
+				synthdefName,
 				[\inBus,bus,\outBus,bus]
 			);
+
 		};
 
 	}
