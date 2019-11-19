@@ -21,8 +21,10 @@ I8TSynth : I8TNode {
 	}
 
 	set { arg ...args;
+		"set".warn;
 		if(synth.isKindOf(Synth)) {
-			^synth.set(args);
+			["args",args].postln;
+			^synth.set(args[0],args[1]);
 		}
 	}
 
