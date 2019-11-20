@@ -252,21 +252,28 @@ i.bass.seq(\note, "0 2 3 5");
 
 // shorthand:
 i.bass.note("0 2 3 5");
+i.bass.note = "0 2 3 5";
 
 
 # Sequencing notes
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.bass=i.synths.trance.choose;
 
 i.bass.note("0 2 3 5");
 
 // you can also use note names:
-i.bass.note("C D Eb F");
+i.bass.note("C D Eb F D# D").speed(4);
 
 // you can choose octaves
 i.bass.note("C3 D4 Eb5 F6");
+
+
+// a more complex bassline
+
+i.bass.note = "C3 Db3   C4 C3  :1.5  Db3x2  :1/2   Bb2x2  ";
+i.bass.clock=4;
 
 
 ```
