@@ -219,9 +219,11 @@ See [**Synthesizers**](#synthesizers), at the end of this document, for more inf
 s.boot;
 
 i=INSTRUMENT().play;
-i.kick="kickElectro";
+i.kick= i.synths.kick[3];
 i.kick.seq("1");
 
+// equivalent syntax:
+i.kick.seq = "1";
 
 // trigger synths with different amp values:
 i.kick.seq("1 0.3 0.75 2");
@@ -251,12 +253,19 @@ i.bass.seq(\note, "0 2 3 5");
 // shorthand:
 i.bass.note("0 2 3 5");
 
-// you can also use note names:
 
+# Sequencing notes
+
+i=INSTRUMENT().play;
+
+i.bass=i.synths.trance.choose;
+
+i.bass.note("0 2 3 5");
+
+// you can also use note names:
 i.bass.note("C D Eb F");
 
 // you can choose octaves
-
 i.bass.note("C3 D4 Eb5 F6");
 
 
@@ -479,14 +488,22 @@ i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
 // Ctrl/Cmd + Period
 
 i=INSTRUMENT().play;
-i.kick="kickElectro";
 
+i.kick=i.synths.kick[3];
 
 i.kick.clock=2;
-i.kick[0].seq("1");
-i.kick[1].seq("1xx   1");
-i.kick[2].seq("1   1xx   1 ").speed(2);
 
+i.kick[0].seq("1");
+i.kick[1].seq("1xx   1xxx ").speed(2);
+i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
+
+// You can also use '=' syntax (setter)
+
+i.kick[0].seq = "1";
+i.kick[1].seq = "1xx   1xxx ";
+i.kick[1].speed(2);
+i.kick[2].seq = "1  1x2  1x3  1x4   ";
+i.kick[2].speed(4);
 
 ```
 

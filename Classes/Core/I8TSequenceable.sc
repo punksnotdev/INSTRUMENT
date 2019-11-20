@@ -36,6 +36,11 @@ Sequenceable : I8TNode
 	}
 
 
+	seq_ {|parameter_,pattern_|
+		this.seq(parameter_,pattern_);
+		^this;
+	}
+
 	seq {|parameter_,pattern_|
 
 		var parameters;
@@ -81,21 +86,26 @@ Sequenceable : I8TNode
 
 	/* 'seq' shorthands */
 
-	test {|pattern| this.seq(\test,pattern); }
-
+	trigger_ {|pattern| this.trigger(pattern); }
 	trigger {|pattern| this.seq(\trigger,pattern); }
 
+	note_ {|pattern| this.note(pattern); }
 	note {|pattern| this.seq(\note,pattern); }
 
+	chord_ {|pattern| this.chord(pattern); }
 	chord {|pattern| this.seq(\chord,pattern); }
 
+	vol_ {|pattern| this.vol(pattern); }
 	vol {|pattern| this.seq(\amp,pattern); }
 
+	pan_ {|pattern| this.pan(pattern); }
 	pan {|pattern| this.seq(\pan,pattern); }
 
-	fx {|pattern| this.seq(\fx,pattern); }
-
-	fxSet {|pattern| this.seq(\fxSet,pattern); }
+	// fx_ {|pattern| this.fx(pattern); }
+	// fx {|pattern| this.seq(\fx,pattern); }
+	//
+	// fxSet_ {|pattern| this.fxSet(pattern); }
+	// fxSet {|pattern| this.seq(\fxSet,pattern); }
 
 
 

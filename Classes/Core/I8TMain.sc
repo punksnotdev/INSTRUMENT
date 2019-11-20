@@ -107,7 +107,6 @@ I8TMain : Event
 
 			this.addNode( rootNode );
 
-			// this.play;
 
 			midiControllers = ();
 			midiControllers.inputs = List.new;
@@ -130,11 +129,14 @@ I8TMain : Event
 			thisThread.randSeed = 10e6.rand;
 			threadID = 10e12.rand;
 
+			this.play;
+
 			"".postln;
 			"".postln;
 			"I N S T R U M E N T".postln;
 			"".postln;
 			"".postln;
+
 
 		});
 

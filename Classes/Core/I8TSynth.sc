@@ -1,4 +1,4 @@
-I8TSynth : I8TNode {
+I8TSynth : Sequenceable {
 
 	var <>synthdef;
 	var <>synth;
