@@ -15,26 +15,29 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 
 // First, evaluate following block
 (
+	s.boot;
+	s.doWhenBooted({
 
 
-i = INSTRUMENT().play;
+	i = INSTRUMENT().play;
 
-i.drums = (
-	kick: i.synths.electro.kick,
-	hihat: i.synths.electro.hihat,
-	clap: i.synths.electro.clap
-);
+	i.drums = (
+		kick: i.synths.electro.kick,
+		hihat: i.synths.electro.hihat,
+		clap: i.synths.electro.clap
+	);
 
-i.drums.kick.seq("1  1");
-i.drums.hihat.seq(" 1").speed(2);
-i.drums.clap.seq("  1     1").speed(2);
+	i.drums.kick.seq("1  1");
+	i.drums.hihat.seq(" 1").speed(2);
+	i.drums.clap.seq("  1     1").speed(2);
 
-i.drums.clock = 2;
+	i.drums.clock = 2;
 
 
 
-);
+});
 
+)
 
 // Play with clock
 
