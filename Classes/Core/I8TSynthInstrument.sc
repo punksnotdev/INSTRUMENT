@@ -174,7 +174,6 @@ SynthInstrument : Instrument
     setContent {|synthinstrument_|
 
         if(synthinstrument_.isKindOf(SynthPlayer), {
-            "SET CONTENT".warn;
             synthdef = synthinstrument_.synthdef;
         },{
             "setContent: Not a valid SynthPlayer".warn;
