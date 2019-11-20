@@ -14,28 +14,26 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 // Create a beat
 
 // First, evaluate following block
-Task.new({
+(
 
 
-	i = INSTRUMENT().play;
+i = INSTRUMENT().play;
 
-	2.wait;
+i.drums = (
+	kick: i.synths.electro.kick,
+	hihat: i.synths.electro.hihat,
+	clap: i.synths.electro.clap
+);
 
-	i.drums = (
-		kick: INSTRUMENT(i.synths.electro.kick),
-		hihat: INSTRUMENT(i.synths.electro.hihat),
-		clap: INSTRUMENT(i.synths.electro.clap)
-	);
+i.drums.kick.seq("1  1");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.clap.seq("  1     1").speed(2);
 
-	i.drums.kick.seq("1  1xx");
-	i.drums.hihat.seq(" 1").speed(2);
-	i.drums.clap.seq("   1   1xx");
-
-	i.drums.clock = 2;
+i.drums.clock = 2;
 
 
 
-}).play;
+);
 
 
 // Play with clock
@@ -1525,50 +1523,42 @@ move third direction in opposite direction
 s.boot;
 s.doWhenBooted({
 
-		Task({
+	i=INSTRUMENT().play;
+
+	// create 3 voices:
+	i.voices=(
+		v1:i.synths.piano[1],
+		v2:i.synths.piano[2],
+		v3:i.synths.piano[3],
+	);
 
 
-			i=INSTRUMENT().play;
+	h=I8THarmony();
+	v=h.generateVoicings();
+	h=v.collect(_.collect(Scale.minor.degrees.at(_)));
 
-			2.wait;
-
-			// create 3 voices:
-			i.voices=(
-				v1:i.synths.piano[1],
-				v2:i.synths.piano[2],
-				v3:i.synths.piano[3],
-			);
-
-
-			h=I8THarmony();
-			v=h.generateVoicings();
-			h=v.collect(_.collect(Scale.minor.degrees.at(_)));
-
-			i.voices.v1.note(h[0]);
-			i.voices.v2.note(h[1]);
-			i.voices.v2.note(h[2]);
+	i.voices.v1.note(h[0]);
+	i.voices.v2.note(h[1]);
+	i.voices.v2.note(h[2]);
 
 
 
-			// set parameters:
+	// set parameters:
 
-			i.voices.octave=5;
+	i.voices.octave=5;
 
 
 
 
-			i.voices.set(\rel,0.3);
-			i.voices.v1.set(\rel,4);
-			i.voices.v3.set(\rel,1);
+	i.voices.set(\rel,0.3);
+	i.voices.v1.set(\rel,4);
+	i.voices.v3.set(\rel,1);
 
-			i.voices.v1.fx="reverb.small";
-			i.voices.v2.fx="reverb.large";
-			i.voices.v3.fx="reverb.medium";
+	i.voices.v1.fx="reverb.small";
+	i.voices.v2.fx="reverb.large";
+	i.voices.v3.fx="reverb.medium";
 
-		}).play;
-
-
-		s.volume=(-12);
+	s.volume=(-12);
 
 
 })
