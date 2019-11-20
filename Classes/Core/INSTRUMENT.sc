@@ -1,7 +1,9 @@
 INSTRUMENT {
+    classvar <>instance;
 
     *new {|source=nil,createNew=false|
-        ^super.new.init(source,createNew);
+        instance = super.new.init(source,createNew);
+        ^instance;
     }
 
     init {|source=nil,createNew=false|
@@ -31,7 +33,7 @@ INSTRUMENT {
                 ||
                 source.isKindOf(Symbol)
                 ||
-                source.isKindOf(SynthDef)    
+                source.isKindOf(SynthDef)
             ) {
                 ^SynthPlayer(source);
             };

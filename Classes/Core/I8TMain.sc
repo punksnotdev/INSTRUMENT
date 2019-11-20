@@ -2,6 +2,7 @@ I8TMain : Event
 {
 
 	classvar instance;
+	classvar <>synthsLoaded;
 
 	var ready;
 	var awaitingReadyBeforePlay;
@@ -62,6 +63,12 @@ I8TMain : Event
 		});
 
 	}
+	*initClass {
+		StartUp.add {
+			var s = Server.local;
+			var i = INSTRUMENT();
+		}
+	}
 
 	init {|createNew=false|
 
@@ -111,16 +118,8 @@ I8TMain : Event
 
 			// this.setupGUI();
 
-			// dictionary for placing custom data:
-			data = ();
-
-			data.synths = () ;
-			data.synths.parameters = ();
 
 
-			synths = this.loadSynths();
-
-			currentFolder = synths;
 
 			ready = true;
 
@@ -131,22 +130,37 @@ I8TMain : Event
 			thisThread.randSeed = 10e6.rand;
 			threadID = 10e12.rand;
 
+			"".postln;
+			"".postln;
 			"I N S T R U M E N T".postln;
+			"".postln;
+			"".postln;
 
-			if( createNew == true, {
-				^this
+		});
+
+
+		// dictionary for placing custom data:
+		data = ();
+
+		data.synths = () ;
+		data.synths.parameters = ();
+
+		currentFolder = synths;
+
+
+		if( synthsLoaded.isNil, {
+			synths = this.loadSynths();
+			I8TMain.synthsLoaded = synths;
 			}, {
-				^instance
-			});
+			synths = I8TMain.synthsLoaded;
+		});
 
-		}, {
 
-			"SuperCollider server not running".warn;
-
+		if( createNew == true, {
 			^this
-			});
-
-
+		}, {
+			^instance
+		});
 
 
 	}
@@ -172,10 +186,6 @@ I8TMain : Event
 				node.channel = mixer.addChannel( node );
 				if( node.name.asString.find("kick").notNil ) {
 					node.channel.free(\locut);
-					Task.new({
-						0.1.wait;
-						( node.name ++ ": no locut for kicks" ).warn;
-					}).play;
 				};
 			}, {
 
@@ -249,9 +259,14 @@ I8TMain : Event
 			playing = true;
 
 			nodes.collect({|node|
-				if(clearedNodes.includes(node)==false){
+
+				if(clearedNodes.notNil, {
+					if(clearedNodes.includes(node)==false){
+						node.play;
+					};
+				}, {
 					node.play;
-				};
+				});
 			});
 			sequencer.play;
 
