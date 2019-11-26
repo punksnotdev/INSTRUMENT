@@ -306,13 +306,14 @@ I8TChannel : Sequenceable
 
 			if( synthdef.isKindOf(I8TFolder) ) {
 				var def = synthdef.values.detect(_.isKindOf(SynthDef));
-				synthdef.values.collect({|v,k|
-				});
+
+				// synthdef.values.collect({|v,k| });
+
 				if(def.isNil) {
 					var variant = synthdef.values.detect(_.isKindOf(SynthDefVariant));
 					def = variant;
-					if(def.notNil) {
-					};
+					// if(def.notNil) {
+					// };
 				};
 				if(def.notNil) {
 					// synthdefName = def.name;
@@ -321,9 +322,9 @@ I8TChannel : Sequenceable
 
 			};
 
-			synthdefName = fx_;
+			synthdefName = fx_.asSymbol;
 
-			synthdefKey = fx_;
+			synthdefKey = fx_.asSymbol;
 
 			if(synthdefName.asString.contains($.)){
 				synthdefKey=synthdefName.asString.split($.)[0].asSymbol;
