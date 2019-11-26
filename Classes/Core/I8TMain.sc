@@ -141,6 +141,16 @@ I8TMain : Event
 		});
 
 
+
+		// warn user if SC not running when starting INSTRUMENT manually
+		if(
+			Server.local.serverRunning == false
+		) {
+			if( synthsLoaded.notNil, {
+				"Boot SC server before starting.".warn;
+			});
+		};
+
 		// dictionary for placing custom data:
 		data = ();
 
