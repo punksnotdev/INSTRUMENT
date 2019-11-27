@@ -35,6 +35,8 @@ I8TChannel : Sequenceable
 			});
 
 			fxChain = I8TFXChain.new;
+			fxChain.channel = this;
+
 
 			bus = Bus.audio(Server.local,1);
 
@@ -242,6 +244,8 @@ I8TChannel : Sequenceable
 				fx.free;
 			});
 			fxChain=I8TFXChain.new;
+			fxChain.channel = this;
+
 			^fxChain;
 		};
 
@@ -256,6 +260,8 @@ I8TChannel : Sequenceable
 			});
 
 			fxChain = I8TFXChain.new;
+			fxChain.channel = this;
+
 			this.addFx(fxChain_);
 
 		}, {
@@ -280,6 +286,8 @@ I8TChannel : Sequenceable
 
 
 					fxChain = I8TFXChain.new;
+					fxChain.channel = this;
+
 					fxChain_.collect({|fx|
 						this.addFx(fx);
 					});
