@@ -45,7 +45,6 @@ Sequenceable : I8TNode
 
 		var parameters;
 
-		["seq in", parameter_,pattern_].postln;
 
 		parameters = this.orderPatternParameters(
 			parameter_,
@@ -63,7 +62,6 @@ Sequenceable : I8TNode
 		// 	parameters.play_parameters,
 		// 	sequencer
 		// ].postln;
-		["seq",sequencer,name,parameters.parameter].postln;
 		if( sequencer.notNil ) {
 
 

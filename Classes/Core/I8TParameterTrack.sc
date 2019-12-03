@@ -230,9 +230,17 @@ ParameterTrack
 			var found = -1;
 			block{|break|
 				patterns.keysValuesDo({|key_,item|
-					if( item.pattern == pattern.pattern, {
-						found = key_;
-						break.value;
+					if( (
+						item.isKindOf(I8TPattern) && pattern.isKindOf(I8TPattern)
+					), {
+
+						if( item.pattern == pattern.pattern, {
+							found = key_;
+							break.value;
+						});
+
+					}, {
+						["is not a P",pattern].postln;
 					});
 				});
 			};
