@@ -25,7 +25,7 @@
 
 		sig = (sig*3.3).tanh;
 
-		sig = Mix.new(RLPF.ar(sig,filterHz,res.reciprocal*LFSaw.kr(1/8).linlin(-1,1,0.1,1)));
+		sig = Mix.new(RLPF.ar(sig,filterHz,res.reciprocal*LFSaw.kr(1/8).linlin(-1,1,0.3,1)));
 
 
 		sig = sig * SinOsc.kr(4).linlin(-1,1,0.3,[1,1.3]);

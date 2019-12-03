@@ -94,6 +94,7 @@ I8TMain : Event
 
 			mixer = I8TMixer.new(this);
 			mixer.setupMaster();
+			mixer.sequencer = sequencer;
 
 			controllerManager = ControllerManager.new(this);
 
@@ -196,6 +197,7 @@ I8TMain : Event
 				};
 
 				node.channel = mixer.addChannel( node );
+
 				if( node.name.asString.find("kick").notNil ) {
 					node.channel.free(\locut);
 				};

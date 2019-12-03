@@ -166,6 +166,7 @@ I8TChannel : Sequenceable
 
 	set {|parameter,value|
 
+		["set",parameter,value].postln;
 
 		if( ( parameter.notNil && value.notNil ) ) {
 			if( (value.isKindOf(Number)||value.isKindOf(String)), {

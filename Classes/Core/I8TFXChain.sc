@@ -8,11 +8,13 @@ I8TFXChain : Event
 
 	seq_ {|pattern|
 		if(this.at('channel').notNil){
-
-			["seq",pattern].postln;
-
-			this.at('channel').seq = pattern;
-
+			this.at('channel').seq(\fx, pattern);
 		};
 	}
+	clock_ {|clock|
+		if(this.at('channel').notNil){
+			this.at('channel').clock=clock;
+		};
+	}
+
 }

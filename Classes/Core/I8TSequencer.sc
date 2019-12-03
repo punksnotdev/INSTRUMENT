@@ -206,7 +206,10 @@ Sequencer : I8TNode
 
 		var patternEvent = sequencer_tracks[ track ].addPattern(parameter,key,pattern);
 
+		["addPattern",parameter,patternEvent].postln;
+
 		if( patternEvent.pattern.totalDuration > 0 ) {
+
 			var patternInfo = (
 				track: track,
 				pattern: pattern,
@@ -216,9 +219,12 @@ Sequencer : I8TNode
 				event: patternEvent
 			);
 
-			main.displayNextPattern(patternInfo);
+
+			// main.displayNextPattern(patternInfo);
 
 			Task.new({
+				// 0.1.wait;
+				// ["pattern",parameter,patternInfo].postln;
 				0.1.wait;
 				(track++"."++parameter++": "++key).postln;
 				("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;

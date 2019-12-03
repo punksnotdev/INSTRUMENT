@@ -1,4 +1,4 @@
-I8TMixer : I8TNode
+I8TMixer : Sequenceable
 {
 
 	var channels;
@@ -55,8 +55,11 @@ I8TMixer : I8TNode
 
 			var channelName = ("system_out_" ++ index).asSymbol;
 
+
 			if(masterChannel.notNil) {
 
+				masterChannel.sequencer = sequencer;
+				
 				masterChannel.setAmp( 1 );
 				masterChannel.setPan( index.linlin(0,1,-1,1) );
 
@@ -125,6 +128,7 @@ I8TMixer : I8TNode
 
 						if(( channel.isKindOf( I8TChannel ) == false ), {
 							channel  = I8TChannel(mixGroup,bus);
+							channel.sequencer = sequencer;
 						});
 
 
@@ -153,6 +157,7 @@ I8TMixer : I8TNode
 						if( channels[node.name].isKindOf( I8TChannel ) == false ) {
 
 							channel = I8TChannel(mixGroup, bus);
+							channel.sequencer = sequencer;
 
 							channels[node.name]=channel;
 
