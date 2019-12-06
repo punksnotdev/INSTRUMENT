@@ -240,6 +240,8 @@ I8TChannel : Sequenceable
 
 
 	setFxChain {|fxChain_|
+
+
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
 			fxChain.collect({|fx,key|
 				fx.free;
@@ -247,7 +249,6 @@ I8TChannel : Sequenceable
 			fxChain=I8TFXChain.new;
 			fxChain.channel = this;
 
-			^fxChain;
 		};
 
 		if( (
@@ -299,7 +300,9 @@ I8TChannel : Sequenceable
 
 		});
 
+
 		^fxChain;
+
 	}
 
 	addFx {|fx_|

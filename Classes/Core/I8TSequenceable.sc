@@ -15,6 +15,7 @@ Sequenceable : I8TNode
 	var currentParameter;
 	var minSpeed;
 
+
 	*new{|graph_,name_|
 		^super.new(this.graph,name_);
 	}
@@ -43,6 +44,7 @@ Sequenceable : I8TNode
 
 	seq {|parameter_,pattern_|
 
+
 		var parameters;
 
 
@@ -54,16 +56,8 @@ Sequenceable : I8TNode
 
 		currentParameter = parameters.parameter;
 
-		// [
-		// 	name,
-		// 	parameters.parameter,
-		// 	nextPatternKey,
-		// 	parameters.pattern,
-		// 	parameters.play_parameters,
-		// 	sequencer
-		// ].postln;
-		if( sequencer.notNil ) {
 
+		if( sequencer.notNil ) {
 
 			currentPatternEvent = sequencer.addPattern(
 				name,

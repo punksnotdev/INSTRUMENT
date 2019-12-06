@@ -235,21 +235,36 @@ Sequencer : I8TNode
 
 	}
 	updateSequenceInfo {|track,parameter|
-		sequencer_tracks[track].parameterTracks[parameter].updateSequenceInfo;
+		var parameterTrack = sequencer_tracks[track];
+		if(parameterTrack.notNil) {
+			parameterTrack.parameterTracks[parameter].updateSequenceInfo;
+		};
 	}
 	removePattern {|track,parameter,key|
-		sequencer_tracks[ track ].removePattern(parameter,key);
+		var parameterTrack = sequencer_tracks[ track ];
+		if(parameterTrack.notNil) {
+			parameterTrack.removePattern(parameter,key);
+		};
 	}
 	clearPatterns {|track,parameter|
-		sequencer_tracks[ track ].clearPatterns(parameter);
+		var parameterTrack = sequencer_tracks[ track ];
+		if(parameterTrack.notNil) {
+			parameterTrack.clearPatterns(parameter);
+		};
 	}
 
 	getPattern {|track,parameter,key|
-		^sequencer_tracks[ track ].getPattern(parameter,key);
+		var parameterTrack = sequencer_tracks[ track ];
+		if(parameterTrack.notNil) {
+			^parameterTrack.getPattern(parameter,key);
+		};
 	}
 
 	getPatterns {|track,parameter|
-		^sequencer_tracks[ track ].getPatterns(parameter);
+		var parameterTrack = sequencer_tracks[ track ];
+		if(parameterTrack.notNil) {
+			^parameterTrack.getPatterns(parameter);
+		};
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|

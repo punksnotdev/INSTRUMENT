@@ -177,10 +177,12 @@ ParameterTrack
 
 
 
-							if( this.currentEvent().parameters[\speed] != nil, {
-								currentSpeed = this.currentEvent().parameters[\speed] * speed;
-							}, {
-								currentSpeed = speed;
+							if( this.currentEvent().notNil, {
+								if( this.currentEvent().parameters[\speed].notNil, {
+									currentSpeed = this.currentEvent().parameters[\speed] * speed;
+								}, {
+									currentSpeed = speed;
+								});
 							});
 
 						});

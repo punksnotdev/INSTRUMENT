@@ -197,27 +197,36 @@ SynthInstrument : Instrument
     }
 
     fx {|key|
+
+        if( this.checkFx( key ) ) {
+            channel.setFxChain(key);
+        };
+
         ^channel.fx(key)
+
     }
 
-    fx_ {|fx|
+    fx_ {|key|
 
-        if(
-            (
-                fx.isKindOf(SynthDef)
-                || fx.isKindOf(Collection)
-                || fx.isKindOf(SynthDefVariant)
-                || fx.isKindOf(Symbol)
-                || fx.isKindOf(String)
-                || fx.isNil
-                || (fx===false)
-            )
-        ) {
-            channel.setFxChain(fx);
+        if( this.checkFx( key ) ) {
+            channel.rm('fx');
+            this.fx(key);
         };
 
     }
 
+
+    checkFx {|fx|
+        ^(
+            fx.isKindOf(SynthDef)
+            || fx.isKindOf(Collection)
+            || fx.isKindOf(SynthDefVariant)
+            || fx.isKindOf(Symbol)
+            || fx.isKindOf(String)
+            || fx.isNil
+            || (fx===false)
+        )
+    }
 
 
 }

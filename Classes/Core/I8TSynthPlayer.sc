@@ -190,7 +190,7 @@ SynthPlayer : SynthInstrument
 				\octave, { octave = value.val },
 				\fx, {
 
-					this.fx_( value.val );
+					this.fx( value.val );
 
 				},
 				\fxSet, {
