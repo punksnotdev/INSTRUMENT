@@ -204,9 +204,10 @@ Sequencer : I8TNode
 
 	addPattern {|track,parameter,key,pattern|
 
-		var patternEvent = sequencer_tracks[ track ].addPattern(parameter,key,pattern);
+		var patternEvent;
 
-		["addPattern",parameter,patternEvent].postln;
+		patternEvent = sequencer_tracks[ track ].addPattern(parameter,key,pattern);
+
 
 		if( patternEvent.pattern.totalDuration > 0 ) {
 

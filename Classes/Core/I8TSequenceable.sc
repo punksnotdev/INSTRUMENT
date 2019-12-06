@@ -8,7 +8,7 @@ Sequenceable : I8TNode
 	var <playing;
 	var <>amp;
 
-	var nextPatternKey;
+	var <>nextPatternKey;
 
 	var currentPatternEvent;
 	var currentPattern;

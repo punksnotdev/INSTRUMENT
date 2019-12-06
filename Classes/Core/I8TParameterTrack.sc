@@ -227,6 +227,7 @@ ParameterTrack
 		var eventName;
 		var newKey;
 		var newPatternEvent;
+
 		if( key == nil, {
 
 			var found = -1;
@@ -241,8 +242,6 @@ ParameterTrack
 							break.value;
 						});
 
-					}, {
-						["is not a P",pattern].postln;
 					});
 				});
 			};
@@ -265,7 +264,6 @@ ParameterTrack
 			name.asString ++ "-" ++
 			key.asString
 		).toLower;
-
 
 		if( pattern.isKindOf(I8TPattern), {
 
@@ -290,7 +288,6 @@ ParameterTrack
 		});
 
 		newPatternEvent.time=key;
-
 
 		if( sequence[key].notNil && newPatternEvent.notNil ) {
 			if( sequence[key].played==true ) {
