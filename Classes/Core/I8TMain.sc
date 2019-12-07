@@ -581,9 +581,7 @@ I8TMain : Event
 
 				if( something.isKindOf(I8TFolder) ) {
 
-					if( this.validateSynthDef( something.at(something.name) ) ) {
-						item = this.setupNode(SynthPlayer(something.at(something.name)), key);
-					};
+					item = this.setupNode(SynthPlayer(something.getMainSynthDef), key);
 
 				};
 
