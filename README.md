@@ -681,39 +681,48 @@ i.bass.synthdef([\bassTrance1,\bassTrance2,\bassTrance3]);
 	i=INSTRUMENT().play;
 
 	i.piano=i.synths.piano[1];
-	i.piano.note("0 2 3 5");
+	i.piano.note("0 2 3 5").random().mirror.speed(2);
 
-
-	i.piano.octave=3;
+	i.piano.octave=4;
 
 )
 
+// using fx name
 i.piano.fx="reverb";
+// using synth dictionary
+i.piano.fx=i.synths.fx.reverb;
+// using synth variants
+// by name
+i.piano.fx=i.synths.fx.reverb.infinite;
+// by index
+i.piano.fx=i.synths.fx.reverb[2];
+
+
 // variants
+i.piano.fx.reverb="large";
+// equivalent to:
 i.piano.fx="reverb.large";
-i.piano.fx="reverb.small";
 
-(
-i.piano.clock=1/4;
-i.piano.fx="reverb.infinite";
-)
+i.piano.fx.reverb="small";
 
+i.piano.fx.reverb="infinite";
 
-i.piano.clock=1;
-i.piano.fxSet(\wet,0);
-i.piano.fxSet(\wet,1);
-i.piano.fxSet(\wet,3/4);
-i.piano.fxSet(\wet,1/4);
+// modify parameters
 
-i.piano.fxSet(\room,7/8);
-i.piano.fxSet(\damp,7/8);
+i.piano.fx.reverb.wet=0;
+i.piano.fx.reverb.wet=1;
+i.piano.fx.reverb.wet=1/4;
+i.piano.fx.reverb.wet=3/4;
 
-i.piano.fxSet(\room,1/8);
-i.piano.fxSet(\damp,1/8);
+i.piano.fx.reverb.room=7/8;
+i.piano.fx.reverb.damp=7/8;
+
+i.piano.fx.reverb.room=1/8;
+i.piano.fx.reverb.damp=1/8;
 
 
-i.piano.fxSet(\room,1);
-i.piano.fxSet(\damp,1);
+i.piano.fx.reverb.room=1;
+i.piano.fx.reverb.damp=1;
 
 
 i.piano.stop;
@@ -721,7 +730,46 @@ i.piano.stop;
 i.piano.fx=nil;
 i.piano.play;
 
-i.piano.fx=i.synths.fx.reverb[2];
+
+### FX Chains:
+
+
+i.piano.fx = [ "reverb", "lpf" ];
+
+i.piano.fx = [ "delay2", "distortion" ];
+
+i.piano.fx.distortion.gain=10;
+i.piano.fx.distortion.gain=3;
+i.piano.fx.delay2.time=0.1;
+i.piano.fx.delay2.time=0.5;
+
+
+### Sequencing FX:
+
+i.piano.fx.seq = [
+	"reverb",
+	"distortion",
+	"lpf"
+];
+
+
+// more complex sequence, alternating between simple single fx units and fx chains
+
+i.piano.fx.seq = [
+	"reverb",
+	['reverb',"gateDistort.extreme",\lpf],
+	[\delay2,"gateDistort.hardcore"],
+	'lpf',
+	nil
+];
+
+
+
+// clear all FX:
+
+i.piano.fx=nil;
+
+
 
 
 ```
