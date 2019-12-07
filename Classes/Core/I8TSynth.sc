@@ -81,4 +81,12 @@ I8TSynth : Sequenceable {
 		^(graph.validateSynthName(synthdef) || graph.validateSynthDef(synthdef))
 	}
 
+	+ {arg ...args;
+
+		["add",args].postln;
+	}
+	// at {|key,value|
+	// 	[key,value].postln;
+	// }
+
 }

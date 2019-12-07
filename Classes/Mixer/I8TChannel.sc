@@ -7,7 +7,7 @@ I8TChannel : Sequenceable
 	var amp,inAmp,outAmp;
 	var pan;
 
-	var fxChain;
+	var <fxChain;
 
 	var eq, locut, compressor;
 
@@ -307,6 +307,37 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_|
 
+		var fx = this.createFx(fx_);
+
+
+		if( (
+			fx.synthdef.notNil
+			&&
+			fx.synthdefKey.notNil
+			)
+		) {
+			var fxSynth;
+
+			this.removeFx(fx.synthdefKey);
+
+			["createFX",fx.synthdefKey,fx.synthdef.class,fx.synthdef].postln;
+			fxSynth = I8TSynth.before(
+				outSynth,
+				fx.synthdef,
+				[\inBus,bus,\outBus,bus]
+			);
+
+			fxChain[fx.synthdefKey.asSymbol] = fxSynth;
+
+			^fxSynth;
+
+		};
+
+	}
+
+
+	createFx {|fx_|
+
 		var synthdef;
 		var synthdefName;
 		var synthdefKey;
@@ -372,8 +403,11 @@ I8TChannel : Sequenceable
 
 					}, {
 
-						synthdefName = fx_.name.asSymbol;
-						synthdefKey = synthdef;
+						if( fx_.isKindOf(SynthDef), {
+							synthdef = fx_;
+							synthdefName = fx_.name.asSymbol;
+							synthdefKey = synthdefName;
+						});
 
 					});
 
@@ -382,23 +416,24 @@ I8TChannel : Sequenceable
 
 		});
 
-		this.removeFx(synthdefKey);
 
-		if(synthdef.notNil) {
-
-			fxChain[synthdefKey] = I8TSynth.before(
-				outSynth,
-				synthdef,
-				[\inBus,bus,\outBus,bus]
-			);
-
-		};
+		^(
+			synthdef: synthdef,
+			synthdefKey: synthdefKey
+		)
 
 	}
 
 	removeFx {|key|
-		if( fxChain[ key ].isKindOf(Synth)) {
+
+		["removeFx",fxChain[ key ],fxChain[ key ].class].postln;
+		if(
+			fxChain[ key ].isKindOf(Synth)
+			||
+			fxChain[ key ].isKindOf(I8TSynth)
+	 	) {
 			fxChain[ key ].free;
+			["free",key].postln;
 			fxChain.removeAt( key )
 		};
 		if( fxChain[ key ].isKindOf(Collection)) {

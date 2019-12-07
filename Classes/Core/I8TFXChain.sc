@@ -27,4 +27,38 @@ I8TFXChain : Event
 		};
 	}
 
+	put {|key,value|
+		if( (
+			// value.isKindOf(SynthDef)
+			// ||
+			// value.isKindOf(SynthDefVariant)
+			// ||
+			value.isKindOf(String)
+			||
+			value.isKindOf(Symbol)
+		), {
+
+			var variantName = key.asString ++ "." ++ value.asString;
+
+			variantName = variantName.asSymbol;
+
+			this.at('channel').addFx( variantName );
+
+		}, {
+
+			if( (
+				value.isKindOf(SynthDef)
+				||
+				value.isKindOf(SynthDefVariant)
+			), {
+				["fxChain: got synth", key, value.class ]
+			},{
+
+				^super.put(key,value);
+
+			});
+
+		});
+	}
+
 }
