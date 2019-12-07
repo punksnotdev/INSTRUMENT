@@ -423,4 +423,29 @@ I8TFolder : Event
 
 	}
 
+
+	getMainSynthDef {
+
+		var synthDef;
+
+
+		synthDef = this.detect({|item| item.name==this.name });
+
+		if( synthDef.notNil ) {
+			^synthDef
+		};
+
+		synthDef = this.detect({|item| item.isKindOf(SynthDef) });
+
+		if( synthDef.notNil ) {
+			^synthDef
+		};
+
+		synthDef = this.detect({|item| item.isKindOf(SynthDefVariant) });
+
+		^synthDef
+
+
+	}
+
 }
