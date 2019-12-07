@@ -213,6 +213,7 @@ SynthInstrument : Instrument
 
         if( fx.isNil, {
 
+            channel.rm('fx');
             channel.setFxChain(nil);
 
         },{
