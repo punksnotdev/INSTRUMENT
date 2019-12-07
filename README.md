@@ -22,12 +22,12 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 	i = INSTRUMENT().play;
 
 	i.drums = (
-		kick: i.synths.electro.kick,
-		hihat: i.synths.electro.hihat,
-		clap: i.synths.electro.clap
+		kick: 'kick',
+		hihat: 'hihat',
+		clap: 'clap'
 	);
 
-	i.drums.kick.seq("1  1");
+	i.drums.kick.seq("1   ");
 	i.drums.hihat.seq(" 1").speed(2);
 	i.drums.clap.seq("  1     1").speed(2);
 
@@ -170,15 +170,15 @@ i=INSTRUMENT().play;
 
 // access by name
 
-i.kick="kickElectro";
+i.kick="kick";
 i.kick.seq("1");
 
 // use the dictionary
-i.kick=i.synths.electro.kick;
+i.kick='kick';
 
 // replace sounds
 
-i.kick=i.synths.electro.hihat;
+i.kick='hihat';
 
 
 
@@ -324,7 +324,7 @@ i.tempo=220;
 
 ```SuperCollider
 
-i.kick=i.synths.kick.choose;
+i.kick='kick';
 
 i.kick.seq("1   0.5");
 
@@ -368,7 +368,7 @@ i.piano.note("0x2 2x3 3x5");
 // get last pattern duration:
 i.piano.duration;
 
-i.kick=i.synths.electro.kick;
+i.kick='kick';
 
 // repeat three times
 i.kick.seq("1 0.5x3");
@@ -421,7 +421,7 @@ It requires a duration parameter, which must be a number (integer or fractionary
 
 i=INSTRUMENT().play;
 
-i.kick=i.synths.kick.choose;
+i.kick='kick';
 
 // decimal representation
 i.kick.seq("1 :0.25 1x3 ");
@@ -442,7 +442,7 @@ Using fractions allow some interesting rhythms:
 
 	i=INSTRUMENT().play;
 
-	i.kick=i.synths.kick.choose;
+	i.kick='kick';
 	i.hihat=i.synths.hihat.choose.postln;
 
 	i.kick.seq("1xx  :3/8 1x3  1x2 :1/4 1x3  1x2  :1/2 1xx");
@@ -591,9 +591,9 @@ i.kick.go(13);
 i = INSTRUMENT().play;
 
 i.drums = (
-	kick: i.synths.electro.kick,
-	hihat: i.synths.electro.hihat,
-	clap: i.synths.electro.clap
+	kick: 'kick',
+	hihat: 'hihat',
+	clap: 'clap'
 );
 
 i.drums.kick.seq("1");
@@ -830,7 +830,7 @@ i = INSTRUMENT().play;
 
 
 i.drums=(
-	kick: i.synths.kick.choose,
+	kick: 'kick',
 	hihat: i.synths.hihat.choose,
 	snare: i.synths.snare.choose,
 );
@@ -862,7 +862,7 @@ i.drums=(
 // restore
 
 i.drums=(
-	kick: i.synths.kick.choose,
+	kick: 'kick',
 	hihat: i.synths.hihat.choose,
 	snare: i.synths.snare.choose,
 )
@@ -919,7 +919,7 @@ i.drums=(
 
 
 i.drums=(
-	// k:i.synths.electro.kick,
+	// k:'kick',
 	h:"hihatClosed",
 	s:i.synths.snare[5],
 );
@@ -928,7 +928,7 @@ i.drums=(
 (
 
 i.drums=(
-	k:i.synths.electro.kick,
+	k:'kick',
 	h:"kickDamp",
 	hh:i.synths.hihat[0],
 	s:i.synths.snare[2],
@@ -944,7 +944,7 @@ i.drums.hh=i.synths.hihat[2];
 i.drums.k=i.synths.hihat[0];
 
 // wait a bit:
-i.drums.k=i.synths.electro.kick;
+i.drums.k='kick';
 
 
 (
@@ -1727,7 +1727,7 @@ Task.new({
 
 // choose one Synthdef at random
 
-i.synths.kick.choose.postln;
+'kick'.postln;
 i.synths.bass.choose.postln;
 
 // a specific SynthDef

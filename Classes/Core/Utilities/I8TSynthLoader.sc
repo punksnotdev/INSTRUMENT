@@ -200,6 +200,23 @@ I8TSynthLoader {
 
 	}
 
+    getFolderByName {|folderName|
+
+		var folder;
+
+        folder = synths[folderName.asSymbol];
+
+		if( folder.isNil ) {
+            folder = synths[folderName.asString.toLower.asSymbol];
+		};
+
+
+		if( folder.isKindOf(I8TFolder) ) {
+            ^folder
+		};
+
+	}
+
 
 
 	validateSynthName{|synthName|
@@ -214,6 +231,20 @@ I8TSynthLoader {
 
 		^false;
 	}
+
+	validateFolderName{|folderName|
+
+		var folderdef;
+
+		if( folderName.isKindOf(String) || folderName.isKindOf(Symbol) ) {
+
+			^this.getFolderByName(folderName).notNil
+
+		};
+
+		^false;
+	}
+
 
 	validateSynthDef {|synthdef|
 

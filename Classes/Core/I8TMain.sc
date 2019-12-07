@@ -547,11 +547,21 @@ I8TMain : Event
 		}, {
 
 
+				// create node(s) depending on input type:
+
 				if( something.isKindOf(I8TNode), {
 
 					item = this.setupNode( something, key );
 
 				});
+
+				if( something.isKindOf(I8TNode), {
+
+					item = this.setupNode( something, key );
+
+				});
+
+
 
 				if( this.validateSynthName(something) ) {
 
@@ -585,6 +595,15 @@ I8TMain : Event
 
 				};
 
+				if( this.validateFolderName(something) ) {
+
+					item = this.setupNode(SynthPlayer(
+						this.getFolderByName(something).getMainSynthDef
+					), key);
+
+				};
+
+
 				if((
 					(
 						something.isKindOf(Collection)
@@ -608,6 +627,12 @@ I8TMain : Event
 
 				};
 
+
+
+
+
+
+				// MIDI:
 
 				if( midiControllers.inputs.notNil ) {
 
@@ -708,10 +733,12 @@ I8TMain : Event
 						||
 						(this.validateSynthName(childItem))
 						||
+						(this.validateFolderName(childItem))
+						||
 						( childItem.isKindOf(I8TNode) )
 					) == false) {
 
-					("Not a valid Group item"++childItem.asString).warn;
+					("Not a valid Group item: "++childItem.asString).warn;
 
 					allValid = false;
 				};
@@ -748,7 +775,10 @@ I8TMain : Event
 
 							if( this.validateSynthName(childItem) ) {
 								synthdef = this.getSynthDefByName(childItem);
+							};
 
+							if( this.validateFolderName(childItem) ) {
+								synthdef = this.getFolderByName(childItem).getMainSynthDef;
 							};
 
 							currentGroup.at(childItemKey).synthdef = synthdef;
@@ -794,6 +824,27 @@ I8TMain : Event
 								},
 								{
 									var synthdef = this.getSynthDefByName(childItem);
+
+									var newNode = SynthPlayer(synthdef);
+
+									childItem.name=childItem;
+
+									this.setupNode( newNode, childItem );
+
+									currentGroup.put( childItemKey, newNode );
+
+								});
+
+
+							};
+
+							if( this.validateFolderName(childItem) ) {
+
+								if( nodes[childItemKey].notNil, {
+							  		newGroup.put( childItemKey, nodes[childItem] );
+								},
+								{
+									var synthdef = this.getFolderByName(childItem).getMainSynthDef;
 
 									var newNode = SynthPlayer(synthdef);
 
@@ -883,6 +934,30 @@ I8TMain : Event
 							  }, {
 								  // if no node and no group found
 								  var synthdef = this.getSynthDefByName(childItem);
+								  var newNode = SynthPlayer(synthdef);
+								  this.setupNode(newNode,childItemName);
+								  newGroup.put( childItemKey, newNode );
+
+							  });
+							});
+
+						};
+
+
+						if( this.validateFolderName(childItem) ) {
+
+							var childItemName = childItem;
+
+							if( nodes[childItemName].notNil, {
+							  newGroup.put( childItemName, nodes[childItemName] );
+							}, {
+							  // if childItem name is a group
+							  if( groups[childItemName].notNil, {
+								// add its childItems
+								newGroup.put( childItemName, groups[childItemName] );
+							  }, {
+								  // if no node and no group found
+								  var synthdef = this.getFolderByName(childItem).getMainSynthDef;
 								  var newNode = SynthPlayer(synthdef);
 								  this.setupNode(newNode,childItemName);
 								  newGroup.put( childItemKey, newNode );
@@ -1054,12 +1129,20 @@ I8TMain : Event
 	}
 
 
+	validateFolderName{|synthName|
+		^synthLoader.validateFolderName(synthName);
+	}
+
 	validateSynthName{|synthName|
-		synthLoader.validateSynthName(synthName);
+		^synthLoader.validateSynthName(synthName);
 	}
 
 	getSynthDefByName {|synthName|
 	  ^synthLoader.getSynthDefByName(synthName);
+	}
+
+	getFolderByName {|folderName|
+	  ^synthLoader.getFolderByName(folderName);
 	}
 
 	validateSynthDef {|synthdef|
