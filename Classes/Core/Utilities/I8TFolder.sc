@@ -274,10 +274,10 @@ I8TFolder : Event
 					var newKey = k.asString;
 
 					this.getAncestors.collect({|value|
-						newKey=newKey.replace(value.name.asString.toLower,"");
+						newKey=newKey.replace(value.name.asString.uncapitalize,"");
 					});
 
-					newKey=newKey.replace(name.asString.toLower,"");
+					newKey=newKey.replace(name.asString.uncapitalize,"");
 
 					if(((newKey!="0")&&(newKey.asInteger>0)), {
 						this.ref(("s"++newKey).asSymbol,v);
@@ -354,7 +354,7 @@ I8TFolder : Event
 
 					var synthFolder = I8TFolder();
 
-					var folderKey = k.asString.replace(name.asString,"").toLower.asSymbol;
+					var folderKey = k.asString.replace(name.asString,"").uncapitalize.asSymbol;
 
 					synthFolder.name = folderKey;
 
@@ -368,9 +368,9 @@ I8TFolder : Event
 							this[k]
 						);
 
-						synthFolder.put(vk.asString.toLower.asSymbol,synthDefVariant);
+						synthFolder.put(vk.asString.uncapitalize.asSymbol,synthDefVariant);
 
-						this.getRootFolder.ref((this[k].name.asString++"."++vk).toLower.asSymbol,synthDefVariant);
+						this.getRootFolder.ref((this[k].name.asString++"."++vk).uncapitalize.asSymbol,synthDefVariant);
 						this.getRootFolder.ref((this[k].name.asString++"."++vk).asSymbol,synthDefVariant);
 
 					});

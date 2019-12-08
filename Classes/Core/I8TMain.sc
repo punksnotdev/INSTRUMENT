@@ -148,7 +148,7 @@ I8TMain : Event
 			Server.local.serverRunning == false
 		) {
 			if( I8TSynthLoader.synthsLoaded.notNil, {
-				"SC server not running: boot".warn;
+				"please boot".warn;
 			});
 		};
 
@@ -563,11 +563,11 @@ I8TMain : Event
 
 
 
-				if( this.validateSynthName(something) ) {
+				if( synthLoader.validateSynthName(something) ) {
 
-					var synthdef = this.getSynthDefByName(something);
+					var synthdef = synthLoader.getSynthDefByName(something);
 
-					if(this.validateSynthDef(synthdef)) {
+					if(synthLoader.validateSynthDef(synthdef)) {
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
 						}, {
@@ -595,10 +595,10 @@ I8TMain : Event
 
 				};
 
-				if( this.validateFolderName(something) ) {
+				if( synthLoader.validateFolderName(something) ) {
 
 					item = this.setupNode(SynthPlayer(
-						this.getFolderByName(something).getMainSynthDef
+						synthLoader.getFolderByName(something).getMainSynthDef
 					), key);
 
 				};
@@ -731,9 +731,9 @@ I8TMain : Event
 						||
 						( childItem.isKindOf(SynthDefVariant) )
 						||
-						(this.validateSynthName(childItem))
+						(synthLoader.validateSynthName(childItem))
 						||
-						(this.validateFolderName(childItem))
+						(synthLoader.validateFolderName(childItem))
 						||
 						( childItem.isKindOf(I8TNode) )
 					) == false) {
@@ -773,12 +773,12 @@ I8TMain : Event
 								synthdef = childItem;
 							};
 
-							if( this.validateSynthName(childItem) ) {
-								synthdef = this.getSynthDefByName(childItem);
+							if( synthLoader.validateSynthName(childItem) ) {
+								synthdef = synthLoader.getSynthDefByName(childItem);
 							};
 
-							if( this.validateFolderName(childItem) ) {
-								synthdef = this.getFolderByName(childItem).getMainSynthDef;
+							if( synthLoader.validateFolderName(childItem) ) {
+								synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
 							};
 
 							currentGroup.at(childItemKey).synthdef = synthdef;
@@ -817,13 +817,13 @@ I8TMain : Event
 
 							};
 
-							if( this.validateSynthName(childItem) ) {
+							if( synthLoader.validateSynthName(childItem) ) {
 
 								if( nodes[childItemKey].notNil, {
 							  		newGroup.put( childItemKey, nodes[childItem] );
 								},
 								{
-									var synthdef = this.getSynthDefByName(childItem);
+									var synthdef = synthLoader.getSynthDefByName(childItem);
 
 									var newNode = SynthPlayer(synthdef);
 
@@ -838,13 +838,13 @@ I8TMain : Event
 
 							};
 
-							if( this.validateFolderName(childItem) ) {
+							if( synthLoader.validateFolderName(childItem) ) {
 
 								if( nodes[childItemKey].notNil, {
 							  		newGroup.put( childItemKey, nodes[childItem] );
 								},
 								{
-									var synthdef = this.getFolderByName(childItem).getMainSynthDef;
+									var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
 
 									var newNode = SynthPlayer(synthdef);
 
@@ -920,7 +920,7 @@ I8TMain : Event
 							};
 						  };
 
-						  if( this.validateSynthName(childItem) ) {
+						  if( synthLoader.validateSynthName(childItem) ) {
 
 							var childItemName = childItem;
 
@@ -933,7 +933,7 @@ I8TMain : Event
 								newGroup.put( childItemName, groups[childItemName] );
 							  }, {
 								  // if no node and no group found
-								  var synthdef = this.getSynthDefByName(childItem);
+								  var synthdef = synthLoader.getSynthDefByName(childItem);
 								  var newNode = SynthPlayer(synthdef);
 								  this.setupNode(newNode,childItemName);
 								  newGroup.put( childItemKey, newNode );
@@ -944,7 +944,7 @@ I8TMain : Event
 						};
 
 
-						if( this.validateFolderName(childItem) ) {
+						if( synthLoader.validateFolderName(childItem) ) {
 
 							var childItemName = childItem;
 
@@ -957,7 +957,7 @@ I8TMain : Event
 								newGroup.put( childItemName, groups[childItemName] );
 							  }, {
 								  // if no node and no group found
-								  var synthdef = this.getFolderByName(childItem).getMainSynthDef;
+								  var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
 								  var newNode = SynthPlayer(synthdef);
 								  this.setupNode(newNode,childItemName);
 								  newGroup.put( childItemKey, newNode );
@@ -1137,6 +1137,10 @@ I8TMain : Event
 		^synthLoader.validateSynthName(synthName);
 	}
 
+	validateSynthDef{|synthDef|
+		^synthLoader.validateSynthDef(synthDef);
+	}
+
 	getSynthDefByName {|synthName|
 	  ^synthLoader.getSynthDefByName(synthName);
 	}
@@ -1145,9 +1149,6 @@ I8TMain : Event
 	  ^synthLoader.getFolderByName(folderName);
 	}
 
-	validateSynthDef {|synthdef|
-	  ^synthLoader.validateSynthDef(synthdef);
-	}
 
 
 	kill {

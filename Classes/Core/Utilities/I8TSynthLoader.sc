@@ -13,10 +13,6 @@ I8TSynthLoader {
 
     	if( synthsLoaded.isNil, {
 
-
-
-
-
     		var files;
     		var folder;
     		// var level;
@@ -62,7 +58,7 @@ I8TSynthLoader {
     			var synthdef = fileSrc.load;
 
     			if( synthdef.isKindOf(SynthDef) ) {
-    				items[ fileName.toLower.replace(" ","_").asSymbol ] = synthdef;
+    				items[ fileName.uncapitalize.replace(" ","_").asSymbol ] = synthdef;
     			};
     		});
 
@@ -70,7 +66,7 @@ I8TSynthLoader {
 
     			var pathName = PathName( folderSrc );
 
-    			var folderName = pathName.folderName.toLower.replace(" ","_").asSymbol;
+    			var folderName = pathName.folderName.uncapitalize.replace(" ","_").asSymbol;
 
     			// "-------".postln;
     			// folderName.postln;
@@ -170,11 +166,12 @@ I8TSynthLoader {
 
 
 
+
     getSynthDefByName {|synthName|
 
 		var synthdef;
 
-		synthdef = synths[synthName.asString.toLower.asSymbol];
+		synthdef = synths[synthName.asString.uncapitalize.asSymbol];
 
 		if( synthdef.isNil ) {
 			synthdef = synths[synthName.asSymbol];
@@ -207,13 +204,10 @@ I8TSynthLoader {
         folder = synths[folderName.asSymbol];
 
 		if( folder.isNil ) {
-            folder = synths[folderName.asString.toLower.asSymbol];
+            folder = synths[folderName.asString.uncapitalize.asSymbol];
 		};
 
-
-		if( folder.isKindOf(I8TFolder) ) {
-            ^folder
-		};
+        ^folder
 
 	}
 
@@ -233,8 +227,6 @@ I8TSynthLoader {
 	}
 
 	validateFolderName{|folderName|
-
-		var folderdef;
 
 		if( folderName.isKindOf(String) || folderName.isKindOf(Symbol) ) {
 

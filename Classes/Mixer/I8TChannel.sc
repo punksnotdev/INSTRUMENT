@@ -241,7 +241,6 @@ I8TChannel : Sequenceable
 
 	setFxChain {|fxChain_|
 
-
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
 			fxChain.collect({|fx,key|
 				fx.free;
@@ -252,6 +251,8 @@ I8TChannel : Sequenceable
 		};
 
 		if( (
+			graph.validateFolderName(fxChain_)
+			||
 			graph.validateSynthName(fxChain_)
 			||
 			graph.validateSynthDef(fxChain_)
@@ -273,6 +274,8 @@ I8TChannel : Sequenceable
 
 				var notValid = fxChain_.reject(
 					(
+						graph.validateFolderName(_)
+						||
 						graph.validateSynthName(_)
 						||
 						graph.validateSynthDef(_)
@@ -320,7 +323,6 @@ I8TChannel : Sequenceable
 
 			this.removeFx(fx.synthdefKey);
 
-			["createFX",fx.synthdefKey,fx.synthdef.class,fx.synthdef].postln;
 			fxSynth = I8TSynth.before(
 				outSynth,
 				fx.synthdef,
@@ -345,12 +347,12 @@ I8TChannel : Sequenceable
 
 		if( graph.validateSynthName(fx_), {
 
-			synthdef = graph.synths.at(fx_.asString.toLower.asSymbol);
+			synthdef = graph.synths.at(fx_.asString.uncapitalize.asSymbol);
 
 			if( synthdef.isKindOf(I8TFolder) ) {
 				var def = synthdef.values.detect(_.isKindOf(SynthDef));
 
-				// synthdef.values.collect({|v,k| });
+				// sy	nthdef.values.collect({|v,k| });
 
 				if(def.isNil) {
 					var variant = synthdef.values.detect(_.isKindOf(SynthDefVariant));
@@ -376,7 +378,7 @@ I8TChannel : Sequenceable
 		}, {
 
 
-			if( graph.validateSynthDef(fx_) ) {
+			if( graph.validateSynthDef(fx_), {
 
 				if( fx_.isKindOf(SynthDefVariant), {
 					synthdef = fx_;
@@ -389,12 +391,7 @@ I8TChannel : Sequenceable
 
 					if( fx_.isKindOf(I8TFolder), {
 
-						synthdef = fx_.values.detect(_.isKindOf(SynthDef));
-						if(synthdef.isNil) {
-							var variant = fx_.values.detect(_.isKindOf(SynthDefVariant));
-							synthdef = variant;
-							synthdefName = variant.name;
-						};
+						synthdef = fx_.getMainSynthDef;
 
 						if(synthdef.notNil) {
 							synthdefName = synthdef.name;
@@ -412,7 +409,22 @@ I8TChannel : Sequenceable
 					});
 
 				});
-			};
+			}, {
+
+				if( graph.validateFolderName(fx_) ) {
+
+					var folder = graph.getFolderByName(fx_);
+
+					synthdef = folder.getMainSynthDef;
+
+					if(synthdef.notNil) {
+						synthdefName = synthdef.name;
+						synthdefKey = synthdef.name.asSymbol;
+					};
+
+				};
+
+			});
 
 		});
 
@@ -426,14 +438,12 @@ I8TChannel : Sequenceable
 
 	removeFx {|key|
 
-		["removeFx",fxChain[ key ],fxChain[ key ].class].postln;
 		if(
 			fxChain[ key ].isKindOf(Synth)
 			||
 			fxChain[ key ].isKindOf(I8TSynth)
 	 	) {
 			fxChain[ key ].free;
-			["free",key].postln;
 			fxChain.removeAt( key )
 		};
 		if( fxChain[ key ].isKindOf(Collection)) {
