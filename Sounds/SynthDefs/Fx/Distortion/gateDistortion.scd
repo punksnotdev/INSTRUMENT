@@ -1,6 +1,6 @@
 (
 
-	SynthDef(\gateDistort, {
+	SynthDef(\gateDistortion, {
 
 		arg gain=3.3,
 		inBus=0,
