@@ -34,7 +34,7 @@ I8TMixer : Sequenceable
 
 		bus = Bus.audio(Server.local,1);
 
-		fx = IdentityDictionary.new;
+		fx = I8TChannelGroup.new;
 
 	}
 
@@ -244,7 +244,13 @@ I8TMixer : Sequenceable
 	}
 
 
-	addFxChain{|key,fxChain,sources|
+
+	fx_ {|key,value|
+		this.addFxChain(key,value);
+	}
+
+
+	addFxChain{|key,fxChain|
 
 		var fxChannel = fx.at(key);
 
@@ -262,10 +268,6 @@ I8TMixer : Sequenceable
 			fxChannel.setFxChain( fxChain );
 		};
 
-
-		if( sources.isKindOf(Collection) ) {
-			sources.do(_.postln);
-		};
 
 		^fxChannel
 

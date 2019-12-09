@@ -654,8 +654,6 @@ I8TChannel : Sequenceable
 			[\inBus,inputsBus,\outBus,bus]
 		);
 
-		inputsBus.scope;
-
 	}
 
 

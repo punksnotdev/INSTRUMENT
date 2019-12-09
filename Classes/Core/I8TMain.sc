@@ -1026,14 +1026,14 @@ I8TMain : Event
 	// mixer
 
 
-    fx {|fx|
+    fx {
 
 		^mixer.fx;
 
     }
 
     fx_ {|key,fx|
-		^mixer.fx.put(key,fx)
+		^mixer.addFxChain(key,fx)
     }
 
 
