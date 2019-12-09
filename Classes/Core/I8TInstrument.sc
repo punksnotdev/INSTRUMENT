@@ -1,4 +1,4 @@
-Instrument : Sequenceable
+I8TInstrument : Sequenceable
 {
 
 
@@ -67,5 +67,8 @@ Instrument : Sequenceable
   		^outbus;
   	}
 
-    
+
 }
+
+Instrument : I8TInstrument
+{}

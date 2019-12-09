@@ -14,4 +14,4 @@ SynthDef(\hihatClosed, {|amp=0.5,out=0, rel=0.125,pan=0|
 
 	    )
 
-	}).store;
+}).store;

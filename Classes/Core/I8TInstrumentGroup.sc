@@ -53,7 +53,7 @@ InstrumentGroup : Event
 		if( key.isNil, {
 
 			this.collect({|item|
-				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+				if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 					item.stop;
 				};
 			});
@@ -75,7 +75,7 @@ InstrumentGroup : Event
 		if( key.isNil, {
 
 			this.collect({|item|
-				if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+				if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 					item.pause;
 				};
 			});
@@ -92,7 +92,7 @@ InstrumentGroup : Event
 
 	go {|time|
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.go(time);
 			};
 		});
@@ -100,7 +100,7 @@ InstrumentGroup : Event
 	set {|parameter,value_|
 
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.set(parameter,value_);
 			};
 		});
@@ -110,7 +110,7 @@ InstrumentGroup : Event
 	amp_ {|value_|
 
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.amp = value_;
 			};
 		});
@@ -120,7 +120,7 @@ InstrumentGroup : Event
 	octave_ {|value_|
 
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.octave = value_;
 			};
 		});
@@ -137,7 +137,7 @@ InstrumentGroup : Event
 				};
 				this.collect({|item|
 
-					if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+					if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 						item.setClock(speed_);
 					};
 
@@ -153,7 +153,7 @@ InstrumentGroup : Event
 				baseClock = speed_;
 				clock = speed_;
 				this.collect({|item|
-					if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+					if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 						item.setClock(speed_);
 					};
 				});
@@ -277,7 +277,7 @@ InstrumentGroup : Event
 
 		this.collect({|item|
 
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 
 
 				if(
@@ -302,7 +302,7 @@ InstrumentGroup : Event
 
 	fxSet{|parameter_,value_|
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.fxSet(parameter_,value_);
 			};
 		});
@@ -310,7 +310,7 @@ InstrumentGroup : Event
 
 	seq {|parameter_,value_|
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.seq(parameter_,value_);
 			};
 		});
@@ -318,7 +318,7 @@ InstrumentGroup : Event
 
 	rm {|parameter_,value_|
 		this.collect({|item|
-			if( (item.isKindOf(Instrument)) || (item.isKindOf(InstrumentGroup))) {
+			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 				item.rm(parameter_,value_);
 			};
 		});

@@ -275,7 +275,7 @@ Sequencer : I8TNode
 
 	createTrack {|instrument|
 
-		if( ( instrument.isKindOf(Instrument) || instrument.isKindOf(InstrumentGroup) ), {
+		if( ( instrument.isKindOf(I8TInstrument) || instrument.isKindOf(InstrumentGroup) ), {
 
 			if( sequencer_tracks[instrument.name] == nil, {
 				sequencer_tracks[instrument.name] = SequencerTrack.new(instrument, main );
@@ -297,7 +297,7 @@ Sequencer : I8TNode
 
 	deleteTrack {|instrument|
 
-		if( instrument.isKindOf(Instrument), {
+		if( instrument.isKindOf(I8TInstrument), {
 			sequencer_tracks[instrument.name].stop;
 			sequencer_tracks.removeAt(instrument.name);
 		},{

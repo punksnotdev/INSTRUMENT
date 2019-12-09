@@ -426,7 +426,7 @@ I8TMain : Event
 	//
 	// 		payload.instruments = instruments;
 	//
-	// 		if( (instruments.isKindOf(Instrument)), {
+	// 		if( (instruments.isKindOf(I8TInstrument)), {
 	// 			payload.instruments = [instruments];
 	// 		});
 	//
@@ -640,7 +640,7 @@ I8TMain : Event
 
 						if( item.notNil ) {
 
-							if( item.isKindOf(InstrumentGroup) || item.isKindOf(Instrument) ) {
+							if( item.isKindOf(InstrumentGroup) || item.isKindOf(I8TInstrument) ) {
 
 								var nextIndex;
 								var next;
@@ -1023,6 +1023,21 @@ I8TMain : Event
 	}
 
 
+	// mixer
+
+
+    fx {|fx|
+
+		^mixer.fx;
+
+    }
+
+    fx_ {|key,fx|
+		^mixer.fx.put(key,fx)
+    }
+
+
+
 	updateMixerGroup {|group|
 
 		if( group.isKindOf(InstrumentGroup)) {
@@ -1129,25 +1144,6 @@ I8TMain : Event
 	}
 
 
-	validateFolderName{|synthName|
-		^synthLoader.validateFolderName(synthName);
-	}
-
-	validateSynthName{|synthName|
-		^synthLoader.validateSynthName(synthName);
-	}
-
-	validateSynthDef{|synthDef|
-		^synthLoader.validateSynthDef(synthDef);
-	}
-
-	getSynthDefByName {|synthName|
-	  ^synthLoader.getSynthDefByName(synthName);
-	}
-
-	getFolderByName {|folderName|
-	  ^synthLoader.getFolderByName(folderName);
-	}
 
 
 
@@ -1162,5 +1158,40 @@ I8TMain : Event
 		}
 	}
 
+	// validations:
 
+	validateFolderName{|synthName|
+		^synthLoader.validateFolderName(synthName);
+	}
+
+	validateSynthName{|synthName|
+		^synthLoader.validateSynthName(synthName);
+	}
+
+	validateSynthDef{|synthDef|
+		^synthLoader.validateSynthDef(synthDef);
+	}
+
+	getSynthDefByName {|synthName|
+		^synthLoader.getSynthDefByName(synthName);
+	}
+
+	getFolderByName {|folderName|
+		^synthLoader.getFolderByName(folderName);
+	}
+
+
+	validateFx{|fx|
+
+        ^(
+            fx.isKindOf(SynthDef)
+            || fx.isKindOf(Collection)
+            || fx.isKindOf(SynthDefVariant)
+            || fx.isKindOf(Symbol)
+            || fx.isKindOf(String)
+            || fx.isNil
+            || (fx===false)
+        )
+
+	}
 }

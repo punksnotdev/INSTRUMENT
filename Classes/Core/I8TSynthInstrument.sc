@@ -197,16 +197,18 @@ SynthInstrument : Instrument
     }
 
     fx {|fx|
-        if( fx.isNil, {
-        }, {
-            if( this.checkFx( fx ) ) {
+
+        if( fx.notNil ) {
+
+            if( graph.validateFx( fx ) ) {
                 channel.setFxChain(fx);
             };
 
             ^channel.fx(fx)
 
-        });
-        ^this.channel.fxChain;
+        };
+
+        ^channel.fxChain;
     }
 
     fx_ {|fx|
@@ -218,7 +220,7 @@ SynthInstrument : Instrument
 
         },{
 
-            if( this.checkFx( fx ) ) {
+            if( graph.validateFx( fx ) ) {
                 channel.rm('fx');
                 this.fx(fx);
             };
@@ -227,18 +229,6 @@ SynthInstrument : Instrument
 
     }
 
-
-    checkFx {|fx|
-        ^(
-            fx.isKindOf(SynthDef)
-            || fx.isKindOf(Collection)
-            || fx.isKindOf(SynthDefVariant)
-            || fx.isKindOf(Symbol)
-            || fx.isKindOf(String)
-            || fx.isNil
-            || (fx===false)
-        )
-    }
 
 
 }

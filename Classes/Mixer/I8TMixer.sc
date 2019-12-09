@@ -4,6 +4,8 @@ I8TMixer : Sequenceable
 	var channels;
 	var channelGroups;
 	var <master;
+	var <fx;
+	var <masterFx;
 	var main;
 	var submixes;
 	var sends;
@@ -32,6 +34,8 @@ I8TMixer : Sequenceable
 
 		bus = Bus.audio(Server.local,1);
 
+		fx = IdentityDictionary.new;
+
 	}
 
 	setupMaster {
@@ -40,8 +44,9 @@ I8TMixer : Sequenceable
 
 		mixGroup = Group.tail(masterGroup);
 
-		master = this.createMasterChannels()
+		master = this.createMasterChannels();
 
+		masterFx = this.addFxChain('master',nil,master);
 
 	}
 
@@ -49,7 +54,7 @@ I8TMixer : Sequenceable
 
 
 
-		var masterChannels = Array.fill(2,{|index|
+		^Array.fill(2,{|index|
 
 			var masterChannel = I8TChannel(masterGroup, outbus, bus);
 
@@ -59,7 +64,7 @@ I8TMixer : Sequenceable
 			if(masterChannel.notNil) {
 
 				masterChannel.sequencer = sequencer;
-				
+
 				masterChannel.setAmp( 1 );
 				masterChannel.setPan( index.linlin(0,1,-1,1) );
 
@@ -74,10 +79,6 @@ I8TMixer : Sequenceable
 
 			}
 		});
-
-
-
-		^masterChannels
 
 	}
 
@@ -102,7 +103,7 @@ I8TMixer : Sequenceable
 
 	isValidSource {|source|
 		^ (
-			source.isKindOf(Instrument)
+			source.isKindOf(I8TInstrument)
 			||
 			source.isKindOf(InstrumentGroup)
 		)
@@ -127,7 +128,7 @@ I8TMixer : Sequenceable
 						channel = channels[ node.name ];
 
 						if(( channel.isKindOf( I8TChannel ) == false ), {
-							channel  = I8TChannel(mixGroup,bus);
+							channel = I8TChannel(mixGroup,bus);
 							channel.sequencer = sequencer;
 						});
 
@@ -240,6 +241,34 @@ I8TMixer : Sequenceable
 
 	removeChannel {|key|
 		^channelGroups.removeAt(key)
+	}
+
+
+	addFxChain{|key,fxChain,sources|
+
+		var fxChannel = fx.at(key);
+
+		if( fxChannel.isNil ) {
+
+			fxChannel = I8TChannel(mixGroup, bus);
+
+			fx.put(key,fxChannel);
+
+			fxChannel.sequencer = sequencer;
+
+		};
+
+		if( fxChain.notNil ) {
+			fxChannel.setFxChain( fxChain );
+		};
+
+
+		if( sources.isKindOf(Collection) ) {
+			sources.do(_.postln);
+		};
+
+		^fxChannel
+
 	}
 
 }

@@ -2,6 +2,7 @@ I8TChannel : Sequenceable
 {
 
 	var <inSynth;
+	var <inputsSynth;
 	var <outSynth;
 
 	var amp,inAmp,outAmp;
@@ -17,7 +18,11 @@ I8TChannel : Sequenceable
 	var <>inbus;
 	var <>outbus;
 
+	var <inputsBus;
+
 	var synthGroup;
+
+	var sourceListeners;
 
 
 	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
@@ -74,6 +79,10 @@ I8TChannel : Sequenceable
 				\audioBus,
 				[\inBus,bus,\outBus,outbus]
 			);
+
+
+			this.setupListeners();
+
 
 			^this;
 
@@ -609,6 +618,59 @@ I8TChannel : Sequenceable
 
 	}
 
+
+	addSource {|source|
+
+		if( source.isKindOf(I8TInstrument)) {
+			source = source.channel;
+		};
+
+		if( source.isKindOf(I8TChannel) ) {
+
+			var sl;
+			var key = source.name;
+			["source",source,key,source.class].postln;
+
+			sl = this.createSourceListener( source );
+
+			if( sl.isKindOf(Synth) ) {
+				sourceListeners[key] = sl;
+			};
+
+		};
+
+	}
+
+
+	setupListeners {
+
+		sourceListeners = IdentityDictionary.new;
+
+		inputsBus = Bus.audio(Server.local,1);
+
+		inputsSynth = Synth.before(
+			inSynth,
+			\audioBus,
+			[\inBus,inputsBus,\outBus,bus]
+		);
+
+		inputsBus.scope;
+
+	}
+
+
+	createSourceListener{|source|
+		if( inputsBus.isKindOf(Bus) ) {
+			var synth;
+			synth = Synth.before(
+				inputsSynth,
+				\audioBus,
+				[\inBus, source.bus,\outBus,inputsBus]
+			);
+
+			^synth;
+		};
+	}
 
 
 }

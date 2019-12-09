@@ -14,7 +14,7 @@ InstrumentController {
 	}
 
 	target_ {|t_|
-		if( t_.isKindOf(Instrument), {
+		if( t_.isKindOf(I8TInstrument), {
 			target = t_;
 		}, {
 			target = nil;
