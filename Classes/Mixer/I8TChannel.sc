@@ -673,4 +673,22 @@ I8TChannel : Sequenceable
 	}
 
 
+
+	kill {
+
+		this.setFxChain(nil);
+
+		sourceListeners.collect(_.free);
+
+		inSynth.free;
+		inputsSynth.free;
+		outSynth.free;
+
+		eq.free;
+		locut.free;
+		compressor.free;
+
+
+	}
+
 }

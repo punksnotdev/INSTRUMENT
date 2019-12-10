@@ -71,7 +71,13 @@ I8TChannelGroup : Sequenceable
 			};
 
 			if( channel.isKindOf(I8TChannel) ) {
-				^channel.setFxChain(value);
+				if(value.isNil, {
+					channel.kill;
+					this.rm(key.asGetter);
+					^nil
+				}, {
+					^channel.setFxChain(value);
+				});
 			};
 
 		}, {
