@@ -28,10 +28,7 @@ SynthInstrument : Instrument
     fxSynth = nil;
     fxBus = Bus.audio(Server.local,2);
 
-
-	outbus = 0;
-
-    super.init(graph_,name_);
+	super.init(graph_,name_);
 
   }
 

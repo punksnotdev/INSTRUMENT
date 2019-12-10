@@ -68,27 +68,18 @@ I8TInstrument : Sequenceable
   	}
 
 
-    connect{|targetChannel|
-
-        if( targetChannel.isKindOf(I8TChannel) == false ) {
-            "Not a valid Channel".warn;
-            ^nil
-        };
-
-        targetChannel.addSource(this);
-
+    send {|targetChannel|
+        ^channel.send(targetChannel);
     }
 
-    disconnect{|targetChannel|
-
-        if( targetChannel.isKindOf(I8TChannel) == false ) {
-            "Not a valid Channel".warn;
-            ^nil
-        };
-
-        targetChannel.removeSource(this);
-
+    connect {|targetChannel|
+        ^channel.connect(targetChannel);
     }
+
+    disconnect {|targetChannel|
+        ^channel.disconnect(targetChannel);
+    }
+
 
 
 }

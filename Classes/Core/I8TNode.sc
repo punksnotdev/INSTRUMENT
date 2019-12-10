@@ -127,9 +127,11 @@ I8TNode : I8TeventListener
 			// if( parameters.keys.includes(selector.asGetter) ) {
 				parameters[selector.asGetter] = value;
 				this.set(selector.asGetter, value);
+				^""
 			// };
 
-			^nil
+
+			// ^nil
 
 		};
 

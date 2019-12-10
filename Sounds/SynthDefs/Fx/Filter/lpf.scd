@@ -1,9 +1,9 @@
-SynthDef(\lpf, { arg inBus=0,outBus=0, freq=777,q=0.1, wet=1;
+SynthDef(\lpf, { arg inBus=0,outBus=0, freq=20000,q=0.1, wet=1, lag=0.1;
     ReplaceOut.ar(
         outBus,
         (In.ar(inBus).tanh * (1-wet))+
         (RLPF.ar(
-			In.ar(inBus), freq, q
+			In.ar(inBus), VarLag.kr(freq,lag), q
 		).tanh*wet);
     )
 }).store;

@@ -164,150 +164,6 @@ InstrumentGroup : Event
 
 	}
 
-
-	fx {|key|
-
-		var fxChains = I8TFXChain.new;
-
-		this.collect({|item,itemKey|
-
-			if( key.isNil, {
-
-				item.fx.collect({|chainItem,cIKey|
-					if( fxChains[cIKey].isNil) {
-						fxChains[cIKey] = I8TFXChain.new;
-					};
-
-					fxChains[cIKey][itemKey]=chainItem;
-
-				});
-
-			}, {
-
-				if( key.isKindOf(I8TFolder), {
-					var synthdef = key.values.detect(_.isKindOf(SynthDef)).name.asSymbol;
-					if( item.fx[synthdef].notNil ) {
-						fxChains.put(itemKey,item.fx[synthdef]);
-					};
-				}, {
-				// 	fxChains.put(itemKey,item.fx);
-
-					if(
-						(
-							main.validateSynthDef(key)
-							||
-							main.validateSynthName(key)
-						)
-					,{
-
-						var chainItem;
-						var fxKey;
-
-
-						if(( key.isKindOf(SynthDef)||key.isKindOf(SynthDefVariant)),{
-							fxKey = key.name.asSymbol;
-						}, {
-							fxKey = key.asSymbol;
-						});
-
-						chainItem = item.fx[fxKey];
-
-
-
-						if( fxChains[itemKey].isNil) {
-							fxChains[itemKey] = I8TFXChain.new;
-						};
-						if(chainItem.notNil, {
-							// if(chainItem.isKindOf(Collection), {
-							// 	"isEvent".warn;
-							// 	chainItem = chainItem.values.select(_.isKindOf(SynthDef));
-							// 	if(chainItem.notNil) {
-							//
-							fxChains[itemKey][fxKey]=chainItem;
-							//
-							// 	};
-							// }, {
-							//
-							// });
-						}, {
-							if( item.fx.isKindOf(Dictionary)) {
-
-								var chainItem = item.fx[key];
-
-								fxChains[itemKey][fxKey]=chainItem;
-								["not found!", item.fx, key].postln;
-							};
-						});
-
-
-
-					}, {
-
-						if( key.isKindOf(Array) ) {
-
-							key.collect({|listKey|
-
-								var chainItem = item.fx[listKey];
-
-								if(chainItem.notNil) {
-									if( fxChains[itemKey].isNil) {
-										fxChains[itemKey] = I8TFXChain.new;
-									};
-									fxChains[itemKey][listKey]=chainItem;
-								};
-
-							});
-
-						};
-
-					});
-
-				});
-
-
-			});
-		});
-
-
-		^fxChains;
-
-	}
-	fx_ {|value_|
-
-
-		this.collect({|item|
-
-			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
-
-
-				if(
-					(
-						value_.isKindOf(SynthDef)
-						|| value_.isKindOf(Collection)
-						|| value_.isKindOf(SynthDefVariant)
-						|| value_.isKindOf(Symbol)
-						|| value_.isKindOf(String)
-						|| value_.isNil
-						|| (value_===false)
-					)
-				) {
-					item.fx = value_;
-				};
-			};
-		});
-
-	}
-
-
-
-	fxSet{|parameter_,value_|
-		this.collect({|item|
-			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
-				item.fxSet(parameter_,value_);
-			};
-		});
-	}
-
 	seq {|parameter_,value_|
 		this.collect({|item|
 			if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
@@ -358,9 +214,10 @@ InstrumentGroup : Event
 			if(something.isKindOf(SynthDef)) {
 				this.at(key).synthdef = something;
 			};
+			
 			if(something.isKindOf(Symbol)||something.isKindOf(Symbol)) {
-				if( sequenceable.graph.synths[something.asSymbol].notNil ) {
-					this.at(key).synthdef=sequenceable.graph.synths[something.asSymbol];
+				if( main.synths[something.asSymbol].notNil ) {
+					this.at(key).synthdef=main.synths[something.asSymbol];
 				};
 			};
 
@@ -462,4 +319,31 @@ InstrumentGroup : Event
 			);
 		});
 	}
+
+
+
+
+
+	fx {|key|
+		// var channel;
+		// var fx;
+		//
+		// channel = main.mixer.getChannel( (name++"_fx") );
+		//
+		// if( channel.notNil ) {
+		//
+		// 	if( key.isNil ) {
+		// 		^channel.fx;
+		// 	};
+		//
+		// 	fx = channel.fx.at(key);
+		//
+		// 	if( fx.isKindOf(Synth) ) {
+		// 		^fx
+		// 	}
+		//
+		// }
+	}
+
+
 }

@@ -18,6 +18,8 @@ I8TChannel : Sequenceable
 	var <>inbus;
 	var <>outbus;
 
+	var <>firstOutbus;
+
 	var <inputsBus;
 
 	var synthGroup;
@@ -694,6 +696,40 @@ I8TChannel : Sequenceable
 			^synth;
 		};
 	}
+
+
+
+
+
+	send {|targetChannel|
+
+        if( targetChannel.isKindOf(I8TChannel) == false ) {
+            "Not a valid Channel".warn;
+            ^nil
+        };
+
+        targetChannel.addSource(this);
+    }
+
+    connect {|targetChannel|
+
+		if( targetChannel.isKindOf(I8TChannel) == false ) {
+            "Not a valid Channel".warn;
+            ^nil
+        };
+
+		firstOutbus=outbus;
+
+		this.setOutbus(targetChannel.inbus);
+
+    }
+
+    disconnect {
+		if( firstOutbus.isKindOf(Bus) ) {
+	        this.setOutbus(firstOutbus);
+		};
+
+    }
 
 
 

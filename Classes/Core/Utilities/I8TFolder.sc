@@ -277,7 +277,7 @@ I8TFolder : Event
 						newKey=newKey.replace(value.name.asString.uncapitalize,"");
 					});
 
-					newKey=newKey.replace(name.asString.uncapitalize,"");
+					newKey=newKey.replace(name.asString.uncapitalize,"").uncapitalize;
 
 					if(((newKey!="0")&&(newKey.asInteger>0)), {
 						this.ref(("s"++newKey).asSymbol,v);

@@ -1420,57 +1420,54 @@ You can create shared channels for routing and sharing effects.
 ```SuperCollider
 
 (
-	s.boot;
-	s.doWhenBooted({
-		Task.new({
+	Task.new({
 
-			i=INSTRUMENT();
+		i=INSTRUMENT();
 
-			i.fx.ch1="reverb.infinite";
+		i.fx.ch1="reverb.infinite";
 
-			i.kick = 'kick';
-			i.hihat = 'hihat';
-			i.snare = 'snareNeuro';
+		i.kick = 'kick';
+		i.hihat = 'hihat';
+		i.snare = 'snareNeuro';
 
-			i.kick.seq = ":1/4  1   2    4   ";
-			i.hihat.seq( ":1/4 5  2x3 1xx  3x3 :1/8 1x4    ").random;
-			i.snare.seq( " 5  2x3 1xx  3x3 :1/4 1x4   1X3  ").random;
+		i.kick.seq = ":1/4  1   2    4   ";
+		i.hihat.seq( ":1/4 5  2x3 1xx  3x3 :1/8 1x4    ").random;
+		i.snare.seq( " 5  2x3 1xx  3x3 :1/4 1x4   1X3  ").random;
 
-			4.wait;
+		4.wait;
 
-			i.hihat.connect(i.fx.ch1);
+		i.hihat.connect(i.fx.ch1);
 
-			4.wait;
+		4.wait;
 
-			i.fx.ch2=["reverb.infinite","delay2","lpf"];
-			i.snare.connect(i.fx.ch2);
+		i.fx.ch2=["reverb.infinite","delay2","lpf"];
+		i.snare.connect(i.fx.ch2);
 
-			4.wait;
-			i.fx.ch1=nil;
-			i.fx.ch2=["reverb.small"];
-			4.wait;
-			i.fx.ch2=["reverb.infinite","gateDistort.hardcore"];
-			i.kick.connect(i.fx.ch2);
-			6.wait;
-			i.fx.ch3=["shineDestroy","delay2"];
-			i.snare.connect(i.fx.ch3);
-			i.hihat.stop;
-			4.wait;
-			i.fx.ch2=nil;
-			i.fx.ch1=["reverb.infinite"];
-			i.kick.connect(i.fx.ch1);
-			4.wait;
-			i.snare.disconnect(i.fx.ch1);
-			4.wait;
-			i.snare.stop;
-			8.wait;
-			i.kick.disconnect(i.fx.ch1);
-			6.wait;
-			i.kick.stop;
+		4.wait;
+		i.fx.ch1=nil;
+		i.fx.ch2=["reverb.small"];
+		4.wait;
+		i.fx.ch2=["reverb.infinite","gateDistort.hardcore"];
+		i.kick.connect(i.fx.ch2);
+		6.wait;
+		i.fx.ch3=["shineDestroy","delay2"];
+		i.snare.connect(i.fx.ch3);
+		i.hihat.stop;
+		4.wait;
+		i.fx.ch2=nil;
+		i.fx.ch1=["reverb.infinite"];
+		i.kick.connect(i.fx.ch1);
+		4.wait;
+		i.snare.disconnect(i.fx.ch1);
+		4.wait;
+		i.snare.stop;
+		8.wait;
+		i.kick.disconnect(i.fx.ch1);
+		6.wait;
+		i.kick.stop;
 
-		}).play;
+	}).play;
 
-	});
 
 )
 

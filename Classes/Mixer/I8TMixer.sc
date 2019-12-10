@@ -15,8 +15,10 @@ I8TMixer : Sequenceable
 	// var <fxBus;
 	var <outbus;
 	var busSynth;
-	var <mixGroup;
-	var <fxGroup;
+	var <mixNodeGroup;
+	var <groupsNodeGroup;
+	var <fxNodeGroup;
+
 	var <masterGroup;
 
 	*new {|main_|
@@ -45,8 +47,9 @@ I8TMixer : Sequenceable
 
 		masterGroup = Group.tail(Server.default.defaultGroup);
 
-		mixGroup = Group.head(masterGroup);
-		fxGroup = Group.tail(masterGroup);
+		mixNodeGroup = Group.head(masterGroup);
+		groupsNodeGroup = Group.tail(masterGroup);
+		fxNodeGroup = Group.tail(masterGroup);
 
 		master = this.createMasterChannels();
 
@@ -132,7 +135,7 @@ I8TMixer : Sequenceable
 						channel = channels[ node.name ];
 
 						if(( channel.isKindOf( I8TChannel ) == false ), {
-							channel = I8TChannel(mixGroup,bus);
+							channel = I8TChannel(mixNodeGroup,bus);
 							channel.sequencer = sequencer;
 						});
 
@@ -161,7 +164,7 @@ I8TMixer : Sequenceable
 						// no group
 						if( channels[node.name].isKindOf( I8TChannel ) == false ) {
 
-							channel = I8TChannel(mixGroup, bus);
+							channel = I8TChannel(mixNodeGroup, bus);
 							channel.sequencer = sequencer;
 
 							channels[node.name]=channel;
@@ -182,13 +185,25 @@ I8TMixer : Sequenceable
 				if( node.isKindOf( InstrumentGroup ) ) {
 
 					var instrumentGroup = node;
-					var channelGroup = channelGroups[instrumentGroup.name];
+					var key = instrumentGroup.name;
+
+					var channelGroup = channelGroups[key];
+					var groupMainChannel;
 
 					if( channelGroup.isKindOf(IdentityDictionary) == false )
 					{
 						channelGroup = IdentityDictionary.new;
-						channelGroups[instrumentGroup.name] = channelGroup;
+						channelGroups[key] = channelGroup;
 					};
+
+
+					// create main channel for group
+
+					groupMainChannel=I8TChannel(groupsNodeGroup,bus);
+					groupMainChannel.name=key;
+					groupMainChannel.sequencer = sequencer;
+
+					channelGroup['group']=groupMainChannel;
 
 					instrumentGroup.keysValuesDo({|k,groupedNode|
 
@@ -201,14 +216,17 @@ I8TMixer : Sequenceable
 						channel.setInput( groupedNode );
 						channel.setName( groupedNode.name );
 
-						^channel;
+						channel.connect( groupMainChannel );
 
 					});
+
+					^channelGroup['group']
 
 				};
 
 
 			};
+
 		}, {
 
 			"Mixer: No Outbus defined".warn;
@@ -260,7 +278,7 @@ I8TMixer : Sequenceable
 
 		if( fxChannel.isNil ) {
 
-			fxChannel = I8TChannel(fxGroup, bus);
+			fxChannel = I8TChannel(fxNodeGroup, bus);
 			fxChannel.name=key;
 
 			fx.put(key,fxChannel);

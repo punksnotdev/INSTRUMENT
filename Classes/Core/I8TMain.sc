@@ -752,16 +752,11 @@ I8TMain : Event
 					var currentGroup = groups[key];
 
 					// disable any synths not included in new groups
-
-
 					group_.collect({|childItem,childItemKey|
-
 						// if key already exists in group:
 						if( currentGroup.keys.includes(childItemKey) == true,
-
 						{
 							var synthdef;
-
 							if( childItem.isKindOf(I8TNode) ) {
 								synthdef = childItem.synthdef;
 							};
@@ -785,20 +780,13 @@ I8TMain : Event
 
 							currentGroup.at(childItemKey).play;
 						},
-						{
-							// if new key:
+						{	// if new key:
 
 							if( childItem.isKindOf(I8TNode) ) {
-
 							  if( (nodes.includes( childItem ) == false), {
-
-
 								this.setupNode( childItem, childItem.name );
-
 							  });
-
 							  currentGroup.put( childItemKey, childItem );
-
 							};
 
 							if( (
@@ -820,7 +808,7 @@ I8TMain : Event
 							if( synthLoader.validateSynthName(childItem) ) {
 
 								if( nodes[childItemKey].notNil, {
-							  		newGroup.put( childItemKey, nodes[childItem] );
+							  		newGroup.put(childItemKey,nodes[childItem]);
 								},
 								{
 									var synthdef = synthLoader.getSynthDefByName(childItem);
