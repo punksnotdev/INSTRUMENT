@@ -68,8 +68,8 @@ I8TInstrument : Sequenceable
   	}
 
 
-    send {|targetChannel|
-        ^channel.send(targetChannel);
+    send {|targetChannel,connect=true|
+        ^channel.send(targetChannel,connect);
     }
 
     connect {|targetChannel|

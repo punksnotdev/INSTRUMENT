@@ -701,14 +701,19 @@ I8TChannel : Sequenceable
 
 
 
-	send {|targetChannel|
+	send {|targetChannel,connect=true|
 
         if( targetChannel.isKindOf(I8TChannel) == false ) {
             "Not a valid Channel".warn;
             ^nil
         };
 
-        targetChannel.addSource(this);
+		if( connect == false ) {
+	        ^targetChannel.removeSource(this);
+		};
+
+        ^targetChannel.addSource(this);
+
     }
 
     connect {|targetChannel|
