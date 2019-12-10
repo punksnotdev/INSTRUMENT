@@ -643,6 +643,29 @@ I8TChannel : Sequenceable
 	}
 
 
+	removeSource {|source|
+
+		if( source.isKindOf(I8TInstrument)) {
+			source = source.channel;
+		};
+
+		if( source.isKindOf(I8TChannel) ) {
+
+			var sl;
+			var key = source.name;
+
+			sl = sourceListeners[key];
+
+			if( sl.isKindOf(Synth) ) {
+				sl.free;
+				sourceListeners.removeAt(key);
+			};
+
+		};
+
+	}
+
+
 	setupListeners {
 
 		sourceListeners = IdentityDictionary.new;
