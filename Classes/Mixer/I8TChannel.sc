@@ -34,16 +34,16 @@ I8TChannel : Sequenceable
 		if( outbus_.notNil, {
 
 			if( synthGroup_.isKindOf(Group), {
-				synthGroup = Group.tail(synthGroup_);
+				synthGroup = Group.head(synthGroup_);
 			}, {
-				synthGroup = Group.tail(Server.default.defaultGroup);
+				synthGroup = Group.head(Server.default.defaultGroup);
 			});
 
 			fxChain = I8TFXChain.new;
 			fxChain.channel = this;
 
 
-			bus = Bus.audio(Server.local,1);
+			this.setupListeners();
 
 
 			if(inbus_.notNil, {
@@ -52,6 +52,7 @@ I8TChannel : Sequenceable
 				inbus = Bus.audio(Server.local,1);
 			});
 
+			bus = Bus.audio(Server.local,1);
 
 
 			inSynth = Synth.tail(
@@ -81,7 +82,6 @@ I8TChannel : Sequenceable
 			);
 
 
-			this.setupListeners();
 
 
 			^this;
@@ -629,9 +629,10 @@ I8TChannel : Sequenceable
 
 			var sl;
 			var key = source.name;
-			["source",source,key,source.class].postln;
 
 			sl = this.createSourceListener( source );
+
+			["csl", name, key, sl].postln;
 
 			if( sl.isKindOf(Synth) ) {
 				sourceListeners[key] = sl;
@@ -660,8 +661,8 @@ I8TChannel : Sequenceable
 	createSourceListener{|source|
 		if( inputsBus.isKindOf(Bus) ) {
 			var synth;
-			synth = Synth.before(
-				inputsSynth,
+			synth = Synth.after(
+				source.outSynth,
 				\audioBus,
 				[\inBus, source.bus,\outBus,inputsBus]
 			);

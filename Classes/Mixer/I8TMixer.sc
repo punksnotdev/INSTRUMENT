@@ -12,9 +12,11 @@ I8TMixer : Sequenceable
 	var returns;
 
 	var <bus;
+	// var <fxBus;
 	var <outbus;
 	var busSynth;
 	var <mixGroup;
+	var <fxGroup;
 	var <masterGroup;
 
 	*new {|main_|
@@ -33,8 +35,9 @@ I8TMixer : Sequenceable
 		outbus = Server.local.outputBus;
 
 		bus = Bus.audio(Server.local,1);
+		// fxBus = Bus.audio(Server.local,1);
 
-		fx = I8TChannelGroup.new;
+		fx = I8TChannelGroup(this);
 
 	}
 
@@ -42,7 +45,8 @@ I8TMixer : Sequenceable
 
 		masterGroup = Group.tail(Server.default.defaultGroup);
 
-		mixGroup = Group.tail(masterGroup);
+		mixGroup = Group.head(masterGroup);
+		fxGroup = Group.tail(masterGroup);
 
 		master = this.createMasterChannels();
 
@@ -257,6 +261,7 @@ I8TMixer : Sequenceable
 		if( fxChannel.isNil ) {
 
 			fxChannel = I8TChannel(mixGroup, bus);
+			fxChannel.name=key;
 
 			fx.put(key,fxChannel);
 
@@ -265,6 +270,7 @@ I8TMixer : Sequenceable
 		};
 
 		if( fxChain.notNil ) {
+			fxChannel.rm('fx');
 			fxChannel.setFxChain( fxChain );
 		};
 

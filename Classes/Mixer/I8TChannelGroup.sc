@@ -2,32 +2,42 @@ I8TChannelGroup : Sequenceable
 {
 
 
+	var mixer;
 	var channels;
 
 
-	*new {
-		^super.new.init(this.graph);
+	*new {|mixer_|
+		^super.new.init(this.graph,mixer_);
 	}
 
-	init {|graph_|
+	init {|graph_,mixer_|
 		channels = ();
+		if( mixer_.isKindOf(I8TMixer) ) {
+			mixer = mixer_;
+		};
 	}
 
 
-	put {|key,channel|
-		if( (
-			(
-				key.isKindOf(Symbol)
-				||
-				key.isKindOf(String)
-			)
-			&&
-			channel.isKindOf(I8TChannel)
-		), {
-			channels.put(key.asSymbol, channel);
-		}, {
-			"Channel not valid".warn;
-		});
+	put {|key,value|
+
+		var channel;
+
+		if( value.isKindOf(I8TChannel) ) {
+			channel = value;
+		};
+
+		if( value.isKindOf(I8TChannel) == false ) {
+			channel = mixer.addFxChain(key,value);
+		};
+
+		if( channel.isKindOf(I8TChannel) ) {
+			if( ( key.isKindOf(Symbol) || key.isKindOf(String) ), {
+				^channels.put(key.asSymbol, channel);
+			}, {
+				"Channel not valid".warn;
+			});
+		};
+
 	}
 
 	at {|key,channel|
@@ -44,11 +54,31 @@ I8TChannelGroup : Sequenceable
 
     doesNotUnderstand {
 
-        arg selector ... args;
+        arg key ... args;
 
 		var value = args[0];
 
-		['dne',selector,value].postln;
+		var channel;
+
+		if( key.isSetter, {
+
+			channel = channels.at(key.asGetter);
+
+			if( channel.isNil ) {
+				if( value.notNil, {
+					^channel = this.put(key.asGetter,value);
+				});
+			};
+
+			if( channel.isKindOf(I8TChannel) ) {
+				^channel.setFxChain(value);
+			};
+
+		}, {
+
+			^channels.at(key);
+
+		});
 
 		^nil
 
