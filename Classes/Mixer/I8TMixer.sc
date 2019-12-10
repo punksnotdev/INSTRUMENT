@@ -260,7 +260,7 @@ I8TMixer : Sequenceable
 
 		if( fxChannel.isNil ) {
 
-			fxChannel = I8TChannel(mixGroup, bus);
+			fxChannel = I8TChannel(fxGroup, bus);
 			fxChannel.name=key;
 
 			fx.put(key,fxChannel);

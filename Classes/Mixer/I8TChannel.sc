@@ -66,12 +66,14 @@ I8TChannel : Sequenceable
 				eq = this.setup(\eq);
 			};
 
-			if( locut_ === true ) {
-				locut = this.setup(\locut);
-			};
 
 			if( compressor_ === true ) {
 				compressor = this.setup(\compressor);
+			};
+
+
+			if( locut_ === true ) {
+				locut = this.setup(\locut);
 			};
 
 
@@ -597,8 +599,8 @@ I8TChannel : Sequenceable
 					compressor.free;
 					compressor = nil;
 				};
-				^compressor = Synth.tail(
-					synthGroup,
+				^compressor = Synth.after(
+					inSynth,
 					\simpleCompressor,
 					[\in,bus,\out,bus]
 				);
@@ -608,8 +610,8 @@ I8TChannel : Sequenceable
 					locut.free;
 					locut = nil;
 				};
-				^locut = Synth.tail(
-					synthGroup,
+				^locut = Synth.after(
+					inSynth,
 					\hpf,
 					[\in,bus,\out,bus]
 				);
@@ -631,8 +633,6 @@ I8TChannel : Sequenceable
 			var key = source.name;
 
 			sl = this.createSourceListener( source );
-
-			["csl", name, key, sl].postln;
 
 			if( sl.isKindOf(Synth) ) {
 				sourceListeners[key] = sl;
@@ -661,6 +661,7 @@ I8TChannel : Sequenceable
 	createSourceListener{|source|
 		if( inputsBus.isKindOf(Bus) ) {
 			var synth;
+
 			synth = Synth.after(
 				source.outSynth,
 				\audioBus,
