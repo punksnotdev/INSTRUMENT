@@ -203,9 +203,12 @@ I8TSynthLoader {
 
         folder = synths[folderName.asSymbol];
 
-		if( folder.isNil ) {
+		if( folder.isKindOf(I8TFolder) == false ) {
             folder = synths[folderName.asString.uncapitalize.asSymbol];
 		};
+        if( folder.isKindOf(I8TFolder) == false ) {
+            ^nil
+        };
 
         ^folder
 
