@@ -68,6 +68,29 @@ I8TInstrument : Sequenceable
   	}
 
 
+    connect{|targetChannel|
+
+        if( targetChannel.isKindOf(I8TChannel) == false ) {
+            "Not a valid Channel".warn;
+            ^nil
+        };
+
+        targetChannel.addSource(this);
+
+    }
+
+    disconnect{|targetChannel|
+
+        if( targetChannel.isKindOf(I8TChannel) == false ) {
+            "Not a valid Channel".warn;
+            ^nil
+        };
+
+        targetChannel.removeSource(this);
+
+    }
+
+
 }
 
 Instrument : I8TInstrument
