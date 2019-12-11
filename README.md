@@ -1035,56 +1035,67 @@ There is a Mixer channel automatically created for each group, and one for each 
 ```SuperCollider
 (
 
-	Task.new({
-		i = INSTRUMENT();
+	s.boot;
+
+	s.doWhenBooted({
+		Task.new({
+			i = INSTRUMENT();
 
 
-		i.drums=(
-			k: 'kickElectro',
-			h: 'hihat',
-			s: 'snareNeuro',
-		);
+			i.drums=(
+				k: 'kickElectro',
+				h: 'hihat',
+				s: 'snareNeuro',
+			);
 
 
-		i.drums.k[0].seq = "1   ";
-		i.drums.k[1].seq = "1  1 ";
+			i.drums.k[0].seq = "1   ";
+			i.drums.k[1].seq = "1  1 ";
 
-		i.drums.h.seq = " 1";
-		i.drums.s.seq = "  1 ";
+			i.drums.h.seq = " 1";
+			i.drums.s.seq = "  1 ";
 
-		i.drums.clock=4;
+			i.drums.play;
 
-		c=i.mixer.getChannel('drums')['group'];
+			i.drums.fx=["reverb","lpf"];
 
-		c.setFxChain("lpf");
-		c.fx.lpf.freq=15000;
+			i.drums.clock=4;
 
-		4.wait;
+			i.drums.fx.lpf.freq=15000;
 
-		c.fx.lpf.lag=8;
-		c.fx.lpf.freq=80;
+			4.wait;
+
+			i.drums.fx.lpf.lag=8;
+			i.drums.fx.lpf.freq=80;
 
 
-		8.wait;
+			12.wait;
 
-		c.setFxChain("hpf");
-		c.fx.hpf.freq=40;
+			i.drums.fx="hpf";
+			i.drums.fx.hpf.freq=40;
 
-		4.wait;
+			4.wait;
 
-		c.fx.hpf.lag=8;
-		c.fx.hpf.freq=15000;
+			i.drums.fx.hpf.lag=8;
+			i.drums.fx.hpf.freq=15000;
 
-		8.wait;
+			8.wait;
 
-		c.setFxChain("reverb.infinite");
+			i.drums.fx=["reverb.infinite"];
 
-		(3/8).wait;
+			(3/8).wait;
 
-		i.stop;
+			i.stop;
 
-	}).play;
+		}).play;
+
+		s.volume = (-12);
+
+	});
+
+
 )
+
 
 ```
 
