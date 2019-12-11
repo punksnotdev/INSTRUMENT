@@ -976,7 +976,6 @@ I8TMain : Event
 					});
 
 
-					newGroup.main = this;
 
 
 					groups[key] = newGroup;
@@ -986,7 +985,6 @@ I8TMain : Event
 					mixer.addChannel( newGroup );
 
 
-					newGroup.sequencer = sequencer;
 
 					sequencer.registerInstrument(newGroup);
 

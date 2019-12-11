@@ -252,13 +252,13 @@ I8TMixer : Sequenceable
 
 		var channelGroup = channelGroups[key.asSymbol];
 
-		if( channelGroup.notNil ) {
-
-			if( channelGroup.keys.size == 1 ) {
-				^channelGroup[key];
-			};
-			^channelGroup
-		};
+		^channelGroup
+		// if( channelGroup.notNil ) {
+		//
+		// 	if( channelGroup.keys.size == 1 ) {
+		// 		^channelGroup[key];
+		// 	};
+		// };
 	}
 
 	removeChannel {|key|

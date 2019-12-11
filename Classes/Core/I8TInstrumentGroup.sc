@@ -1,15 +1,11 @@
-InstrumentGroup : Event
+InstrumentGroup : Sequenceable
 {
 
 	var <amp;
 	var <octave;
-	var <>main;
 	var <clock;
 	var <baseClock;
 	var fx;
-	var <name;
-	var <sequenceable;
-	var <sequencer;
 
 	var <childrenStopped;
 
@@ -20,20 +16,12 @@ InstrumentGroup : Event
 	}
 
 	init {
-		sequenceable = Sequenceable.new;
-		sequencer = sequenceable.sequencer;
 		dictionary = ();
 		childrenStopped = IdentityDictionary.new;
 	}
 
-	sequencer_ {|sequencer_|
-		sequencer = sequencer_;
-		sequenceable.sequencer = sequencer_;
-	}
 
 	play {
-
-		sequenceable.play;
 
 		this.collect({|item,key|
 			if(( (childrenStopped[key] == true) || (childrenStopped[key].isNil == true)) ) {
@@ -48,11 +36,11 @@ InstrumentGroup : Event
 
 	stop {|key|
 
-		sequenceable.stop;
-
+		["stop",key].postln;
 		if( key.isNil, {
 
 			this.collect({|item|
+				item.postln;
 				if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 					item.stop;
 				};
@@ -60,7 +48,7 @@ InstrumentGroup : Event
 
 		}, {
 
-			var item = this.at(key);
+			var item = dictionary.at(key);
 
 			item.stop;
 			childrenStopped[key] = true;
@@ -69,8 +57,6 @@ InstrumentGroup : Event
 	}
 
 	pause {|key|
-
-		sequenceable.pause;
 
 		if( key.isNil, {
 
@@ -82,7 +68,7 @@ InstrumentGroup : Event
 
 		}, {
 
-			var item = this.at(key);
+			var item = dictionary.at(key);
 
 			item.pause;
 			childrenStopped[key] = true;
@@ -183,25 +169,32 @@ InstrumentGroup : Event
 
 	put {|key,something|
 
+		if( key.asSymbol == 'fx' ) {
+
+			^this.fx.channel.setFxChain(something);
+
+		};
+
 		if( something.isKindOf(I8TNode), {
 
 
-			if( this.at(key).isNil, {
+			if( dictionary.at(key).isNil, {
 
 
 				dictionary.put(key,something);
 
-				if( main.notNil ) {
-					main.updateMixerGroup( this );
+
+				if( graph.notNil ) {
+					graph.updateMixerGroup( this );
 				};
 
 
 			}, {
 
-				this.at(key).setContent(something);
+				dictionary.at(key).setContent(something);
 
 				if( childrenStopped[key] == true ) {
-					this.at[key].play;
+					dictionary.at[key].play;
 					childrenStopped[key] = false;
 				};
 
@@ -212,12 +205,12 @@ InstrumentGroup : Event
 		}, {
 
 			if(something.isKindOf(SynthDef)) {
-				this.at(key).synthdef = something;
+				dictionary.at(key).synthdef = something;
 			};
-			
+
 			if(something.isKindOf(Symbol)||something.isKindOf(Symbol)) {
-				if( main.synths[something.asSymbol].notNil ) {
-					this.at(key).synthdef=main.synths[something.asSymbol];
+				if( graph.synths[something.asSymbol].notNil ) {
+					dictionary.at(key).synthdef=graph.synths[something.asSymbol];
 				};
 			};
 
@@ -233,18 +226,20 @@ InstrumentGroup : Event
 		// 	["got group", key, something].postln;
 		//
 		// 	something.name = name ++ "_" ++ key;
-		// 	something.main = main;
+		// 	something.graph = graph;
 		//
 		// 	^super.put(key,something);
 		//
 		// };
 	}
 
+
+
 	at {|key|
 
 		if(key.isNumber) {
 
-			^sequenceable.at(key);
+			^super.at(key);
 
 		};
 
@@ -253,14 +248,75 @@ InstrumentGroup : Event
 	}
 
 
+	collect {
+		arg function;
+		^dictionary.collect({|v,k|function.value(v,k)});
+	}
+
+	includes {
+		arg value;
+		^dictionary.includes(value);
+	}
+
 	keysValuesDo {|func|
 		if( func.isKindOf(Function), {
-
-			^dictionary.keysValuesDo(func)
+			^dictionary.keysValuesDo({|k,v|func.value(k,v)});
 		}, {
 			"I8TNodeInstrumentGroup: keysValuesDo input should be function".warn;
 		});
 	}
+
+	keys {
+		^dictionary.keys
+	}
+
+
+
+    doesNotUnderstand {
+
+        arg key ... args;
+
+		var value = args[0];
+
+		var instrument;
+
+		if( key.isSetter, {
+
+			if( key.asSymbol == 'fx' ) {
+
+				this.fx.channel.setFxChain(value);
+
+			};
+
+			instrument = dictionary.at(key.asGetter);
+
+			if( instrument.isNil ) {
+				if( value.notNil, {
+					^instrument = this.put(key.asGetter,value);
+				});
+			};
+
+			if( instrument.isKindOf(I8TChannel) ) {
+				if(value.isNil, {
+					instrument.kill;
+					^nil
+				}, {
+					^instrument.setFxChain(value);
+				});
+			};
+
+		}, {
+
+			^dictionary.at(key);
+
+		});
+
+		^nil
+
+    }
+
+
+
 
 	chooseInstrument {|probability=0.5|
 
@@ -278,14 +334,13 @@ InstrumentGroup : Event
 		};
 
 
-		main.addMixerGroup( newGroup, name );
+		graph.addMixerGroup( newGroup, name );
 
 	}
 
-	name_ {|name_|
-		name = name_;
-		sequenceable.name = name;
-	}
+
+
+
 
 	trigger {|parameter,value|
 
@@ -325,25 +380,31 @@ InstrumentGroup : Event
 
 
 	fx {|key|
-		// var channel;
-		// var fx;
-		//
-		// channel = main.mixer.getChannel( (name++"_fx") );
-		//
-		// if( channel.notNil ) {
-		//
-		// 	if( key.isNil ) {
-		// 		^channel.fx;
-		// 	};
-		//
-		// 	fx = channel.fx.at(key);
-		//
-		// 	if( fx.isKindOf(Synth) ) {
-		// 		^fx
-		// 	}
-		//
-		// }
+		var channel;
+		var fx;
+
+		channel = graph.mixer.getChannel( name );
+
+		if( channel.isKindOf(IdentityDictionary) ) {
+
+			channel = channel['group'];
+
+			if( key.isNil ) {
+				^channel.fx;
+			};
+
+			fx = channel.fx.at(key);
+
+			if( fx.isKindOf(Synth) ) {
+				^fx
+			}
+
+		}
 	}
+
+
+
+
 
 
 }
