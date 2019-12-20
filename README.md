@@ -13,45 +13,64 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 
 // Create a beat
 
-// First, evaluate following block
+// First, boot server:
+s.boot;
+
+// Then, evaluate following block
 (
-	s.boot;
-	s.doWhenBooted({
 
+i = INSTRUMENT();
 
-	i = INSTRUMENT().play;
+d = i.synths.drums.electro;
 
-	i.drums = (
-		kick: 'kick',
-		hihat: 'hihat',
-		clap: 'clap'
-	);
+i.drums=(
+	k: d.kick,
+	h: d.hihat,
+	s: d.snare,
+);
 
-	i.drums.kick.seq("1   ");
-	i.drums.hihat.seq(" 1").speed(2);
-	i.drums.clap.seq("  1     1").speed(2);
+i.drums.k.seq("1  1        1 1    ").speed(2);
+i.drums.h.seq("1");
+i.drums.s[0].seq("    1   1  1   1   1").speed(2).do(3);
+i.drums.s[1].seq("    1x4  1   1x2  1").speed(2).do(1);
 
-	i.drums.clock = 2;
+i.drums.clock=4;
 
-
-
-});
+i.tempo = 166;
 
 )
 
-// Play with clock
 
-i.drums.clock = 4;
-
-// Add FX and slow down
+// Wait a while and then run this block:
 (
-i.drums.fx="reverb";
-i.drums.clock = 1;
+i.drums.clock=1.5;
+i.drums.fx='reverb.large';
 )
 
-// Stop
+// Return to first beat, with new FX
+(
+i.drums.clock=4;
+i.drums.fx="gateDistortion.hardcore";
+)
 
-i.drums.stop;
+// change group
+i.drums=(
+	// k: d.kick,
+	h: 'snareNeuro',
+	s: d.snare,
+);
+
+// run this
+(
+i.drums.fx='reverb.infinite';
+i.drums.fx.reverb.wet=1/2;
+)
+
+// now this
+(
+	i.drums.fx.reverb.wet=1;
+	i.drums.stop;
+)
 
 ```
 
