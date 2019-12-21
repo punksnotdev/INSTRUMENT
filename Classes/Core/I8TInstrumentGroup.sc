@@ -170,9 +170,7 @@ InstrumentGroup : Sequenceable
 	put {|key,something|
 
 		if( key.asSymbol == 'fx' ) {
-
 			^this.fx.channel.setFxChain(something);
-
 		};
 
 		if( something.isKindOf(I8TNode), {
@@ -280,9 +278,10 @@ InstrumentGroup : Sequenceable
 
 		var instrument;
 
+
 		if( key.isSetter, {
 
-			if( key.asSymbol == 'fx' ) {
+			if( key.asGetter.asSymbol == 'fx' ) {
 
 				this.fx.channel.setFxChain(value);
 
@@ -401,7 +400,6 @@ InstrumentGroup : Sequenceable
 
 		}
 	}
-
 
 
 

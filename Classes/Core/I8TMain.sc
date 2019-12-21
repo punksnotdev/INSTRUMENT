@@ -1175,7 +1175,7 @@ I8TMain : Event
             || fx.isKindOf(SynthDefVariant)
             || fx.isKindOf(Symbol)
             || fx.isKindOf(String)
-            || fx.isNil
+            // || fx.isNil
             || (fx===false)
         )
 
