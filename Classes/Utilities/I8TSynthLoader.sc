@@ -204,7 +204,9 @@ I8TSynthLoader {
         folder = synths[folderName.asSymbol];
 
 		if( folder.isKindOf(I8TFolder) == false ) {
-            folder = synths[folderName.asString.uncapitalize.asSymbol];
+            if( synths.isKindOf(Dictionary)){
+                folder = synths[folderName.asString.uncapitalize.asSymbol];
+            }
 		};
         if( folder.isKindOf(I8TFolder) == false ) {
             ^nil

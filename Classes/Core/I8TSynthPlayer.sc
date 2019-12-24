@@ -17,11 +17,24 @@ SynthPlayer : SynthInstrument
 
 
 	*new{|synthdef_,name_|
-		var instance;
+		if(
+			(
+				synthdef_.isKindOf(SynthDef)
+				||
+				synthdef_.isKindOf(SynthDefVariant)
 
-		instance = super.new(synthdef_.name.asSymbol);
+			)
+		, {
 
-		^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
+			var instance;
+			instance = super.new(synthdef_.name.asSymbol);
+			^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
+
+		}, {
+
+			^nil;
+
+		});
 	}
 
 	init{|graph_,synthdef_,name_|

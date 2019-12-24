@@ -17,9 +17,14 @@ TestINSTRUMENT : UnitTest
 	tearDown {
 		I8TUnitTest.main = main;
 
+		TestI8TSynthLoader.run(true,false);
 		TestI8TMain.run(true,false);
-		TestAudio.run(true,false);
+
 		
+		TestAudio.run(true,false);
+
+		TestSynthPlayer.run(true,false);
+
 	}
 
 	test_onTestSetup_isCorrectClass {

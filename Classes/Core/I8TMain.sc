@@ -38,7 +38,7 @@ I8TMain : Event
 	var <midiControllers;
 
 	var synths;
-	var synthLoader;
+	var <synthLoader;
 
 	var <> data;
 
@@ -68,6 +68,7 @@ I8TMain : Event
 	*initClass {
 		StartUp.add {
 			var i = INSTRUMENT();
+			TestINSTRUMENT.run;
 		}
 	}
 
@@ -560,23 +561,13 @@ I8TMain : Event
 				// create node(s) depending on input type:
 
 				if( something.isKindOf(I8TNode), {
-
 					item = this.setupNode( something, key );
-
 				});
-
-				if( something.isKindOf(I8TNode), {
-
-					item = this.setupNode( something, key );
-
-				});
-
 
 
 				if( synthLoader.validateSynthName(something) ) {
 
 					var synthdef = synthLoader.getSynthDefByName(something);
-
 					if(synthLoader.validateSynthDef(synthdef)) {
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
@@ -598,12 +589,12 @@ I8TMain : Event
 
 				};
 
-
 				if( something.isKindOf(I8TFolder) ) {
 
 					item = this.setupNode(SynthPlayer(something.getMainSynthDef), key);
 
 				};
+
 
 				if( synthLoader.validateFolderName(something) ) {
 
@@ -613,6 +604,7 @@ I8TMain : Event
 
 				};
 
+				["CHECKITEM", something, item].postln;
 
 				if((
 					(
@@ -630,6 +622,7 @@ I8TMain : Event
 
 				};
 
+				["CHECKITEM", something, item].postln;
 
 				if( something.isKindOf(NodeProxy)) {
 
@@ -638,9 +631,11 @@ I8TMain : Event
 				};
 
 
+				["CHECKITEM", something, item].postln;
 
-
-
+				if( item.isNil ) {
+					^nil
+				};
 
 				// MIDI:
 
