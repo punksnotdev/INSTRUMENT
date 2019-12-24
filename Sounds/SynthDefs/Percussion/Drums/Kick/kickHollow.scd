@@ -13,7 +13,7 @@ SynthDef(\kickHollow, {|amp=0.5, out=0,t_trig=1|
     sig = RLPF.ar( sig, (EnvGen.kr( Env.perc(0.01,0.05),t_trig)*10000)+60,1/2 );
 
 
-    sig = Mix.new((sig*4.3).tanh);
+    sig = Mix.new((sig*4.3).tanh/3);
 
 
     Out.ar( out, Pan2.ar(sig * amp,0) );

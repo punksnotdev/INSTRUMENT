@@ -18,7 +18,9 @@ SynthDef(\SOShats,
 	body_env = EnvGen.ar(Env.perc(0.005, sustain, 1, -2), 1.0, doneAction: 2);
 	body_hpf = HPF.ar(in: root_cymbal, freq: Line.kr(9000, 12000, sustain),mul: body_env, add: 0);
 	cymbal_mix = Mix.new([initial_bpf, body_hpf]) * amp;
-	Out.ar(out, [cymbal_mix, cymbal_mix])
+
+	cymbal_mix = (cymbal_mix*1.2).tanh/16;
+	Out.ar(out, [cymbal_mix, cymbal_mix]/2)
 	}).store;
 //DrumSynths SC Example - SOS Drums by Renick Bell, renick_at_gmail.com
 // recipes from Gordon Reid in his Sound on Sound articles

@@ -2,6 +2,8 @@ I8TMain : Event
 {
 
 	classvar instance;
+	var <server;
+	var <isBooted;
 
 	var ready;
 	var awaitingReadyBeforePlay;
@@ -50,11 +52,11 @@ I8TMain : Event
 	var clearedNodes;
 	var clearedFunctions;
 
-	*new {|createNew=false|
+	*new {|server_,createNew=false|
 
 		if(( instance.isNil || createNew == true), {
 
-			^super.new.init(createNew);
+			^super.new.init(server_,createNew);
 
 		}, {
 
@@ -65,20 +67,24 @@ I8TMain : Event
 	}
 	*initClass {
 		StartUp.add {
-			var s = Server.local;
 			var i = INSTRUMENT();
 		}
 	}
 
-	init {|createNew=false|
+	init {|server_,createNew=false|
 
+		if(server_.isKindOf(Server), {
+			server = server_;
+		}, {
+			server = Server.local;
+		});
 
 		// clock = TempoClock.default;
 		clock = TempoClock.new( TempoClock.default.tempo );
 
 		ready = false;
 
-		if( Server.local.serverRunning, {
+		if( server.serverRunning, {
 
 			if( createNew==false ) {
 				instance = this;
@@ -138,6 +144,7 @@ I8TMain : Event
 			"".postln;
 			"".postln;
 
+			isBooted = true;
 
 		});
 
@@ -145,11 +152,14 @@ I8TMain : Event
 
 		// warn user if SC not running when starting INSTRUMENT manually
 		if(
-			Server.local.serverRunning == false
+			server.serverRunning == false
 		) {
 			if( I8TSynthLoader.synthsLoaded.notNil, {
 				"please boot".warn;
 			});
+
+			isBooted = false;
+
 		};
 
 		// dictionary for placing custom data:
@@ -1180,4 +1190,16 @@ I8TMain : Event
         )
 
 	}
+
+
+	volume_ {|volume|
+
+		mixer.master.collect({|channel|
+			channel.outSynth.set(\amp,volume);
+			["set",channel.outSynth,volume].postln;
+		});
+
+	}
+
+
 }
