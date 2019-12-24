@@ -68,7 +68,7 @@ I8TMain : Event
 	*initClass {
 		StartUp.add {
 			var i = INSTRUMENT();
-			TestINSTRUMENT.run;
+			TestINSTRUMENT.run();
 		}
 	}
 
