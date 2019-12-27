@@ -15,6 +15,8 @@ TestINSTRUMENT : UnitTest
 
 		main = INSTRUMENT(server);
 
+		main.mode = "test"
+
 	}
 
 	tearDown {
@@ -25,12 +27,20 @@ TestINSTRUMENT : UnitTest
 
 		TestI8TSynthLoader.run(true,false);
 
-		// TestI8TMain.run(true,false);
-		//
-		//
+		TestI8TMain.run(true,false);
+
+		TestI8TChannel.run(true,false);
+
+		TestI8TMixer.run(true,false);
+
+
+		TestSynthPlayer.run(true,false);
+
+		TestInstrumentGroup.run(true,false);
+
 		// TestAudio.run(true,false);
-		//
-		// TestSynthPlayer.run(true,false);
+
+		main.kill();
 
 	}
 

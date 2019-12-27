@@ -9,7 +9,7 @@ InstrumentGroup : Sequenceable
 
 	var <childrenStopped;
 
-	var dictionary;
+	var <dictionary;
 
 	*new {
 		^super.new.init;

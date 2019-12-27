@@ -22,7 +22,6 @@ SynthPlayer : SynthInstrument
 				synthdef_.isKindOf(SynthDef)
 				||
 				synthdef_.isKindOf(SynthDefVariant)
-
 			)
 		, {
 

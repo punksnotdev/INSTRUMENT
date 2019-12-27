@@ -29,32 +29,32 @@ I8TFolder : Event
 
 		};
 
-		if(record.isNil) {
-			var blockResult = block {|break|
-				this.collect({|v,k|
-					if(record.isNil) {
-						if(v.isKindOf(I8TFolder)) {
-							var valid = (v[key].isKindOf(SynthDef));
-							valid = (valid && (v[key].isKindOf(I8TFolder)));
-
-							if(valid) {
-								break.value(v[key]);
-							};
-						};
-					};
-				});
-			};
-
-			if(
-				(
-					(blockResult.isKindOf(SynthDef))
-					||
-					(blockResult.isKindOf(I8TFolder))
-				)
-			) {
-				record = blockResult;
-			};
-		};
+		// if(record.isNil) {
+		// 	var blockResult = block {|break|
+		// 		this.collect({|v,k|
+		// 			if(record.isNil) {
+		// 				if(v.isKindOf(I8TFolder)) {
+		// 					var valid = (v[key].isKindOf(SynthDef));
+		// 					valid = (valid && (v[key].isKindOf(I8TFolder)));
+		//
+		// 					if(valid) {
+		// 						break.value(v[key]);
+		// 					};
+		// 				};
+		// 			};
+		// 		});
+		// 	};
+		//
+		// 	if(
+		// 		(
+		// 			(blockResult.isKindOf(SynthDef))
+		// 			||
+		// 			(blockResult.isKindOf(I8TFolder))
+		// 		)
+		// 	) {
+		// 		record = blockResult;
+		// 	};
+		// };
 
 
 		if( record.notNil ) {
@@ -62,7 +62,9 @@ I8TFolder : Event
 		};
 
 		if(((name!='root')&&(key.asString!="forward"))){
+
 			("Key \""++key.asString++"\" not found in folder: "++name.asString).warn;
+
 		};
 
 		^nil
@@ -232,7 +234,9 @@ I8TFolder : Event
 		^this.getAncestors.reject({|a|a.folderParent.notNil})[0]
 	}
 
-	organizeByFamilies{
+
+	organizeByFamilies {
+
 		this.keysValuesDo({|k,v|
 			if(this.getRootFolder.notNil) {
 				if(this.getRootFolder[k].isKindOf(I8TFolder)) {
@@ -242,7 +246,9 @@ I8TFolder : Event
 				}
 			}
 		})
+
 	}
+
 
 	makeRefs {
 

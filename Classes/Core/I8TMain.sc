@@ -5,6 +5,7 @@ I8TMain : Event
 	var <server;
 	var <isBooted;
 
+	var <>mode;
 	var ready;
 	var awaitingReadyBeforePlay;
 
@@ -73,6 +74,10 @@ I8TMain : Event
 	}
 
 	init {|server_,createNew=false|
+
+
+		mode = "play";
+
 
 		if(server_.isKindOf(Server), {
 			server = server_;
@@ -156,7 +161,9 @@ I8TMain : Event
 			server.serverRunning == false
 		) {
 			if( I8TSynthLoader.synthsLoaded.notNil, {
-				"please boot".warn;
+				if( mode=="play" ) {
+					"please boot".warn;
+				};
 			});
 
 			isBooted = false;
@@ -604,7 +611,6 @@ I8TMain : Event
 
 				};
 
-				["CHECKITEM", something, item].postln;
 
 				if((
 					(
@@ -622,7 +628,6 @@ I8TMain : Event
 
 				};
 
-				["CHECKITEM", something, item].postln;
 
 				if( something.isKindOf(NodeProxy)) {
 
@@ -631,7 +636,6 @@ I8TMain : Event
 				};
 
 
-				["CHECKITEM", something, item].postln;
 
 				if( item.isNil ) {
 					^nil
@@ -720,7 +724,7 @@ I8TMain : Event
 
 	createGroup {|group_,key_|
 
-		if( key_.notNil ) {
+		if( key_.notNil && group_.isKindOf(Collection) ) {
 
 			var item;
 
@@ -743,7 +747,10 @@ I8TMain : Event
 						( childItem.isKindOf(I8TNode) )
 					) == false) {
 
-					("Not a valid Group item: "++childItem.asString).warn;
+					if( mode=="play" ) {
+						("Not a valid Group item: "++childItem.asString).warn;
+					};
+
 
 					allValid = false;
 				};
@@ -753,8 +760,12 @@ I8TMain : Event
 
 				// if group already exists
 				if( groups[key].notNil, {
-
 					var currentGroup = groups[key];
+
+					if( mode=="test" ) {
+						"already exists".warn;
+					};
+
 
 					// disable any synths not included in new groups
 					group_.collect({|childItem,childItemKey|
@@ -820,7 +831,9 @@ I8TMain : Event
 
 									var newNode = SynthPlayer(synthdef);
 
-									childItem.name=childItem;
+									["crate with synthdef",synthdef,newNode].postln;
+
+									newNode.name=childItem;
 
 									this.setupNode( newNode, childItem );
 
@@ -1003,13 +1016,17 @@ I8TMain : Event
 
 
 			}, {
-				"Not a valid InstrumentGroup".warn;
+
+				if( mode=="play" ) {
+					"Not a valid InstrumentGroup".warn;
+				};
+
 			});
 
 
 			^item;
 
-		}
+		};
 
 	}
 
@@ -1144,8 +1161,9 @@ I8TMain : Event
 			instance = nil;
 
 			nodes = Dictionary.new;
-
-			"I N S T R U M E N T killed.".warn;
+			if( mode=="play" ) {
+				"I N S T R U M E N T killed.".warn;
+			};
 		}
 	}
 

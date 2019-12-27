@@ -27,6 +27,9 @@ Sequencer : I8TNode
 
 	var loopers;
 
+
+	var >printBeats;
+
 	*new {|main_|
 		^super.new.init(main_);
 	}
@@ -51,6 +54,9 @@ Sequencer : I8TNode
 
 		clock = 0;
 		playing = true;
+
+		printBeats = false;
+
 	}
 
 
@@ -123,6 +129,9 @@ Sequencer : I8TNode
 
 					beats = beats+1;
 
+					if( printBeats ) {
+						beats.postln;
+					};
 
 				});
 

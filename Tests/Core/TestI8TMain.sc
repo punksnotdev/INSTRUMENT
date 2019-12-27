@@ -9,4 +9,17 @@ TestI8TMain : I8TUnitTest
 		this.assert(main.isBooted==true);
 	}
 
+	test_afterInit_hasMixer {
+		this.assert(main.mixer.isKindOf(I8TMixer));
+	}
+
+
+	test_onPut_createsCorrectItemDependingOnInput {
+		this.assert(false);
+	}
+
+	test_onPut_onValidName_createsCorrectItem {
+		this.assert(false);
+	}
+
 }

@@ -58,7 +58,7 @@ I8TSynthLoader {
     			var synthdef = fileSrc.load;
 
     			if( synthdef.isKindOf(SynthDef) ) {
-    				items[ fileName.uncapitalize.replace(" ","_").asSymbol ] = synthdef;
+    				items[ synthdef.name.asString.uncapitalize.replace(" ","_").asSymbol ] = synthdef;
     			};
     		});
 
@@ -201,13 +201,15 @@ I8TSynthLoader {
 
 		var folder;
 
-        folder = synths[folderName.asSymbol];
+        if( synths.isKindOf(Dictionary)){
 
-		if( folder.isKindOf(I8TFolder) == false ) {
-            if( synths.isKindOf(Dictionary)){
+            folder = synths[folderName.asSymbol];
+    		if( folder.isKindOf(I8TFolder) == false ) {
                 folder = synths[folderName.asString.uncapitalize.asSymbol];
-            }
-		};
+    		};
+
+        };
+
         if( folder.isKindOf(I8TFolder) == false ) {
             ^nil
         };
@@ -235,11 +237,14 @@ I8TSynthLoader {
 
 		if( folderName.isKindOf(String) || folderName.isKindOf(Symbol) ) {
 
-			^this.getFolderByName(folderName).notNil
+            var folder = this.getFolderByName(folderName);
+
+			^folder.notNil
 
 		};
 
 		^false;
+
 	}
 
 

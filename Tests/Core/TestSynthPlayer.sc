@@ -1,17 +1,19 @@
 TestSynthPlayer : I8TUnitTest
 {
 
-	test_onStringCreation_failsIfDoesntExist {
+	test_onStringCreation_createsSynthPlayerByName {
 
-		var instrument;
+		main.kick = "kickDamp";
+
+		this.assert(main.kick.isKindOf(SynthPlayer));
+
+	}
+
+	test_onStringCreation_returnsNilIfNameNotFound {
 
 		main.someName = "invalid synth name";
+		this.assert(main.someName.isNil);
 
-		instrument = main.someName;
-
-		instrument.class.postln;
-
-		this.assert(instrument.isKindOf(SynthPlayer)==false);
 	}
 
 
