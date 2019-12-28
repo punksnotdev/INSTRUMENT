@@ -58,7 +58,7 @@ I8TSynthLoader {
     			var synthdef = fileSrc.load;
 
     			if( synthdef.isKindOf(SynthDef) ) {
-    				items[ synthdef.name.asString.uncapitalize.replace(" ","_").asSymbol ] = synthdef;
+    				items[ synthdef.name.asString.replace(" ","_").asSymbol ] = synthdef;
     			};
     		});
 
@@ -66,7 +66,7 @@ I8TSynthLoader {
 
     			var pathName = PathName( folderSrc );
 
-    			var folderName = pathName.folderName.uncapitalize.replace(" ","_").asSymbol;
+    			var folderName = pathName.folderName.replace(" ","_").asSymbol;
 
     			// "-------".postln;
     			// folderName.postln;
@@ -171,7 +171,7 @@ I8TSynthLoader {
 
 		var synthdef;
 
-		synthdef = synths[synthName.asString.uncapitalize.asSymbol];
+		synthdef = synths[synthName.asString.asSymbol];
 
 		if( synthdef.isNil ) {
 			synthdef = synths[synthName.asSymbol];
@@ -205,7 +205,7 @@ I8TSynthLoader {
 
             folder = synths[folderName.asSymbol];
     		if( folder.isKindOf(I8TFolder) == false ) {
-                folder = synths[folderName.asString.uncapitalize.asSymbol];
+                folder = synths[folderName.asString.toLower.asSymbol];
     		};
 
         };

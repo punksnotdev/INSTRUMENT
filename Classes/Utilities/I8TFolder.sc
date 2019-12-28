@@ -231,7 +231,7 @@ I8TFolder : Event
 
 
 	getRootFolder {
-		^this.getAncestors.reject({|a|a.folderParent.notNil})[0]
+		^this.getAncestors.detect({|a|a.folderParent.isNil})
 	}
 
 
@@ -240,6 +240,23 @@ I8TFolder : Event
 		this.keysValuesDo({|k,v|
 			if(this.getRootFolder.notNil) {
 				if(this.getRootFolder[k].isKindOf(I8TFolder)) {
+
+					var parentNameChildren = this.keys.asArray.select({|ck|ck.asString.toLower.contains(name.asString.toLower)})
+					++
+					this.refs.keys.asArray.select({|ck|ck.asString.toLower.contains(name.asString.toLower)});
+
+					// parentNameChildren.collect({|childName|
+					// 	[name,this.makeChildKeyWithoutParent(childName)].postln;
+					// });
+					if( name.asString == "electro" ) {
+						["electropnc",name,parentNameChildren].postln;
+					};
+					if(parentNameChildren.size>0){
+						// ["pnc",name,parentNameChildren].postln;
+						// this.getRootFolder[k].keysValuesDo({|rk,rv|
+						// 	[rk,rv].postln;
+						// });
+					};
 					if(v.isKindOf(SynthDef)) {
 						this.getRootFolder[k].put(name,v);
 					}
@@ -264,38 +281,33 @@ I8TFolder : Event
 			// delete numeric indexes
 			this.keysValuesDo({|k,v|
 
+				var  newKey;
+
 				if((k.isNumber||(v.isKindOf(SynthDefVariant)==false)&&(v.isKindOf(SynthDef)==false)&&(v.isKindOf(Event)==false))) {
 					this.removeAt(k);
 					refs.removeAt(k);
 				};
-				// if( folderParent.notNil ){
-				// 	["parent is ", folderParent.name].postln;
-				// };
+			// if( folderParent.notNil ){
+			// 	["parent is ", folderParent.name].postln;
+			// };
 
 
+				newKey = this.makeChildKeyWithoutParent( k );
 
-				// add simplified keys that remove this folder name from any synths that include it
-				if(k.isKindOf(String)||k.isKindOf(Symbol)) {
+				if(((newKey!="0")&&(newKey.asInteger>0)), {
+					this.ref(("s"++newKey).asSymbol,v);
+					this.refInAncestors(("s"++newKey).asSymbol,v);
+				},{
+					this.ref(newKey,v);
+					this.refInAncestors(newKey,v);
+					if(this.getRootFolder()[newKey].isKindOf(I8TFolder),{
+						this.getRootFolder()[newKey].ref(name.asString.toLower.asSymbol,v);
+						this.getRootFolder()[newKey].ref(name.asSymbol,v);
+					}, { "doesntexist".warn; [newKey].postln; });
+				});
 
-					var newKey = k.asString;
 
-					this.getAncestors.collect({|value|
-						newKey=newKey.replace(value.name.asString.uncapitalize,"");
-					});
-
-					newKey=newKey.replace(name.asString.uncapitalize,"").uncapitalize;
-
-					if(((newKey!="0")&&(newKey.asInteger>0)), {
-						this.ref(("s"++newKey).asSymbol,v);
-						this.refInAncestors(("s"++newKey).asSymbol,v);
-					},{
-						this.ref(newKey.asSymbol,v);
-						this.refInAncestors(newKey.asSymbol,v);
-					});
-
-				};
 			});
-
 
 			// generate numeric indexes:
 
@@ -360,11 +372,12 @@ I8TFolder : Event
 
 					var synthFolder = I8TFolder();
 
-					var folderKey = k.asString.replace(name.asString,"").uncapitalize.asSymbol;
+					var folderKey = k.asString.replace(name.asString,"").asSymbol;
 
 					synthFolder.name = folderKey;
 
 					synthFolder.put(folderKey,this[k]);
+					synthFolder.ref(folderKey.asString.toLower,this[k]);
 
 					this[k].variants.keysValuesDo({|vk,vv|
 
@@ -374,9 +387,10 @@ I8TFolder : Event
 							this[k]
 						);
 
-						synthFolder.put(vk.asString.uncapitalize.asSymbol,synthDefVariant);
+						synthFolder.put(vk.asSymbol,synthDefVariant);
+						synthFolder.ref(vk.asString.toLower.asSymbol,synthDefVariant);
 
-						this.getRootFolder.ref((this[k].name.asString++"."++vk).uncapitalize.asSymbol,synthDefVariant);
+						this.getRootFolder.ref((this[k].name.asString++"."++vk).toLower.asSymbol,synthDefVariant);
 						this.getRootFolder.ref((this[k].name.asString++"."++vk).asSymbol,synthDefVariant);
 
 					});
@@ -399,9 +413,11 @@ I8TFolder : Event
 	refInAncestors {|key,value|
 		this.getAncestors().do({|a|
 			a.ref(key,value);
+			a.ref(key.asString.toLower.asSymbol,value);
 			if(value.isKindOf(I8TFolder)){
 				value.keysValuesDo({|vk,vv|
 					a.ref(vk,vv);
+					a.ref(vk.asString.toLower.asSymbol,vv);
 				});
 			};
 		});
@@ -453,5 +469,26 @@ I8TFolder : Event
 
 
 	}
+
+
+
+	makeChildKeyWithoutParent {|k|
+		// add simplified keys that remove this folder's name from any of its child synths (electro.kickElectro becomes electro.kick and kick.electro)
+		if(k.isKindOf(String)||k.isKindOf(Symbol)) {
+
+			var newKey = k.asString.toLower;
+
+			this.getAncestors.collect({|ancestor|
+				newKey=newKey.replace(ancestor.name.asString.toLower,"");
+			});
+
+			^newKey=newKey.replace(name.asString.toLower,"").toLower.asSymbol;
+
+		};
+
+	}
+
+
+
 
 }

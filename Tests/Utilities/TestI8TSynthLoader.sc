@@ -5,6 +5,11 @@ TestI8TSynthLoader : I8TUnitTest
 	setUp {
 		synthLoader = main.synthLoader;
 	}
+
+	tearDown {
+		TestI8TFolder.run(true,false);
+	}
+
 	test_afterInit_loadedCorrectly {
 		this.assert( synthLoader.isKindOf(I8TSynthLoader));
 	}
@@ -27,8 +32,10 @@ TestI8TSynthLoader : I8TUnitTest
 		this.assert( (synthdef.isKindOf(SynthDef)||synthdef.isKindOf(SynthDefVariant)) );
 	}
 
-	test_synthdefAddedToFamilyByNameRoot {
-		this.assert(main.synths.kick.electro === main.synths.kickElectro)
+	test_synthdefAddedToFamilyByParentName {
+		[main.synths.kick.electro, main.synths.electro.kick].postln;
+
+		this.assert(main.synths.kick.electro === main.synths.electro.kick)
 	}
 
 }

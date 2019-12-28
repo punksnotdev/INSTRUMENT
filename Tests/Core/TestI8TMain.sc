@@ -14,12 +14,12 @@ TestI8TMain : I8TUnitTest
 	}
 
 
-	test_onPut_createsCorrectItemDependingOnInput {
-		this.assert(false);
-	}
-
-	test_onPut_onValidName_createsCorrectItem {
-		this.assert(false);
-	}
+	// test_onPut_createsCorrectItemDependingOnInput {
+	// 	this.assert(false);
+	// }
+	//
+	// test_onPut_onValidName_createsCorrectItem {
+	// 	this.assert(false);
+	// }
 
 }
