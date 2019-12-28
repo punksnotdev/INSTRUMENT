@@ -20,9 +20,9 @@ TestI8TSynthLoader : I8TUnitTest
 	}
 
 	test_getSynthDefByName_onNotFound_returnsFalse {
-		// var folderName = "some invalid name";
-		// var validation = synthLoader.validateFolderName( folderName );
-		this.assert( false );
+		var folderName = "some invalid name";
+		var validation = synthLoader.validateFolderName( folderName );
+		this.assert( validation == false );
 	}
 
 	test_getSynthDefByName_onValidName_returnsSynthDef {
@@ -33,8 +33,6 @@ TestI8TSynthLoader : I8TUnitTest
 	}
 
 	test_synthdefAddedToFamilyByParentName {
-		[main.synths.kick.electro, main.synths.electro.kick].postln;
-
 		this.assert(main.synths.kick.electro === main.synths.electro.kick)
 	}
 
