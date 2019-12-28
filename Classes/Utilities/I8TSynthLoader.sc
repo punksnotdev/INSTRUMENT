@@ -86,8 +86,8 @@ I8TSynthLoader {
     		Task.new({
     			0.1.wait;
     			folder.refInAncestors(folder.name, folder);
-    			0.1.wait;
-    			folder.organizeByFamilies();
+    			// 0.1.wait;
+    			// folder.organizeByFamilies();
     			0.1.wait;
     			folder.addVariants();
     			0.2.wait;

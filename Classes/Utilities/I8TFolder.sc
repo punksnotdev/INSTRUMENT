@@ -235,36 +235,6 @@ I8TFolder : Event
 	}
 
 
-	organizeByFamilies {
-
-		this.keysValuesDo({|k,v|
-			if(this.getRootFolder.notNil) {
-				if(this.getRootFolder[k].isKindOf(I8TFolder)) {
-
-					var parentNameChildren = this.keys.asArray.select({|ck|ck.asString.toLower.contains(name.asString.toLower)})
-					++
-					this.refs.keys.asArray.select({|ck|ck.asString.toLower.contains(name.asString.toLower)});
-
-					// parentNameChildren.collect({|childName|
-					// 	[name,this.makeChildKeyWithoutParent(childName)].postln;
-					// });
-					if( name.asString == "electro" ) {
-						["electropnc",name,parentNameChildren].postln;
-					};
-					if(parentNameChildren.size>0){
-						// ["pnc",name,parentNameChildren].postln;
-						// this.getRootFolder[k].keysValuesDo({|rk,rv|
-						// 	[rk,rv].postln;
-						// });
-					};
-					if(v.isKindOf(SynthDef)) {
-						this.getRootFolder[k].put(name,v);
-					}
-				}
-			}
-		})
-
-	}
 
 
 	makeRefs {
@@ -303,7 +273,21 @@ I8TFolder : Event
 					if(this.getRootFolder()[newKey].isKindOf(I8TFolder),{
 						this.getRootFolder()[newKey].ref(name.asString.toLower.asSymbol,v);
 						this.getRootFolder()[newKey].ref(name.asSymbol,v);
-					}, { "doesntexist".warn; [newKey].postln; });
+					}, {
+						if(this.getRootFolder()[newKey.asString.toLower.asSymbol].isKindOf(I8TFolder),{
+							this.getRootFolder()[newKey.asString.toLower.asSymbol].ref(name.asString.toLower.asSymbol,v);
+							this.getRootFolder()[newKey.asString.toLower.asSymbol].ref(name.asSymbol,v);
+						}, {
+							var defKey = k.asString.toLower.replace(newKey.asString,"").asSymbol;
+							// if folder doesn-t exist, create it?
+
+							this.getRootFolder().put(newKey,I8TFolder.new);
+							this.getRootFolder().at(newKey).name=newKey;
+
+							this.getRootFolder().at(newKey).put( defKey, v );
+
+						});
+				 	});
 				});
 
 
