@@ -6,9 +6,6 @@ TestI8TSynthLoader : I8TUnitTest
 		synthLoader = main.synthLoader;
 	}
 
-	tearDown {
-		TestI8TFolder.run(true,false);
-	}
 
 	test_afterInit_loadedCorrectly {
 		this.assert( synthLoader.isKindOf(I8TSynthLoader));
