@@ -12,4 +12,12 @@ TestI8TMixer : I8TUnitTest
 			)
 		)
 	}
+
+
+	// test_addChannel_onGroupUpdate_destroysUnusedChannels {
+	// 	this.assert(false);
+	// }
+	// test_addChannel_onGroupUpdate_createsOnlyNewChannels {
+	// 	this.assert(false);
+	// }
 }

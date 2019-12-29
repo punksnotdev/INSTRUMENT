@@ -26,17 +26,18 @@ InstrumentGroup : Sequenceable
 		this.collect({|item,key|
 			if(( (childrenStopped[key] == true) || (childrenStopped[key].isNil == true)) ) {
 
-				if( (item.isKindOf(I8TNode)) || (item.isKindOf(InstrumentGroup))) {
+				if(
+					(item.isKindOf(I8TNode)) || (item.isKindOf(InstrumentGroup))) {
 					item.play;
 				};
 			};
 		});
+
 	}
 
 
 	stop {|key|
 
-		["stop",key].postln;
 		if( key.isNil, {
 
 			this.collect({|item|
@@ -404,5 +405,5 @@ InstrumentGroup : Sequenceable
 
 
 
-
+	
 }

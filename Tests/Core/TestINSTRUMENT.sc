@@ -38,6 +38,8 @@ TestINSTRUMENT : UnitTest
 
 		TestInstrumentGroup.run(true,false);
 
+		TestInstrumentGroupManagement.run(true,false);
+
 		// TestAudio.run(true,false);
 
 		main.kill();

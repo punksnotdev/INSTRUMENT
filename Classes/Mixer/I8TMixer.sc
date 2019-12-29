@@ -175,10 +175,14 @@ I8TMixer : Sequenceable
 
 					});
 
-					channel.setInput( node );
-					channel.setName( node.name );
+					if( channel.notNil ) {
 
-					^channel;
+						channel.setInput( node );
+						channel.setName( node.name );
+
+						^channel;
+
+					}
 
 				};
 

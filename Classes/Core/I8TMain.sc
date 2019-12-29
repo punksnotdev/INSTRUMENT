@@ -371,7 +371,9 @@ I8TMain : Event
 
 		sequencer.stop;
 
-		"I N S T R U M E N T stopped".postln;
+		if( mode=="play" ) {
+			"I N S T R U M E N T stopped".postln;
+		};
 
 	}
 
@@ -624,7 +626,7 @@ I8TMain : Event
 					(something.isKindOf(String)==false)
 				)) {
 
-					item = this.createGroup( something, key );
+					item = this.upsertGroup( something, key );
 
 				};
 
@@ -722,294 +724,33 @@ I8TMain : Event
 	}
 
 
-	createGroup {|group_,key_|
+	upsertGroup {|group_,key_|
 
 		if( key_.notNil && group_.isKindOf(Collection) ) {
 
 			var item;
 
-			var newGroup;
+			if( this.validateGroupItems(group_), {
 
-			var allValid = true;
+				// if group already exists, update, otherwise create
+				if( groups[key_].notNil, {
 
-			var key = key_;
+					item = this.updateGroup( key_, group_ );
 
-			group_.collect({|childItem|
-				if( (
-						( childItem.isKindOf(SynthDef) )
-						||
-						( childItem.isKindOf(SynthDefVariant) )
-						||
-						(synthLoader.validateSynthName(childItem))
-						||
-						(synthLoader.validateFolderName(childItem))
-						||
-						( childItem.isKindOf(I8TNode) )
-					) == false) {
-
-					if( mode=="play" ) {
-						("Not a valid Group item: "++childItem.asString).warn;
-					};
-
-
-					allValid = false;
-				};
-			});
-
-			if( allValid == true, {
-
-				// if group already exists
-				if( groups[key].notNil, {
-					var currentGroup = groups[key];
-
-					if( mode=="test" ) {
-						"already exists".warn;
-					};
-
-
-					// disable any synths not included in new groups
-					group_.collect({|childItem,childItemKey|
-						// if key already exists in group:
-						if( currentGroup.keys.includes(childItemKey) == true,
-						{
-							var synthdef;
-							if( childItem.isKindOf(I8TNode) ) {
-								synthdef = childItem.synthdef;
-							};
-							if( (
-								childItem.isKindOf(SynthDef)
-								||
-								childItem.isKindOf(SynthDefVariant)
-							) ) {
-								synthdef = childItem;
-							};
-
-							if( synthLoader.validateSynthName(childItem) ) {
-								synthdef = synthLoader.getSynthDefByName(childItem);
-							};
-
-							if( synthLoader.validateFolderName(childItem) ) {
-								synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-							};
-
-							currentGroup.at(childItemKey).synthdef = synthdef;
-
-							currentGroup.at(childItemKey).play;
-						},
-						{	// if new key:
-
-							if( childItem.isKindOf(I8TNode) ) {
-							  if( (nodes.includes( childItem ) == false), {
-								this.setupNode( childItem, childItem.name );
-							  });
-							  currentGroup.put( childItemKey, childItem );
-							};
-
-							if( (
-								childItem.isKindOf(SynthDef)
-								||
-								childItem.isKindOf(SynthDefVariant)
-							) ) {
-
-								childItem = SynthPlayer(childItem);
-
-								if( (nodes.includes( childItem ) == false), {
-									this.setupNode( childItem, childItem.name );
-								});
-
-								currentGroup.put( childItemKey, childItem );
-
-							};
-
-							if( synthLoader.validateSynthName(childItem) ) {
-
-								if( nodes[childItemKey].notNil, {
-							  		newGroup.put(childItemKey,nodes[childItem]);
-								},
-								{
-									var synthdef = synthLoader.getSynthDefByName(childItem);
-
-									var newNode = SynthPlayer(synthdef);
-
-									["crate with synthdef",synthdef,newNode].postln;
-
-									newNode.name=childItem;
-
-									this.setupNode( newNode, childItem );
-
-									currentGroup.put( childItemKey, newNode );
-
-								});
-
-
-							};
-
-							if( synthLoader.validateFolderName(childItem) ) {
-
-								if( nodes[childItemKey].notNil, {
-							  		newGroup.put( childItemKey, nodes[childItem] );
-								},
-								{
-									var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-
-									var newNode = SynthPlayer(synthdef);
-
-									childItem.name=childItem;
-
-									this.setupNode( newNode, childItem );
-
-									currentGroup.put( childItemKey, newNode );
-
-								});
-
-
-							};
-
-
-						});
-					});
-
-					currentGroup.collect({|childItem,childItemKey|
-
-						if(  group_.keys.includes(childItemKey) == false ) {
-							currentGroup.stop(childItemKey);
-						};
-
-					});
-
-
-
-					mixer.addChannel( currentGroup );
-
-					item = currentGroup;
+					mixer.addChannel( item );
 
 				}, {
 
-					// if is new group
+					item = this.createGroup( key_, group_ );
 
+					groups[key_] = item;
 
-					if( group_.isKindOf(InstrumentGroup), {
-
-						newGroup = group_;
-
-						newGroup.name = key;
-
-
-					}, {
-
-						newGroup = InstrumentGroup.new;
-
-						newGroup.name = key;
-
-						group_.collect({
-
-						  arg childItem,childItemKey;
-
-						  // if childItem name is a node, add it
-						  if( childItem.isKindOf(I8TNode) ) {
-
-							if( (nodes.includes( childItem ) == false), {
-
-							  childItem.name=key++'_'++childItemKey;
-
-							  this.setupNode( childItem, childItem.name );
-
-							});
-
-							newGroup.put( childItemKey, childItem );
-
-						  };
-
-						  if( childItem.isKindOf(InstrumentGroup) ) {
-							if( groups.includes(childItem) ) {
-							  newGroup.put( childItem.name, childItem );
-							};
-						  };
-
-						  if( synthLoader.validateSynthName(childItem) ) {
-
-							var childItemName = childItem;
-
-							if( nodes[childItemName].notNil, {
-							  newGroup.put( childItemName, nodes[childItemName] );
-							}, {
-							  // if childItem name is a group
-							  if( groups[childItemName].notNil, {
-								// add its childItems
-								newGroup.put( childItemName, groups[childItemName] );
-							  }, {
-								  // if no node and no group found
-								  var synthdef = synthLoader.getSynthDefByName(childItem);
-								  var newNode = SynthPlayer(synthdef);
-								  this.setupNode(newNode,childItemName);
-								  newGroup.put( childItemKey, newNode );
-
-							  });
-							});
-
-						};
-
-
-						if( synthLoader.validateFolderName(childItem) ) {
-
-							var childItemName = childItem;
-
-							if( nodes[childItemName].notNil, {
-							  newGroup.put( childItemName, nodes[childItemName] );
-							}, {
-							  // if childItem name is a group
-							  if( groups[childItemName].notNil, {
-								// add its childItems
-								newGroup.put( childItemName, groups[childItemName] );
-							  }, {
-								  // if no node and no group found
-								  var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-								  var newNode = SynthPlayer(synthdef);
-								  this.setupNode(newNode,childItemName);
-								  newGroup.put( childItemKey, newNode );
-
-							  });
-							});
-
-						};
-
-						if( (
-							childItem.isKindOf(SynthDef)
-							||
-							childItem.isKindOf(SynthDefVariant)
-						) ) {
-
-							var newNodeKey = key++'_'++childItemKey;
-
-							this.put( newNodeKey, childItem );
-
-							if( nodes[newNodeKey].notNil, {
-							  newGroup.put( childItemKey, nodes[newNodeKey] );
-							});
-
-						};
-
-						});
-
-					});
-
-
-
-
-					groups[key] = newGroup;
-
-					item = groups[key];
-
-					mixer.addChannel( newGroup );
-
-
-
-					sequencer.registerInstrument(newGroup);
-
-					controllerManager.addInstrument( newGroup, key );
+					mixer.addChannel( item );
+					sequencer.registerInstrument(item);
+					controllerManager.addInstrument( item, key_ );
 
 					if( playing ) {
-						newGroup.play;
+						item.play;
 					};
 
 				});
@@ -1052,7 +793,7 @@ I8TMain : Event
 
 			if( group.name.notNil, {
 
-				^this.createGroup(group,group.name);
+				^this.upsertGroup(group,group.name);
 
 			}, {
 
@@ -1211,6 +952,265 @@ I8TMain : Event
 			channel.outSynth.set(\amp,volume);
 			["set",channel.outSynth,volume].postln;
 		});
+
+	}
+
+
+
+	validateGroupItems {|group_|
+		var allValid = true;
+		group_.collect({|childItem|
+			if( (
+					( childItem.isKindOf(SynthDef) )
+					||
+					( childItem.isKindOf(SynthDefVariant) )
+					||
+					(synthLoader.validateSynthName(childItem))
+					||
+					(synthLoader.validateFolderName(childItem))
+					||
+					( childItem.isKindOf(I8TNode) )
+				) == false) {
+
+				if( mode=="play" ) {
+					("Not a valid Group item: "++childItem.asString).warn;
+				};
+
+
+				allValid = false;
+			};
+		});
+
+		^allValid
+	}
+
+
+
+	createGroup {|key_, group_|
+
+		var newGroup;
+
+		if( group_.isKindOf(InstrumentGroup), {
+
+			newGroup = group_;
+
+			newGroup.name = key_;
+
+
+		}, {
+
+			newGroup = InstrumentGroup.new;
+
+			newGroup.name = key_;
+
+			group_.collect({
+
+			  arg childItem,childItemKey;
+
+			  // if childItem name is a node, add it
+			  if( childItem.isKindOf(I8TNode) ) {
+
+				if( (nodes.includes( childItem ) == false), {
+
+				  childItem.name=key_++'_'++childItemKey;
+
+				  this.setupNode( childItem, childItem.name );
+
+				});
+
+				newGroup.put( childItemKey, childItem );
+
+			  };
+
+			  if( childItem.isKindOf(InstrumentGroup) ) {
+				if( groups.includes(childItem) ) {
+				  newGroup.put( childItem.name, childItem );
+				};
+			  };
+
+			  if( synthLoader.validateSynthName(childItem) ) {
+
+				var childItemName = childItem;
+
+				if( nodes[childItemName].notNil, {
+				  newGroup.put( childItemName, nodes[childItemName] );
+				}, {
+				  // if childItem name is a group
+				  if( groups[childItemName].notNil, {
+					// add its childItems
+					newGroup.put( childItemName, groups[childItemName] );
+				  }, {
+					  // if no node and no group found
+					  var synthdef = synthLoader.getSynthDefByName(childItem);
+					  var newNode = SynthPlayer(synthdef);
+					  this.setupNode(newNode,childItemName);
+					  newGroup.put( childItemKey, newNode );
+
+				  });
+				});
+
+			};
+
+
+			if( synthLoader.validateFolderName(childItem) ) {
+
+				var childItemName = childItem;
+
+				if( nodes[childItemName].notNil, {
+				  newGroup.put( childItemName, nodes[childItemName] );
+				}, {
+				  // if childItem name is a group
+				  if( groups[childItemName].notNil, {
+					// add its childItems
+					newGroup.put( childItemName, groups[childItemName] );
+				  }, {
+					  // if no node and no group found
+					  var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
+					  var newNode = SynthPlayer(synthdef);
+					  this.setupNode(newNode,childItemName);
+					  newGroup.put( childItemKey, newNode );
+
+				  });
+				});
+
+			};
+
+			if( (
+				childItem.isKindOf(SynthDef)
+				||
+				childItem.isKindOf(SynthDefVariant)
+			) ) {
+
+				var newNodeKey = key_++'_'++childItemKey;
+
+				this.put( newNodeKey, childItem );
+
+				if( nodes[newNodeKey].notNil, {
+				  newGroup.put( childItemKey, nodes[newNodeKey] );
+				});
+
+			};
+
+			});
+
+		});
+
+
+		^newGroup
+
+	}
+
+
+	createGroupChildNode {|group,childItem,childItemKey|
+
+		var newKey;
+		var node;
+
+		newKey = (group.name++'_'++childItemKey).asString.toLower;
+
+		if( childItem.isKindOf(I8TNode) ) {
+		  node = childItem;
+		};
+
+		if( (
+			childItem.isKindOf(SynthDef)
+			||
+			childItem.isKindOf(SynthDefVariant)
+		) ) {
+			node = SynthPlayer(childItem);
+		};
+
+		if( synthLoader.validateSynthName(childItem) ) {
+
+			if( nodes[newKey].notNil, {
+				node = nodes[newKey];
+			},
+			{
+				var synthdef = synthLoader.getSynthDefByName(childItem);
+				node = SynthPlayer(synthdef);
+			});
+
+
+		};
+
+		if( synthLoader.validateFolderName(childItem) ) {
+
+			if( nodes[newKey].notNil, {
+				node = nodes[newKey];
+			},
+			{
+				var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
+				node = SynthPlayer(synthdef);
+			});
+
+
+		};
+
+		node.name = newKey;
+
+
+		this.setupNode( node, newKey );
+
+		^node
+
+	}
+
+	updateGroup {|key_, group_|
+
+		var currentGroup = groups[key_];
+
+		// disable any synths not included in new groups
+		group_.collect({|childItem,childItemKey|
+			// if key already exists in group:
+			if( currentGroup.keys.includes(childItemKey) == true,
+			{
+
+				var synthdef;
+
+				if( childItem.isKindOf(I8TNode) ) {
+					synthdef = childItem.synthdef;
+				};
+				if( (
+					childItem.isKindOf(SynthDef)
+					||
+					childItem.isKindOf(SynthDefVariant)
+				) ) {
+					synthdef = childItem;
+				};
+
+				if( synthLoader.validateSynthName(childItem) ) {
+					synthdef = synthLoader.getSynthDefByName(childItem);
+				};
+
+				if( synthLoader.validateFolderName(childItem) ) {
+					synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
+				};
+
+				currentGroup.at(childItemKey).synthdef = synthdef;
+
+				currentGroup.at(childItemKey).play;
+
+			},
+			{
+				// if new key:
+				var node = this.createGroupChildNode( currentGroup, childItem, childItemKey );
+
+				currentGroup.put( childItemKey, node );
+
+
+			});
+		});
+
+
+		// stop discarded instruments
+		currentGroup.collect({|childItem,childItemKey|
+			if(  group_.keys.includes(childItemKey) == false ) {
+				currentGroup.stop(childItemKey);
+			};
+		});
+
+
+		^currentGroup;
 
 	}
 
