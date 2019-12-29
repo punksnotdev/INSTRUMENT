@@ -23,7 +23,7 @@ TestINSTRUMENT : UnitTest
 
 		I8TUnitTest.main = main;
 
-		TestI8TSynthLoader.reportPasses = false;
+		TestI8TFolder.run(true,false);
 
 		TestI8TSynthLoader.run(true,false);
 
