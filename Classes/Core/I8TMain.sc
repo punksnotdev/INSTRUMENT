@@ -1007,89 +1007,22 @@ I8TMain : Event
 
 			  arg childItem,childItemKey;
 
-			  // if childItem name is a node, add it
-			  if( childItem.isKindOf(I8TNode) ) {
+			  var node;
 
-				if( (nodes.includes( childItem ) == false), {
+			  if( childItem.isKindOf(InstrumentGroup), {
 
-				  childItem.name=key_++'_'++childItemKey;
-
-				  this.setupNode( childItem, childItem.name );
-
-				});
-
-				newGroup.put( childItemKey, childItem );
-
-			  };
-
-			  if( childItem.isKindOf(InstrumentGroup) ) {
 				if( groups.includes(childItem) ) {
 				  newGroup.put( childItem.name, childItem );
 				};
-			  };
 
-			  if( synthLoader.validateSynthName(childItem) ) {
+			  }, {
 
-				var childItemName = childItem;
+				  // if new key:
+				  node = this.createGroupChildNode( newGroup, childItem, childItemKey );
 
-				if( nodes[childItemName].notNil, {
-				  newGroup.put( childItemName, nodes[childItemName] );
-				}, {
-				  // if childItem name is a group
-				  if( groups[childItemName].notNil, {
-					// add its childItems
-					newGroup.put( childItemName, groups[childItemName] );
-				  }, {
-					  // if no node and no group found
-					  var synthdef = synthLoader.getSynthDefByName(childItem);
-					  var newNode = SynthPlayer(synthdef);
-					  this.setupNode(newNode,childItemName);
-					  newGroup.put( childItemKey, newNode );
+				  newGroup.put( childItemKey, node );
 
-				  });
-				});
-
-			};
-
-
-			if( synthLoader.validateFolderName(childItem) ) {
-
-				var childItemName = childItem;
-
-				if( nodes[childItemName].notNil, {
-				  newGroup.put( childItemName, nodes[childItemName] );
-				}, {
-				  // if childItem name is a group
-				  if( groups[childItemName].notNil, {
-					// add its childItems
-					newGroup.put( childItemName, groups[childItemName] );
-				  }, {
-					  // if no node and no group found
-					  var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-					  var newNode = SynthPlayer(synthdef);
-					  this.setupNode(newNode,childItemName);
-					  newGroup.put( childItemKey, newNode );
-
-				  });
-				});
-
-			};
-
-			if( (
-				childItem.isKindOf(SynthDef)
-				||
-				childItem.isKindOf(SynthDefVariant)
-			) ) {
-
-				var newNodeKey = key_++'_'++childItemKey;
-
-				this.put( newNodeKey, childItem );
-
-				if( nodes[newNodeKey].notNil, {
-				  newGroup.put( childItemKey, nodes[newNodeKey] );
-				});
-
-			};
+			  });
 
 			});
 
@@ -1106,7 +1039,7 @@ I8TMain : Event
 		var newKey;
 		var node;
 
-		newKey = (group.name++'_'++childItemKey).asString.toLower;
+		newKey = (group.name++'_'++childItemKey).asString.toLower.asSymbol;
 
 		if( childItem.isKindOf(I8TNode) ) {
 		  node = childItem;

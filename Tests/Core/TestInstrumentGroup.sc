@@ -162,8 +162,7 @@ TestInstrumentGroup : I8TUnitTest
 			key0: 'test',
 			key1: 'test2',
 		);
-
-
+		
 		this.assert(
 			(
 				(group.key0.name == 'newgroupname_key0')
