@@ -36,7 +36,7 @@ i.drums.s[1].seq("    1x4  1   1x2  1").speed(2).do(1);
 
 i.drums.clock=4;
 
-i.tempo = 166;
+i.tempo = 150;
 
 )
 
