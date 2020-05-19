@@ -10,9 +10,9 @@ Proxy : Instrument
 
 	init{|graph_,proxy_|
 		if( proxy_.isKindOf(NodeProxy), {
-			"input is a nodeproxy".postln;
 			proxy_.postln;
 			proxy = proxy_;
+			sequencer = graph_.sequencer;
 			// this.createSynth();
 			super.init(graph_,proxy_.key,);
 		},{
@@ -66,7 +66,7 @@ Proxy : Instrument
 					proxy.set(\t_trig,1,\amp,value);
 				},
 				\chord, {
-					["chord",value].postln;
+					// ["chord",value].postln;
 					proxy.setn(\notes,((octave*12)+value).min(128),\freqs,((octave*12)+value).min(128).midicps,\t_trig,1);
 				},
 				{ // default:

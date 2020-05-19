@@ -133,7 +133,7 @@ ParameterTrack
 	fwd{|i|
 		if( playing == true, {
 
-			if( ( i % ( 32 / currentSpeed ).floor ) == 0, {
+			if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
 
 
 				var beatPatternIndex;
@@ -309,11 +309,10 @@ ParameterTrack
 		});
 
 
-		// patternEvents[key].add(newPatternEvent);
+		patternEvents[key].add(newPatternEvent);
 		patterns[ key ] = pattern;
 
 
-		// patternEvents[key].add(newPatternEvent);
 
 		this.updateSequenceInfo();
 
@@ -324,7 +323,6 @@ ParameterTrack
 	removePattern {|key|
 
 		var eventKey;
-
 		if(key.isKindOf(I8TPattern),{
 			var pattern;
 			var k;
@@ -347,8 +345,8 @@ ParameterTrack
 			if( key.isKindOf(Integer) || key.isKindOf(Symbol), {
 				eventKey = key;
 				patterns[key] = nil;
-
-							this.removePatternEvents(key);
+// ["rmvpatternEvents",name,key].postln;
+				this.removePatternEvents(key);
 
 			})
 		});
@@ -411,9 +409,12 @@ ParameterTrack
 
 	removePatternEvents {|key|
 
+		["pattEvents?",key,patternEvents,patternEvents[key]].postln;
 		patternEvents[key].collect({|pattEvent|
 
 			var seqindex;
+
+			["pattEvent",pattEvent].postln;
 
 			sequence.reverseDo({|se,si|
 

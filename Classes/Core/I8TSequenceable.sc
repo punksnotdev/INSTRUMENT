@@ -57,7 +57,7 @@ Sequenceable : I8TNode
 		currentParameter = parameters.parameter;
 
 
-		if( sequencer.notNil ) {
+		if( sequencer.notNil, {
 
 			currentPatternEvent = sequencer.addPattern(
 				name,
@@ -73,7 +73,9 @@ Sequenceable : I8TNode
 
 			});
 
-		};
+		}, {
+				"Sequencer is nil".warn;
+		});
 
 		^this;
 
@@ -88,7 +90,7 @@ Sequenceable : I8TNode
 	note {|pattern| this.seq(\note,pattern); }
 
 	chord_ {|pattern| this.chord(pattern); }
-	chord {|pattern| this.seq(\chord,pattern); }
+	chord {|pattern| ["seq chord",pattern].postln; this.seq(\chord,pattern); }
 
 	vol_ {|pattern| this.vol(pattern); }
 	vol {|pattern| this.seq(\amp,pattern); }
@@ -187,7 +189,7 @@ Sequenceable : I8TNode
 
 	go{|time|
 		if( time.isKindOf(Number)) {
-			sequencer.sequencer_tracks[name].parameterTracks.collect{|track|
+			sequencer.sequencerTracks[name].parameterTracks.collect{|track|
 				track.go(time)
 			};
 		};
@@ -228,10 +230,10 @@ Sequenceable : I8TNode
 
 
 	patterns {|parameter|
-		^sequencer.sequencer_tracks[name].parameterTracks[parameter].patterns;
+		^sequencer.sequencerTracks[name].parameterTracks[parameter].patterns;
 	}
 	sequence {|parameter|
-		^sequencer.sequencer_tracks[name].parameterTracks[parameter].sequence;
+		^sequencer.sequencerTracks[name].parameterTracks[parameter].sequence;
 	}
 
 	at {|key|

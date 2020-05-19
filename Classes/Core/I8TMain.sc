@@ -225,7 +225,11 @@ I8TMain : Event
 					item.play;
 				};
 
-				node.channel = mixer.addChannel( node );
+				if( node.isKindOf(Proxy) == false ) {
+					node.channel = mixer.addChannel( node );
+				};
+
+
 
 				if( node.name.asString.find("kick").notNil ) {
 					node.channel.free(\locut);
@@ -634,7 +638,11 @@ I8TMain : Event
 				if( something.isKindOf(NodeProxy)) {
 
 					item = Proxy(something);
+					item.name = key;
+					// provisionally:
+					sequencer.registerInstrument(item);
 
+					this.setupNode( item );
 				};
 
 
@@ -813,7 +821,7 @@ I8TMain : Event
 
 		var tracks = List.new;
 
-		sequencer.sequencer_tracks.keysValuesDo({|k,v|
+		sequencer.sequencerTracks.keysValuesDo({|k,v|
 			var track = ();
 
 			track.name=v.name;
@@ -834,7 +842,7 @@ I8TMain : Event
 	selectPlayingTracks{|selection|
 
 		[selection].postln;
-		// sequencer.sequencer_tracks.collect({|track,index|
+		// sequencer.sequencerTracks.collect({|track,index|
 		// 	if( selection.indexOf(index).notNil, {
 		// 		"play".postln;
 		// 		track.play;
