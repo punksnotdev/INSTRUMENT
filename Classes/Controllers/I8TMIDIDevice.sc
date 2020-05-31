@@ -2,31 +2,26 @@ MIDIDevice {
 
     var <controllers;
     var <output;
-    var <inputMap;
-    var <outputMap;
     var <groups;
-    var device;
-    var spec;
     var <>name;
     var <id;
     var <slug;
     var >midi;
     var <protocol;
+    var <spec;
 
-    *new {|midiManager,device, spec_|
-        ^super.new.init(midiManager,device, spec_);
+    *new {|midiManager,device, spec|
+        ^super.new.init(midiManager,device, spec);
     }
 
-    init {|midiManager,device_, spec_|
-
+    init {|midiManager,device, spec_|
 
         midi = midiManager;
-        device = device_;
+
         protocol = "midi";
         name = device.device;
         id = device.uid;
 
-        spec=spec_;
 
         slug = name.replace(" ","_").toLower.asSymbol;
         groups = ();
@@ -35,9 +30,13 @@ MIDIDevice {
 
         if( spec_.notNil, {
 
+
             // if( spec.outputs.isInteger, {
             var port;
 
+            spec = I8TControllerSpec.new(spec_);
+
+            ["spec",spec].postln;
             // MIDIClient.destinations.collect({|destination, index|
             //
             //     if(spec.name == destination.device, {
@@ -45,20 +44,17 @@ MIDIDevice {
             //     });
             //
             // });
-            if( spec.isKindOf(Event), {
 
-                inputMap = spec.inputMap;
-                outputMap = spec.outputMap;
-            });
 
-            outputMap.collect({|outputMapping|
-                outputMapping.type=spec.outputType;
-            });
+
+            // outputMap.collect({|outputMapping|
+            //     outputMapping.type=spec.outputType;
+            // });
 
             // if( port.notNil, {
 
 
-                output = MIDIOut( 0 );
+            output = MIDIOut( 0 );
 
                 // output.connect( port );
 
@@ -83,12 +79,12 @@ MIDIDevice {
 
     send {|key,value|
 
-        if( outputMap.notNil, {
-            if( outputMap[key].notNil, {
+        if( spec.outputMap.notNil, {
+            if( spec.outputMap[key].notNil, {
 
-                switch( outputMap[key].type,
+                switch( spec.outputMap[key].type,
                     \note, {
-                        output.noteOn(0,outputMap[key].ctlNum,value)
+                        output.noteOn(0,spec.outputMap[key],value)
                     }
                 );
 

@@ -40,6 +40,9 @@ TestINSTRUMENT : UnitTest
 
 		TestInstrumentGroupManagement.run(true,false);
 
+
+		TestI8TControllerSpec.run(true,false);
+
 		// TestAudio.run(true,false);
 
 		main.kill();
