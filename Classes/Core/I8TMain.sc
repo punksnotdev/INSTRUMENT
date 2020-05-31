@@ -499,7 +499,8 @@ I8TMain : Event
 				||
 				target.isKindOf(ControllerLogic)
 			), {
-				^controllerManager.map(controller,target,parameter,range);
+				controllerManager.map(controller,target,parameter,range);
+				("mapped: "++controller.name++" > "++target.name++": "++parameter).postln;
 			}, {
 				"Target not of class 'Instrument'"
 			});

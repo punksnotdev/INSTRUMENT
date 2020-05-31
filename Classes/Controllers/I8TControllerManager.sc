@@ -44,6 +44,7 @@ ControllerManager {
 
 		var controllerList = controlTargetMap[source.name];
 		var inputValue;
+		var outputValue;
 		var inputMap;
 		var target;
 
@@ -55,14 +56,11 @@ ControllerManager {
 		if( target.isKindOf(MIDIDevice) ) {
 			var spec = target.spec;
 			if( spec.isKindOf(I8TControllerSpec) ) {
-				switch(source.type,
-					\note, {
-						["output:",source.name,spec.getOutputByChannel(source.channel)].postln;
-					},
-					\cc, {
-						["output:",source.name,spec.getOutputByCtlNum(source.ctlNum)].postln;
-					}
-				);
+				// switch(source.type,
+				// 	\note, {},
+				// 	\cc, {}
+				// );
+				outputValue = param1;
 			};
 		};
 
@@ -92,7 +90,7 @@ ControllerManager {
 				switch( type,
 					\cc, {
 
-						var value = inputValue / 127;
+						var value = outputValue / 127;
 
 						if( range.notNil, {
 
@@ -124,7 +122,7 @@ ControllerManager {
 
 					\note, {
 
-						target.set(\note,(val: inputValue, amplitude: param2/127));
+						target.set(\note,(val: param1, amplitude: param2/127));
 
 					}
 
