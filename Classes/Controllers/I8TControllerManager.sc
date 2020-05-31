@@ -57,6 +57,12 @@ ControllerManager {
 			if( spec.isKindOf(I8TControllerSpec) ) {
 				switch(source.type,
 					\note, {
+						source.channel.postln;
+						"\n\n\n";
+						
+						spec.outputMap.postln;
+						"\n\n\n";
+						
 						["output:",source.key,spec.getOutputByChannel(source.channel)].postln;
 					},
 					\cc, {
