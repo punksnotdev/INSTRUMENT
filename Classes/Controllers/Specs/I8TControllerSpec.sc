@@ -62,7 +62,7 @@ I8TControllerSpec {
 	  source.keysValuesDo({|groupKey,group|
           switch(group.type,
               \note, {
-        	      map['note_'++group.channel]=(
+        	      map[('note_'++group.channel).asSymbol]=(
     				  name: groupKey
     			  );
               },
@@ -94,11 +94,11 @@ I8TControllerSpec {
 
 
   getInputByChannel {|channel|
-	  ^inputMap['note_'++channel]
+	  ^inputMap[('note_'++channel).asSymbol]
   }
 
   getOutputByChannel {|channel|
-	  ^outputMap['note_'++channel]
+	  ^outputMap[('note_'++channel).asSymbol]
   }
 
 
