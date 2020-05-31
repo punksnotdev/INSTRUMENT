@@ -37,9 +37,6 @@ I8TControllerSpec {
 	  inputs = ();
 	  outputs = ();
 
-	  inputMap = IdentityDictionary.new;
-	  outputMap = IdentityDictionary.new;
-
 	  if( spec.inputs.isKindOf(Event) ) {
 		  inputs = spec.inputs;
 	  };
@@ -49,42 +46,59 @@ I8TControllerSpec {
 	  };
 
 
-	  this.createMaps();
+	  inputMap = this.createMap(inputs);
+	  outputMap = this.createMap(outputs);
 
+      outputMap.postln;
 
   }
 
 
 
-  createMaps {
+  createMap {|source|
 
-	  inputs.collect({|group,groupKey|
-	      group.controllers.keysValuesDo({|k,v|
-	          inputMap[v]=(
-				  name: group.name,
-				  index: k
-			  );
-	      });
+      var map = IdentityDictionary.new;
+
+	  source.keysValuesDo({|groupKey,group|
+          switch(group.type,
+              \note, {
+        	      map['note_'++group.channel]=(
+    				  name: groupKey
+    			  );
+              },
+              \cc, {
+        	      if(group.controllers.notNil) {
+                      group.controllers.keysValuesDo({|k,v|
+            	          map[v]=(
+            				  name: groupKey,
+            				  index: k
+            			  );
+            	      });
+                  };
+              },
+          )
 	  });
 
-	  outputs.collect({|group,groupKey|
-		  group.controllers.keysValuesDo({|k,v|
-			  outputMap[v]=(
-				  name: group.name,
-				  index: k
-			  );
-		  });
-	  });
+      ^map
 
   }
 
 
-  getInputByCtlNum {|key|
-	  ^inputMap[key]
+  getInputByCtlNum {|ctlNum|
+	  ^inputMap[ctlNum]
   }
 
-  getOutputByCtlNum {|key|
-	  ^outputMap[key]
+  getOutputByCtlNum {|ctlNum|
+	  ^outputMap[ctlNum]
+  }
+
+
+  getInputByChannel {|channel|
+	  ^inputMap['note_'++channel]
+  }
+
+  getOutputByChannel {|channel|
+	  ^outputMap['note_'++channel]
   }
 
 

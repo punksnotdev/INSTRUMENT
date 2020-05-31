@@ -1,53 +1,54 @@
 MIDIController {
 
-	var <> midiTarget;
+	var <> target;
 	var <> name;
 	var <> type;
 	var <> key;
-	var <> controllerId;
+	var <> ctlNum;
 	var <> channel;
 	var <> sourceId;
 	var <> range;
 	var <> protocol;
 
-	var <listener;
-
 	var callbacks;
 
-	*new {|midiTarget_, type_, controllerId_, channel_, sourceId_, name_ |
-		^super.new.init(midiTarget_, type_, controllerId_, channel_, sourceId_, name_ );
+	*new {|target_, sourceId_, type_, ctlNum_, channel_ |
+		^super.new.init(target_, sourceId_, type_, ctlNum_, channel_ );
 	}
 
-	init {|midiTarget_, type_, controllerId_, channel_, sourceId_, name_ |
+	init {|target_, sourceId_, type_, ctlNum_, channel_ |
 
-		midiTarget = midiTarget_;
-		type = type_;
 		protocol = "midi";
 
-		name = name_;
+		target = target_;
+		sourceId = sourceId_;
+		type = type_;
+		ctlNum = ctlNum_;
+		channel = channel_;
+
+		name = protocol++'_'++sourceId++'_'++type++'_'++ctlNum++'_'++channel;
 
 		callbacks = List.new;
 
-		controllerId = controllerId_;
 
-		this.addListener( midiTarget, controllerId );
-		this.addResponder( type_, controllerId_, channel_, sourceId_ );
+		this.addResponder( type_,  sourceId, ctlNum_, channel_ );
+
 
 	}
 
-	addResponder {|messageType, controllerId, channel, sourceId|
-		// ["add Responder", controllerId, channel, sourceId].postln;
+	addResponder {|messageType, sourceId, ctlNum, channel|
+		// ["add Responder", ctlNum, channel, sourceId].postln;
 		switch(messageType,
 			\cc, {
 
-				var func = MIDIdef.cc( (name ++"_"++controllerId++"_cc").asSymbol,
+				var func = MIDIdef.cc( (name ++"_"++ctlNum++"_cc").asSymbol,
 					{arg ...args;
 						// args.postln;
 						this.set(args[0])
 
-					}, controllerId, channel, sourceId
+					}, ctlNum, channel, sourceId
 				);
-// [func, name, controllerId, channel, sourceId].postln;
+// [func, name, ctlNum, channel, sourceId].postln;
 				callbacks.add( func );
 
 			},
@@ -62,7 +63,7 @@ MIDIController {
 
 						this.set(args[1],args[0]);
 
-					}, controllerId, channel, sourceId
+					}, ctlNum, channel, sourceId
 				);
 
 				callbacks.add( func );
@@ -72,7 +73,7 @@ MIDIController {
 
 						this.set(args[1],args[0]);
 
-					}, controllerId, channel, sourceId
+					}, ctlNum, channel, sourceId
 				);
 
 				callbacks.add( func );
@@ -85,14 +86,10 @@ MIDIController {
 	}
 
 
-	addListener{|listener_|
-		listener = listener_;
-	}
-
 
 	set {|param1,param2|
 
-		listener.set(this, param1, param2);
+		target.set(this, param1, param2);
 
 	}
 
