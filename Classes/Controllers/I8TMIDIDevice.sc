@@ -44,7 +44,7 @@ MIDIDevice {
             //
             // });
 
-
+            this.setupControllers();
 
             // outputMap.collect({|outputMapping|
             //     outputMapping.type=spec.outputType;
@@ -98,5 +98,41 @@ MIDIDevice {
 
 	}
 
+
+    setupControllers {
+
+        spec.outputs.collect({|group|
+            switch(group.type,
+                \note, {
+                    controllers.push(
+                        MIDIController.new(
+                            this,
+                            id,
+                            group.type,
+                            nil,
+                            group.channel
+                        )
+                    );
+                },
+                \cc, {
+                    if( group.controllers.notNil) {
+                        group.controllers.keysValuesDo({|k,v|
+                            controllers.push(
+                                MIDIController.new(
+                                    this,
+                                    id,
+                                    group.type,
+                                    v,
+                                    group.channel
+                                )
+                            );
+                        });
+
+                    };
+                }
+            );
+        });
+
+    }
 
 }
