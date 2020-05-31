@@ -2,7 +2,6 @@ MIDIDevice {
 
     var <controllers;
     var <output;
-    var <groups;
     var <>name;
     var <id;
     var <slug;
@@ -24,7 +23,6 @@ MIDIDevice {
 
 
         slug = name.replace(" ","_").toLower.asSymbol;
-        groups = ();
 
 		controllers = ();
 
@@ -65,16 +63,7 @@ MIDIDevice {
 
 	}
 
-    addControllerGroup {|type, name|
-        groups[name] = ControllerGroup(type,name,this);
-        ^groups[name];
-    }
 
-    removeControllerGroup {|name|
-        if( groups[name].notNil, {
-            groups.removeAt(name);
-        });
-    }
 
     send {|key,value|
 
@@ -101,10 +90,10 @@ MIDIDevice {
 
     setupControllers {
 
-        spec.outputs.collect({|group|
+        spec.outputs.keysValuesDo({|groupKey,group|
             switch(group.type,
                 \note, {
-                    controllers.push(
+                    controllers[groupKey]=(
                         MIDIController.new(
                             this,
                             id,
@@ -116,15 +105,17 @@ MIDIDevice {
                 },
                 \cc, {
                     if( group.controllers.notNil) {
+                        if( controllers[groupKey].isNil) {
+                            controllers[groupKey] = ();
+                        };
+
                         group.controllers.keysValuesDo({|k,v|
-                            controllers.push(
-                                MIDIController.new(
-                                    this,
-                                    id,
-                                    group.type,
-                                    v,
-                                    group.channel
-                                )
+                            controllers[groupKey][k] = MIDIController.new(
+                                this,
+                                id,
+                                group.type,
+                                v,
+                                group.channel
                             );
                         });
 
@@ -134,5 +125,22 @@ MIDIDevice {
         });
 
     }
+
+
+
+    doesNotUnderstand {
+
+        arg selector ... args;
+
+		var value = args[0];
+
+
+        if (selector.isSetter==false) {
+            ^controllers[selector]
+		};
+
+
+    }
+
 
 }

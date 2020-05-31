@@ -42,7 +42,7 @@ ControllerManager {
 		var outValue;
 
 
-		var controllerList = controlTargetMap[source.key.asSymbol];
+		var controllerList = controlTargetMap[source.name];
 		var inputValue;
 		var inputMap;
 		var target;
@@ -57,16 +57,10 @@ ControllerManager {
 			if( spec.isKindOf(I8TControllerSpec) ) {
 				switch(source.type,
 					\note, {
-						source.channel.postln;
-						"\n\n\n";
-						
-						spec.outputMap.postln;
-						"\n\n\n";
-						
-						["output:",source.key,spec.getOutputByChannel(source.channel)].postln;
+						["output:",source.name,spec.getOutputByChannel(source.channel)].postln;
 					},
 					\cc, {
-						["output:",source.key,spec.getOutputByCtlNum(source.ctlNum)].postln;
+						["output:",source.name,spec.getOutputByCtlNum(source.ctlNum)].postln;
 					}
 				);
 			};
@@ -89,7 +83,7 @@ ControllerManager {
 
 
 				var target = controller.target;
-				var key = controller.key;
+				var name = controller.name;
 				var parameter = controller.parameter;
 				var range = controller.range;
 				var protocol = controller.protocol;
@@ -154,23 +148,23 @@ ControllerManager {
 			target: target,
 			parameter: parameter,
 			range: range,
-			key: controller.key,
+			name: controller.name,
 			protocol: controller.protocol,
 		);
 
 
 		// var newKey = target.name ++ '-' ++ target.parameter;
 
-		if( controlTargetMap[controller.key].isKindOf(List) == false, {
+		if( controlTargetMap[controller.name].isKindOf(List) == false, {
 
-			controlTargetMap[controller.key] = List.new;
+			controlTargetMap[controller.name] = List.new;
 
 		}, {
 
-			controlTargetMap[controller.key].collect({| item, index |
+			controlTargetMap[controller.name].collect({| item, index |
 				// check if target + parameter mapping exists
 				if( ( item.target == target && item.parameter == parameter ), {
-					controlTargetMap[controller.key].removeAt( index );
+					controlTargetMap[controller.name].removeAt( index );
 				});
 
 			});
@@ -178,14 +172,14 @@ ControllerManager {
 		});
 
 
-		controlTargetMap[controller.key].add( mapping );
+		controlTargetMap[controller.name].add( mapping );
 
 		// [
 		// 	"ControllerManager:",
 		// 	"added mapping:",
-		// 	"source:",mapping.key,
+		// 	"source:",mapping.name,
 		// 	"target:",mapping.target,
-		// 	"index:", controlTargetMap[controller.key].size - 1
+		// 	"index:", controlTargetMap[controller.name].size - 1
 		// ].postln;
 
 
@@ -197,19 +191,19 @@ ControllerManager {
 	unmap {|controller,target,parameter|
 
 
-		if( controlTargetMap[controller.key].isKindOf(List) == true, {
+		if( controlTargetMap[controller.name].isKindOf(List) == true, {
 
-			controlTargetMap[controller.key].collect({| item, index |
+			controlTargetMap[controller.name].collect({| item, index |
 
 				// check if target + parameter mapping exists
 				if( ( item.target == target && item.parameter == parameter ), {
 
-					controlTargetMap[controller.key].removeAt( index );
+					controlTargetMap[controller.name].removeAt( index );
 
 					// [
 					// 	"ControllerManager:",
 					// 	"removed mapping:",
-					// 	"source:",controller.key,
+					// 	"source:",controller.name,
 					// 	"target:",item.target,
 					// 	"index:", index
 					// ].postln;
@@ -218,7 +212,7 @@ ControllerManager {
 
 				if( target.isNil, {
 
-					controlTargetMap[controller.key].removeAt( index );
+					controlTargetMap[controller.name].removeAt( index );
 
 				});
 

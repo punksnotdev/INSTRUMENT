@@ -3,7 +3,6 @@ MIDIController {
 	var <> target;
 	var <> name;
 	var <> type;
-	var <> key;
 	var <> ctlNum;
 	var <> channel;
 	var <> sourceId;
@@ -26,7 +25,7 @@ MIDIController {
 		ctlNum = ctlNum_;
 		channel = channel_;
 
-		name = protocol++'_'++sourceId++'_'++type++'_'++ctlNum++'_'++channel;
+		name = (protocol++'_'++sourceId++'_'++type++'_'++ctlNum++'_'++channel).asSymbol;
 
 		callbacks = List.new;
 
