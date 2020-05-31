@@ -20,7 +20,6 @@ MIDIManager {
         MIDIClient.sources.collect({|device|
             midiDevicesNames.collect({|midiDeviceName|
                 var midiDevice;
-
                 if( device.name == midiDeviceName, {
                     midiDevice = device;
                 }, {
@@ -30,7 +29,12 @@ MIDIManager {
                 });
                 if( midiDevice.notNil, {
                     if( specs.notNil, {
-                        this.addDevice( midiDevice, specs[ midiDeviceName.asSymbol ] );
+                        [
+                            midiDeviceName.asString.toLower.replace(" ","_").asSymbol,
+                            specs[ midiDeviceName.asString.toLower.replace(" ","_").asSymbol ]
+                        ].postln;
+                        
+                        this.addDevice( midiDevice, specs[ midiDeviceName.asString.toLower.replace(" ","_").asSymbol ] );
                     }, {
                         this.addDevice( midiDevice );
                     });
@@ -68,6 +72,8 @@ MIDIManager {
 
 
     setupMIDIOut {
+
+        "MM setupMIDIOut".warn;
 
         if( mainMIDIOutput.notNil, {
 
