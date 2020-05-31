@@ -11,7 +11,11 @@ I8TControllerSpec {
   *new {|spec|
 
 	  if(
-	  	( spec.name.isKindOf(Symbol) == true)
+	  	(
+            ( spec.name.isKindOf(Symbol) == true)
+            ||
+            ( spec.name.isKindOf(String) == true)
+        )
 		&&
 	  	(
 			( spec.inputs.isKindOf(Event) == true )
@@ -28,7 +32,7 @@ I8TControllerSpec {
 
   init {|spec|
 
-	  name = spec.name;
+	  name = spec.name.asSymbol;
 
 	  inputs = ();
 	  outputs = ();
