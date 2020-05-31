@@ -49,7 +49,6 @@ I8TControllerSpec {
 	  inputMap = this.createMap(inputs);
 	  outputMap = this.createMap(outputs);
 
-      outputMap.postln;
 
   }
 
