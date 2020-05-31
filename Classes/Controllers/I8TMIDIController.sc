@@ -10,7 +10,7 @@ MIDIController {
 	var <> range;
 	var <> protocol;
 
-	var listener;
+	var <listener;
 
 	var callbacks;
 

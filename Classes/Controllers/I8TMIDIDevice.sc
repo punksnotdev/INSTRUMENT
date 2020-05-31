@@ -36,7 +36,6 @@ MIDIDevice {
 
             spec = I8TControllerSpec.new(spec_);
 
-            ["spec",spec].postln;
             // MIDIClient.destinations.collect({|destination, index|
             //
             //     if(spec.name == destination.device, {

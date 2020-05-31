@@ -28,10 +28,9 @@ ControllerGroup {
 		^groups[name.asSymbol] = ControllerGroup(type,name,device,this);
 	}
 
-	addController{|name_,id_=nil,channel_=nil|
+	addController{|ctlNum_=nil,channel_=nil|
 		var newController;
 		var key = '';
-
 		key = device.slug;
 
 		if( parent.notNil, {
@@ -45,7 +44,7 @@ ControllerGroup {
 		key = key ++'_'++name.asString.toLower++'_'++controllers.size;
 
 		// controller name:
-		key = key ++'_'++name_.asString.toLower++'_'++controllers.size;
+		key = key ++'_'++controllers.size.asString++'_'++controllers.size;
 
 		// convert to symbol
 		key = key.asSymbol;
@@ -53,7 +52,7 @@ ControllerGroup {
 		newController = MIDIController(
 			device,
 			type,
-			id_,
+			ctlNum_,
 			channel_,
 			device.id,
 			name_

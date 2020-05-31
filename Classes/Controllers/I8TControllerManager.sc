@@ -45,20 +45,27 @@ ControllerManager {
 		var controllerList = controlTargetMap[source.key.asSymbol];
 		var inputValue;
 		var inputMap;
+		var listener;
 
 
 	 	inputValue = param1;
 
 
+		listener = source.listener;
+		if( listener.isKindOf(MIDIDevice) ) {
+			var spec = listener.spec;
+			[param1, param2, listener, spec].postln;
+			if( spec.isKindOf(I8TControllerSpec) ) {
+				["output:",source.key,spec.getOutputByCtlNum(param1)].postln;
+			};
+		};
+
 		if( source.midiTarget.notNil,{
 
-			if( source.midiTarget.isKindOf(MIDIDevice), {
-				inputMap = source.midiTarget.inputMap;
-			});
-	        if( inputMap.isKindOf(IdentityDictionary), {
-	            if( inputMap[param1].notNil, {
-	                inputValue = source.midiTarget.inputMap[param1];
-	            });
+			var spec = source.midiTarget.spec;
+
+	        if( spec.isKindOf(I8TControllerSpec), {
+	            inputValue = spec.getInputByCtlNum(param1);
 	        });
 
 		});

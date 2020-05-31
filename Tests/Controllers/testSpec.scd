@@ -1,6 +1,7 @@
 (
 
 	name: 'testSpec',
+	protocol: 'MIDI',
 
 	inputs: (
 		group1: (
