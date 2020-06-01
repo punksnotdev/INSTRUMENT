@@ -42,12 +42,14 @@ ControllerManager {
 		var outValue;
 
 
-		var controllerList = controlTargetMap[source.name];
+		var controllerList;
 		var inputValue;
 		var outputValue;
 		var inputMap;
 		var target;
 
+
+		controllerList = controlTargetMap[source.name];
 
 	 	inputValue = param1;
 
@@ -171,15 +173,6 @@ ControllerManager {
 
 
 		controlTargetMap[controller.name].add( mapping );
-
-		// [
-		// 	"ControllerManager:",
-		// 	"added mapping:",
-		// 	"source:",mapping.name,
-		// 	"target:",mapping.target,
-		// 	"index:", controlTargetMap[controller.name].size - 1
-		// ].postln;
-
 
 		^mapping
 
