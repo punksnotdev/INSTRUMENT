@@ -16,30 +16,36 @@ MIDIManager {
     }
 
     addDevices{|midiDevicesNames,specs|
+        // find device inside midi sources list
 
         MIDIClient.sources.collect({|device|
+            var midiDevice;
             midiDevicesNames.collect({|midiDeviceName|
-                var midiDevice;
-                if( device.name == midiDeviceName, {
-                    midiDevice = device;
-                }, {
-                    if( device.device == midiDeviceName, {
+                // only use controller's first MIDI out
+                var key = device.device.replace(" ","_").toLower();
+
+                key = key.asSymbol;
+
+                if( devices[key].isNil ) {
+                    
+                    if( device.name == midiDeviceName, {
                         midiDevice = device;
-                    });
-                });
-                if( midiDevice.notNil, {
-                    if( specs.notNil, {
-                        [
-                            midiDeviceName.asString.toLower.replace(" ","_").asSymbol,
-                            specs[ midiDeviceName.asString.toLower.replace(" ","_").asSymbol ]
-                        ].postln;
-                        
-                        this.addDevice( midiDevice, specs[ midiDeviceName.asString.toLower.replace(" ","_").asSymbol ] );
                     }, {
-                        this.addDevice( midiDevice );
+                        if( device.device == midiDeviceName, {
+                            midiDevice = device;
+                        });
+                    });
+                    if( midiDevice.notNil, {
+                        if( specs.notNil, {
+
+                            this.addDevice( midiDevice, specs[ midiDeviceName.asString.toLower.replace(" ","_").asSymbol ] );
+                        }, {
+                            this.addDevice( midiDevice );
+                        });
+
                     });
 
-                });
+                };
             });
         });
 
