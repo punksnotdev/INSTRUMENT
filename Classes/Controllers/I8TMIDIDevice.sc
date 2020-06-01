@@ -109,7 +109,7 @@ MIDIDevice {
                             controllers[groupKey] = ();
                         };
 
-                        group.controllers.keysValuesDo({|k,v|
+                        group.controllers.collect({|v,k|
                             controllers[groupKey][k] = MIDIController.new(
                                 this,
                                 id,

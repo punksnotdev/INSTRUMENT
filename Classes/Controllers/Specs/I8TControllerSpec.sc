@@ -67,7 +67,7 @@ I8TControllerSpec {
               },
               \cc, {
         	      if(group.controllers.notNil) {
-                      group.controllers.keysValuesDo({|k,v|
+                      group.controllers.collect({|v,k|
             	          map[v]=(
             				  name: groupKey,
             				  index: k
