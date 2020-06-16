@@ -1,7 +1,12 @@
 MIDIDevice {
 
+    var device;
+
     var <controllers;
-    var <output;
+    var <controllerTargets;
+    var <out; // shorthand for 'controllerTargets'
+
+    var <deviceInput;
     var <>name;
     var <id;
     var <slug;
@@ -13,71 +18,65 @@ MIDIDevice {
         ^super.new.init(midiManager,device, spec);
     }
 
-    init {|midiManager,device, spec_|
+    init {|midiManager,device_, spec_|
 
         midi = midiManager;
 
         protocol = "midi";
+
+        device = device_;
+
         name = device.device;
+
         id = device.uid;
 
 
         slug = name.replace(" ","_").toLower.asSymbol;
 
 		controllers = ();
+		controllerTargets = ();
+
+        out = controllerTargets;
 
         if( spec_.notNil, {
 
-
-            // if( spec.outputs.isInteger, {
             var port;
 
             spec = I8TControllerSpec.new(spec_);
 
-            // MIDIClient.destinations.collect({|destination, index|
-            //
-            //     if(spec.name == destination.device, {
-            //         port = index;
-            //     });
-            //
-            // });
-
             this.setupControllers();
-
-            // outputMap.collect({|outputMapping|
-            //     outputMapping.type=spec.outputType;
-            // });
-
-            // if( port.notNil, {
-
-
-            output = MIDIOut( 0 );
-
-                // output.connect( port );
-
-            // });
 
         });
 
+        this.setupMIDIOut();
 
 
 	}
 
 
 
-    send {|key,value|
+    sendNote {|key,value|
+        this.send(\note,key,value);
+    }
 
-        if( spec.outputMap.notNil, {
-            if( spec.outputMap[key].notNil, {
+    sendControl {|key,value|
+        this.send(\cc,key,value);
+    }
 
-                switch( spec.outputMap[key].type,
-                    \note, {
-                        output.noteOn(0,spec.outputMap[key],value)
-                    }
-                );
-
-            });
-        });
+    send {|targetName,type,key,value|
+        ['got send msg', targetName, type,key,value].postln;
+        switch( type,
+            \note, {
+                // deviceInput.noteOn(0,key.asInteger,value.asInteger.min(127))
+            },
+            \cc, {
+                if( spec.outputMap.notNil ) {
+                    if( spec.outputMap[type][key].notNil) {
+                        // deviceInput.control(0,spec.outputMap.cc[key],value.min(127))
+                    };
+                };
+            },
+        );
 
     }
 
@@ -86,6 +85,19 @@ MIDIDevice {
         ^midi.set(source,param1,param2);
 
 	}
+
+
+    setupMIDIOut {
+
+        var thisDevice = MIDIClient.destinations.detect({|d|
+            d.device == device.device
+        });
+
+        if( thisDevice.notNil ) {
+            deviceInput = MIDIOut.newByName( thisDevice.device, thisDevice.name );
+        };
+
+    }
 
 
     setupControllers {
@@ -120,6 +132,54 @@ MIDIDevice {
                         });
 
                     };
+                }
+            );
+        });
+
+
+        spec.inputs.keysValuesDo({|groupKey,group|
+            switch(group.type,
+                \note, {
+                    controllerTargets[groupKey]=(
+                        MIDIControllerTarget.new(
+                            this,
+                            groupKey,
+                            id,
+                            group.type,
+                            nil,
+                            group.channel
+                        )
+                    );
+                },
+                \cc, {
+                    if( group.controllers.notNil, {
+                        if( controllerTargets[groupKey].isNil) {
+                            controllerTargets[groupKey] = ();
+                        };
+
+                        group.controllers.collect({|v,k|
+                            controllerTargets[groupKey][k] = MIDIControllerTarget.new(
+                                this,
+                                groupKey,
+                                id,
+                                group.type,
+                                v,
+                                group.channel
+                            );
+                        });
+
+                    }, {
+
+                        controllerTargets[groupKey] = MIDIController.new(
+                            this,
+                            id,
+                            groupKey,
+                            group.type,
+                            nil,
+                            group.channel
+                        );
+
+                    });
                 }
             );
         });

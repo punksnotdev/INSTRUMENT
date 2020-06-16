@@ -46,35 +46,32 @@ ControllerManager {
 		var inputValue;
 		var outputValue;
 		var inputMap;
-		var target;
 
 
 		controllerList = controlTargetMap[source.name];
 
-	 	inputValue = param1;
+	 	outputValue = param1;
 
 
-		target = source.target;
-		if( target.isKindOf(MIDIDevice) ) {
-			var spec = target.spec;
-			if( spec.isKindOf(I8TControllerSpec) ) {
-				// switch(source.type,
-				// 	\note, {},
-				// 	\cc, {}
-				// );
-				outputValue = param1;
-			};
-		};
+		// if( source.target.isKindOf(MIDIDevice) ) {
+		// 	var spec = source.target.spec;
+		// 	if( spec.isKindOf(I8TControllerSpec) ) {
+		// 		var mapTarget;
+		// 		switch(source.type,
+		// 			\note, {
+		// 				mapTarget = spec.getInput(\note,param1);
+		// 				source.target.send(\note,mapTarget,param2);
+		// 			},
+		// 			\cc, {
+		// 				mapTarget = spec.getInput(\cc,param1);
+		// 			}
+		// 		);
+		//
+		// 		source.target.send(source.type,mapTarget,param2);
+		//
+		// 	};
+		// };
 
-		if( source.target.notNil,{
-
-			var spec = source.target.spec;
-
-	        if( spec.isKindOf(I8TControllerSpec), {
-	            inputValue = spec.getInputByCtlNum(param1);
-	        });
-
-		});
 
 
 		if( ( controllerList.isKindOf(Collection) && (controllerList.size > 0) ), {

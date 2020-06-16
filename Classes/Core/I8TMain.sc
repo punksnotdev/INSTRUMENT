@@ -497,7 +497,7 @@ I8TMain : Event
 				||
 				target.isKindOf(InstrumentGroup)
 				||
-				target.isKindOf(ControllerLogic)
+				target.isKindOf(MIDIControllerTarget)
 			), {
 				controllerManager.map(controller,target,parameter,range);
 				("mapped: "++controller.name++" > "++target.name++": "++parameter).postln;

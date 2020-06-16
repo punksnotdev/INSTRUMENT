@@ -20,20 +20,6 @@ TestI8TControllerSpec : I8TUnitTest
 		this.assert( spec.outputs == specFile.outputs );
 	}
 
-	test_afterInit_inputMap_hasCorrectValues {
-		this.assert(
-			(spec.getInputByCtlNum(31).name == specFile.inputs.group2.name)
-			&&
-			(spec.getInputByCtlNum(31).index == 1 )
-		);
-	}
-	test_afterInit_outputMap_hasCorrectValues {
-		this.assert(
-			(spec.getOutputByCtlNum(72).name == specFile.outputs.group2.name)
-			&&
-			(spec.getOutputByCtlNum(72).index == 2 )
-		);
-	}
 
 
 

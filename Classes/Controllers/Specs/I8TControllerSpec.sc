@@ -3,9 +3,6 @@ I8TControllerSpec {
   var <inputs;
   var <outputs;
 
-  var <inputMap;
-  var <outputMap;
-
   var <name;
 
   *new {|spec|
@@ -46,58 +43,31 @@ I8TControllerSpec {
 	  };
 
 
-	  inputMap = this.createMap(inputs);
-	  outputMap = this.createMap(outputs);
-
-
   }
 
 
 
-  createMap {|source|
 
-      var map = IdentityDictionary.new;
+  getInputGroupByNumber {|type,num|
 
-	  source.keysValuesDo({|groupKey,group|
-          switch(group.type,
-              \note, {
-        	      map[('note_'++group.channel).asSymbol]=(
-    				  name: groupKey
-    			  );
-              },
-              \cc, {
-        	      if(group.controllers.notNil) {
-                      group.controllers.collect({|v,k|
-            	          map[v]=(
-            				  name: groupKey,
-            				  index: k
-            			  );
-            	      });
-                  };
-              },
-          )
-	  });
-
-      ^map
+      switch( type,
+          \note, {
+              ^inputs.detect({|group| group.channel == num })
+          },
+          \cc, {
+              ^inputs.detect({|group| group.controllers.includes(num) })
+          },
+      );
 
   }
 
 
-  getInputByCtlNum {|ctlNum|
-	  ^inputMap[ctlNum]
+  getInput {|type,num|
+      ^inputs[type].controllers[num]
   }
 
-  getOutputByCtlNum {|ctlNum|
-	  ^outputMap[ctlNum]
-  }
-
-
-  getInputByChannel {|channel|
-	  ^inputMap[('note_'++channel).asSymbol]
-  }
-
-  getOutputByChannel {|channel|
-	  ^outputMap[('note_'++channel).asSymbol]
+  getOutput {|type,num|
+      ^outputs[type].controllers[num]
   }
 
 
