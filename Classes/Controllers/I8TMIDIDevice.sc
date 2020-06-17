@@ -64,21 +64,28 @@ MIDIDevice {
     }
 
     send {|target,type,key,value|
-        ['got send msg', target, type,key,value].postln;
-        ['spec is', target.name].postln;
-        switch( type,
-            \note, {
-                // deviceInput.noteOn(0,key.asInteger,value.asInteger.min(127))
-            },
-            \cc, {
-                if( spec.outputMap.notNil ) {
-                    if( spec.outputMap[type][key].notNil) {
-                        // deviceInput.control(0,spec.outputMap.cc[key],value.min(127))
-                    };
-                };
-            },
-        );
 
+        var inputControllers = spec.inputs[target.name].controllers;
+        var targetKey = inputControllers[key];
+
+        if( targetKey.notNil && value.notNil ) {
+
+            var targetValue = (value*127).floor.asInteger;
+
+            switch( type,
+                \note, {
+                    deviceInput.noteOn(0,targetKey,targetValue)
+                },
+                \cc, {
+                    if( spec.outputMap.notNil ) {
+                        if( spec.outputMap[type][key].notNil) {
+                            // deviceInput.control(0,spec.outputMap.cc[key],value.min(127))
+                        };
+                    };
+                },
+            );
+
+        }
     }
 
 	set {|source, param1, param2|
@@ -155,7 +162,6 @@ MIDIDevice {
                     controllerTargets[groupKey].addCallback(\midiDevice,{
                         arg ...args;
                         this.send(args[0],args[1],args[2],args[3]);
-                        ["target is", args[0]].postln
                     });
                 },
                 \cc, {
