@@ -33,11 +33,18 @@ MIDIControllerTarget : I8TNode
 	}
 
 
-	set {
-		arg ...args;
-		['set',name,args,callbacks].postln;
+	set {|type,key_,value_|
+
+		var key = key_;
+		var value = value_;
+
+		if( type == \note ) {
+			key = key_.val;
+			value = key_.amplitude;
+		};
+
 		callbacks.keysValuesDo({|k,callback|
-			callback.value(this,args);
+			callback.value(this,type,key,value);
 		});
 
 	}
