@@ -63,8 +63,9 @@ MIDIDevice {
         this.send(\cc,key,value);
     }
 
-    send {|targetName,type,key,value|
-        ['got send msg', targetName, type,key,value].postln;
+    send {|target,type,key,value|
+        ['got send msg', target, type,key,value].postln;
+        ['spec is', target.name].postln;
         switch( type,
             \note, {
                 // deviceInput.noteOn(0,key.asInteger,value.asInteger.min(127))
@@ -150,6 +151,12 @@ MIDIDevice {
                             group.channel
                         )
                     );
+
+                    controllerTargets[groupKey].addCallback(\midiDevice,{
+                        arg ...args;
+                        this.send(args[0],args[1],args[2],args[3]);
+                        ["target is", args[0]].postln
+                    });
                 },
                 \cc, {
                     if( group.controllers.notNil, {

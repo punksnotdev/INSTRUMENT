@@ -27,7 +27,7 @@ MIDIController {
 
 		name = (protocol++'_'++sourceId++'_'++type++'_'++ctlNum++'_'++channel).asSymbol;
 
-		callbacks = List.new;
+		callbacks = ();
 
 
 		this.addResponder( type_,  sourceId, ctlNum_, channel_ );
@@ -45,7 +45,7 @@ MIDIController {
 
 					}, ctlNum, channel, sourceId
 				);
-				callbacks.add( func );
+				callbacks[\cc]= func;
 
 			},
 			\note, {
@@ -62,7 +62,7 @@ MIDIController {
 					}, ctlNum, channel, sourceId
 				);
 
-				callbacks.add( func );
+				callbacks[\noteOn]= func;
 
 				func = MIDIdef.noteOff( (name ++ "_noteOff" ).asSymbol,
 					{arg ...args;
@@ -72,7 +72,7 @@ MIDIController {
 					}, ctlNum, channel, sourceId
 				);
 
-				callbacks.add( func );
+				callbacks[\noteOff]= func;
 
 
 			},
@@ -84,9 +84,7 @@ MIDIController {
 
 
 	set {|param1,param2|
-
 		target.set(this, param1, param2);
-
 	}
 
 }

@@ -3,13 +3,14 @@ MIDIControllerTarget : I8TNode
 
 	var <> device;
 
-	var <> name;
 	var <> type;
 	var <> ctlNum;
 	var <> channel;
 	var <> sourceId;
 	// var <> range;
 	var <> protocol;
+
+	var < callbacks;
 
 	*new {|device_, name_, sourceId_, type_, ctlNum_, channel_ |
 		^super.new.init(device_, name_, sourceId_, type_, ctlNum_, channel_ );
@@ -27,13 +28,27 @@ MIDIControllerTarget : I8TNode
 
 		name = name_;
 
+		callbacks = ();
+
 	}
+
 
 	set {
 		arg ...args;
-		device.send(name,args);
+		['set',name,args,callbacks].postln;
+		callbacks.keysValuesDo({|k,callback|
+			callback.value(this,args);
+		});
+
 	}
 
+
+	addCallback{|key,callback|
+
+		if( (key.isKindOf(Symbol) && callback.isKindOf(Function) ) ) {
+			callbacks[key] = callback;
+		}
+	}
 
 
 
