@@ -95,9 +95,12 @@ Sequencer : I8TNode
 
 					// if bar start, check queue
 					if( timeSignature.isKindOf(Event) ) {
+						this.queueDo(\stop);
+						this.queueDo(\go);
 						if( beats % timeSignature.beats == 0 ) {
-							this.queueDo();
+							this.queueDo(\play);
 						};
+
 					};
 
 					if( beats % 1 == 0 ) {
@@ -212,18 +215,18 @@ Sequencer : I8TNode
 	playInstrument {|instrument, position|
 		this.addToQueue(\play,(
 			item: sequencerTracks[instrument.name],
+			data: (
+				position: position
+			)
 		));
-		// this.addToQueue(\go,(
-		// 	item: sequencerTracks[instrument.name],
-		// 	data: (
-		// 		position: position
-		// 	)
-		// ));
+		
 		main.displayTracks();
 	}
 
 	stopInstrument {|instrument|
-		sequencerTracks[instrument.name].stop();
+		this.addToQueue(\stop,(
+			item: sequencerTracks[instrument.name],
+		));
 		main.displayTracks();
 	}
 

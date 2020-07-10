@@ -49,14 +49,23 @@
 	}
 
 
-	queueDo {
+	queueDo {|action|
 
-		queue.size.do({
+		queue.select({|q|q.action==action}).do({
 			var q = queue.removeAt(0);
 
 			switch( q.action,
 				\play, {
-					q.item.play();
+					var pos = 0;
+					if(q.data.notNil) {
+						if(q.data.position.notNil) {
+								pos = q.data.position.asInteger;
+						}
+					};
+					q.item.play(pos);
+				},
+				\stop, {
+					q.item.stop();
 				},
 				\go, {
 					q.item.go( q.data.position );

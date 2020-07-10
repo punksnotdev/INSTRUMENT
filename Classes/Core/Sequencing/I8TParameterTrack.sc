@@ -218,8 +218,9 @@ ParameterTrack
 	go {|time|
 		durationSequencer.reset();
 		beats = time;
-		// if(time==0) {
-		// }
+		if(time.isNil) {
+			beats = 0;
+		}
 	}
 
 	addPattern {|key,pattern,play_parameters|
@@ -511,11 +512,17 @@ ParameterTrack
 			^nil;
 		}, {
 
-			if( nearestBeatCountKey > beats, {
-				currentIndex = currentIndex - 1;
-			});
+			if( sequence.notNil, {
+				if( currentIndex.notNil, {
+					if( nearestBeatCountKey > beats, {
+						currentIndex = currentIndex - 1;
+					});
+				}, {
+					currentIndex = 0;
+				});
 
-			^sequence[ currentIndex ];
+				^sequence[ currentIndex ];
+			});
 
 		})
 
