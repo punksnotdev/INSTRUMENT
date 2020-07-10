@@ -30,11 +30,24 @@ Sequencer : I8TNode
 
 	var >printBeats;
 
+
+	// V2
+	var <queue;
+	var <tdef;
+	var <timeSignature;
+
+	// END V2
+
+
+
 	*new {|main_|
+		// ^super.new.initV2(main_);
 		^super.new.init(main_);
 	}
 
 	init {|main_|
+
+		this.initV2(main_);
 
 		main = main_;
 
@@ -78,6 +91,14 @@ Sequencer : I8TNode
 			inf.do{|i|
 
 				if( (i % 32) == 0, {
+
+
+					// if bar start, check queue
+					if( timeSignature.isKindOf(Event) ) {
+						if( beats % timeSignature.beats == 0 ) {
+							this.queueDo();
+						};
+					};
 
 					if( beats % 1 == 0 ) {
 
@@ -189,7 +210,15 @@ Sequencer : I8TNode
 
 
 	playInstrument {|instrument, position|
-		sequencerTracks[instrument.name].play(position);
+		this.addToQueue(\play,(
+			item: sequencerTracks[instrument.name],
+		));
+		// this.addToQueue(\go,(
+		// 	item: sequencerTracks[instrument.name],
+		// 	data: (
+		// 		position: position
+		// 	)
+		// ));
 		main.displayTracks();
 	}
 
