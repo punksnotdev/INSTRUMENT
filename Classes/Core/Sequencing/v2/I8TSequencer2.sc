@@ -51,12 +51,8 @@
 
 	queueDo {
 
-		["do", queue].postln;
-
 		queue.size.do({
 			var q = queue.removeAt(0);
-
-			["do", q].postln;
 
 			switch( q.action,
 				\play, {
