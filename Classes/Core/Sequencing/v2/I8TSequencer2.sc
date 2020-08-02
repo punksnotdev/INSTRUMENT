@@ -2,8 +2,11 @@
 
 
 
-	signature_ {|number, count, length|
-
+	setTimeSignature {|beats, tick|
+		timeSignature = (
+			beats: beats,
+			tick: tick
+		);
 	}
 
 	initV2 {|main|

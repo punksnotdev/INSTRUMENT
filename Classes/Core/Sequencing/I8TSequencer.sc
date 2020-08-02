@@ -90,7 +90,7 @@ Sequencer : I8TNode
 
 			inf.do{|i|
 
-				if( (i % 32) == 0, {
+				if( (i % (( 32 * (timeSignature.tick*2) ))) == 0, {
 
 
 					// if bar start, check queue
@@ -143,7 +143,6 @@ Sequencer : I8TNode
 							});
 
 							if( (beats - offset) % k.asInteger == 0, {
-
 								rf.function.value();
 							});
 						});
@@ -219,7 +218,7 @@ Sequencer : I8TNode
 				position: position
 			)
 		));
-		
+
 		main.displayTracks();
 	}
 
