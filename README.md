@@ -1321,6 +1321,12 @@ i.z.octave=3;
 
 ```
 
+
+## Chord progressions:
+
+(Currently, chords only work using NodeProxy)
+
+
 ```SuperCollider
 
 i = INSTRUMENT().play;
@@ -1328,20 +1334,18 @@ i = INSTRUMENT().play;
 p=ProxySpace.push(s);
 
 ~sound.play;
-~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 6 ! 2 };
 ~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 10 ! 2 };
 
 
+// start synth:
 i.notes=INSTRUMENT(~sound);
-i.notes.seq(\gain,[3,1,13]).speed(1/2);
 
 
 ```
 
-## Chord progressions:
+Now, with our running synth, les seq some chords:
 
 ```SuperCollider
-
 
 // Class 'C' is an alias for 'I8TChord':
 // C( interval, chordtype/chordarray, inversion, additional );
