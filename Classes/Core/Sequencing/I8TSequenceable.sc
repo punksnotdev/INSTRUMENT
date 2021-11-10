@@ -103,7 +103,7 @@ Sequenceable : I8TNode
 	//
 	// fxSet_ {|pattern| this.fxSet(pattern); }
 	// fxSet {|pattern| this.seq(\fxSet,pattern); }
-
+	//
 
 
 

@@ -152,8 +152,8 @@ ParameterTrack
 							durationSequencer.play(main.clock);
 						});
 
-					}, {
 
+					}, {
 						if( durationSequencer.isPlaying == false, {
 							durationSequencer.stop;
 						});
@@ -514,7 +514,6 @@ ParameterTrack
 			var repetitions;
 
 			repetitions = track.sequencer.repeat;
-
 			if( patternEvent.pattern.pattern.isArray, {
 
 				if( patternEvent.parameters.isKindOf(Dictionary), {
@@ -531,6 +530,7 @@ ParameterTrack
 			});
 
 		});
+
 
 
 	}
@@ -556,7 +556,6 @@ ParameterTrack
 				}, {
 					currentIndex = 0;
 				});
-
 				^sequence[ currentIndex ];
 			});
 

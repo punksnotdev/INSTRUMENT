@@ -245,11 +245,9 @@ SynthPlayer : SynthInstrument
 
 					if(event.val.isKindOf(Array)) {
 						var chord = event.val.copy;
-						["chord", chord, event.duration].postln;
 						chord.do({|n,i|
 							var nE = event.copy;
 							nE.val=n;
-							["n", n].postln;
 
 							if( i<(chord.size-1)) {
 								nE.duration = 0;
