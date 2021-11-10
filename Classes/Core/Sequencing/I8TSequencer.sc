@@ -269,7 +269,7 @@ Sequencer : I8TNode
 					// 0.1.wait;
 					// ["pattern",parameter,patternInfo].postln;
 					0.1.wait;
-					(track++"."++parameter++": "++key).postln;
+					("Added pattern: "++track++"."++parameter++": "++key).postln;
 					("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
 				}).play;
 
