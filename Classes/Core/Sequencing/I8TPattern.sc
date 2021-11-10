@@ -15,6 +15,9 @@ I8TPattern
 
 	init{|pattern_,parameters_|
 
+		// var timePattern;
+		// var timePatternTime;
+
 		totalDuration = 0;
 		played = false;
 		if( pattern_.isString, {
@@ -99,6 +102,17 @@ I8TPattern
 		});
 
 
+		// timePattern = IdentityDictionary.new;
+		// timePatternTime = 0;
+		//
+		// pattern.collect({|event|
+		// 	timePattern.put( timePatternTime, event );
+		// 	timePatternTime = timePatternTime + event.duration;
+		// });
+		//
+
+
+		// pattern = timePattern;
 		parameters = parameters_;
 
 
