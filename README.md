@@ -1379,7 +1379,7 @@ p=ProxySpace.push(s);
 
 ~z={|freq=200| RLPF.ar(WhiteNoise.ar,freq,0.2) };
 
-i.z=INSTRUMENT(~z);
+i.z=Proxy(~z);
 
 i.z.seq(\freq,"1000 600 700");
 
@@ -1402,7 +1402,7 @@ p=ProxySpace.push(s);
 ~z={|freq=200, t_trig=1| (LFPulse.ar(freq,SinOsc.kr(3).linlin(-1,1,0,1),SinOsc.kr(5).linlin(-1,1,0,1))*30).tanh/2*Decay2.kr(t_trig,2,0) };
 
 i=INSTRUMENT();
-i.z=INSTRUMENT(~z);
+i.z=Proxy(~z);
 
 // automatic mapping of note to 'freq and t_trig':
 i.z.note("0 2 3");
@@ -1412,8 +1412,9 @@ i.z.octave=3;
 ```
 
 
-### Playing chords using a NodeProxy:
+### Playing chord progressions using a NodeProxy:
 
+(Currently, the following chord notation is only available when using NodeProxy)
 
 
 ```SuperCollider
@@ -1427,17 +1428,7 @@ p=ProxySpace.push(s);
 ~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 10 ! 2 };
 
 
-i.notes=INSTRUMENT(~sound);
-i.notes.seq(\gain,[3,1,13]).speed(1/2);
-
-
-```
-
-## Chord progressions:
-
-(Currently, the following chord notation is only available when using NodeProxy)
-
-```SuperCollider
+i.notes=Proxy(~sound);
 
 
 // Class 'C' is an alias for 'I8TChord':
@@ -1469,31 +1460,6 @@ i.notes.chord([
 
 )
 
-// different chord types:
-(
-	i.notes.chord([
-
-		C(0,\M),
-		C(0,\m),
-		C(0,\M7),
-		C(0,\m7),
-		C(0,\dim),
-		C(0,\aug),
-		C(0,\Mmaj7),
-		C(0,\mmaj7),
-		C(0,\M9),
-		C(0,\M9m),
-		C(0,\m9),
-		C(0,\m9m),
-		C(0,\sus2),
-		C(0,\sus4),
-
-		// custom chord type
-		C(0,[6,10,15]),
-
-	]).speed(1/2);
-)
-
 
 ```
 
@@ -1521,6 +1487,38 @@ i.notes.chord([
 
 
 ```
+
+### Chord types:
+
+```SuperCollider
+
+(
+	i.notes.chord([
+
+		C(0,\M),
+		C(0,\m),
+		C(0,\M7),
+		C(0,\m7),
+		C(0,\dim),
+		C(0,\aug),
+		C(0,\Mmaj7),
+		C(0,\mmaj7),
+		C(0,\M9),
+		C(0,\M9m),
+		C(0,\m9),
+		C(0,\m9m),
+		C(0,\sus2),
+		C(0,\sus4),
+
+		// custom chord type
+		C(0,[6,10,15]),
+
+	]).speed(1/2);
+)
+
+
+```
+
 
 
 ## Mixer
