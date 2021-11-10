@@ -194,9 +194,9 @@ i=INSTRUMENT();
 
 i.synths.list;
 
-i.synths.kick.simple
+i.synths.kick.simple;
 i.kick=i.synths.drums.kick.simple;
-i.kick.seq("1  1")
+i.kick.seq("1  1");
 
 ```
 
