@@ -229,6 +229,7 @@ I8TParser {
 				};
 				event
 			});
+
 			^eventsList;
 
 		}
@@ -286,7 +287,6 @@ I8TParser {
 			});
 
 			if( operatorIndexes.size > 0) {
-
 
 				if( operatorIndexes[0] > 0, {
 					groupValue = group.split( group.at(operatorIndexes[0].asInteger) )[0];
@@ -586,7 +586,9 @@ I8TParser {
 			// });
 
 			if( event.val.notNil ) {
-				events.add(event)
+
+				events.add( event );
+
 			};
 
 		});
@@ -673,11 +675,11 @@ I8TParser {
 			var opening=input.findAll(openingSymbol);
 			var closing=input.findAll(closingSymbol);
 
-			var correct = true;
+			var correct = false;
 
 			if(opening.size>0, {
 				if(opening.size===closing.size, {
-
+					correct = true;
 					opening.size.do({|index|
 
 						if( opening[index] > closing[index] ) {
