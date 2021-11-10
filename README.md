@@ -933,35 +933,6 @@ i.piano.fx.delay2.time=0.1;
 i.piano.fx.delay2.time=0.5;
 
 
-### Sequencing FX:
-
-i=INSTRUMENT();
-
-i.piano=i.synths.piano[1];
-i.piano.note("0 2 3 5").random().mirror.speed(2);
-
-
-i.piano.seq(\fx,[
-	"reverb",
-	"distortion",
-	"lpf"
-]);
-
-
-// more complex sequence, alternating between simple single fx units and fx chains
-
-i.piano.seq(\fx,[
-	"reverb",
-	// ['reverb',"gateDistort.extreme",\lpf],
-	[\delay2,"gateDistort.hardcore"],
-	'lpf',
-	nil
-]);
-
-
-// clear all FX:
-
-i.piano.fx=nil;
 
 
 
@@ -982,6 +953,22 @@ i.piano.fx=nil;
 
 	i.clap.seq(\fx, [\reverb,\reverbLPF,\gateDistort]).speed(1/4);
 )
+
+
+
+i.piano=i.synths.piano[1];
+i.piano.note("0 2 3 5").random().mirror.speed(2);
+
+
+i.piano.seq(\fx,[
+	"reverb",
+	"distortion",
+	"lpf"
+]);
+
+// clear all FX:
+
+i.piano.fx=nil;
 
 
 
@@ -1710,26 +1697,6 @@ i.loop1.rate(1/4,1);
 
 
 
-// add fx:
-
-i.loop1.fx=\reverb;
-
-i.loop1.fxSet(\wet,1);
-
-i.loop1.fxSet(\room,0.7);
-i.loop1.fxSet(\damp,0.7);
-
-i.loop2.fxSet(\gain,33.3);
-
-i.loop1.fx=\reverbLPF;
-i.loop1.fxSet(\filterHz,200)
-i.loop1.fxSet(\filterHz,1200)
-
-
-i.loop1.amp(0.5,0)
-i.loop1.amp(0.5,1)
-
-
 
 i.loop1.fx=nil
 
@@ -1742,19 +1709,11 @@ i.loop1.rate(1);
 
 i.loop2=Looper(0);
 i.loop2.rec;
+
 i.loop2.start;
 i.loop2.amp=0.5;
 i.loop2.rate([1, 2, -1, \r, 3, \r , 1/2]).speed(2);
 i.loop2.amp("1 0.3 1 0.5 0 0.1").speed(4)
-
-i.loop2.fx=\distortion;
-
-i.loop2.fxSet(\wet,1/2);
-
-i.loop2.fxSet(\filterHz,1440);
-
-
-i.loop2.fx=nil
 
 i.loop2.amp(0.5);
 
