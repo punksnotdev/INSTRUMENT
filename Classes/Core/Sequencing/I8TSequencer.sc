@@ -249,30 +249,34 @@ Sequencer : I8TNode
 		patternEvent = sequencerTracks[ track ].addPattern(parameter,key,pattern);
 
 
-		if( patternEvent.pattern.totalDuration > 0 ) {
+		if( patternEvent.isKindOf(PatternEvent)) {
 
-			var patternInfo = (
-				track: track,
-				pattern: pattern,
-				beats:patternEvent.pattern.totalDuration,
-				param:parameter,
-				key:key,
-				event: patternEvent
-			);
+			if( patternEvent.pattern.totalDuration > 0 ) {
+
+				var patternInfo = (
+					track: track,
+					pattern: pattern,
+					beats:patternEvent.pattern.totalDuration,
+					param:parameter,
+					key:key,
+					event: patternEvent
+				);
 
 
-			// main.displayNextPattern(patternInfo);
+				// main.displayNextPattern(patternInfo);
 
-			Task.new({
-				// 0.1.wait;
-				// ["pattern",parameter,patternInfo].postln;
-				0.1.wait;
-				(track++"."++parameter++": "++key).postln;
-				("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
-			}).play;
+				Task.new({
+					// 0.1.wait;
+					// ["pattern",parameter,patternInfo].postln;
+					0.1.wait;
+					(track++"."++parameter++": "++key).postln;
+					("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
+				}).play;
 
-		}
-		^patternEvent;
+			}
+			^patternEvent;
+
+		};
 
 	}
 	updateSequenceInfo {|track,parameter|

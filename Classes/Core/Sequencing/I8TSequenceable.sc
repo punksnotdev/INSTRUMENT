@@ -67,7 +67,7 @@ Sequenceable : I8TNode
 				parameters.play_parameters
 			);
 
-			if( currentPatternEvent.notNil, {
+			if( currentPatternEvent.isKindOf(PatternEvent), {
 
 				currentPattern = currentPatternEvent.pattern.pattern;
 
@@ -253,7 +253,7 @@ Sequenceable : I8TNode
 			if( n < minSpeed ) {
 				("speed set to min speed value:" ++ minSpeed).warn
 			};
-			if( currentPatternEvent.notNil ) {
+			if( currentPatternEvent.isKindOf(PatternEvent) ) {
 				currentPatternEvent.parameters[\speed]=speed;
 			};
 		};
@@ -263,7 +263,9 @@ Sequenceable : I8TNode
 
 	repeat {|n|
 		if(n.isKindOf(Number)) {
-			currentPatternEvent.parameters[\repeat]=n.ceil.asInteger;
+			if(currentPatternEvent.isKindOf(PatternEvent)) {
+				currentPatternEvent.parameters[\repeat]=n.ceil.asInteger;
+			};
 		};
 		this.updateSequence();
 	}

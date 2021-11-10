@@ -229,95 +229,127 @@ ParameterTrack
 		var newKey;
 		var newPatternEvent;
 
-		if( key == nil, {
+		var isKeyValid;
 
-			var found = -1;
-			block{|break|
-				patterns.keysValuesDo({|key_,item|
-					if( (
-						item.isKindOf(I8TPattern) && pattern.isKindOf(I8TPattern)
-					), {
+		"check key".postln;
 
-						if( item.pattern == pattern.pattern, {
-							found = key_;
-							break.value;
-						});
+		if(key.isKindOf(Integer), {
+			var largest = 0;
 
-					});
-				});
-			};
+			patterns.keys.do({|k| if( k > largest) { largest = k; }; });
 
+			if( key > (largest+1),  {
+				isKeyValid = false;
+				("Invalid key: keys must be sequential. Next valid key is: "++(largest+1)).warn;
 
-			if( found >= 0, {
-				if( patterns[found] != nil, {
-					key = found;
-				});
 			}, {
-				key = patterns.size;
+				isKeyValid = true;
 			});
 
-		});
-
-
-		eventName = (
-			"pattern-" ++
-			track.name ++ "-" ++
-			name.asString ++ "-" ++
-			key.asString
-		).toLower;
-
-		if( pattern.isKindOf(I8TPattern), {
-
-			newPatternEvent = PatternEvent.new( pattern, eventName);
-
 		}, {
-
-			newPatternEvent = PatternEvent.new( I8TPattern(pattern), eventName);
-
+			"Invalid key: key must be a number".warn;
+			key = nil;
 		});
 
 
-		if( play_parameters.isArray, {
-			var paramDict = play_parameters.asDict;
-			newPatternEvent.parameters[\repeat] = paramDict[\repeat];
-			newPatternEvent.parameters[\speed] = paramDict[\speed];
-			newPatternEvent.parameters[\waitBefore] = paramDict[\waitBefore];
-		});
+		if( isKeyValid == true, {
 
-		if(patternEvents[key]==nil,{
-			patternEvents[key] = List.new;
-		});
+			if( key == nil, {
 
-		newPatternEvent.time=key;
+				var found = -1;
+				block{|break|
+					patterns.keysValuesDo({|key_,item|
+						if( (
+							item.isKindOf(I8TPattern) && pattern.isKindOf(I8TPattern)
+						), {
 
-		if( sequence[key].notNil && newPatternEvent.notNil ) {
-			if( sequence[key].played==true ) {
+							if( item.pattern == pattern.pattern, {
+								found = key_;
+								break.value;
+							});
 
-				waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
-				beats = (beats - waitOffset).asInteger;
-				waitOffset = waitOffset % 1;
+						});
+					});
+				};
 
+				if( found >= 0, {
+					if( patterns[found] != nil, {
+						key = found;
+					});
+				}, {
+					key = patterns.size;
+				});
+
+
+			});
+
+
+			eventName = (
+				"pattern-" ++
+				track.name ++ "-" ++
+				name.asString ++ "-" ++
+				key.asString
+			).toLower;
+
+
+			if( pattern.isKindOf(I8TPattern), {
+
+				newPatternEvent = PatternEvent.new( pattern, eventName);
+
+			}, {
+
+				newPatternEvent = PatternEvent.new( I8TPattern(pattern), eventName);
+
+			});
+
+
+			if( play_parameters.isArray, {
+				var paramDict = play_parameters.asDict;
+				newPatternEvent.parameters[\repeat] = paramDict[\repeat];
+				newPatternEvent.parameters[\speed] = paramDict[\speed];
+				newPatternEvent.parameters[\waitBefore] = paramDict[\waitBefore];
+			});
+
+			if(patternEvents[key]==nil,{
+				patternEvents[key] = List.new;
+			});
+
+			newPatternEvent.time=key;
+
+
+			if( sequence[key].notNil && newPatternEvent.notNil ) {
+				if( sequence[key].played==true ) {
+
+					waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
+					beats = (beats - waitOffset).asInteger;
+					waitOffset = waitOffset % 1;
+
+				};
 			};
-		};
 
 
-		if(sequence[key].notNil,{
+			if(sequence[key].notNil,{
 
-			sequence[key] = newPatternEvent;
+				sequence[key] = newPatternEvent;
 
-		},{
-			sequence.add( newPatternEvent );
+			},{
+				sequence.add( newPatternEvent );
+			});
+
+
+			patternEvents[key].add(newPatternEvent);
+			patterns[ key ] = pattern;
+
+
+
+			this.updateSequenceInfo();
+
+			^newPatternEvent;
+
 		});
 
+		"Pattern not added".warn;
 
-		patternEvents[key].add(newPatternEvent);
-		patterns[ key ] = pattern;
-
-
-
-		this.updateSequenceInfo();
-
-		^newPatternEvent;
 
 	}
 
@@ -471,6 +503,7 @@ ParameterTrack
 		totalSequenceEventBeats = 0;
 
 		sequenceInfo = Order.new;
+
 
 		sequence.collect({|patternEvent|
 
