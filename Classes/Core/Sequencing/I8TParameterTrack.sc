@@ -127,7 +127,8 @@ ParameterTrack
 			}
 		});
 
-		durationSequencer.quant=[2,0.2375];
+		durationSequencer.quant=2;
+		// durationSequencer.quant=[2,0.2375];
 	}
 
 	fwd{|i|
@@ -204,6 +205,11 @@ ParameterTrack
 
 	play {|position|
 		if( position != nil, { beats = position; });
+
+		durationSequencer.stop();
+
+		durationSequencer.play(main.clock, doReset: true, quant: 1);
+		beats = 0;
 		^playing = true;
 	}
 	stop {|position|
