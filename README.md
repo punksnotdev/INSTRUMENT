@@ -78,6 +78,37 @@ i.drums.fx.reverb.wet=1/2;
 
 
 
+## Create a basic beat
+
+```SuperCollider
+
+(
+
+
+i = INSTRUMENT();
+
+i.drums = (
+	kick: 'kick',
+	hihat: 'hihat',
+	clap: 'clap'
+);
+
+i.drums.kick.seq("1");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.clap.seq(" 1");
+
+i.drums.clock = 2;
+
+
+)
+
+
+
+```
+
+
+
+
 # IMPORTANT
 
 
@@ -253,8 +284,6 @@ i.synths.bass.simpleBass == i.synths.simpleBass;
 
 ```SuperCollider
 
-s.boot;
-
 i=INSTRUMENT();
 i.kick= i.synths.kick[3];
 i.kick.seq("1");
@@ -340,6 +369,8 @@ When sequencing notes, you can use amplitude modifiers 'p' an 'f' for *piano* (s
 
 i=INSTRUMENT();
 
+i.bass=i.synths.trance[0];
+
 i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
 
 ```
@@ -374,20 +405,106 @@ i.bass.octave=5;
 
 i = INSTRUMENT();
 
-i.piano = i.synths.note.dist;
-i.piano.octave=5;
-i.piano.note("C,Eb,G,Bb F,A,C5,Eb D,F,A,C Bb,D5,F5,A");
+i.bass=i.synths.trance.choose;
+
+i.chords = i.synths.note.dist;
+i.chords.octave=5;
+
+// use comma to join notes in a chord (no spaces!):
+
+i.chords.note("C,Eb,G,Bb  F,A,C5,Eb  D,F,A,C  Bb,D5,F5,A ");
 
 // alternate chords and single notes
-i.piano.note("5 3  C,Eb,G,Bb  5 7  F,A,C5,Eb  2 5  D,F,A,C  7 10  Bb,D5,F5,A ").speed(4);
+i.chords.note("5 3  C,Eb,G,Bb  5 7  F,A,C5,Eb  2 5  D,F,A,C  7 10  Bb,D5,F5,A ").speed(4);
 
 
 ```
 
-## Set tempo
+##### Use chord notation using 'C'
+
+Class 'C' is an alias for 'I8TChord':
+C( interval, chordtype/chordarray, inversion, additional );
 
 ```SuperCollider
 
+i.chords.note([
+	C(0,\m),
+	C(7,\M,1),
+	C(3,\Mmaj7),
+	C(1,\m,0,[16])
+]).speed(1/2);
+
+```
+
+
+## Sequencing different progressions:
+
+```SuperCollider
+
+
+(
+
+	i.chords[0].note([
+		C(0,\m),
+		C(1,\M,0,[16]),
+	]).speed(1/2).do(2);
+
+	i.chords[1].note([
+		C(0,\m),
+		C(3,\sus2),
+		C(2,\dim),
+		C(7,\M)
+	]).speed(1/2).do(3);
+
+
+)
+
+
+```
+
+<a name="chord-types"></a>
+
+##### Chord types:
+
+```SuperCollider
+
+(
+	i.chords.note([
+
+		C(0,\M),
+		C(0,\m),
+		C(0,\M7),
+		C(0,\m7),
+		C(0,\dim),
+		C(0,\aug),
+		C(0,\Mmaj7),
+		C(0,\mmaj7),
+		C(0,\M9),
+		C(0,\M9m),
+		C(0,\m9),
+		C(0,\m9m),
+		C(0,\sus2),
+		C(0,\sus4),
+
+		// custom chord type
+		C(0,[6,10,15]),
+
+	]).speed(1/2);
+)
+
+
+```
+
+
+
+## Set tempo
+
+```SuperCollider
+i=INSTRUMENT();
+
+i.kick="kick";
+
+i.kick.seq = "1   1";
 
 i.tempo=180;
 i.tempo=140;
@@ -396,11 +513,13 @@ i.tempo=220;
 
 ```
 
-## Add silences
+## Add silences using spaces
 
 ```SuperCollider
 
-i.kick='kick';
+i=INSTRUMENT();
+
+i.kick="kick";
 
 i.kick.seq("1   0.5");
 
@@ -411,6 +530,11 @@ i.kick.seq("1   0.5");
 
 ```SuperCollider
 
+i=INSTRUMENT();
+
+i.kick="kick";
+
+i.kick.seq = "1   1";
 
 i.kick.amp=1/2;
 i.kick.amp=3/4;
@@ -418,7 +542,7 @@ i.kick.amp=1;
 i.kick.amp=2;
 
 i.kick.clock=2;
-i.bass.clock=4;
+i.kick.clock=8;
 
 ```
 
@@ -434,7 +558,7 @@ i=INSTRUMENT();
 
 
 (
-i.piano=i.synths.piano.rhodes1;
+i.piano=i.synths.piano;
 
 i.piano.amp=4;
 i.piano.clock=2;
@@ -505,8 +629,7 @@ i.kick.seq("1 :0.25 1x3 ");
 // fraction representation
 i.kick.seq("1 :1/4 1x3 ");
 
-i.kick.seq("1x4 :1/4 1x4 :1/8 1x4:2 1x2");
-
+i.kick.seq("1x2 :1/4 1x4 :1/8 1x8 :2 1");
 
 
 
@@ -583,10 +706,10 @@ i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
 // You can also use '=' syntax (setter)
 
 i.kick[0].seq = "1";
-i.kick[1].seq = "1xx   1xxx ";
+i.kick[1].seq = ":1/2 1xx   1xxx ";
 i.kick[1].speed(2);
-i.kick[2].seq = "1  1x2  1x3  1x4   ";
-i.kick[2].speed(4);
+// or just pass speed as a speed modifier:
+i.kick[2].seq = ":1/4 1  1x2  1x3  1x4   ";
 
 ```
 
@@ -594,6 +717,22 @@ i.kick[2].speed(4);
 
 ```SuperCollider
 
+
+
+i=INSTRUMENT();
+
+i.kick=i.synths.kick[3];
+
+i.kick.clock=2;
+
+// first add some patterns:
+
+i.kick[0].seq("1");
+i.kick[1].seq("1xx   1xxx ").speed(2);
+i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
+
+
+// now remove them:
 
 i.kick.rm(\seq,0);
 i.kick.rm(\trigger,0);
@@ -657,33 +796,6 @@ i.kick.go(13);
 
 ```
 
-## Create a basic beat
-
-```SuperCollider
-
-(
-
-
-i = INSTRUMENT();
-
-i.drums = (
-	kick: 'kick',
-	hihat: 'hihat',
-	clap: 'clap'
-);
-
-i.drums.kick.seq("1");
-i.drums.hihat.seq(" 1").speed(2);
-i.drums.clap.seq(" 1");
-
-i.drums.clock = 2;
-
-
-)
-
-
-
-```
 
 ## Setting parameters
 
@@ -694,7 +806,7 @@ i.drums.clock = 2;
 
 i = INSTRUMENT();
 
-i.bass=i.synths.trance[2];
+i.bass=i.synths.trance[0];
 i.bass.note("0 2 3");
 )
 
@@ -716,6 +828,10 @@ i.bass.rel=1/2;
 
 
 
+i = INSTRUMENT();
+
+i.bass=i.synths.trance[0];
+i.bass.note("0 2 3");
 
 i.bass.seq(\rel,[2,0.2,1]);
 
@@ -756,7 +872,7 @@ i.bass.synthdef([\bassTrance1,\bassTrance2,\bassTrance3]);
 (
 	i=INSTRUMENT();
 
-	i.piano=i.synths.piano[1];
+	i.piano=i.synths.dist.note;
 	i.piano.note("0 2 3 5").random().mirror.speed(2);
 
 	i.piano.octave=4;
@@ -801,10 +917,7 @@ i.piano.fx.reverb.room=1;
 i.piano.fx.reverb.damp=1;
 
 
-i.piano.stop;
-
 i.piano.fx=nil;
-i.piano.play;
 
 
 ### FX Chains:
@@ -814,7 +927,7 @@ i.piano.fx = [ "reverb", "lpf" ];
 
 i.piano.fx = [ "delay2", "distortion" ];
 
-i.piano.fx.distortion.gain=10;
+i.piano.fx.distortion.gain=30;
 i.piano.fx.distortion.gain=3;
 i.piano.fx.delay2.time=0.1;
 i.piano.fx.delay2.time=0.5;
@@ -822,23 +935,28 @@ i.piano.fx.delay2.time=0.5;
 
 ### Sequencing FX:
 
-i.piano.fx.seq = [
+i=INSTRUMENT();
+
+i.piano=i.synths.piano[1];
+i.piano.note("0 2 3 5").random().mirror.speed(2);
+
+
+i.piano.seq(\fx,[
 	"reverb",
 	"distortion",
 	"lpf"
-];
+]);
 
 
 // more complex sequence, alternating between simple single fx units and fx chains
 
-i.piano.fx.seq = [
+i.piano.seq(\fx,[
 	"reverb",
-	['reverb',"gateDistort.extreme",\lpf],
+	// ['reverb',"gateDistort.extreme",\lpf],
 	[\delay2,"gateDistort.hardcore"],
 	'lpf',
 	nil
-];
-
+]);
 
 
 // clear all FX:
@@ -851,29 +969,6 @@ i.piano.fx=nil;
 ```
 
 
-## Sequencing fx parameters
-
-```SuperCollider
-
-(
-	i = INSTRUMENT();
-
-	i.clap="clapElectro";
-	i.clap.seq(" 1  :0.25 1xx").speed(2);
-
-	i.clap.fx = \reverbLPF;
-	i.clap.fxSet([
-		(filterHz:3000, lag:1/3),
-		(filterHz:1000),
-		(filterHz:2000),
-		// more than one parameter:
-		(filterHz:3000,q:0.1,lag:0),
-		(filterHz:300,q:0.01),
-	]).speed(1/2);
-)
-
-
-```
 
 ## Sequencing fx
 
@@ -885,7 +980,7 @@ i.piano.fx=nil;
 	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
 
-	i.clap.fx([\reverb,\reverbLPF,\gateDistort]).speed(1/4);
+	i.clap.seq(\fx, [\reverb,\reverbLPF,\gateDistort]).speed(1/4);
 )
 
 
@@ -922,7 +1017,7 @@ i.drums.stop;
 i.drums.play;
 
 // add fx to group
-i.drums.fx = \reverb;
+i.drums.fx = "reverb";
 i.drums.fx = nil;
 
 
@@ -959,6 +1054,8 @@ i.melodies.octave=5;
 i.melodies.octave=6;
 i.melodies.octave=3;
 i.melodies.octave=4;
+
+i.melodies.fx = "reverb.large";
 
 
 ```
@@ -1046,60 +1143,6 @@ i.drums.stop;
 
 
 
-## Sequencing Group parameters
-
-Groups are also sequenceable.
-```SuperCollider
-
-i = INSTRUMENT();
-
-i.g=(
-	g1: i.synths.kick[0],
-	g2: i.synths.hihat[0],
-	g3: "hihatOpen",
-	g4: i.synths.snare[2],
-);
-
-
-i.g.g1.seq("1");
-i.g.g2.seq(" 1").speed(2);
-
-i.g.g3.seq("  1").speed(4);
-i.g.g4.seq("  1").speed(3);
-
-
-i.g[0].seq(\amp,"0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8").x(1);
-i.g[1].seq(\amp,"2 1 0.3").speed(2);
-
-
-// You can sequence any parameter:
-
-i.g[0].seq(\rel,"0.1 2").speed(1/4).x(2);
-i.g[1].seq(\rel,"0.1 0.3 0.5").speed(1/2);
-
-i.g[0].seq(\clock,"1 2 4 0.25").speed(1/4).x(2);
-i.g[1].seq(\clock,"1 2 4 0.25").speed(1/4).x(2);
-
-i.g[0].seq(\go,"13 0").speed(1/4).x(2);
-i.g[1].seq(\go,"3 2").speed(2).x(8);
-
-i.g[0].seq(\fx,[\reverbLPF,\gateDistort]).speed(1/4).x(2);
-i.g[1].seq(\fx,[nil,\reverb]).speed(1/4).x(2);
-
-
-```
-
-There are some main "group" parameters, but any parameter can be sequenced and passed directly to the group's instruments.
-
-Main parameters are:
-
-- **\go**: Integer: Jump to position
-- **\amp**: Float: Set group's instruments' amp
-- **\octave**: Integer: Set group's instruments' octave
-- **\clock**: Integer: Set group's instruments' clock
-- **\fx**: String: Set group's instruments' fx synthdef
-
-
 
 ## Group Channels
 
@@ -1174,8 +1217,32 @@ There is a Mixer channel automatically created for each group, and one for each 
 ```
 
 # Clear and Restore
-## i.clear
-## i.restore
+
+
+(
+
+i = INSTRUMENT();
+
+i.drums=(
+	k: 'kickElectro',
+	h: 'hihat',
+	s: 'snareNeuro',
+);
+
+
+i.drums.k[0].seq = "1   ";
+i.drums.k[1].seq = "1  1 ";
+
+i.drums.h.seq = " 1";
+i.drums.s.seq = "  1 ";
+
+i.drums.clock=4;
+
+)
+
+i.clear;
+
+i.restore;
 
 
 Use **i.clear** to stop running instruments,, so you can easily create quick changes without pausing main thread.
@@ -1185,7 +1252,6 @@ You can use **i.restore** to bring back cleared instruments and sequencer functi
 
 ```SuperCollider
 
-s.boot;
 i=INSTRUMENT();
 
 (
@@ -1223,9 +1289,6 @@ i=INSTRUMENT();
 // restore first group
 i.restore;
 
-i.drums2.stop;
-
-i.stop;
 
 ```
 
@@ -1303,7 +1366,9 @@ i.voices.d.amp=1/3;
 ```
 
 
-## Sequencing events:
+## Scheduling functions:
+
+### Scheduling a repeating function:
 
 ```SuperCollider
 
@@ -1312,9 +1377,41 @@ i = INSTRUMENT();
 
 i.hihat = i.synths.hihat.choose;
 
+i.hihat.seq("1xxxxxxxxx");
+
 i.every(4,{
 
-	i.hihat.seq("1xxxxxxxxx").speed(8).maybe(0.75);
+	i.hihat.seq("1xxxxxxxxx").speed([4,8,16].choose).maybe(0.75);
+
+});
+
+
+// remove repeating function:
+i.every(4, nil);
+i.hihat.seq("1xxxxxxxxx").speed(2);
+
+```
+
+### Scheduling a single function:
+
+```SuperCollider
+
+
+
+i = INSTRUMENT();
+
+i.hihat.seq("1xxxxxxxxx").speed([4,8,16].choose).maybe(0.75);
+
+i.when(8,{
+
+	i.hihat.fx="distortion";
+
+});
+
+i.when(16,{
+	i.hihat.fx="reverb.large";
+
+	i.hihat.clock=1/4;
 
 });
 
@@ -1414,8 +1511,6 @@ i.z.octave=3;
 
 ### Playing chord progressions using a NodeProxy:
 
-(Currently, the following chord notation is only available when using NodeProxy)
-
 
 ```SuperCollider
 
@@ -1425,18 +1520,14 @@ p=ProxySpace.push(s);
 
 ~sound.play;
 ~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 6 ! 2 };
-~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps/2)*gain).tanh / 10 ! 2 };
 
 
-i.notes=Proxy(~sound);
+i.sound=Proxy(~sound);
 
-
-// Class 'C' is an alias for 'I8TChord':
-// C( interval, chordtype/chordarray, inversion, additional );
 
 (
 
-i.notes.chord([
+i.sound.chord([
 	C(0,\m),
 	C(7,\M,1),
 	C(3,\Mmaj7),
@@ -1445,12 +1536,10 @@ i.notes.chord([
 
 )
 
-// remove fx sequence
-i.notes.rm(\gain);
 
 (
 
-i.notes.chord([
+i.sound.chord([
 	C(0,\m),
 	C(0,\m,1),
 	C(0,\m,2),
@@ -1463,143 +1552,13 @@ i.notes.chord([
 
 ```
 
-## Sequencing different progressions:
-
-```SuperCollider
-
-
-(
-
-	i.notes[0].chord([
-		C(0,\m),
-		C(1,\M,0,[16]),
-	]).speed(1/2).do(2);
-
-	i.notes[1].chord([
-		C(0,\m),
-		C(3,\sus2),
-		C(2,\dim),
-		C(7,\M)
-	]).speed(1/2).do(3);
-
-
-)
-
-
-```
-
-### Chord types:
-
-```SuperCollider
-
-(
-	i.notes.chord([
-
-		C(0,\M),
-		C(0,\m),
-		C(0,\M7),
-		C(0,\m7),
-		C(0,\dim),
-		C(0,\aug),
-		C(0,\Mmaj7),
-		C(0,\mmaj7),
-		C(0,\M9),
-		C(0,\M9m),
-		C(0,\m9),
-		C(0,\m9m),
-		C(0,\sus2),
-		C(0,\sus4),
-
-		// custom chord type
-		C(0,[6,10,15]),
-
-	]).speed(1/2);
-)
-
-
-```
-
-
-
-## Mixer
-
-INSTRUMENT comes with a virtual Mixer. Any instruments added will automatically create a new mixer channel.
-
-This mixer adds a three-band EQ per channel, as well as a flexible fx chain
-
-```SuperCollider
-
-(
-	i=INSTRUMENT();
-
-	i.kick="kickElectro";
-	i.hihat="hihatElectro";
-	i.snare="snareElectro";
-
-	i.kick.seq("1");
-	i.snare.seq("1").speed(2);
-	i.hihat.seq("1").speed(3);
-
-)
-
-
-// Mixer EQ
-
-i.mixer.getChannel(\kick).set(\low,0);
-i.mixer.getChannel(\kick).set(\low,1);
-i.mixer.getChannel(\kick).set(\low,0.5);
-
-i.mixer.getChannel(\hihat).set(\middle,0);
-i.mixer.getChannel(\hihat).set(\middle,1);
-i.mixer.getChannel(\hihat).set(\middle,0.5);
-
-i.mixer.getChannel(\snare).set(\high,0);
-i.mixer.getChannel(\snare).set(\high,1);
-i.mixer.getChannel(\snare).set(\high,0.5);
-
-
-// Mixer FX Chain
-
-i.kick.stop;
-i.hihat.stop;
-
-i.mixer.getChannel(\snare).addFx(\lpf);
-i.mixer.getChannel(\snare).addFx(\reverb);
-
-i.mixer.getChannel(\snare).fxSet(\reverb,\wet,0);
-i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
-i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1/2);
-i.mixer.getChannel(\snare).fxSet(\reverb,\room,0);
-i.mixer.getChannel(\snare).fxSet(\reverb,\room,1);
-i.mixer.getChannel(\snare).fxSet(\reverb,\damp,1);
+See [**Chord types**](#chord-types)
 
 
 
 
-i.mixer.getChannel(\snare).fxSet(\reverb,\wet,1);
 
-
-i.mixer.getChannel(\snare).fxSet(\lpf,\q,0.025);
-i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,1900);
-i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,900);
-i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,500);
-i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,300);
-
-
-i.mixer.getChannel(\snare).addFx(\gateDistort)
-i.mixer.getChannel(\snare).fxSet(\gateDistort,\gain,3**4)
-
-i.mixer.getChannel(\snare).fxSet(\lpf,\filterHz,3000);
-
-i.mixer.getChannel(\snare).removeFx(\gateDistort)
-
-i.snare.stop;
-
-i.stop;
-
-```
-
-## FX Chains
+## FX Sends
 
 You can create shared channels for routing and sharing effects.
 
