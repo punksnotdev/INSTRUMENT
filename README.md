@@ -366,6 +366,24 @@ i.bass.octave=5;
 
 ```
 
+## Playing chords
+
+
+```SuperCollider
+
+
+i = INSTRUMENT();
+
+i.piano = i.synths.note.dist;
+i.piano.octave=5;
+i.piano.note("C,Eb,G,Bb F,A,C5,Eb D,F,A,C Bb,D5,F5,A");
+
+// alternate chords and single notes
+i.piano.note("5 3  C,Eb,G,Bb  5 7  F,A,C5,Eb  2 5  D,F,A,C  7 10  Bb,D5,F5,A ").speed(4);
+
+
+```
+
 ## Set tempo
 
 ```SuperCollider
@@ -1394,7 +1412,9 @@ i.z.octave=3;
 ```
 
 
-Playing chords:
+### Playing chords using a NodeProxy:
+
+
 
 ```SuperCollider
 
@@ -1414,6 +1434,8 @@ i.notes.seq(\gain,[3,1,13]).speed(1/2);
 ```
 
 ## Chord progressions:
+
+(Currently, the following chord notation is only available when using NodeProxy)
 
 ```SuperCollider
 
