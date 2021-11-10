@@ -978,6 +978,8 @@ I8TMain : Event
 					(synthLoader.validateFolderName(childItem))
 					||
 					( childItem.isKindOf(I8TNode) )
+					||
+					( childItem.isKindOf(I8TFolder) )
 				) == false) {
 
 				if( mode=="play" ) {
@@ -1119,6 +1121,12 @@ I8TMain : Event
 					synthdef = childItem;
 				};
 
+				if( (
+					childItem.isKindOf(I8TFolder)
+				) ) {
+					synthdef = childItem.getMainSynthDef;
+				};
+
 				if( synthLoader.validateSynthName(childItem) ) {
 					synthdef = synthLoader.getSynthDefByName(childItem);
 				};
@@ -1126,6 +1134,7 @@ I8TMain : Event
 				if( synthLoader.validateFolderName(childItem) ) {
 					synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
 				};
+
 
 				currentGroup.at(childItemKey).synthdef = synthdef;
 
