@@ -14,6 +14,9 @@ INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping
 // Create a beat
 
 // First, boot server:
+s.options.memSize=2048*1024;
+s.options.maxNodes=128*1024;
+
 s.boot;
 
 // Then, evaluate following block
@@ -100,6 +103,7 @@ i.drums.clap.seq(" 1");
 i.drums.clock = 2;
 
 
+
 )
 
 
@@ -153,9 +157,11 @@ Platform.userExtensionDir;
 
 ```
 
+
+
 2. To install INSTRUMENT, theres two possible ways:
-	1. Clone the repo inside your 'Extensions/' folder
-	2. or download the .zip file and place it inside the 'Extensions/' folder.
+	1. Using git, clone the repo inside your 'Extensions/' folder
+	2. or download the .zip file and place it inside the 'Extensions/' folder. Make sure the folder's name is INSTRUMENT. (Downloading from this repo creates a folder named INSTRUMENT-main. Please rename it to INSTRUMENT)
 
 3. Restart or Recompile SuperCollider.
 4. Verify installation. Type:
@@ -226,8 +232,8 @@ i=INSTRUMENT();
 i.synths.list;
 
 i.synths.kick.simple;
-i.kick=i.synths.drums.kick.simple;
-i.kick.seq("1  1");
+i.kick=i.synths.kick.choose;
+i.kick.seq("1  1").speed(4);
 
 ```
 
@@ -240,8 +246,8 @@ i=INSTRUMENT();
 
 // access by name
 
-i.kick="kick";
-i.kick.seq("1");
+i.kick= "kick";
+i.kick.seq("1").speed(2);
 
 // use the dictionary
 i.kick='kick';
@@ -255,6 +261,8 @@ i.kick='hihat';
 // access by index
 i.kick=i.synths.drums.kick[0];
 i.kick=i.synths.drums.kick[1];
+i.kick=i.synths.drums.kick[2];
+i.kick=i.synths.drums.kick[3];
 
 // index wraps around total synths number inside folder
 i.kick=i.synths.drums.kick[99999];
@@ -286,6 +294,7 @@ i.synths.bass.simpleBass == i.synths.simpleBass;
 
 i=INSTRUMENT();
 i.kick= i.synths.kick[3];
+
 i.kick.seq("1");
 
 // equivalent syntax:
@@ -349,6 +358,9 @@ i.bass=i.synths.trance.choose;
 
 i.bass.note("0 2 3 5");
 
+// microtonality
+i.bass.note("0 2.25 3.75 5");
+
 // you can also use note names:
 i.bass.note("C D Eb F D# D").speed(4);
 
@@ -360,6 +372,8 @@ i.bass.note("C3 D4 Eb5 F6");
 
 i.bass.note = "C3 Db3   C4 C3  :1.5  Db3x2  :1/2   Bb2x2  ";
 i.bass.clock=4;
+i.bass.amp=2;
+
 
 ```
 
@@ -372,6 +386,7 @@ i=INSTRUMENT();
 i.bass=i.synths.trance[0];
 
 i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
+
 
 ```
 
@@ -391,6 +406,7 @@ i.bass.note("C D Eb G");
 i.bass.octave=4;
 i.bass.octave=3;
 i.bass.octave=5;
+i.bass.octave=6;
 
 )
 
@@ -427,6 +443,10 @@ C( interval, chordtype/chordarray, inversion, additional );
 
 ```SuperCollider
 
+i = INSTRUMENT();
+
+i.chords = i.synths.note.dist;
+
 i.chords.note([
 	C(0,\m),
 	C(7,\M,1),
@@ -443,6 +463,7 @@ i.chords.note([
 
 
 (
+
 
 	i.chords[0].note([
 		C(0,\m),
@@ -469,6 +490,12 @@ i.chords.note([
 ```SuperCollider
 
 (
+
+
+	i = INSTRUMENT();
+
+	i.chords = i.synths.pad.dist;
+
 	i.chords.note([
 
 		C(0,\M),
@@ -505,11 +532,13 @@ i=INSTRUMENT();
 i.kick="kick";
 
 i.kick.seq = "1   1";
+i.kick.speed(8)
 
 i.tempo=180;
 i.tempo=140;
 i.tempo=120;
 i.tempo=220;
+i.tempo=400;
 
 ```
 
@@ -521,8 +550,8 @@ i=INSTRUMENT();
 
 i.kick="kick";
 
-i.kick.seq("1   0.5");
 
+i.kick.seq("1   0.5").speed(4);
 
 ```
 
@@ -534,11 +563,12 @@ i=INSTRUMENT();
 
 i.kick="kick";
 
-i.kick.seq = "1   1";
+i.kick.seq("1   0.5").speed(4);
 
 i.kick.amp=1/2;
 i.kick.amp=3/4;
 i.kick.amp=1;
+i.kick.amp=2;
 i.kick.amp=2;
 
 i.kick.clock=2;
@@ -669,6 +699,9 @@ i.bass.note("Cx3 (Dx2 Gx2)x2 A");
 i.bass.note("(Dx2 Gx2)x3  F A ");
 // change subsequence duration
 i.bass.note("(Dx2 Gx2):0.5  F A ");
+// same result:
+i.bass.note("(:0.5 Dx2 Gx2)  F A ");
+
 // same:
 i.bass.note("(Dx2 Gx2):1/2  F A ");
 i.bass.note("(Dx3 Gx2  B  Cx7):1/3  F A");
@@ -699,9 +732,10 @@ i.kick=i.synths.kick[3];
 
 i.kick.clock=2;
 
-i.kick[0].seq("1");
+i.kick[0].seq("1   1");
 i.kick[1].seq("1xx   1xxx ").speed(2);
 i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
+i.kick[3].seq("1   1xx  ").speed(8);
 
 // You can also use '=' syntax (setter)
 
@@ -734,10 +768,9 @@ i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
 
 // now remove them:
 
-i.kick.rm(\seq,0);
-i.kick.rm(\trigger,0);
-i.kick.rm(\trigger,1);
 i.kick.rm(\trigger,2);
+i.kick.rm(\trigger,1);
+i.kick.rm(\trigger,0);
 
 
 ```
@@ -757,6 +790,10 @@ i.kick[2].seq("1").speed(4);
 ## Controlling pattern repetitions
 
 ```SuperCollider
+
+i=INSTRUMENT();
+
+i.kick=i.synths.kick[3];
 
 i.kick[0].seq("1").speed(1).repeat(4);
 // different names for the same function:
@@ -781,6 +818,8 @@ i = INSTRUMENT();
 )
 
 
+i.hihat.clock=2;
+i.kick.clock=2;
 // repeteadly evaluate this group:
 (
 i.hihat.go(0);
@@ -895,6 +934,7 @@ i.piano.fx.reverb="large";
 // equivalent to:
 i.piano.fx="reverb.large";
 
+
 i.piano.fx.reverb="small";
 
 i.piano.fx.reverb="infinite";
@@ -949,7 +989,7 @@ i.piano.fx.delay2.time=0.5;
 	i = INSTRUMENT();
 
 	i.clap="clapElectro";
-	i.clap.seq(" 1  :0.25 1xx").speed(2);
+	i.clap.seq(" 1  :0.25 1xx  1").speed(2);
 
 	i.clap.seq(\fx, [\reverb,\reverbLPF,\gateDistort]).speed(1/4);
 )
@@ -1000,6 +1040,7 @@ i.drums.clock=2;
 i.drums.clock=1;
 i.drums.amp=1/2;
 i.drums.amp=1;
+i.drums.amp=2;
 i.drums.stop;
 i.drums.play;
 
@@ -1037,6 +1078,7 @@ i.melodies=(
 i.melodies.note1.note("0 7  8");
 i.melodies.note2.note("12  15 13");
 
+i.melodies.amp=3;
 i.melodies.octave=5;
 i.melodies.octave=6;
 i.melodies.octave=3;
@@ -1288,13 +1330,13 @@ i.restore;
 i = INSTRUMENT();
 
 (
-i.bass=\bassTrance1;
-i.hihat=\hihatElectro;
+i.bass=i.synths.bass.trance;
+i.hihat=i.synths.hihat.electro;
 i.bass.clock=4;
 i.bass.note("0 2 3");
 )
 
-i.bass.note("0 2 3").pyramid.mirror;
+i.bass.note("0 2 3").pyramid.mirror.speed(2);
 // randomness
 i.bass.note("0 2 3 5 7 10 12").random;
 i.bass.note("0 2 3 5 7 10 12").random;
@@ -1366,9 +1408,25 @@ i.hihat = i.synths.hihat.choose;
 
 i.hihat.seq("1xxxxxxxxx");
 
+i.drums=(
+	kick: i.synths.kick.choose,
+	hihat: i.synths.hihat.choose,
+	snare: i.synths.snare.choose,
+);
+
+i.drums.kick.seq("1");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.snare.seq(" 1").speed(1/2);
+
+i.drums.clock=2
+
 i.every(4,{
 
-	i.hihat.seq("1xxxxxxxxx").speed([4,8,16].choose).maybe(0.75);
+	i.drums=(
+		kick: i.synths.kick.choose,
+		hihat: i.synths.hihat.choose,
+		snare: i.synths.snare.choose,
+	);
 
 });
 
@@ -1386,6 +1444,8 @@ i.hihat.seq("1xxxxxxxxx").speed(2);
 
 
 i = INSTRUMENT();
+
+i.hihat = i.synths.hihat.choose;
 
 i.hihat.seq("1xxxxxxxxx").speed([4,8,16].choose).maybe(0.75);
 
@@ -1437,9 +1497,20 @@ After that, you can easily use tempo in the following way:
 
 ```SuperCollider
 
+i.drums=(
+	kick: i.synths.kick.choose,
+	hihat: i.synths.hihat.choose,
+	snare: i.synths.snare.choose,
+);
+
+i.drums.kick.seq("1");
+i.drums.hihat.seq(" 1").speed(2);
+i.drums.snare.seq(" 1").speed(1/2);
+
+
 ~z.play;
 
-~z = { Decay2.kr(Impulse.kr( ~tempo.kr * 2 )) * Mix.new(RLPF.ar(WhiteNoise.ar,1000)) }
+~z = { Decay2.kr(Impulse.kr( ~tempo.kr * 4 )) * Mix.new(RLPF.ar(WhiteNoise.ar,SinOsc.kr(~tempo.kr*8,0,1000,4000),0.1)) / 2}
 
 ```
 
@@ -1447,7 +1518,7 @@ Tempo changes in INSTRUMENT now affect ProxySpace's tempo:
 
 ```SuperCollider
 
-i.tempo = 90;
+i.tempo = 120;
 
 ```
 
@@ -1457,6 +1528,8 @@ i.tempo = 90;
 i = INSTRUMENT();
 
 p=ProxySpace.push(s);
+
+i.proxyspace = p;
 
 ~z.play;
 ~z.fadeTime=10;
@@ -1465,11 +1538,12 @@ p=ProxySpace.push(s);
 
 i.z=Proxy(~z);
 
-i.z.seq(\freq,"1000 600 700");
+i.z.seq(\freq,"(1000 600):1/4x3   700");
 
 ~z.fadeTime=3;
-i.z.clock=1/4;
-~z={|freq=200| (Resonz.ar(WhiteNoise.ar,Lag2.kr(freq,4),0.01)*30).tanh/2 };
+i.z.clock=1;
+
+~z={|freq=200| (Resonz.ar(WhiteNoise.ar,Lag2.kr(freq,1/4),0.01)*30).tanh/2 };
 
 ```
 
@@ -1480,18 +1554,21 @@ i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
-~z.play;
-~z.fadeTime=10;
+i.proxyspace = p
 
-~z={|freq=200, t_trig=1| (LFPulse.ar(freq,SinOsc.kr(3).linlin(-1,1,0,1),SinOsc.kr(5).linlin(-1,1,0,1))*30).tanh/2*Decay2.kr(t_trig,2,0) };
+~z.play;
+~z.fadeTime=1;
+
+~z={|freq=200, t_trig=1| (LFPulse.ar(freq,SinOsc.kr(1/2).linlin(-1,1,0,1),SinOsc.kr(105).linlin(-1,1,0,1))*30).tanh/2*Decay2.kr(t_trig,2,0) };
+
 
 i=INSTRUMENT();
 i.z=Proxy(~z);
 
 // automatic mapping of note to 'freq and t_trig':
 i.z.note("0 2 3");
-i.z.clock=1;
-i.z.octave=3;
+i.z.clock=4;
+i.z.octave=7;
 
 ```
 
@@ -1505,8 +1582,11 @@ i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
+p.fadeTime = 10;
+
 ~sound.play;
 ~sound = {|notes=#[60,65,67,72],gain=1| (SinOsc.ar(notes.midicps)*gain).tanh / 6 ! 2 };
+~sound = {|notes=#[60,65,67,72],gain=1| (Saw.ar(notes.midicps*[1/2, 2])*gain).tanh / 6 ! 2 };
 
 
 i.sound=Proxy(~sound);
@@ -1766,9 +1846,9 @@ s.doWhenBooted({
 
 	// create 3 voices:
 	i.voices=(
-		v1:i.synths.piano[1],
-		v2:i.synths.piano[2],
-		v3:i.synths.piano[3],
+		v1:i.synths.note.dist[1],
+		v2:i.synths.note.dist[2],
+		v3:i.synths.note.dist[3],
 	);
 
 
@@ -1805,7 +1885,7 @@ s.doWhenBooted({
 )
 
 (
-i.every(32,{
+i.every(16,{
 	var nextScale = Scale.choose;
 	h=I8THarmony();
 	v=h.generateVoicings();
