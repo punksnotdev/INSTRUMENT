@@ -86,10 +86,13 @@ I8TPattern
 						if( patternValue.isKindOf(I8TChord), {
 							(val: patternValue.chord)
 						}, {
-							( val: patternValue );
+							( val: patternValue, duration: 1, amplitude: 0.5 );
 						});
 					});
 				});
+
+				// TODO: fix problem with ordinary sequencer and remove this hack to use durationSequencer:
+				hasDurations = true;
 
 
 
