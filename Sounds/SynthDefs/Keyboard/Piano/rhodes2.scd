@@ -1,4 +1,4 @@
-SynthDef(\everythingrhodes,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.5 filterHz= 2000 rq=0.5 pan = 0.0,rel=1|
+SynthDef(\rhodes2,{|out= 0 freq = 440 amp = 0.1 gate=1 lforate = 4.85 lfowidth= 0.5 filterHz= 2000 rq=0.5 pan = 0.0,rel=1|
 
 //Electric Piano
 	var pulse, filter, env;

@@ -1,4 +1,4 @@
-SynthDef(\rhodey_sc, {
+SynthDef(\rhodes1, {
     |
     // standard meanings
     out = 0, freq = 440, gate = 1, pan = 0, amp = 0.1, rel=0.3,
