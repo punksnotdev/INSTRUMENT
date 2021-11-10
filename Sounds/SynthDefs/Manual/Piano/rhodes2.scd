@@ -1,4 +1,3 @@
-
 SynthDef(\rhodes2, {
 	//FM Rhodes Synthethizer
     |
