@@ -53,6 +53,8 @@ I8TMain : Event
 	var clearedNodes;
 	var clearedFunctions;
 
+	var <proxyspace;
+
 	*new {|server_,createNew=false|
 
 		if(( instance.isNil || createNew == true), {
@@ -128,8 +130,6 @@ I8TMain : Event
 			nextMIDIController = -1;
 
 			// this.setupGUI();
-
-
 
 
 			ready = true;
@@ -543,10 +543,24 @@ I8TMain : Event
 
 	tempo_ {|bpm|
 		clock.tempo = bpm/120;
+
+		if( proxyspace.isKindOf(ProxySpace)) {
+			proxyspace.makeTempoClock(clock.tempo,'instrument',clock);
+		};
+
 	}
 
 	bpm_ {|bpm|
 		this.tempo( bpm );
+	}
+
+	proxyspace_{|proxyspace_|
+
+		if( proxyspace_.isKindOf(ProxySpace)) {
+			proxyspace = proxyspace_;
+			proxyspace.makeTempoClock(clock.tempo,'instrument',clock);
+		};
+
 	}
 
 

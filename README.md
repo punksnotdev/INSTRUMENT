@@ -168,7 +168,7 @@ You will normally begin by typing and evaluating the following line:
 
 ```SuperCollider
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 ```
 
@@ -576,7 +576,7 @@ i.kick[2].seq("1").speed(4).x(16);
 
 
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 (
 	i.hihat="hihatElectro";
 	i.hihat.seq("1xx :0.25 1xxx :0.5 1xxx :2 1").speed(2);
@@ -607,7 +607,7 @@ i.kick.go(13);
 (
 
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 i.drums = (
 	kick: 'kick',
@@ -635,7 +635,7 @@ i.drums.clock = 2;
 
 (
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 i.bass=i.synths.trance[2];
 i.bass.note("0 2 3");
@@ -801,7 +801,7 @@ i.piano.fx=nil;
 ```SuperCollider
 
 (
-	i = INSTRUMENT().play;
+	i = INSTRUMENT();
 
 	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
@@ -825,7 +825,7 @@ i.piano.fx=nil;
 ```SuperCollider
 
 (
-	i = INSTRUMENT().play;
+	i = INSTRUMENT();
 
 	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx").speed(2);
@@ -845,7 +845,7 @@ You can group Instruments for easier manipulation, while retaining access to ind
 ```SuperCollider
 
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 
 i.drums=(
@@ -996,7 +996,7 @@ i.drums.stop;
 Groups are also sequenceable.
 ```SuperCollider
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 i.g=(
 	g1: i.synths.kick[0],
@@ -1180,7 +1180,7 @@ i.stop;
 
 
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 (
 i.bass=\bassTrance1;
@@ -1211,7 +1211,7 @@ A small composition:
 ```SuperCollider
 // Ctrl/Cmd + .
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 (
 
@@ -1253,7 +1253,7 @@ i.voices.d.amp=1/3;
 ```SuperCollider
 
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 i.hihat = i.synths.hihat.choose;
 
@@ -1279,9 +1279,43 @@ i.every(4,{
 One of its main motivations is to easily integrate with the awesome JITLib, that allows musicians to incorporate mutating synthesis onto their live acts.
 
 
+To sync tempo in ProxySpace with INSTRUMENT, run following code:
+```SuperCollider
+(
+
+i = INSTRUMENT();
+
+p = ProxySpace.push(s);
+
+i.proxyspace = p;
+
+)
+
+```
+
+After that, you can easily use tempo in the following way:
+
+
 ```SuperCollider
 
-i = INSTRUMENT().play;
+~z.play;
+
+~z = { Decay2.kr(Impulse.kr( ~tempo.kr * 2 )) * Mix.new(RLPF.ar(WhiteNoise.ar,1000)) }
+
+```
+
+Tempo changes in INSTRUMENT now affect ProxySpace's tempo:
+
+```SuperCollider
+
+i.tempo = 90;
+
+```
+
+
+```SuperCollider
+
+i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
@@ -1300,9 +1334,10 @@ i.z.clock=1/4;
 
 ```
 
+
 ```SuperCollider
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
@@ -1321,9 +1356,12 @@ i.z.octave=3;
 
 ```
 
+
+Playing chords:
+
 ```SuperCollider
 
-i = INSTRUMENT().play;
+i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
