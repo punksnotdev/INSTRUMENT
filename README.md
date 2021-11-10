@@ -178,7 +178,12 @@ This line will be repeated throughout this document, so any individual fragment 
 
 ## Synths
 
-INSTRUMENT comes with some predefined SynthDefs that you can use. If you want to add more, see [**Loading more Synths**](#load-more-synths)
+INSTRUMENT comes with some predefined SynthDefs that you can use.
+
+See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and the automatic synth loader.
+
+
+If you want to add your own, see [**Loading more Synths**](#load-more-synths)
 
 
 ```SuperCollider
@@ -240,8 +245,6 @@ i.synths.bass.simpleBass == i.synths.simpleBass;
 ```
 
 
-
-See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and the automatic synth loader.
 
 
 

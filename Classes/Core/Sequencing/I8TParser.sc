@@ -713,8 +713,7 @@ I8TParser {
 		var opening = input.findAll(openingSymbol);
 		var closing = input.findAll(closingSymbol);
 
-		I8TParser.validateMatching(input).postln;
-		if( I8TParser.validateMatching(input) == true ) {
+		if( I8TParser.validateMatching(input, $(, $)) == true ) {
 
 			// add any pattern before first bracket
 			if( opening[0] > 0 ) {
