@@ -231,7 +231,6 @@ ParameterTrack
 
 		var isKeyValid;
 
-		"check key".postln;
 
 		if(key.isKindOf(Integer), {
 			var largest = 0;
@@ -442,12 +441,10 @@ ParameterTrack
 
 	removePatternEvents {|key|
 
-		["pattEvents?",key,patternEvents,patternEvents[key]].postln;
 		patternEvents[key].collect({|pattEvent|
 
 			var seqindex;
 
-			["pattEvent",pattEvent].postln;
 
 			sequence.reverseDo({|se,si|
 

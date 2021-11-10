@@ -682,19 +682,20 @@ I8TParser {
 
 						if( opening[index] > closing[index] ) {
 							correct = false;
-							"must open ( before closing )".warn;
+							("must open " ++ openingSymbol ++ " before closing "++closingSymbol).warn;
 						};
 						if( index < (opening.size - 1) ) {
 							if( opening[index+1] < closing[index] ) {
 								correct = false;
-								"must close ) before opening (".warn;
+								("must close "++closingSymbol++" before opening "++openingSymbol).warn;
 							};
 						};
 					});
 
 
 				}, {
-					"number of ( and ) not matching".warn;
+					("number of "++openingSymbol++" and "++closingSymbol++" not matching").warn;
+					correct = false;
 				});
 			}, {
 				correct = false;
@@ -712,7 +713,8 @@ I8TParser {
 		var opening = input.findAll(openingSymbol);
 		var closing = input.findAll(closingSymbol);
 
-		if( I8TParser.validateMatching(input) ) {
+		I8TParser.validateMatching(input).postln;
+		if( I8TParser.validateMatching(input) == true ) {
 
 			// add any pattern before first bracket
 			if( opening[0] > 0 ) {
@@ -773,9 +775,11 @@ I8TParser {
 				));
 			};
 
+
+			^subsequences;
+
 		};
 
-		^subsequences;
 
 	}
 
