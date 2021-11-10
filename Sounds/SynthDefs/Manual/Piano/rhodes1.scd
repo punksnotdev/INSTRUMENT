@@ -1,7 +1,8 @@
 SynthDef(\rhodes1, {
+    //FM Rhodes Synthethizer
     |
     // standard meanings
-    out = 0, freq = 440, gate = 1, pan = 0, amp = 0.1, rel=0.3,
+    out = 0, freq = 440, gate = 1, pan = 0, amp = 1, rel=0.3,
     // all of these range from 0 to 1
     vel = 0.8, modIndex = 0.4, mix = 0.2, lfoSpeed = 0.4, lfoDepth = 0.2
     |
@@ -27,7 +28,7 @@ SynthDef(\rhodes1, {
     snd = (snd*1.5).tanh/2.25;
     // using the doneAction: 2 on the other envs can create clicks (bc of the linear curve maybe?)
     snd = snd * EnvGen.ar(Env.asr(0, 1, rel), gate, doneAction: 2);
-    snd = Pan2.ar(snd, pan, amp);
+    snd = Pan2.ar(snd, pan, amp/2);
 
     Out.ar(out, snd);
 }).store;

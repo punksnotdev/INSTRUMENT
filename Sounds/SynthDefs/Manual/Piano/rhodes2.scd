@@ -27,7 +27,7 @@ SynthDef(\rhodes2, {
 
     // using the doneAction: 2 on the other envs can create clicks (bc of the linear curve maybe?)
     snd = snd * EnvGen.ar(Env.asr(0, 1, rel), gate, doneAction: 2);
-    snd = Pan2.ar(snd, pan, amp);
+    snd = Pan2.ar(snd, pan, amp/3);
 
     Out.ar(out, snd);
 //By Nathan Ho aka Snappizz

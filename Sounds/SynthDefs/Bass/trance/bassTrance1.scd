@@ -15,6 +15,6 @@ SynthDef(\bassTrance1, {
 
 	sig = (sig * dist).tanh;
 
-	Out.ar( out, Pan2.ar(sig * amp / 4, pan) );
+	Out.ar( out, Pan2.ar(sig * amp, pan) );
 
 }).store;
