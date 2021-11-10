@@ -277,6 +277,8 @@ i.kick.stop;
 
 **.seq** method allows to sequence any parameter. In previous example, the default parameter 'trigger' is being automatically passed.
 
+## Sequencing Notes
+
 Lets pass a different parameter, *note*.
 
 ```SuperCollider
