@@ -93,7 +93,6 @@ ParameterTrack
 
 
 						if( beatValue.duration.notNil, {
-
 							dur = beatValue.duration.asFloat;
 						});
 
@@ -105,6 +104,7 @@ ParameterTrack
 						});
 
 						dur = dur / currentSpeed;
+
 
 					};
 

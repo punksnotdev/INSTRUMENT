@@ -220,17 +220,45 @@ SynthPlayer : SynthInstrument
 					var note;
 					var noteStrings = ['A','B','C','D','E','F','G'];
 
+					// play comma-separated chords:
 
-					if(event.val.includes($,)) {
-						var chord;
-						chord = event.val.split($,);
-						chord.removeAt(0);
-						if(chord.isKindOf(Array)) {
-							chord.do({|n| this.trigger(\note,n) });
+					// play I8TChords:
+					if(event.val.isKindOf(String)) {
+
+						if(event.val.includes($,)) {
+							var chord;
+							chord = event.val.split($,);
+							chord.removeAt(0);
+							if(chord.isKindOf(Array)) {
+								chord.do({|n,i|
+									var nE = event.copy;
+									nE.val=n;
+									if( i<(chord.size-1)) {
+										nE.duration = 0;
+									};
+									this.trigger(\note,nE)
+								});
+							};
 						};
+
 					};
 
-					if( ( (event.val != \r) && (event.val != nil ) ) ) {
+					if(event.val.isKindOf(Array)) {
+						var chord = event.val.copy;
+						["chord", chord, event.duration].postln;
+						chord.do({|n,i|
+							var nE = event.copy;
+							nE.val=n;
+							["n", n].postln;
+
+							if( i<(chord.size-1)) {
+								nE.duration = 0;
+							};
+							this.trigger(\note,nE)
+						});
+					};
+
+					if( ( (event.val.isKindOf(Array)==false) && (event.val != \r) && (event.val != nil ) ) ) {
 
 						if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
 							var notes = (
