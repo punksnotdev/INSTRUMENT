@@ -277,7 +277,18 @@ i.kick.stop;
 
 **.seq** method allows to sequence any parameter. In previous example, the default parameter 'trigger' is being automatically passed.
 
-## Sequencing Notes
+
+There are shorthands 'seq' methods for some common parameters, some of them:
+
+- trigger
+- note
+- chord
+- vol
+- pan
+- fx
+- fxSet
+
+
 
 Lets pass a different parameter, *note*.
 
@@ -294,7 +305,14 @@ i.bass.note("0 2 3 5");
 i.bass.note = "0 2 3 5";
 
 
-# Sequencing notes
+```
+
+## Sequencing notes
+
+
+```SuperCollider
+
+
 
 i=INSTRUMENT();
 
@@ -326,16 +344,7 @@ i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
 
 ```
 
-
-There are shorthands 'seq' methods for some common parameters, some of them:
-
-- trigger
-- note
-- chord
-- vol
-- pan
-- fx
-- fxSet
+### Changing octaves
 
 ```SuperCollider
 
