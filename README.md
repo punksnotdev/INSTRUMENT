@@ -312,8 +312,18 @@ i.bass.note("C3 D4 Eb5 F6");
 i.bass.note = "C3 Db3   C4 C3  :1.5  Db3x2  :1/2   Bb2x2  ";
 i.bass.clock=4;
 
+```
+
+When sequencing notes, you can use amplitude modifiers 'p' an 'f' for *piano* (softer) and *forte* (louder)
+
+```SuperCollider
+
+i=INSTRUMENT();
+
+i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
 
 ```
+
 
 There are shorthands 'seq' methods for some common parameters, some of them:
 
@@ -811,8 +821,6 @@ i.piano.fx=nil;
 
 ```
 
-
-```
 
 ## Sequencing fx parameters
 
