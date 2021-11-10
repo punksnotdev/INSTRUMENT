@@ -183,9 +183,24 @@ INSTRUMENT comes with some predefined SynthDefs that you can use. If you want to
 
 ```SuperCollider
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
+
+// list all preloaded synths:
+
+i.synths.list;
+
+i.synths.kick.simple
+i.kick=i.synths.drums.kick.simple;
+i.kick.seq("1  1")
+
+```
+
+```SuperCollider
+
+i=INSTRUMENT();
 
 // creates a dictionary inside **i.synths**
+
 
 // access by name
 
@@ -226,7 +241,7 @@ i.synths.bass.simpleBass == i.synths.simpleBass;
 
 
 
-See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and this automatic loader.
+See [**Synthesizers**](#synthesizers), at the end of this document, for more info about working with Synths, Effects, and the automatic synth loader.
 
 
 
@@ -237,7 +252,7 @@ See [**Synthesizers**](#synthesizers), at the end of this document, for more inf
 
 s.boot;
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 i.kick= i.synths.kick[3];
 i.kick.seq("1");
 
@@ -263,7 +278,7 @@ Lets pass a different parameter, *note*.
 
 ```SuperCollider
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.bass=i.synths.trance.choose;
 
@@ -310,7 +325,7 @@ There are shorthands 'seq' methods for some common parameters, some of them:
 ```SuperCollider
 
 (
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.bass=i.synths.trance.choose;
 
@@ -373,7 +388,7 @@ The 'x' operator inside string Patterns allow for repetition of last value
 
 ```SuperCollider
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 
 (
@@ -438,7 +453,7 @@ It requires a duration parameter, which must be a number (integer or fractionary
 // all subsequent events are affected
 
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.kick='kick';
 
@@ -459,7 +474,7 @@ Using fractions allow some interesting rhythms:
 
 ```SuperCollider
 
-	i=INSTRUMENT().play;
+	i=INSTRUMENT();
 
 	i.kick='kick';
 	i.hihat=i.synths.hihat.choose.postln;
@@ -480,7 +495,7 @@ You can group patterns inside patterns using parenthesis. This is useful for pla
 ```SuperCollider
 
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.bass = i.synths.bass.trance[2];
 i.bass.clock=4;
@@ -513,7 +528,7 @@ i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
 
 // Ctrl/Cmd + Period
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 i.kick=i.synths.kick[3];
 
@@ -673,7 +688,7 @@ i.bass.seq(\rel,[2,0.2,\r,\r,1]);
 
 ```SuperCollider
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 (
 
 i.kick="kickDeep";
@@ -697,7 +712,7 @@ i.bass.synthdef([\bassTrance1,\bassTrance2,\bassTrance3]);
 
 
 (
-	i=INSTRUMENT().play;
+	i=INSTRUMENT();
 
 	i.piano=i.synths.piano[1];
 	i.piano.note("0 2 3 5").random().mirror.speed(2);
@@ -915,7 +930,7 @@ i.melodies.octave=4;
 
 (
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 
 i.drums=(
@@ -1131,7 +1146,7 @@ You can use **i.restore** to bring back cleared instruments and sequencer functi
 ```SuperCollider
 
 s.boot;
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 (
 	i.drums=(
@@ -1346,7 +1361,7 @@ p=ProxySpace.push(s);
 
 ~z={|freq=200, t_trig=1| (LFPulse.ar(freq,SinOsc.kr(3).linlin(-1,1,0,1),SinOsc.kr(5).linlin(-1,1,0,1))*30).tanh/2*Decay2.kr(t_trig,2,0) };
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 i.z=INSTRUMENT(~z);
 
 // automatic mapping of note to 'freq and t_trig':
@@ -1473,7 +1488,7 @@ This mixer adds a three-band EQ per channel, as well as a flexible fx chain
 ```SuperCollider
 
 (
-	i=INSTRUMENT().play;
+	i=INSTRUMENT();
 
 	i.kick="kickElectro";
 	i.hihat="hihatElectro";
@@ -1620,7 +1635,7 @@ A multi-layer looper
 ```SuperCollider
 
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 
 // create looper connected to audio interface's first audio input:
@@ -1787,7 +1802,7 @@ move third direction in opposite direction
 s.boot;
 s.doWhenBooted({
 
-	i=INSTRUMENT().play;
+	i=INSTRUMENT();
 
 	// create 3 voices:
 	i.voices=(
@@ -1876,11 +1891,11 @@ i.synths.percussion.drums.list;
 
 // all synths accesible using their names:
 // (Currently, synthnames are converted to lowercase).
-i.synths.kickdeep == i.synths.kickdeep;
+i.synths.simple == i.synths.simple;
 
 
 // references are created without redundant names:
-i.synths.kickdeep==i.synths.percussion.drums.kick.deep;
+i.synths.simple==i.synths.percussion.drums.kick.simple;
 
 
 // Multiple hierarchies support.
@@ -1920,7 +1935,7 @@ Task.new({
 i.synths.bass.choose.postln;
 
 // a specific SynthDef
-i.synths.kick.kickdeep
+i.synths.kick.simple
 
 ```
 
@@ -1946,7 +1961,7 @@ They are automatically added on startup, but you can manually re-load them, or l
 
 ```SuperCollider
 
-i=INSTRUMENT().play;
+i=INSTRUMENT();
 
 // load your own path with SynthDefs
 i.loadSynths("path/to/your/synthdefs/*");
