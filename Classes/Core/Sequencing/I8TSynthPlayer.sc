@@ -220,6 +220,16 @@ SynthPlayer : SynthInstrument
 					var note;
 					var noteStrings = ['A','B','C','D','E','F','G'];
 
+
+					if(event.val.includes($,)) {
+						var chord;
+						chord = event.val.split($,);
+						chord.removeAt(0);
+						if(chord.isKindOf(Array)) {
+							chord.do({|n| this.trigger(\note,n) });
+						};
+					};
+
 					if( ( (event.val != \r) && (event.val != nil ) ) ) {
 
 						if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
