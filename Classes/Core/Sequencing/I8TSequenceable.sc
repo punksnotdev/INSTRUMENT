@@ -42,7 +42,7 @@ Sequenceable : I8TNode
 		^this;
 	}
 
-	seq {|parameter_,pattern_|
+	seq {|parameter_,pattern_,test_|
 
 
 		var parameters;
@@ -64,7 +64,8 @@ Sequenceable : I8TNode
 				parameters.parameter,
 				nextPatternKey,
 				parameters.pattern,
-				parameters.play_parameters
+				parameters.play_parameters,
+				test_
 			);
 
 			if( currentPatternEvent.isKindOf(PatternEvent), {
@@ -83,26 +84,26 @@ Sequenceable : I8TNode
 
 	/* 'seq' shorthands */
 
-	trigger_ {|pattern| this.trigger(pattern); }
-	trigger {|pattern| this.seq(\trigger,pattern); }
+	trigger_ {|pattern,test| this.trigger(pattern,test); }
+	trigger {|pattern,test| this.seq(\trigger,pattern,test); }
 
-	note_ {|pattern| this.note(pattern); }
-	note {|pattern| this.seq(\note,pattern); }
+	note_ {|pattern,test| this.note(pattern,test); }
+	note {|pattern,test| this.seq(\note,pattern,test); }
 
-	chord_ {|pattern| this.chord(pattern); }
-	chord {|pattern| ["seq chord",pattern].postln; this.seq(\chord,pattern); }
+	chord_ {|pattern,test| this.chord(pattern,test); }
+	chord {|pattern,test| this.seq(\chord,pattern,test); }
 
-	vol_ {|pattern| this.vol(pattern); }
-	vol {|pattern| this.seq(\amp,pattern); }
+	vol_ {|pattern,test| this.vol(pattern,test); }
+	vol {|pattern,test| this.seq(\amp,pattern,test); }
 
-	pan_ {|pattern| this.pan(pattern); }
-	pan {|pattern| this.seq(\pan,pattern); }
+	pan_ {|pattern,test| this.pan(pattern,test); }
+	pan {|pattern,test| this.seq(\pan,pattern,test); }
 
-	// fx_ {|pattern| this.fx(pattern); }
-	// fx {|pattern| this.seq(\fx,pattern); }
+	// fx_ {|pattern,test| this.fx(pattern,test); }
+	// fx {|pattern,test| this.seq(\fx,pattern,test); }
 	//
-	// fxSet_ {|pattern| this.fxSet(pattern); }
-	// fxSet {|pattern| this.seq(\fxSet,pattern); }
+	// fxSet_ {|pattern,test| this.fxSet(pattern,test); }
+	// fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
 	//
 
 

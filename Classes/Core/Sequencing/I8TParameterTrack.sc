@@ -57,23 +57,24 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
+				var currentEvent = this.getCurrentEvent();
 
-				if( this.currentEvent().notNil, {
+				if( currentEvent.notNil, {
 
 					var channel;
 
-					if( this.currentEvent().initialWait.isNil, {
+					if( currentEvent.initialWait.isNil, {
 
-						if(this.currentEvent().parameters[\waitBefore].notNil, {
-							(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
+						if(currentEvent.parameters[\waitBefore].notNil, {
+							(currentEvent.parameters[\waitBefore] / currentSpeed).wait;
 						});
-						this.currentEvent().initialWait = true;
+						currentEvent.initialWait = true;
 					});
 
 
-					currentPattern = this.currentEvent().pattern;
+					currentPattern = currentEvent.pattern;
 
-					beatPatternIndex = (beats-sequenceInfo.indices[this.currentEvent().time]) % currentPattern.pattern.size;
+					beatPatternIndex = (beats-sequenceInfo.indices[currentEvent.time]) % currentPattern.pattern.size;
 					// beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
@@ -88,7 +89,7 @@ ParameterTrack
 							track.instrument.trigger( name, beatValue );
 							beatValue.played=true;
 							currentPattern.played=true;
-							this.currentEvent().played=true;
+							currentEvent.played=true;
 						});
 
 
@@ -96,8 +97,8 @@ ParameterTrack
 							dur = beatValue.duration.asFloat;
 						});
 
-						if( this.currentEvent().parameters[\speed] != nil, {
-							currentSpeed = this.currentEvent().parameters[\speed] * speed;
+						if( currentEvent.parameters[\speed] != nil, {
+							currentSpeed = currentEvent.parameters[\speed] * speed;
 							currentSpeed = currentSpeed.max(0.001);
 						}, {
 							currentSpeed = speed;
@@ -140,11 +141,12 @@ ParameterTrack
 				var beatPatternIndex;
 				var beatValue;
 				var currentPattern;
+				var currentEvent = this.getCurrentEvent();
 
 
-				if( this.currentEvent().notNil, {
+				if( currentEvent.notNil, {
 
-					currentPattern = this.currentEvent().pattern;
+					currentPattern = currentEvent.pattern;
 
 					if( currentPattern.hasDurations == true, {
 
@@ -178,9 +180,9 @@ ParameterTrack
 
 
 
-							if( this.currentEvent().notNil, {
-								if( this.currentEvent().parameters[\speed].notNil, {
-									currentSpeed = this.currentEvent().parameters[\speed] * speed;
+							if( currentEvent.notNil, {
+								if( currentEvent.parameters[\speed].notNil, {
+									currentSpeed = currentEvent.parameters[\speed] * speed;
 								}, {
 									currentSpeed = speed;
 								});
@@ -229,7 +231,7 @@ ParameterTrack
 		}
 	}
 
-	addPattern {|key,pattern,play_parameters|
+	addPattern {|key,pattern,play_parameters,test|
 
 		var eventName;
 		var newKey;
@@ -322,32 +324,36 @@ ParameterTrack
 			newPatternEvent.time=key;
 
 
-			if( sequence[key].notNil && newPatternEvent.notNil ) {
-				if( sequence[key].played==true ) {
+			if( test.isNil || (test.asSymbol != \test) ) {
 
-					waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
-					beats = (beats - waitOffset).asInteger;
-					waitOffset = waitOffset % 1;
 
+				if( sequence[key].notNil && newPatternEvent.notNil ) {
+					if( sequence[key].played==true ) {
+
+						waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
+						beats = (beats - waitOffset).asInteger;
+						waitOffset = waitOffset % 1;
+
+					};
 				};
+
+
+				if(sequence[key].notNil,{
+
+					sequence[key] = newPatternEvent;
+
+				},{
+					sequence.add( newPatternEvent );
+				});
+
+
+				patternEvents[key].add(newPatternEvent);
+				patterns[ key ] = pattern;
+
+
+
+				this.updateSequenceInfo();
 			};
-
-
-			if(sequence[key].notNil,{
-
-				sequence[key] = newPatternEvent;
-
-			},{
-				sequence.add( newPatternEvent );
-			});
-
-
-			patternEvents[key].add(newPatternEvent);
-			patterns[ key ] = pattern;
-
-
-
-			this.updateSequenceInfo();
 
 			^newPatternEvent;
 
@@ -535,32 +541,36 @@ ParameterTrack
 
 	}
 
-	currentEvent {
+	getCurrentEvent {
 
 		var nearestBeatCountKey;
 		var currentIndex;
 
-		nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
+		if( sequenceInfo.notNil ) {
+			nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
 
-		currentIndex = sequenceInfo.indices.indexOfNearest( beats );
+			currentIndex = sequenceInfo.indices.indexOfNearest( beats );
 
-		if( nearestBeatCountKey == nil, {
-			^nil;
-		}, {
+			if( nearestBeatCountKey == nil, {
+				^nil;
+			}, {
 
-			if( sequence.notNil, {
-				if( currentIndex.notNil, {
-					if( nearestBeatCountKey > beats, {
-						currentIndex = currentIndex - 1;
+				if( sequence.notNil, {
+					if( currentIndex.notNil, {
+						if( nearestBeatCountKey > beats, {
+							currentIndex = currentIndex - 1;
+						});
+					}, {
+						currentIndex = 0;
 					});
-				}, {
-					currentIndex = 0;
+					^sequence[ currentIndex ];
 				});
-				^sequence[ currentIndex ];
-			});
 
-		})
+			})
+		};
 
+		^nil;
+		
 	}
 
 	findArray{|pattern|

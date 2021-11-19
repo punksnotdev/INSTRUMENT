@@ -238,15 +238,15 @@ Sequencer : I8TNode
 	}
 
 
-	seq {|track,parameter,key,pattern,play_parameters|
-		^this.addPattern(track,parameter,key,pattern,play_parameters);
+	seq {|track,parameter,key,pattern,play_parameters,test|
+		^this.addPattern(track,parameter,key,pattern,play_parameters,test);
 	}
 
-	addPattern {|track,parameter,key,pattern|
+	addPattern {|track,parameter,key,pattern,parameters,test|
 
 		var patternEvent;
 
-		patternEvent = sequencerTracks[ track ].addPattern(parameter,key,pattern);
+		patternEvent = sequencerTracks[ track ].addPattern(parameter,key,pattern,parameters,test);
 
 
 		if( patternEvent.isKindOf(PatternEvent)) {
@@ -269,8 +269,17 @@ Sequencer : I8TNode
 					// 0.1.wait;
 					// ["pattern",parameter,patternInfo].postln;
 					0.1.wait;
-					("Added pattern: "++track++"."++parameter++": "++key).postln;
-					("New pattern duration: " ++ patternEvent.pattern.totalDuration).postln;
+
+					if( test.asSymbol != \test, {
+						("Added pattern: "++track++"."++parameter++": "++key).postln;
+						("Duration: " ++ patternEvent.pattern.totalDuration).postln;
+
+					}, {
+						("Test pattern: "++track++"."++parameter++": "++key).postln;
+
+						("Duration: " ++ patternEvent.pattern.totalDuration).postln;
+					});
+
 				}).play;
 
 			}
