@@ -376,8 +376,26 @@ i.bass.amp=2;
 
 
 ```
+#### Note modifiers:
 
-When sequencing notes, you can use amplitude modifiers 'p' an 'f' for *piano* (softer) and *forte* (louder)
+When sequencing notes, you can use amplitude and release time modifiers
+
+##### Release time
+
+```SuperCollider
+
+i=INSTRUMENT();
+
+i.bass=i.synths.trance[0];
+
+i.bass.note = "0 2| 3- 5|| 7-- 8||| 10--- 12||||";
+// equivalent:
+i.bass.note = "0 2| 3- 5|2 7-- 8|3 10--- 12|4";
+
+
+```
+
+##### Piano and forte (volume)
 
 ```SuperCollider
 
