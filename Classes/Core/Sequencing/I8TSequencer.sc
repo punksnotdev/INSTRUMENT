@@ -35,6 +35,8 @@ Sequencer : I8TNode
 	var <queue;
 	var <tdef;
 	var <timeSignature;
+	var <tickTime;
+
 
 	// END V2
 
@@ -61,6 +63,8 @@ Sequencer : I8TNode
 
 		loopers = IdentityDictionary.new;
 
+		tickTime = 1000;
+
 		beats = 0;
 		speed = 1;
 		repeat = 4;
@@ -86,11 +90,12 @@ Sequencer : I8TNode
 
 		playing = true;
 
+
 		tdef = Tdef(( "sequencer" ++ "_" ++ main.threadID).asSymbol,{
 
 			inf.do{|i|
 
-				if( (i % (( 32 * (timeSignature.tick*2) ))) == 0, {
+				if( (beats % timeSignature.beats ) == 0, {
 
 
 					// if bar start, check queue
@@ -129,44 +134,51 @@ Sequencer : I8TNode
 					};
 
 
+					if( ticks % tickTime == 0 ) {
 
-					if( singleFunctions[beats].isKindOf(Function), {
-						singleFunctions[beats].value();
-					});
-					repeatFunctions.collect({|f,k|
+						if( singleFunctions[beats].isKindOf(Function), {
+							singleFunctions[beats].value();
+						});
+						repeatFunctions.collect({|f,k|
 
-						f.collect({|rf,l|
-							var offset = 0;
+							f.collect({|rf,l|
+								var offset = 0;
 
-							if(rf.offset.isInteger, {
-								offset = rf.offset;
+								if(rf.offset.isInteger, {
+									offset = rf.offset;
+								});
+
+								if( (beats - offset) % k.asInteger == 0, {
+									rf.function.value();
+								});
 							});
 
-							if( (beats - offset) % k.asInteger == 0, {
-								rf.function.value();
-							});
 						});
 
+
+						beats = beats+1;
+
+						if( printBeats ) {
+							beats.postln;
+						};
+
+					});
+
+					if( playing, {
+						sequencerTracks.collect({|track|
+							track.fwd( i );
+						});
 					});
 
 
-					beats = beats+1;
+					ticks = ticks+1;
 
-					if( printBeats ) {
-						beats.postln;
-					};
+					// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
+					(1/tickTime).wait;
 
-				});
+				}
 
-				if( playing, {
-					sequencerTracks.collect({|track|
-						track.fwd( i );
-					});
-				});
-
-				((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
-
-			}
+			};
 
 
 		});
