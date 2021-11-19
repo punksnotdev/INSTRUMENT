@@ -206,12 +206,20 @@ ParameterTrack
 
 
 	play {|position|
-		if( position != nil, { beats = position; });
 
-		durationSequencer.stop();
+		if( playing == false ) {
+			durationSequencer.stop();
 
-		durationSequencer.play(main.clock, doReset: true, quant: 1);
-		beats = 0;
+			durationSequencer.play(main.clock, doReset: true, quant: 1);
+			// durationSequencer.play(main.clock);
+			if( position != nil, {
+				beats = position;
+			}, {
+				beats = 0;
+			});
+
+		};
+
 		^playing = true;
 	}
 	stop {|position|
@@ -224,7 +232,10 @@ ParameterTrack
 	}
 
 	go {|time|
-		durationSequencer.reset();
+		durationSequencer.stop();
+
+		durationSequencer.play(main.clock, doReset: true, quant: 0);
+
 		beats = time;
 		if(time.isNil) {
 			beats = 0;
@@ -570,7 +581,7 @@ ParameterTrack
 		};
 
 		^nil;
-		
+
 	}
 
 	findArray{|pattern|
