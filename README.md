@@ -560,6 +560,23 @@ i.chords.note([
 
 ```
 
+## Adding probability in sequences
+
+You can add some probability for a certain event using the '?' operator:
+
+```SuperCollider
+// 50% probability is the default value
+i.bass[0].note = "0 3? 5";
+// 10% probability
+i.bass[1].note = "12 15?0.1 17";
+// 90% probability
+i.bass[2].note = "14 18?0.9 20";
+
+// 40% probability applied to each event in a group of events
+i.bass.note = "14 (18 20)?0.4 8";
+
+```
+
 
 
 ## Set tempo
