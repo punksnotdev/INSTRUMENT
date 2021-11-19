@@ -164,19 +164,21 @@ Sequencer : I8TNode
 
 					});
 
-					if( playing, {
-						sequencerTracks.collect({|track|
-							track.fwd( i );
-						});
+				};
+
+
+				if( playing, {
+					sequencerTracks.collect({|track|
+						track.fwd( i );
 					});
+				});
 
 
-					ticks = ticks+1;
+				ticks = ticks+1;
 
-					// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
-					(1/tickTime).wait;
+				// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
+				(1/tickTime).wait;
 
-				}
 
 			};
 
