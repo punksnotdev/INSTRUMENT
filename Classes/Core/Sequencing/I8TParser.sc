@@ -240,7 +240,7 @@ I8TParser {
 	*extractOperators {|input|
 
 
-		var operators = [Char.space,$p,$f,$x,$:,$*];
+		var operators = [Char.space,$p,$f,$x,$:,$*,$|,$-];
 
 		var foundOperators = List.new;
 
@@ -265,7 +265,7 @@ I8TParser {
 	*extractParameters {|group|
 
 
-		var repeatableOperators = [Char.space,$p,$f,$x];
+		var repeatableOperators = [Char.space,$p,$f,$x,$|,$-];
 
 		var parameters = IdentityDictionary.new;
 
@@ -420,7 +420,6 @@ I8TParser {
 
 		}
 
-
 		^parameters;
 
 	}
@@ -478,6 +477,7 @@ I8TParser {
 		var pianoValue;
 		var forteValue;
 
+
 		parameterGroups.collect({|parameterGroup|
 
 			var event = ();
@@ -528,6 +528,13 @@ I8TParser {
 					},
 					$f, {
 						event.forte = v;
+					},
+
+					$|, {
+						event.rel = ((v.asFloat/2)+1).reciprocal;
+					},
+					$-, {
+						event.rel = ((v.asFloat/2)+1);
 					},
 					// {
 					//
@@ -595,6 +602,7 @@ I8TParser {
 
 		pianoValue = events.collect(_.piano).reject(_.isNil).maxItem;
 		forteValue = events.collect(_.forte).reject(_.isNil).maxItem;
+
 
 		if( ampRange.notNil ) {
 

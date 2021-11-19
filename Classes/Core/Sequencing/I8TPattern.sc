@@ -62,6 +62,9 @@ I8TPattern
 					if( e.amplitude.notNil ) {
 						newPatternEvent.amplitude = e.amplitude.asFloat;
 					};
+					if( e.rel.notNil ) {
+						newPatternEvent.rel = e.rel.asFloat;
+					};
 				});
 
 
@@ -245,12 +248,14 @@ I8TPattern
 
 				newGroup.duration = splitStr[1].asFloat;
 				newGroup.amplitude = this.getAmplitude( splitStr[1] );
+				newGroup.rel = this.getRelease( splitStr[1] );
 
 			});
 
 			if( this.getRepetitions( splitStr[0] ) > 1, {
 				newGroup.repetitions = this.getRepetitions( splitStr[0] );
 				newGroup.amplitude = this.getAmplitude( splitStr[0] );
+				newGroup.rel = this.getRelease( splitStr[0] );
 			});
 
 			newGroup.hasDurations = true;
@@ -263,6 +268,7 @@ I8TPattern
 			});
 
 			newGroup.amplitude = this.getAmplitude( str );
+			newGroup.rel = this.getRelease( str );
 
 		});
 
@@ -293,6 +299,31 @@ I8TPattern
 		});
 
 		^amplitude.asFloat;
+
+
+	}
+
+	getRelease{|string|
+
+		var rel = nil;
+		var factor = 0.5;
+
+		if( (string.find("|").notNil || string.find("-").notNil), {
+
+
+			if( string.find("|").notNil, {
+
+				rel = 1 - (factor * this.getOperatorValue(string, "|"));
+
+			});
+			if( string.find("-").notNil, {
+
+				rel = 1 + (factor * this.getOperatorValue(string, "-"));
+
+			});
+		});
+
+		^rel.asFloat;
 
 
 	}

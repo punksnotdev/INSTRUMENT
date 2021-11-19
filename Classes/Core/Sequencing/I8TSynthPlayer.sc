@@ -216,6 +216,7 @@ SynthPlayer : SynthInstrument
 					// if is Event, get params
 					var event = value;
 					var amp = event.amplitude;
+					var rel = event.rel;
 					var use_synth_parameters;
 					var note;
 					var noteStrings = ['A','B','C','D','E','F','G'];
@@ -336,13 +337,19 @@ SynthPlayer : SynthInstrument
 
 									\poly, {
 
-										this.createSynth([
+										var synthArgs = [
 											\t_trig,1,
 											\freq,(note).midicps,
 											\note,note,
 											\amp, amp,
 											\out, outbus
-											]++this.createParametersArray(use_synth_parameters)
+										];
+
+										if( rel.notNil ) {
+											synthArgs = synthArgs++[\rel, rel]
+										};
+
+										this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters)
 										);
 
 									},
@@ -361,16 +368,22 @@ SynthPlayer : SynthInstrument
 										if( synth.isNil , {
 											if( creatingSynth == false, {
 
-												creatingSynth = true;
-
-												this.createSynth([
+												var synthArgs = [
 													\t_trig,1,
 													\freq,(note).midicps,
 													\note,note,
 													\amp, amp,
+													\rel, rel,
 													\legato,0,
 													\out, outbus
-													]++this.createParametersArray(use_synth_parameters)
+												];
+
+																																if( rel.notNil ) {
+																																	synthArgs = synthArgs++[\rel, rel]
+																																};
+
+																																creatingSynth = true;
+																																this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters)
 												);
 
 											});

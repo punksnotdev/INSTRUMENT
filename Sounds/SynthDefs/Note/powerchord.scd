@@ -1,5 +1,5 @@
 SynthDef(\powerChord,
-{|freq,att=0.1,rel=0.5,out=0,amp=1|
+{|freq,att=0.01,rel=0.5,out=0,amp=1|
     var snd, string, delay;
     string = { |f|
         var delay;
