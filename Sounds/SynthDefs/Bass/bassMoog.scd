@@ -12,7 +12,7 @@ SynthDef(\bassMoog,{|out= 0, freq = 440, amp = 1, gate=1, att=0.01, rel=0.6, fen
 	// env = EnvGen.ar(Env.adsr(0.001,0.3,0.9,0.2),gate,doneAction:2);
 
 	sig = filter+(0.8*filter.distort);
-	sig = sig*8.tanh;
+	sig = sig*8.tanh*2;
 	env = EnvGen.kr(Env.perc(att,rel),doneAction:2);
 
 	Out.ar(out,Pan2.ar(sig*env*amp,pan));
