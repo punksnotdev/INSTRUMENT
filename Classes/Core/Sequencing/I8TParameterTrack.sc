@@ -64,103 +64,28 @@ ParameterTrack
 
 		durationSequencer = {|trigger=true|
 
-			var dur = 1;
-
-
-			var beatPatternIndex;
-			var beatValue;
 			var currentPattern;
-			var nextBeat;
 			var currentEvent = this.getCurrentEventNew();
 
-			nextBeat = ((currentTick.asInteger - lastTick.asInteger)) > (nextDuration * main.sequencer.tickTime);
 
-			if( nextBeat == true ) {
+			if( currentEvent.notNil ) {
 
-				if( currentEvent.notNil, {
+				var channel;
 
-					var channel;
+				currentPattern = currentEvent.pattern;
 
-					if( currentEvent.initialWait.isNil, {
+				// if( trigger == true ) {
 
-						if(currentEvent.parameters[\waitBefore].notNil, {
-							(currentEvent.parameters[\waitBefore] / currentSpeed).wait;
-						});
-						currentEvent.initialWait = true;
+					if((( currentEvent.val != \r) ), {
+						track.instrument.trigger( name, currentEvent );
+						currentEvent.played=true;
+						// currentPattern.played=true;
+						// currentEvent.played=true;
 					});
 
-
-					currentPattern = currentEvent.pattern;
-
-					beatPatternIndex = (beats-sequenceInfo.indices[ currentEvent.time ]) % currentPattern.pattern.size;
-					// beatPatternIndex = beats % currentPattern.pattern.size;
-
-					beatValue = currentPattern.pattern[ beatPatternIndex ];
-
-					// // send osc message
-
-					// channel = ("/"++name++"/"++track.instrument.name).asString;
-
-					// netAddr.sendMsg( channel, beatValue.val );
-
-					if( beatValue.notNil, {
-						if( trigger == true ) {
-
-							if((( beatValue.val != \r)&&(beatValue != nil)), {
-								track.instrument.trigger( name, beatValue );
-								beatValue.played=true;
-								currentPattern.played=true;
-								currentEvent.played=true;
-							});
-
-						};
-
-						if( beatValue.duration.notNil, {
-
-							dur = beatValue.duration.asFloat;
-
-						});
-
-						if( currentEvent.parameters[\speed] != nil, {
-							currentSpeed = currentEvent.parameters[\speed] * speed;
-							currentSpeed = currentSpeed.max(0.001);
-						}, {
-							currentSpeed = speed;
-						});
-
-						dur = dur / currentSpeed;
-
-						nextDuration = dur;
-
-					}, {
-
-						nextDuration = 0;
-
-					});
-
-				});
-
-
-				beats = beats + 1;
-				// helps with sync but breaks duration changes inside patterns:
-				// beats = floor( (currentTick / (main.sequencer.tickTime)) * currentSpeed ).asInteger;
-
-				beats = beats % this.totalBeats();
-
-				// if( waitOffset == 0, {
-				//
-				// 	dur.wait;
-				//
-				// }, {
-				// 	(dur+waitOffset).wait;
-				// 	waitOffset = 0;
-				//
-				// });
-
-				lastTick = currentTick;
+				// };
 
 			};
-
 
 
 		};
@@ -169,69 +94,69 @@ ParameterTrack
 
 	fwd {|i|
 
-  		if( playing == true, {
+  		if( playing == true ) {
 
 			// if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
 
-  				var beatPatternIndex;
-  				var beatValue;
-  				var currentPattern;
-				var currentEvent = this.getCurrentEventNew();
+  				// var beatPatternIndex;
+  				// var beatValue;
+  				// var currentPattern;
+				// var currentEvent = this.getCurrentEventNew();
+				//
+				//
+  				// if( currentEvent.notNil, {
+				//
+  				// 	currentPattern = currentEvent.pattern;
 
-
-  				if( currentEvent.notNil, {
-
-  					currentPattern = currentEvent.pattern;
-
-  					if( currentPattern.hasDurations == true, {
+  					// if( currentPattern.hasDurations == true, {
 
   						durationSequencer.value();
 
-  					}, {
-
-
-  						beatPatternIndex = beats % currentPattern.pattern.size;
-
-  						beatValue = currentPattern.pattern[ beatPatternIndex ];
-
-  						if( beatValue.notNil, {
-  							var theValue;
-
-  							if( beatValue.isKindOf(Event), {
-  								theValue = beatValue;
-  							}, {
-  								theValue = beatValue.val;
-  							});
-
-  							if( ((theValue != \r)&&(theValue != nil)), {
-  								track.instrument.trigger( name, theValue );
-
-  							});
-
-
-
-  							if( currentEvent.notNil, {
-  								if( currentEvent.parameters[\speed].notNil, {
-  									currentSpeed = currentEvent.parameters[\speed] * speed;
-  								}, {
-  									currentSpeed = speed;
-  								});
-  							});
-
-  						});
-
-
-  						beats = (i / main.sequencer.tickTime).asInteger;
-  						beats = beats % this.totalBeats();
-
-  					});
-  				});
+  					// }, {
+					//
+					//
+  					// 	beatPatternIndex = beats % currentPattern.pattern.size;
+					//
+  					// 	beatValue = currentPattern.pattern[ beatPatternIndex ];
+					//
+  					// 	if( beatValue.notNil, {
+  					// 		var theValue;
+					//
+  					// 		if( beatValue.isKindOf(Event), {
+  					// 			theValue = beatValue;
+  					// 		}, {
+  					// 			theValue = beatValue.val;
+  					// 		});
+					//
+  					// 		if( ((theValue != \r)&&(theValue != nil)), {
+  					// 			track.instrument.trigger( name, theValue );
+					//
+  					// 		});
+					//
+					//
+					//
+  					// 		if( currentEvent.notNil, {
+  					// 			if( currentEvent.parameters[\speed].notNil, {
+  					// 				currentSpeed = currentEvent.parameters[\speed] * speed;
+  					// 			}, {
+  					// 				currentSpeed = speed;
+  					// 			});
+  					// 		});
+					//
+  					// 	});
+					//
+					//
+  					// 	beats = (i / main.sequencer.tickTime).asInteger;
+  					// 	beats = beats % this.totalBeats();
+					//
+  					// });
+  				// });
 
 
   			// });
 
 
-  		});
+  		};
 
   		currentTick = main.sequencer.ticks;
 
@@ -712,8 +637,8 @@ ParameterTrack
 		currentIndex = newSequenceInfo.indices.indexOfNearest( patternPosition % sequenceDuration );
 
 
-		//no jala por la comparacion con 0
-		if( (currentIndex == 0) && ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
+		// reset all events when sequence restarts after it is done:
+		if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) && ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
 			newSequenceInfo.collect({|e, i|
 				if( i > 0 ) {
 					e.played = false;
@@ -727,12 +652,10 @@ ParameterTrack
 			newSequenceInfo[0].played = false;
 		};
 
+		// check if last read event has been played
 		if( (patternPosition % sequenceDuration) > nearestEventKey ) {
 			if( newSequenceInfo[ nearestEventKey ].played != true ) {
 				currentEvent = newSequenceInfo[ nearestEventKey ];
-
-				// borrar:
-				currentEvent.played = true;
 			};
 		};
 

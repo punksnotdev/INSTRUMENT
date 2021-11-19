@@ -5,9 +5,9 @@ SynthDef(\psykick, { | dur = 0.25, atk = 0.005, amp = 1, out=0 |
 			[0.07, 0.2],
 			[-13, -1],
 		) ),
-		mul:amp * EnvGen.ar(
+		mul: amp * EnvGen.kr(
 			Env.perc( atk, dur - atk),
 			doneAction: 2
 		);
-	) ! 2 );
+	)/3 ! 2 );
 }).store;
