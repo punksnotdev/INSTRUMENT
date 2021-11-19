@@ -193,7 +193,7 @@ SynthPlayer : SynthInstrument
 			if( value.val.isKindOf(Event), {
 				if( value.val.operation == \maybe ) {
 
-					if( 1.0.rand > 0.5, {
+					if( 1.0.rand < value.val.probability, {
 						value.val = value.val.val;
 					}, {
 						value.val = \r;
@@ -202,7 +202,6 @@ SynthPlayer : SynthInstrument
 				};
 			});
 
-			value.postln;
 
 			switch( parameter,
 

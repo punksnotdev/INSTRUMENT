@@ -373,8 +373,11 @@ I8TParser {
 						});
 
 					}, {
-
 						operatorParameter = 1;
+
+						if( operator == $? ) {
+							operatorParameter = 0.5;
+						};
 
 					});
 
@@ -398,7 +401,6 @@ I8TParser {
 					};
 
 				});
-
 
 				parameters[operator] = operatorValue;
 
@@ -533,7 +535,14 @@ I8TParser {
 					},
 
 					$?, {
-						event.val = ( operation: \maybe, val: event.val );
+
+						var probability = parameterGroup[$?];
+
+						event.val = (
+							operation: \maybe,
+							val: event.val,
+							probability: probability
+						);
 					},
 					// {
 					//
