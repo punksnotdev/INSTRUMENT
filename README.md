@@ -395,6 +395,16 @@ i.bass.note = "0 2| 3- 5|2 7-- 8|3 10--- 12|4";
 
 ```
 
+##### Apply release modifier to a subsequence:
+
+```SuperCollider
+
+i.bass.note = "0 (3 5)---- (7 8)||||";
+// equivalent:
+i.bass.note = "0 (3 5)-4 (7 8)|4";
+
+```
+
 ##### Piano and forte (volume)
 
 ```SuperCollider
@@ -404,6 +414,16 @@ i=INSTRUMENT();
 i.bass=i.synths.trance[0];
 
 i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
+
+```
+
+##### Apply volume modifier to a subsequence:
+
+```SuperCollider
+
+i.bass.note = "0 (3 5)ppp (7 8)fff";
+// equivalent:
+i.bass.note = "0 (3 5)p3 (7 8)f3";
 
 
 ```

@@ -473,11 +473,6 @@ I8TParser {
 		var nextEventRepetitions;
 		var nextEventAmp;
 
-		var ampRange = [4,4];
-		var pianoValue;
-		var forteValue;
-
-
 		parameterGroups.collect({|parameterGroup|
 
 			var event = ();
@@ -531,10 +526,10 @@ I8TParser {
 					},
 
 					$|, {
-						event.rel = ((v.asFloat/2)+1).reciprocal;
+						event = this.applyReleaseModifier(event,v,$|);
 					},
 					$-, {
-						event.rel = ((v.asFloat/2)+1);
+						event = this.applyReleaseModifier(event,v,$-);
 					},
 					// {
 					//
@@ -600,30 +595,16 @@ I8TParser {
 
 		});
 
-		pianoValue = events.collect(_.piano).reject(_.isNil).maxItem;
-		forteValue = events.collect(_.forte).reject(_.isNil).maxItem;
 
 
-		if( ampRange.notNil ) {
-
-			if( pianoValue.notNil ) {
-				ampRange[0]=pianoValue.asString;
-			};
-			if( forteValue.notNil ) {
-				ampRange[1]=forteValue.asString;
-			};
-
-		};
+		this.applyAmplitudeModifers(events);
 
 
-		if( ((ampRange[0]<4) && (ampRange[1]<4))) {
-			ampRange = nil;
-		};
+		// apply repetitions:
 
 		events.collect({|event,i|
 
 			var repetitions;
-			var amplitude, piano, forte;
 
 			if( event.repetitions.notNil, {
 
@@ -642,6 +623,61 @@ I8TParser {
 			}, {
 				eventsPost.add( event );
 			});
+
+		});
+
+		^eventsPost;
+
+	}
+
+
+	*applyReleaseModifier{|event, value, operator|
+
+		switch( operator,
+			$|, {
+				event.rel = ((value.asFloat/2)+1).reciprocal;
+			},
+			$-, {
+				event.rel = ((value.asFloat/2)+1);
+			},
+		);
+
+		^event
+
+	}
+
+	// TODO: move to I8TPattern:
+	*applyAmplitudeModifers {|events|
+
+		var amplitude, piano, forte;
+
+		var ampRange = [4,4];
+		var pianoMinValue;
+		var forteMaxValue;
+
+
+		pianoMinValue = events.collect(_.piano).reject(_.isNil).maxItem;
+		forteMaxValue = events.collect(_.forte).reject(_.isNil).maxItem;
+
+		events.collect({|event,i|
+
+
+			if( ampRange.notNil ) {
+
+				if( pianoMinValue.notNil ) {
+					ampRange[0]=pianoMinValue.asString;
+				};
+				if( forteMaxValue.notNil ) {
+					ampRange[1]=forteMaxValue.asString;
+				};
+
+			};
+
+
+			if( ((ampRange[0]<4) && (ampRange[1]<4))) {
+				ampRange = nil;
+			};
+
 
 			if( ampRange.notNil ) {
 
@@ -667,10 +703,7 @@ I8TParser {
 
 			};
 
-
 		});
-
-		^eventsPost;
 
 	}
 
@@ -812,6 +845,32 @@ I8TParser {
 						events = events ++ original;
 					});
 				}
+			};
+
+			if( operators[$p].notNil ) {
+				var repetitions = operators[$p].asInteger;
+				events = events.collect({|e| e.piano = repetitions; });
+				this.applyAmplitudeModifers(events);
+			};
+
+			if( operators[$f].notNil ) {
+				var repetitions = operators[$f].asInteger;
+				events = events.collect({|e| e.forte = repetitions; });
+				this.applyAmplitudeModifers(events);
+			};
+
+			if( operators[$|].notNil ) {
+				var repetitions = operators[$|].asInteger;
+				events = events.collect({|e|
+					e = this.applyReleaseModifier(e,repetitions,$|);
+				});
+			};
+
+			if( operators[$-].notNil ) {
+				var repetitions = operators[$-].asInteger;
+				events = events.collect({|e|
+					e = this.applyReleaseModifier(e,repetitions,$-);
+				});
 			};
 
 			// TODO: implement other operators
