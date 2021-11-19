@@ -21,6 +21,7 @@ ParameterTrack
 
 	var <sequenceInfo;
 	var <newSequenceInfo;
+	var <sequenceDuration;
 
 	var waitOffset;
 
@@ -70,8 +71,7 @@ ParameterTrack
 			var beatValue;
 			var currentPattern;
 			var nextBeat;
-			var currentEvent = this.getCurrentEvent();
-
+			var currentEvent = this.getCurrentEventNew();
 
 			nextBeat = ((currentTick.asInteger - lastTick.asInteger)) > (nextDuration * main.sequencer.tickTime);
 
@@ -141,7 +141,7 @@ ParameterTrack
 				});
 
 
-				// beats = beats + 1;
+				beats = beats + 1;
 				// helps with sync but breaks duration changes inside patterns:
 				// beats = floor( (currentTick / (main.sequencer.tickTime)) * currentSpeed ).asInteger;
 
@@ -176,7 +176,7 @@ ParameterTrack
   				var beatPatternIndex;
   				var beatValue;
   				var currentPattern;
-				var currentEvent = this.getCurrentEvent();
+				var currentEvent = this.getCurrentEventNew();
 
 
   				if( currentEvent.notNil, {
@@ -553,6 +553,17 @@ ParameterTrack
 
 	}
 
+
+	getScaledDuration {| event, patternEvent |
+
+		var patternSpeed = patternEvent.parameters[\speed];
+
+		if( patternSpeed.isNil ) { patternSpeed = 1 };
+
+		^(event.duration / patternSpeed)
+
+	}
+
 	updateSequenceInfo {
 
 		var totalSequenceEventBeats;
@@ -587,7 +598,9 @@ ParameterTrack
 				// sequenceInfo[ totalSequenceEventBeats ] = patternEvent.pattern;
 
 				patternEvent.pattern.pattern.do({|event|
-					totalSequenceEventDurations = totalSequenceEventDurations  + event.duration;
+
+					totalSequenceEventDurations = totalSequenceEventDurations  + this.getScaledDuration(event,patternEvent);
+
 				});
 
 
@@ -599,16 +612,26 @@ ParameterTrack
 
 					patternEvent.pattern.pattern.do({|event|
 
+						var modifiedEvent = event.copy;
 						var eventMoment = repetitionStart + lastEventMoment;
 
-						newSequenceInfo[ eventMoment ] = event;
-						lastEventMoment = lastEventMoment + event.duration;
+						modifiedEvent.duration = this.getScaledDuration(event,patternEvent);
+
+						// modifiedEvent.durationModified = true;
+
+						// this.getScaledDuration(event,patternEvent);
+
+						newSequenceInfo[ eventMoment ] = modifiedEvent;
+
+						lastEventMoment = lastEventMoment + modifiedEvent.duration;
 
 					});
 
 				});
 
 				totalSequenceDurations = totalSequenceDurations + (totalSequenceEventDurations * repetitions);
+
+				sequenceDuration = totalSequenceDurations;
 
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
@@ -666,6 +689,23 @@ ParameterTrack
 
 			})
 		};
+
+		^nil;
+
+	}
+
+	getCurrentEventNew {
+
+		var nearestBeatCountKey;
+		var currentIndex;
+
+		var patternPosition;
+		patternPosition = currentTick / main.sequencer.tickTime;
+		patternPosition = patternPosition * speed;
+		// patternPosition = patternPosition % sequenceDuration;
+
+
+		// ["patternPosition", patternPosition].postln;
 
 		^nil;
 
