@@ -358,7 +358,7 @@ Sequencer : I8TNode
 
 		});
 
-		// main.displayTracks();
+		sequencerTracks[instrument].play;
 
 	}
 

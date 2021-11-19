@@ -50,11 +50,12 @@ SequencerTrack
 
 
 	fwd{|i|
-		if( playing == true, {
+
+		// if( playing == true, {
 			parameterTracks.collect({|p|
 				p.fwd(i)
 			});
-		});
+		// });
 
 	}
 
@@ -81,15 +82,15 @@ SequencerTrack
 			parameterTracks[ parameter ] = ParameterTrack.new( this, parameter, main );
 		});
 
+
 		patternEvent = parameterTracks[ parameter ].addPattern(key,pattern,play_parameters,test);
 
 		if( test.isNil || test.asSymbol != \test ) {
-
-			if( playing == true, {
+			// if( playing == true, {
 				parameterTracks[ parameter ].play;
-			});
-
+			// });
 		};
+
 
 		^patternEvent;
 

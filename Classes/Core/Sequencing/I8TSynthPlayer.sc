@@ -183,6 +183,7 @@ SynthPlayer : SynthInstrument
 
 		var value = value_.copy;
 
+
 		if( value.notNil ) {
 
 
@@ -488,6 +489,8 @@ SynthPlayer : SynthInstrument
 				// },
 				\trigger, {
 					var floatValue = value.val.asFloat;
+
+					
 					if( floatValue.asFloat > 0 ) {
 
 						var amp = floatValue;

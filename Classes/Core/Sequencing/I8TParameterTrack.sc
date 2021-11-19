@@ -69,28 +69,29 @@ ParameterTrack
 			var beatValue;
 			var currentPattern;
 			var nextBeat;
+			var currentEvent = this.getCurrentEvent();
 
 
 			nextBeat = ((currentTick.asInteger - lastTick.asInteger)) > (nextDuration * main.sequencer.tickTime);
 
 			if( nextBeat == true ) {
 
-				if( this.currentEvent().notNil, {
+				if( currentEvent.notNil, {
 
 					var channel;
 
-					if( this.currentEvent().initialWait.isNil, {
+					if( currentEvent.initialWait.isNil, {
 
-						if(this.currentEvent().parameters[\waitBefore].notNil, {
-							(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
+						if(currentEvent.parameters[\waitBefore].notNil, {
+							(currentEvent.parameters[\waitBefore] / currentSpeed).wait;
 						});
-						this.currentEvent().initialWait = true;
+						currentEvent.initialWait = true;
 					});
 
 
-					currentPattern = this.currentEvent().pattern;
+					currentPattern = currentEvent.pattern;
 
-					beatPatternIndex = (beats-sequenceInfo.indices[ this.currentEvent().time ]) % currentPattern.pattern.size;
+					beatPatternIndex = (beats-sequenceInfo.indices[ currentEvent.time ]) % currentPattern.pattern.size;
 					// beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
@@ -108,7 +109,7 @@ ParameterTrack
 								track.instrument.trigger( name, beatValue );
 								beatValue.played=true;
 								currentPattern.played=true;
-								this.currentEvent().played=true;
+								currentEvent.played=true;
 							});
 
 						};
@@ -119,8 +120,8 @@ ParameterTrack
 
 						});
 
-						if( this.currentEvent().parameters[\speed] != nil, {
-							currentSpeed = this.currentEvent().parameters[\speed] * speed;
+						if( currentEvent.parameters[\speed] != nil, {
+							currentSpeed = currentEvent.parameters[\speed] * speed;
 							currentSpeed = currentSpeed.max(0.001);
 						}, {
 							currentSpeed = speed;
@@ -141,7 +142,7 @@ ParameterTrack
 
 				// beats = beats + 1;
 				// helps with sync but breaks duration changes inside patterns:
-				beats = floor( (currentTick / (main.sequencer.tickTime)) * currentSpeed ).asInteger;
+				// beats = floor( (currentTick / (main.sequencer.tickTime)) * currentSpeed ).asInteger;
 
 				beats = beats % this.totalBeats();
 
@@ -166,18 +167,20 @@ ParameterTrack
 	}
 
 	fwd {|i|
+
   		if( playing == true, {
 
-  			if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
+			// if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
 
   				var beatPatternIndex;
   				var beatValue;
   				var currentPattern;
+				var currentEvent = this.getCurrentEvent();
 
 
-  				if( this.currentEvent().notNil, {
+  				if( currentEvent.notNil, {
 
-  					currentPattern = this.currentEvent().pattern;
+  					currentPattern = currentEvent.pattern;
 
   					if( currentPattern.hasDurations == true, {
 
@@ -206,9 +209,9 @@ ParameterTrack
 
 
 
-  							if( this.currentEvent().notNil, {
-  								if( this.currentEvent().parameters[\speed].notNil, {
-  									currentSpeed = this.currentEvent().parameters[\speed] * speed;
+  							if( currentEvent.notNil, {
+  								if( currentEvent.parameters[\speed].notNil, {
+  									currentSpeed = currentEvent.parameters[\speed] * speed;
   								}, {
   									currentSpeed = speed;
   								});
@@ -217,38 +220,39 @@ ParameterTrack
   						});
 
 
-  						beats = beats + 1;
+  						beats = (i / main.sequencer.tickTime).asInteger;
   						beats = beats % this.totalBeats();
 
   					});
   				});
 
 
-  			});
+  			// });
 
 
   		});
 
-  		currentTick = i;
+  		currentTick = main.sequencer.ticks;
 
   	}
 
 
 	play {|position|
 
-		currentTick = main.sequencer.ticks;
+
+		// currentTick = main.sequencer.ticks;
 
 	    if( position != nil, {
 	      beats = position;
-	      currentTick = position * main.sequencer.tickTime;
-	    });
+	      // currentTick = position * main.sequencer.tickTime;
+	    }, {
+			// beats = 0;
+		});
 
+	    // lastTick = currentTick;
 
-	    lastTick = 0;
-
-	    nextDuration = 0;
+	    // nextDuration = 0;
 	    durationSequencer.value(trigger: false);
-	    ["checkl", lastTick, nextDuration, beats].postln;
 	    // if( position != nil, { beats = position; }, { beats = 0 });
 	    ^playing = true;
 
@@ -256,9 +260,9 @@ ParameterTrack
 
 	stop {|position|
 		if( position != nil, { beats = position; });
-		if( durationSequencer.isPlaying, {
-			durationSequencer.stop;
-		});
+		// if( durationSequencer.isPlaying, {
+		// 	durationSequencer.stop;
+		// });
 
 		^playing = false;
 	}
@@ -588,6 +592,10 @@ ParameterTrack
 
 		var nearestBeatCountKey;
 		var currentIndex;
+
+
+
+		["sequenceInfo.indices", sequenceInfo.indices].postln;
 
 		if( sequenceInfo.notNil ) {
 			nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
