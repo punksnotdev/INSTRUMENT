@@ -1,5 +1,5 @@
 SynthDef(\cymbalElectro, {
-    |out = 0, pan = 0, amp = 0.3,rel=3|
+    |out = 0, pan = 0, amp = 0.3,rel=6|
     var click, clickAmp;
     var noise, noiseAmp;
     var snd;
