@@ -20,6 +20,7 @@ ParameterTrack
 	var durationSequencer;
 
 	var <sequenceInfo;
+	var <newSequenceInfo;
 
 	var waitOffset;
 
@@ -398,8 +399,8 @@ ParameterTrack
 				patterns[ key ] = pattern;
 
 
-
 				this.updateSequenceInfo();
+
 			};
 
 			^newPatternEvent;
@@ -555,8 +556,12 @@ ParameterTrack
 	updateSequenceInfo {
 
 		var totalSequenceEventBeats;
+		var totalSequenceDurations;
+
+		newSequenceInfo = Order.new;
 
 		totalSequenceEventBeats = 0;
+		totalSequenceDurations = 0;
 
 		sequenceInfo = Order.new;
 
@@ -565,6 +570,8 @@ ParameterTrack
 
 			var numBeats;
 			var repetitions;
+
+			var totalSequenceEventDurations = 0;
 
 			repetitions = track.sequencer.repeat;
 			if( patternEvent.pattern.pattern.isArray, {
@@ -577,15 +584,57 @@ ParameterTrack
 
 				numBeats = patternEvent.pattern.pattern.size * repetitions;
 
-				sequenceInfo[ totalSequenceEventBeats ] = patternEvent.pattern;
+				// sequenceInfo[ totalSequenceEventBeats ] = patternEvent.pattern;
+
+				patternEvent.pattern.pattern.do({|event|
+					totalSequenceEventDurations = totalSequenceEventDurations  + event.duration;
+				});
+
+
+				repetitions.do({|index|
+					var repetitionStart = totalSequenceDurations + (totalSequenceEventDurations * index);
+
+					var lastEventMoment = 0;
+
+
+					patternEvent.pattern.pattern.do({|event|
+
+						var eventMoment = repetitionStart + lastEventMoment;
+
+						newSequenceInfo[ eventMoment ] = event;
+						lastEventMoment = lastEventMoment + event.duration;
+
+					});
+
+				});
+
+				totalSequenceDurations = totalSequenceDurations + (totalSequenceEventDurations * repetitions);
+
 				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
 			});
 
+
+
 		});
 
 
+	}
 
+	showSequenceInfo {
+
+		Task.new({
+
+			1.wait;
+
+			1.wait;
+
+			newSequenceInfo.do({|event,index|
+				["newSequenceInfo", index, newSequenceInfo[ index ]].postln;
+				0.1.wait;
+			});
+
+		}).play;
 	}
 
 	getCurrentEvent {
@@ -594,8 +643,6 @@ ParameterTrack
 		var currentIndex;
 
 
-
-		["sequenceInfo.indices", sequenceInfo.indices].postln;
 
 		if( sequenceInfo.notNil ) {
 			nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
