@@ -240,7 +240,7 @@ I8TParser {
 	*extractOperators {|input|
 
 
-		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>,$?];
+		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>,$?,$|];
 
 		var foundOperators = List.new;
 
@@ -537,6 +537,10 @@ I8TParser {
 					$?, {
 						event = this.applyMaybeModifier( event, parameterGroup[$?] );
 					},
+
+					$|, {
+						event = this.applyOrModifier( event, parameterGroup[$|] );
+					},
 					// {
 					//
 					// 	event.val = v;
@@ -642,6 +646,15 @@ I8TParser {
 			operation: \maybe,
 			val: event.val,
 			probability: probability
+		);
+		^event
+	}
+
+	*applyOrModifier{|event, alternative|
+		event.val = (
+			operation: \or,
+			val: event.val,
+			or: alternative
 		);
 		^event
 	}

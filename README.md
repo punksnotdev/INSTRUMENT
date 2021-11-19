@@ -562,6 +562,8 @@ i.chords.note([
 
 ## Adding probability in sequences
 
+#### Maybe
+
 You can add some probability for a certain event using the '?' operator:
 
 ```SuperCollider
@@ -576,6 +578,19 @@ i.bass[2].note = "14 18?0.9 20";
 i.bass.note = "14 (18 20)?0.4 8";
 
 ```
+
+#### Or
+
+You can have a value be chosen between two options with the '|' operator:
+
+```SuperCollider
+
+// 50% probability of choosing D or F
+
+i.bass.note = "C D|F";
+
+```
+
 
 
 

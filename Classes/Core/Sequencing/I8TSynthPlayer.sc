@@ -191,14 +191,27 @@ SynthPlayer : SynthInstrument
 			});
 
 			if( value.val.isKindOf(Event), {
-				if( value.val.operation == \maybe ) {
+				if( value.val.operation.notNil ) {
+					switch( value.val.operation,
+						\maybe, {
 
-					if( 1.0.rand < value.val.probability, {
-						value.val = value.val.val;
-					}, {
-						value.val = \r;
-					});
+							if( 1.0.rand < value.val.probability, {
+								value.val = value.val.val;
+							}, {
+								value.val = \r;
+							});
 
+						},
+						\or, {
+
+							if( 1.0.rand < 0.5, {
+								value.val = value.val.val;
+							}, {
+								value.val = value.val.or;
+							});
+
+						},
+					);
 				};
 			});
 
