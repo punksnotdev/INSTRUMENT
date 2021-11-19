@@ -696,18 +696,49 @@ ParameterTrack
 
 	getCurrentEventNew {
 
-		var nearestBeatCountKey;
-		var currentIndex;
-
 		var patternPosition;
+
+		var nearestEventKey;
+		var currentIndex;
+		var currentEvent;
+
 		patternPosition = currentTick / main.sequencer.tickTime;
 		patternPosition = patternPosition * speed;
-		// patternPosition = patternPosition % sequenceDuration;
 
 
-		// ["patternPosition", patternPosition].postln;
 
-		^nil;
+		nearestEventKey = newSequenceInfo.indices.findNearest( patternPosition % sequenceDuration );
+
+		currentIndex = newSequenceInfo.indices.indexOfNearest( patternPosition % sequenceDuration );
+
+
+		//no jala por la comparacion con 0
+		if( (currentIndex == 0) && ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
+			newSequenceInfo.collect({|e, i|
+				if( i > 0 ) {
+					e.played = false;
+				};
+			});
+		};
+
+
+		// if last event, prepare first
+		if( currentIndex == (newSequenceInfo.size-1) ) {
+			newSequenceInfo[0].played = false;
+		};
+
+		if( (patternPosition % sequenceDuration) > nearestEventKey ) {
+			if( newSequenceInfo[ nearestEventKey ].played != true ) {
+				currentEvent = newSequenceInfo[ nearestEventKey ];
+
+				// borrar:
+				currentEvent.played = true;
+			};
+		};
+
+
+
+		^currentEvent;
 
 	}
 
