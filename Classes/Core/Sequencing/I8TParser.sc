@@ -240,7 +240,7 @@ I8TParser {
 	*extractOperators {|input|
 
 
-		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>];
+		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>,$?];
 
 		var foundOperators = List.new;
 
@@ -530,6 +530,10 @@ I8TParser {
 					},
 					$>, {
 						event = this.applyReleaseModifier(event,v,$>);
+					},
+
+					$?, {
+						event.val = ( operation: \maybe, val: event.val );
 					},
 					// {
 					//

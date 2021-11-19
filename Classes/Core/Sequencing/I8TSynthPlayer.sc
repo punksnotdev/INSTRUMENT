@@ -179,7 +179,9 @@ SynthPlayer : SynthInstrument
 	}
 
 
-	trigger {|parameter,value|
+	trigger {|parameter,value_|
+
+		var value = value_.copy;
 
 		if( value.notNil ) {
 
@@ -187,6 +189,20 @@ SynthPlayer : SynthInstrument
 			if( value.isKindOf(Event) == false, {
 				value = ( val: value, amplitude: 0.5 );
 			});
+
+			if( value.val.isKindOf(Event), {
+				if( value.val.operation == \maybe ) {
+
+					if( 1.0.rand > 0.5, {
+						value.val = value.val.val;
+					}, {
+						value.val = \r;
+					});
+
+				};
+			});
+
+			value.postln;
 
 			switch( parameter,
 
