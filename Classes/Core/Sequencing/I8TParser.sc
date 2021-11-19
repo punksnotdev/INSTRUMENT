@@ -240,7 +240,7 @@ I8TParser {
 	*extractOperators {|input|
 
 
-		var operators = [Char.space,$p,$f,$x,$:,$*,$|,$-];
+		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>];
 
 		var foundOperators = List.new;
 
@@ -265,7 +265,7 @@ I8TParser {
 	*extractParameters {|group|
 
 
-		var repeatableOperators = [Char.space,$p,$f,$x,$|,$-];
+		var repeatableOperators = [Char.space,$p,$f,$x,$<,$>];
 
 		var parameters = IdentityDictionary.new;
 
@@ -525,11 +525,11 @@ I8TParser {
 						event.forte = v;
 					},
 
-					$|, {
-						event = this.applyReleaseModifier(event,v,$|);
+					$<, {
+						event = this.applyReleaseModifier(event,v,$<);
 					},
-					$-, {
-						event = this.applyReleaseModifier(event,v,$-);
+					$>, {
+						event = this.applyReleaseModifier(event,v,$>);
 					},
 					// {
 					//
@@ -634,10 +634,10 @@ I8TParser {
 	*applyReleaseModifier{|event, value, operator|
 
 		switch( operator,
-			$|, {
+			$<, {
 				event.rel = ((value.asFloat/2)+1).reciprocal;
 			},
-			$-, {
+			$>, {
 				event.rel = ((value.asFloat/2)+1);
 			},
 		);
@@ -859,17 +859,17 @@ I8TParser {
 				this.applyAmplitudeModifers(events);
 			};
 
-			if( operators[$|].notNil ) {
-				var repetitions = operators[$|].asInteger;
+			if( operators[$<].notNil ) {
+				var repetitions = operators[$<].asInteger;
 				events = events.collect({|e|
-					e = this.applyReleaseModifier(e,repetitions,$|);
+					e = this.applyReleaseModifier(e,repetitions,$<);
 				});
 			};
 
-			if( operators[$-].notNil ) {
-				var repetitions = operators[$-].asInteger;
+			if( operators[$>].notNil ) {
+				var repetitions = operators[$>].asInteger;
 				events = events.collect({|e|
-					e = this.applyReleaseModifier(e,repetitions,$-);
+					e = this.applyReleaseModifier(e,repetitions,$>);
 				});
 			};
 

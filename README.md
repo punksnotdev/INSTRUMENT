@@ -388,9 +388,9 @@ i=INSTRUMENT();
 
 i.bass=i.synths.trance[0];
 
-i.bass.note = "0 2| 3- 5|| 7-- 8||| 10--- 12||||";
+i.bass.note = "0 2< 3> 5<< 7>> 8<<< 10>>> 12<<<<";
 // equivalent:
-i.bass.note = "0 2| 3- 5|2 7-- 8|3 10--- 12|4";
+i.bass.note = "0 2< 3> 5<2 7>> 8<3 10>>> 12<4";
 
 
 ```
@@ -399,9 +399,9 @@ i.bass.note = "0 2| 3- 5|2 7-- 8|3 10--- 12|4";
 
 ```SuperCollider
 
-i.bass.note = "0 (3 5)---- (7 8)||||";
+i.bass.note = "0 (3 5)>>>> (7 8)<<<<";
 // equivalent:
-i.bass.note = "0 (3 5)-4 (7 8)|4";
+i.bass.note = "0 (3 5)>4 (7 8)<4";
 
 ```
 
