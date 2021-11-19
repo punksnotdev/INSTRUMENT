@@ -535,14 +535,7 @@ I8TParser {
 					},
 
 					$?, {
-
-						var probability = parameterGroup[$?];
-
-						event.val = (
-							operation: \maybe,
-							val: event.val,
-							probability: probability
-						);
+						event = this.applyMaybeModifier( event, parameterGroup[$?] );
 					},
 					// {
 					//
@@ -643,6 +636,15 @@ I8TParser {
 
 	}
 
+
+	*applyMaybeModifier{|event, probability|
+		event.val = (
+			operation: \maybe,
+			val: event.val,
+			probability: probability
+		);
+		^event
+	}
 
 	*applyReleaseModifier{|event, value, operator|
 
@@ -883,6 +885,12 @@ I8TParser {
 				var repetitions = operators[$>].asInteger;
 				events = events.collect({|e|
 					e = this.applyReleaseModifier(e,repetitions,$>);
+				});
+			};
+
+			if( operators[$?].notNil ) {
+				events = events.collect({|e|
+					e = this.applyMaybeModifier(e,operators[$?]);
 				});
 			};
 
