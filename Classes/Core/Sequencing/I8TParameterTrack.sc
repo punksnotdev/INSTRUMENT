@@ -23,6 +23,12 @@ ParameterTrack
 
 	var waitOffset;
 
+
+	var currentTick;
+	var lastTick;
+	var nextDuration;
+
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -41,64 +47,80 @@ ParameterTrack
 		beats = 0;
 		waitOffset=0;
 
+
+		currentTick = 0;
+		lastTick = 0;
+
+		nextDuration = 0;
+
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
 
-		durationSequencer = Tdef(("durationSequencer_" ++ main.threadID ++ "_" ++ name ++"_"++track.instrument.name).asSymbol, {
-			inf.do {
 
 
-				var dur = 1;
+		durationSequencer = {|trigger=true|
+
+			var dur = 1;
 
 
-				var beatPatternIndex;
-				var beatValue;
-				var currentPattern;
+			var beatPatternIndex;
+			var beatValue;
+			var currentPattern;
+			var nextBeat;
 
-				var currentEvent = this.getCurrentEvent();
 
-				if( currentEvent.notNil, {
+			nextBeat = ((currentTick.asInteger - lastTick.asInteger)) > (nextDuration * main.sequencer.tickTime);
+
+			if( nextBeat == true ) {
+
+				if( this.currentEvent().notNil, {
 
 					var channel;
 
-					if( currentEvent.initialWait.isNil, {
+					if( this.currentEvent().initialWait.isNil, {
 
-						if(currentEvent.parameters[\waitBefore].notNil, {
-							(currentEvent.parameters[\waitBefore] / currentSpeed).wait;
+						if(this.currentEvent().parameters[\waitBefore].notNil, {
+							(this.currentEvent().parameters[\waitBefore] / currentSpeed).wait;
 						});
-						currentEvent.initialWait = true;
+						this.currentEvent().initialWait = true;
 					});
 
 
-					currentPattern = currentEvent.pattern;
+					currentPattern = this.currentEvent().pattern;
 
-					beatPatternIndex = (beats-sequenceInfo.indices[currentEvent.time]) % currentPattern.pattern.size;
+					beatPatternIndex = (beats-sequenceInfo.indices[ this.currentEvent().time ]) % currentPattern.pattern.size;
 					// beatPatternIndex = beats % currentPattern.pattern.size;
 
 					beatValue = currentPattern.pattern[ beatPatternIndex ];
 
-					channel = ("/"++name++"/"++track.instrument.name).asString;
+					// // send osc message
+
+					// channel = ("/"++name++"/"++track.instrument.name).asString;
 
 					// netAddr.sendMsg( channel, beatValue.val );
 
-					if( beatValue.notNil ) {
+					if( beatValue.notNil, {
+						if( trigger == true ) {
 
-						if((( beatValue.val != \r)&&(beatValue != nil)), {
-							track.instrument.trigger( name, beatValue );
-							beatValue.played=true;
-							currentPattern.played=true;
-							currentEvent.played=true;
-						});
+							if((( beatValue.val != \r)&&(beatValue != nil)), {
+								track.instrument.trigger( name, beatValue );
+								beatValue.played=true;
+								currentPattern.played=true;
+								this.currentEvent().played=true;
+							});
 
+						};
 
 						if( beatValue.duration.notNil, {
+
 							dur = beatValue.duration.asFloat;
+
 						});
 
-						if( currentEvent.parameters[\speed] != nil, {
-							currentSpeed = currentEvent.parameters[\speed] * speed;
+						if( this.currentEvent().parameters[\speed] != nil, {
+							currentSpeed = this.currentEvent().parameters[\speed] * speed;
 							currentSpeed = currentSpeed.max(0.001);
 						}, {
 							currentSpeed = speed;
@@ -106,122 +128,132 @@ ParameterTrack
 
 						dur = dur / currentSpeed;
 
-
-					};
-
-				});
-
-
-				beats = beats + 1;
-				beats = beats % this.totalBeats();
-
-				if( waitOffset == 0, {
-
-					dur.wait;
-
-				}, {
-					(dur+waitOffset).wait;
-					waitOffset = 0;
-
-				});
-
-			}
-		});
-
-		durationSequencer.quant=2;
-		// durationSequencer.quant=[2,0.2375];
-	}
-
-	fwd{|i|
-		if( playing == true, {
-
-			if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
-
-
-				var beatPatternIndex;
-				var beatValue;
-				var currentPattern;
-				var currentEvent = this.getCurrentEvent();
-
-
-				if( currentEvent.notNil, {
-
-					currentPattern = currentEvent.pattern;
-
-					if( currentPattern.hasDurations == true, {
-
-						if( durationSequencer.isPlaying == false, {
-							durationSequencer.play(main.clock);
-						});
-
+						nextDuration = dur;
 
 					}, {
-						if( durationSequencer.isPlaying == false, {
-							durationSequencer.stop;
-						});
 
-						beatPatternIndex = beats % currentPattern.pattern.size;
-
-						beatValue = currentPattern.pattern[ beatPatternIndex ];
-
-						if( beatValue.notNil, {
-							var theValue;
-
-							if( beatValue.isKindOf(Event), {
-								theValue = beatValue;
-							}, {
-								theValue = beatValue.val;
-							});
-
-							if( ((theValue != \r)&&(theValue != nil)), {
-								track.instrument.trigger( name, theValue );
-
-							});
-
-
-
-							if( currentEvent.notNil, {
-								if( currentEvent.parameters[\speed].notNil, {
-									currentSpeed = currentEvent.parameters[\speed] * speed;
-								}, {
-									currentSpeed = speed;
-								});
-							});
-
-						});
-
-
-						beats = beats + 1;
-						beats = beats % this.totalBeats();
+						nextDuration = 0;
 
 					});
+
 				});
 
 
-			});
+				// beats = beats + 1;
+				// helps with sync but breaks duration changes inside patterns:
+				beats = floor( (currentTick / (main.sequencer.tickTime)) * currentSpeed ).asInteger;
 
-		});
+				beats = beats % this.totalBeats();
+
+				// if( waitOffset == 0, {
+				//
+				// 	dur.wait;
+				//
+				// }, {
+				// 	(dur+waitOffset).wait;
+				// 	waitOffset = 0;
+				//
+				// });
+
+				lastTick = currentTick;
+
+			};
+
+
+
+		};
 
 	}
+
+	fwd {|i|
+  		if( playing == true, {
+
+  			if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
+
+  				var beatPatternIndex;
+  				var beatValue;
+  				var currentPattern;
+
+
+  				if( this.currentEvent().notNil, {
+
+  					currentPattern = this.currentEvent().pattern;
+
+  					if( currentPattern.hasDurations == true, {
+
+  						durationSequencer.value();
+
+  					}, {
+
+
+  						beatPatternIndex = beats % currentPattern.pattern.size;
+
+  						beatValue = currentPattern.pattern[ beatPatternIndex ];
+
+  						if( beatValue.notNil, {
+  							var theValue;
+
+  							if( beatValue.isKindOf(Event), {
+  								theValue = beatValue;
+  							}, {
+  								theValue = beatValue.val;
+  							});
+
+  							if( ((theValue != \r)&&(theValue != nil)), {
+  								track.instrument.trigger( name, theValue );
+
+  							});
+
+
+
+  							if( this.currentEvent().notNil, {
+  								if( this.currentEvent().parameters[\speed].notNil, {
+  									currentSpeed = this.currentEvent().parameters[\speed] * speed;
+  								}, {
+  									currentSpeed = speed;
+  								});
+  							});
+
+  						});
+
+
+  						beats = beats + 1;
+  						beats = beats % this.totalBeats();
+
+  					});
+  				});
+
+
+  			});
+
+
+  		});
+
+  		currentTick = i;
+
+  	}
 
 
 	play {|position|
 
-		if( playing == false ) {
-			durationSequencer.stop();
+		currentTick = main.sequencer.ticks;
 
-			durationSequencer.play(main.clock, doReset: true, quant: 1);
-			// durationSequencer.play(main.clock);
-			if( position != nil, {
-				beats = position;
-			}, {
-				beats = 0;
-			});
+	    if( position != nil, {
+	      beats = position;
+	      currentTick = position * main.sequencer.tickTime;
+	    });
 
-		};
 
-		^playing = true;
+	    lastTick = 0;
+
+	    nextDuration = 0;
+	    durationSequencer.value(trigger: false);
+	    ["checkl", lastTick, nextDuration, beats].postln;
+	    // if( position != nil, { beats = position; }, { beats = 0 });
+	    ^playing = true;
+
 	}
+
 	stop {|position|
 		if( position != nil, { beats = position; });
 		if( durationSequencer.isPlaying, {
@@ -232,9 +264,9 @@ ParameterTrack
 	}
 
 	go {|time|
-		durationSequencer.stop();
-
-		durationSequencer.play(main.clock, doReset: true, quant: 0);
+		// durationSequencer.stop();
+		//
+		// durationSequencer.play(main.clock, doReset: true, quant: 0);
 
 		beats = time;
 		if(time.isNil) {

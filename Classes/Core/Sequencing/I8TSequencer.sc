@@ -35,6 +35,7 @@ Sequencer : I8TNode
 	var <queue;
 	var <tdef;
 	var <timeSignature;
+	var <ticks;
 	var <tickTime;
 
 
@@ -63,6 +64,7 @@ Sequencer : I8TNode
 
 		loopers = IdentityDictionary.new;
 
+		ticks = 0;
 		tickTime = 1000;
 
 		beats = 0;
@@ -95,7 +97,7 @@ Sequencer : I8TNode
 
 			inf.do{|i|
 
-				if( (beats % timeSignature.beats ) == 0, {
+				if( (beats % timeSignature.beats ) == 0 ) {
 
 
 					// if bar start, check queue
@@ -162,7 +164,7 @@ Sequencer : I8TNode
 							beats.postln;
 						};
 
-					});
+					};
 
 				};
 
