@@ -401,10 +401,12 @@ ParameterTrack
 	getScaledDuration {| event, patternEvent |
 
 		var patternSpeed = patternEvent.parameters[\speed];
+		var duration = event.duration;
 
 		if( patternSpeed.isNil ) { patternSpeed = 1 };
+		if( duration.isNil ) { duration = 1 };
 
-		^(event.duration / patternSpeed)
+		^(duration / patternSpeed)
 
 	}
 
@@ -419,7 +421,6 @@ ParameterTrack
 		totalSequenceDurations = 0;
 
 		sequenceInfo = Order.new;
-
 
 		sequence.collect({|patternEvent|
 
