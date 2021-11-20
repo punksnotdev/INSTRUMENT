@@ -228,20 +228,23 @@ Sequencer : I8TNode
 
 
 	playInstrument {|instrument, position|
-		this.addToQueue(\play,(
-			item: sequencerTracks[instrument.name],
-			data: (
-				position: position
-			)
-		));
+
+		sequencerTracks[instrument.name].play;
+		// this.addToQueue(\play,(
+		// 	item: sequencerTracks[instrument.name],
+		// 	data: (
+		// 		position: position
+		// 	)
+		// ));
 
 		main.displayTracks();
 	}
 
 	stopInstrument {|instrument|
-		this.addToQueue(\stop,(
-			item: sequencerTracks[instrument.name],
-		));
+		sequencerTracks[instrument.name].stop();
+		// this.addToQueue(\stop,(
+		// 	item: sequencerTracks[instrument.name],
+		// ));
 		main.displayTracks();
 	}
 
