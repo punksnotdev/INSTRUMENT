@@ -164,7 +164,6 @@ I8TChord
 		});
 
 		if( type.isKindOf(Array), {
-			(([note]++(note+type)).rotate(inversion)++add_intervals).postln;
 			^(([note]++(note+type)).rotate(inversion)++add_intervals);
 
 		}, {
@@ -175,7 +174,6 @@ I8TChord
 				(4-add_intervals.size).do({|i|
 					newChord.add( chordIntervals[i] );
 				});
-				(note+(newChord.rotate(inversion)++add_intervals)).postln;
 				^(note+(newChord.rotate(inversion)++add_intervals));
 			}
 		});

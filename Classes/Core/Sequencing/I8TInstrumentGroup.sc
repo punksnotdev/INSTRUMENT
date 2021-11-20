@@ -41,7 +41,6 @@ InstrumentGroup : Sequenceable
 		if( key.isNil, {
 
 			this.collect({|item|
-				item.postln;
 				if( (item.isKindOf(I8TInstrument)) || (item.isKindOf(InstrumentGroup))) {
 					item.stop;
 				};
