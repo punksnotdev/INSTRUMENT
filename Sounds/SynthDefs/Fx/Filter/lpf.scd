@@ -1,4 +1,4 @@
-SynthDef(\lpf, { arg inBus=0,outBus=0, freq=20000,q=0.1, wet=1, lag=0.1;
+SynthDef(\lpf, { arg inBus=0,outBus=0, freq=1000,q=0.1, wet=1, lag=0.1;
     ReplaceOut.ar(
         outBus,
         (In.ar(inBus).tanh * (1-wet))+
