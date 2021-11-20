@@ -62,7 +62,7 @@ ParameterTrack
 
 
 
-		durationSequencer = {|trigger=true|
+		durationSequencer = {
 
 			var currentPattern;
 			var currentEvent = this.getCurrentEventNew();
@@ -74,86 +74,20 @@ ParameterTrack
 
 				currentPattern = currentEvent.pattern;
 
-				// if( trigger == true ) {
-
-					if((( currentEvent.val != \r) ), {
-						track.instrument.trigger( name, currentEvent );
-						currentEvent.played=true;
-						// currentPattern.played=true;
-						// currentEvent.played=true;
-					});
-
-				// };
+				track.instrument.trigger( name, currentEvent );
+				currentEvent.played=true;
 
 			};
-
 
 		};
 
 	}
 
 	fwd {|i|
-  		if( playing == true ) {
 
-			// if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
+		if( playing == true ) {
 
-  				// var beatPatternIndex;
-  				// var beatValue;
-  				// var currentPattern;
-				// var currentEvent = this.getCurrentEventNew();
-				//
-				//
-  				// if( currentEvent.notNil, {
-				//
-  				// 	currentPattern = currentEvent.pattern;
-
-  					// if( currentPattern.hasDurations == true, {
-
-  						durationSequencer.value();
-
-  					// }, {
-					//
-					//
-  					// 	beatPatternIndex = beats % currentPattern.pattern.size;
-					//
-  					// 	beatValue = currentPattern.pattern[ beatPatternIndex ];
-					//
-  					// 	if( beatValue.notNil, {
-  					// 		var theValue;
-					//
-  					// 		if( beatValue.isKindOf(Event), {
-  					// 			theValue = beatValue;
-  					// 		}, {
-  					// 			theValue = beatValue.val;
-  					// 		});
-					//
-  					// 		if( ((theValue != \r)&&(theValue != nil)), {
-  					// 			track.instrument.trigger( name, theValue );
-					//
-  					// 		});
-					//
-					//
-					//
-  					// 		if( currentEvent.notNil, {
-  					// 			if( currentEvent.parameters[\speed].notNil, {
-  					// 				currentSpeed = currentEvent.parameters[\speed] * speed;
-  					// 			}, {
-  					// 				currentSpeed = speed;
-  					// 			});
-  					// 		});
-					//
-  					// 	});
-					//
-					//
-  					// 	beats = (i / main.sequencer.tickTime).asInteger;
-  					// 	beats = beats % this.totalBeats();
-					//
-  					// });
-  				// });
-
-
-  			// });
-
+			durationSequencer.value();
 
   		};
 
@@ -164,30 +98,17 @@ ParameterTrack
 
 	play {|position|
 
-
-		// currentTick = main.sequencer.ticks;
-
 	    if( position != nil, {
 	      beats = position;
-	      // currentTick = position * main.sequencer.tickTime;
 	    }, {
-			// beats = 0;
 		});
 
-	    // lastTick = currentTick;
-
-	    // nextDuration = 0;
-	    // durationSequencer.value(trigger: false);
-	    // if( position != nil, { beats = position; }, { beats = 0 });
 	    ^playing = true;
 
 	}
 
 	stop {|position|
 		if( position != nil, { beats = position; });
-		// if( durationSequencer.isPlaying, {
-		// 	durationSequencer.stop;
-		// });
 		^playing = false;
 	}
 
