@@ -96,9 +96,7 @@ Sequencer : I8TNode
 		tdef = Tdef(( "sequencer" ++ "_" ++ main.threadID).asSymbol,{
 
 			inf.do{|i|
-
 				if( (beats % timeSignature.beats ) == 0 ) {
-
 
 					// if bar start, check queue
 					if( timeSignature.isKindOf(Event) ) {
@@ -158,11 +156,6 @@ Sequencer : I8TNode
 						});
 
 
-						beats = beats+1;
-
-						if( printBeats ) {
-							beats.postln;
-						};
 
 					};
 
@@ -171,12 +164,22 @@ Sequencer : I8TNode
 
 				if( playing, {
 					sequencerTracks.collect({|track|
-						track.fwd( i );
+						track.fwd( ticks );
 					});
 				});
 
 
 				ticks = ticks+1;
+
+				if( ticks % ((60/main.tempo)*tickTime) < 1 ) {
+
+					beats = beats+1;
+
+					if( printBeats ) {
+						beats.postln;
+					};
+
+				};
 
 				// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
 				(1/tickTime).wait;
