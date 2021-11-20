@@ -93,7 +93,6 @@ ParameterTrack
 	}
 
 	fwd {|i|
-
   		if( playing == true ) {
 
 			// if( ( i % ( 128 / currentSpeed ).floor ) == 0, {
@@ -178,7 +177,7 @@ ParameterTrack
 	    // lastTick = currentTick;
 
 	    // nextDuration = 0;
-	    durationSequencer.value(trigger: false);
+	    // durationSequencer.value(trigger: false);
 	    // if( position != nil, { beats = position; }, { beats = 0 });
 	    ^playing = true;
 
@@ -189,7 +188,6 @@ ParameterTrack
 		// if( durationSequencer.isPlaying, {
 		// 	durationSequencer.stop;
 		// });
-
 		^playing = false;
 	}
 
@@ -664,7 +662,7 @@ ParameterTrack
 		};
 
 		^nil;
-		
+
 	}
 
 	findArray{|pattern|
