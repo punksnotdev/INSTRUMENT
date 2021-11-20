@@ -37,6 +37,7 @@ Sequencer : I8TNode
 	var <timeSignature;
 	var <ticks;
 	var <tickTime;
+	var <maxTicks;
 
 
 	// END V2
@@ -65,7 +66,8 @@ Sequencer : I8TNode
 		loopers = IdentityDictionary.new;
 
 		ticks = 0;
-		tickTime = 1000;
+		maxTicks = (30 * 60) * 1000;
+		tickTime = 500;
 
 		beats = 0;
 		speed = 1;
@@ -170,6 +172,9 @@ Sequencer : I8TNode
 
 
 				ticks = ticks+1;
+				if( ticks > maxTicks ) {
+					ticks = 0;
+				};
 
 				if( ticks % ((60/main.tempo)*tickTime) < 1 ) {
 
