@@ -636,33 +636,35 @@ ParameterTrack
 
 		currentIndex = newSequenceInfo.indices.indexOfNearest( patternPosition % sequenceDuration );
 
-
-		// reset all events when sequence restarts after it is done:
-		if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) && ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
-			newSequenceInfo.collect({|e, i|
-				if( i > 0 ) {
-					e.played = false;
+		if( nearestEventKey.notNil ) {
+			// reset all events when sequence restarts after it is done:
+			if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) ) {
+				if( ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
+					newSequenceInfo.collect({|e, i|
+						if( (  i > 0  ) && ( e.notNil ) ) {
+							e.played = false;
+						};
+					});
 				};
-			});
-		};
-
-
-		// if last event, prepare first
-		if( currentIndex == (newSequenceInfo.size-1) ) {
-			newSequenceInfo[0].played = false;
-		};
-
-		// check if last read event has been played
-		if( (patternPosition % sequenceDuration) > nearestEventKey ) {
-			if( newSequenceInfo[ nearestEventKey ].played != true ) {
-				currentEvent = newSequenceInfo[ nearestEventKey ];
 			};
+
+			// if last event, prepare first
+			if( ( currentIndex == (newSequenceInfo.size-1) ) && ( newSequenceInfo[0].notNil ) ) {
+				newSequenceInfo[0].played = false;
+			};
+			// check if last read event has been played
+			if( (patternPosition % sequenceDuration) > nearestEventKey ) {
+				if( ( newSequenceInfo[ nearestEventKey ].notNil ) && ( newSequenceInfo[ nearestEventKey ].played != true ) ) {
+					currentEvent = newSequenceInfo[ nearestEventKey ];
+				};
+			};
+
+
+			^currentEvent;
 		};
 
-
-
-		^currentEvent;
-
+		^nil;
+		
 	}
 
 	findArray{|pattern|
