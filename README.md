@@ -90,6 +90,7 @@ i.drums.fx.reverb.wet=1/2;
 
 i = INSTRUMENT();
 
+
 i.drums = (
 	kick: 'kick',
 	hihat: 'hihat',
@@ -287,18 +288,18 @@ i.synths.bass.simpleBass == i.synths.simpleBass;
 
 
 
-
 ## Basic sequencing:
 
 ```SuperCollider
 
 i=INSTRUMENT();
-i.kick= i.synths.kick[3];
+i.kick= i.synths.kick.deep;
 
 i.kick.seq("1");
 
 // equivalent syntax:
 i.kick.seq = "1";
+
 
 // trigger synths with different amp values:
 i.kick.seq("1 0.3 0.75 2");
@@ -390,7 +391,7 @@ i.bass=i.synths.trance[0];
 
 i.bass.note = "0 2< 3> 5<< 7>> 8<<< 10>>> 12<<<<";
 // equivalent:
-i.bass.note = "0 2< 3> 5<2 7>> 8<3 10>>> 12<4";
+i.bass.note = "0 2< 3> 5<2 7>2 8<3 10>3 12<4";
 
 
 ```
@@ -401,7 +402,7 @@ i.bass.note = "0 2< 3> 5<2 7>> 8<3 10>>> 12<4";
 
 i.bass.note = "0 (3 5)>>>> (7 8)<<<<";
 // equivalent:
-i.bass.note = "0 (3 5)>4 (7 8)<4";
+i.bass.note = "0 (3 5)>4. (7 8)<4";
 
 ```
 
@@ -411,9 +412,9 @@ i.bass.note = "0 (3 5)>4 (7 8)<4";
 
 i=INSTRUMENT();
 
-i.bass=i.synths.trance[0];
+i.piano=i.synths.piano[0];
 
-i.bass.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
+i.piano.note = "0 2p 3f 5pp 7ff 8ppp 10fff 12ffff";
 
 ```
 
@@ -494,13 +495,16 @@ i.chords.note([
 
 ```
 
-
 ## Sequencing different progressions:
 
 ```SuperCollider
 
 
 (
+
+	i = INSTRUMENT();
+
+	i.chords = i.synths.note.dist;
 
 
 	i.chords[0].note([
@@ -567,6 +571,11 @@ i.chords.note([
 You can add some probability for a certain event using the '?' operator:
 
 ```SuperCollider
+
+i = INSTRUMENT();
+
+i.bass = i.synths.bass.dist;
+
 // 50% probability is the default value
 i.bass[0].note = "0 3? 5";
 // 10% probability
@@ -654,10 +663,11 @@ The 'x' operator inside string Patterns allow for repetition of last value
 
 ```SuperCollider
 
-i=INSTRUMENT();
 
 
 (
+i=INSTRUMENT();
+
 i.piano=i.synths.piano;
 
 i.piano.amp=4;
@@ -678,7 +688,14 @@ i.kick.duration;
 i.kick.seq("1 0.5xxx");
 
 // clear patterns
-i.kick.rm(\trigger)
+i.kick.rm(\trigger);
+
+)
+
+(
+i=INSTRUMENT();
+
+i.kick='kick';
 
 i.kick[0].seq("1");
 i.kick[1].seq("1    1");
@@ -704,7 +721,7 @@ i.bass.note("C   Dx2   Ebx3   Bbx2   Ax3   F  ");
 i.bass.duration;
 
 
-
+)
 
 ```
 ## Changing steps duration
@@ -831,7 +848,6 @@ i.kick.clock=2;
 
 // first add some patterns:
 
-i.kick[0].seq("1");
 i.kick[1].seq("1xx   1xxx ").speed(2);
 i.kick[2].seq("1   1xx   1x2   1x4 ").speed(4);
 
@@ -849,6 +865,13 @@ i.kick.rm(\trigger,0);
 
 ```SuperCollider
 
+i=INSTRUMENT();
+
+
+i.kick=i.synths.kick[3];
+
+
+// first add some patterns:
 
 i.kick[0].seq("1").speed(1);
 i.kick[1].seq("1").speed(2);
@@ -921,12 +944,12 @@ i.bass.note("0 2 3");
 
 i.bass.rel=2;
 i.bass.rel=0.2;
+i.bass.rel=1/2;
 i.bass.dist=2;
 i.bass.dist=1;
 i.bass.dist=4;
 i.bass.dist=14;
 i.bass.dist=1;
-i.bass.rel=1/2;
 
 ```
 
@@ -1061,20 +1084,20 @@ i.piano.fx.delay2.time=0.5;
 	i.clap="clapElectro";
 	i.clap.seq(" 1  :0.25 1xx  1").speed(2);
 
-	i.clap.seq(\fx, [\reverb,\reverbLPF,\gateDistort]).speed(1/4);
+	i.clap.seq(\fx, [\reverb,\reverbLPF,\gateDistort]).speed(2);
 )
 
 
 
-i.piano=i.synths.piano[1];
+i.piano=i.synths.piano[0];
 i.piano.note("0 2 3 5").random().mirror.speed(2);
 
 
 i.piano.seq(\fx,[
 	"reverb",
-	"distortion",
+	"gateDistortion",
 	"lpf"
-]);
+]).speed(2);
 
 // clear all FX:
 
@@ -1388,6 +1411,7 @@ i=INSTRUMENT();
 // restore first group
 i.restore;
 
+i.drums2.stop;
 
 ```
 
@@ -1488,7 +1512,7 @@ i.drums.kick.seq("1");
 i.drums.hihat.seq(" 1").speed(2);
 i.drums.snare.seq(" 1").speed(1/2);
 
-i.drums.clock=2
+i.drums.clock=2;
 
 i.every(4,{
 
@@ -1589,6 +1613,8 @@ Tempo changes in INSTRUMENT now affect ProxySpace's tempo:
 ```SuperCollider
 
 i.tempo = 120;
+i.tempo = 200;
+i.tempo = 90;
 
 ```
 
@@ -1624,7 +1650,7 @@ i = INSTRUMENT();
 
 p=ProxySpace.push(s);
 
-i.proxyspace = p
+i.proxyspace = p;
 
 ~z.play;
 ~z.fadeTime=1;
@@ -1638,7 +1664,7 @@ i.z=Proxy(~z);
 // automatic mapping of note to 'freq and t_trig':
 i.z.note("0 2 3");
 i.z.clock=4;
-i.z.octave=7;
+i.z.octave=5;
 
 ```
 
@@ -1846,11 +1872,12 @@ i.loop1.rate(1/2,1);
 i.loop1.rate(1/4,1);
 
 
+i.loop1.rm(\amp)
 
-
+i.loop1.fx="distortion"
 i.loop1.fx=nil
 
-i.loop1.amp=0;
+i.loop1.amp=1;
 
 i.loop1.rate(1);
 
