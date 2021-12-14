@@ -99,12 +99,12 @@ Sequenceable : I8TNode
 	pan_ {|pattern,test| this.pan(pattern,test); }
 	pan {|pattern,test| this.seq(\pan,pattern,test); }
 
-	// fx_ {|pattern,test| this.fx(pattern,test); }
-	// fx {|pattern,test| this.seq(\fx,pattern,test); }
-	//
-	// fxSet_ {|pattern,test| this.fxSet(pattern,test); }
-	// fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
-	//
+	fx_ {|pattern,test| this.fx(pattern,test); }
+	fx {|pattern,test| this.seq(\fx,pattern,test); }
+
+	fxSet_ {|pattern,test| this.fxSet(pattern,test); }
+	fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
+
 
 
 

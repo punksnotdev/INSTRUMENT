@@ -116,22 +116,24 @@ SynthInstrument : Instrument
 
 	fxSet {|parameter,value|
 
-        if( fxSynth.notNil, {
-            if( value.notNil, {
+        if( value.notNil, {
 
-            	fx_parameters[parameter] = value;
-    			fxSynth.set(parameter,value);
+        	fx_parameters[parameter] = value;
 
-            }, {
-                // if no value, check if is valid sequence:
-                if( this.checkIsValidSequence(parameter) ) {
+            if( fxSynth.notNil ) {
+                fxSynth.set(parameter,value);
+            };
 
-        			var pattern = parameter;
-        			this.seq(\fxSet,pattern);
-                };
+        };, {
+            // if no value, check if is valid sequence:
+            if( this.checkIsValidSequence(parameter) ) {
 
-    		});
+    			var pattern = parameter;
+    			this.seq(\fxSet,pattern);
+            };
+
 		});
+
 	}
 
     checkIsValidSequence {|sequence|
