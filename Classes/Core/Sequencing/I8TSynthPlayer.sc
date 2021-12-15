@@ -1,4 +1,4 @@
-SynthPlayer : I8TSynthInstrument
+I8TSynthPlayer : I8TSynthInstrument
 {
 
 	var nodeID;

@@ -181,13 +181,13 @@ TestInstrumentGroup : I8TUnitTest
 		);
 
 		this.assert((
-			main.newGroupName.key0.isKindOf(SynthPlayer)
+			main.newGroupName.key0.isKindOf(I8TSynthPlayer)
 			&&
-			main.newGroupName.key1.isKindOf(SynthPlayer)
+			main.newGroupName.key1.isKindOf(I8TSynthPlayer)
 			&&
-			main.newGroupName.key2.isKindOf(SynthPlayer)
+			main.newGroupName.key2.isKindOf(I8TSynthPlayer)
 			&&
-			main.newGroupName.key3.isKindOf(SynthPlayer)
+			main.newGroupName.key3.isKindOf(I8TSynthPlayer)
 			&&
 			main.newGroupName.keys.size==4
 		));

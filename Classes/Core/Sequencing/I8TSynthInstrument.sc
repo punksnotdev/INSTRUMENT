@@ -172,10 +172,10 @@ I8TSynthInstrument : I8TInstrument
 
     setContent {|synthinstrument_|
 
-        if(synthinstrument_.isKindOf(SynthPlayer), {
+        if(synthinstrument_.isKindOf(I8TSynthPlayer), {
             synthdef = synthinstrument_.synthdef;
         },{
-            "setContent: Not a valid SynthPlayer".warn;
+            "setContent: Not a valid I8TSynthPlayer".warn;
         });
 
     }
