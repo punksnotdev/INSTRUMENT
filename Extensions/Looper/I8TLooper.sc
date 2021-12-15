@@ -1,4 +1,4 @@
-Looper : SynthInstrument
+Looper : I8TSynthInstrument
 {
 
 
