@@ -1,4 +1,4 @@
-SynthPlayer : SynthInstrument
+SynthPlayer : I8TSynthInstrument
 {
 
 	var nodeID;
@@ -262,7 +262,7 @@ SynthPlayer : SynthInstrument
 
 				},
 				\fxSet, {
-
+					["fxSet", value].postln;
 					value.keysValuesDo({|k,v|
 						fx_parameters[k]=v;
 						fxSynth.set(k,v);

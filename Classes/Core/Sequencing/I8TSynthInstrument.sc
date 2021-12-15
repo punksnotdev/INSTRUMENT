@@ -1,4 +1,4 @@
-SynthInstrument : Instrument
+I8TSynthInstrument : I8TInstrument
 {
 
 
@@ -201,6 +201,7 @@ SynthInstrument : Instrument
 
             if( graph.validateFx( fx ) ) {
                 channel.setFxChain(fx);
+                "add instrument fx".postln;
             };
 
             ^channel.fx(fx)

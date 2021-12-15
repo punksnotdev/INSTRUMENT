@@ -107,7 +107,7 @@ I8TMain : Event
 
 			mixer = I8TMixer.new(this);
 			mixer.setupMaster();
-			mixer.sequencer = sequencer;
+			mixer.setupSequencer(sequencer);
 
 			controllerManager = ControllerManager.new(this);
 
@@ -502,7 +502,7 @@ I8TMain : Event
 				controllerManager.map(controller,target,parameter,range);
 				("mapped: "++controller.name++" > "++target.name++": "++parameter).postln;
 			}, {
-				"Target not of class 'Instrument'"
+				"Target not of class 'I8TInstrument'"
 			});
 
 		}, {

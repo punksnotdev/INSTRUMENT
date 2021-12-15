@@ -36,6 +36,10 @@ Sequenceable : I8TNode
 		this.remove(this);
 	}
 
+	setupSequencer {|sequencer_|
+		sequencer = sequencer_;
+		["sequencer", sequencer].postln
+	}
 
 	seq_ {|parameter_,pattern_|
 		this.seq(parameter_,pattern_);
@@ -75,7 +79,7 @@ Sequenceable : I8TNode
 			});
 
 		}, {
-				"Sequencer is nil".warn;
+			"seq: Sequencer is nil".warn;
 		});
 
 		^this;
@@ -145,8 +149,7 @@ Sequenceable : I8TNode
 				};
 			});
 		}, {
-
-				"Sequencer is nil".postln;
+			"rm: Sequencer is nil".warn;
 		});
 
 

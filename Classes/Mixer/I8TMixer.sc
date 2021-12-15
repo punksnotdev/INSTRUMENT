@@ -11,6 +11,7 @@ I8TMixer : Sequenceable
 	var sends;
 	var returns;
 
+	var <>sequencer;
 	var <bus;
 	// var <fxBus;
 	var <outbus;
@@ -57,6 +58,15 @@ I8TMixer : Sequenceable
 
 	}
 
+
+	setupSequencer {|sequencer_|
+
+		sequencer = sequencer_;
+
+	}
+
+
+
 	createMasterChannels {
 
 
@@ -70,7 +80,7 @@ I8TMixer : Sequenceable
 
 			if(masterChannel.notNil) {
 
-				masterChannel.sequencer = sequencer;
+				this.setupChannelSequencer( masterChannel );
 
 				masterChannel.setAmp( 1 );
 				masterChannel.setPan( index.linlin(0,1,-1,1) );
@@ -128,7 +138,7 @@ I8TMixer : Sequenceable
 
 				var channel, channelGroup;
 
-				if( node.isKindOf( Instrument ) ) {
+				if( node.isKindOf( I8TInstrument ) ) {
 
 					if( group.isKindOf(InstrumentGroup), {
 
@@ -281,6 +291,12 @@ I8TMixer : Sequenceable
 
 
 
+	setupChannelSequencer {|channel_|
+
+		channel_.setupSequencer( sequencer );
+
+	}
+
 	fx_ {|key,value|
 		this.addFxChain(key,value);
 	}
@@ -294,6 +310,8 @@ I8TMixer : Sequenceable
 
 			fxChannel = I8TChannel(fxNodeGroup, bus);
 			fxChannel.name=key;
+
+			this.setupChannelSequencer( fxChannel );
 
 			fx.put(key,fxChannel);
 

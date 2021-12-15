@@ -28,7 +28,6 @@ I8TSynth : Sequenceable {
 
 
 
-
 	init { arg graph_, synthdef, args, target, addAction;
 
 		if( synthdef.notNil ) {
@@ -68,6 +67,7 @@ I8TSynth : Sequenceable {
 							synthdefName,
 							args
 						);
+
 						^this
 					}
 				);
@@ -81,5 +81,15 @@ I8TSynth : Sequenceable {
 		^(graph.validateSynthName(synthdef) || graph.validateSynthDef(synthdef))
 	}
 
+	doesNotUnderstand {
+
+		arg selector ... args;
+
+		["selector", selector].postln;
+		["args", args].postln;
+
+
+
+	}
 
 }

@@ -5,6 +5,8 @@ I8TChannel : Sequenceable
 	var <inputsSynth;
 	var <outSynth;
 
+	var <>sequencer;
+
 	var amp,inAmp,outAmp;
 	var pan;
 
@@ -25,6 +27,7 @@ I8TChannel : Sequenceable
 	var synthGroup;
 
 	var sourceListeners;
+
 
 
 	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
@@ -86,9 +89,8 @@ I8TChannel : Sequenceable
 			);
 
 
-
-
 			^this;
+
 
 		}, {
 			// "no outbus"
@@ -98,6 +100,11 @@ I8TChannel : Sequenceable
 	}
 
 
+	setupSequencer {|sequencer_|
+
+		sequencer = sequencer_;
+
+	}
 
 	at {|index|
 
@@ -254,6 +261,8 @@ I8TChannel : Sequenceable
 
 	setFxChain {|fxChain_|
 
+		["setFxChain", fxChain_].postln;
+
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
 			fxChain.collect({|fx,key|
 				fx.free;
@@ -323,35 +332,28 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_|
 
-		var fx = this.createFx(fx_);
+		var fx = this.createFxSynthDef(fx_);
 
 
+		["addFx", fx_].postln;
+		
 		if( (
 			fx.synthdef.notNil
 			&&
 			fx.synthdefKey.notNil
 			)
 		) {
-			var fxSynth;
 
 			this.removeFx(fx.synthdefKey);
 
-			fxSynth = I8TSynth.before(
-				outSynth,
-				fx.synthdef,
-				[\inBus,bus,\outBus,bus]
-			);
-
-			fxChain[fx.synthdefKey.asSymbol] = fxSynth;
-
-			^fxSynth;
+			^this.setupFx(fx);
 
 		};
 
 	}
 
 
-	createFx {|fx_|
+	createFxSynthDef {|fx_|
 
 		var synthdef;
 		var synthdefName;
@@ -449,6 +451,27 @@ I8TChannel : Sequenceable
 
 	}
 
+
+	setupFx {|fx_|
+
+		var fxSynth = I8TSynth.before(
+			outSynth,
+			fx_.synthdef,
+			[\inBus,bus,\outBus,bus]
+		);
+
+		fxChain[fx_.synthdefKey.asSymbol] = fxSynth;
+
+		"setupFx".postln;
+
+		fxSynth.setupSequencer( sequencer );
+
+
+		^fxSynth;
+
+	}
+
+
 	removeFx {|key|
 
 		if(
@@ -500,6 +523,8 @@ I8TChannel : Sequenceable
 	}
 
 	fxSet {|name,parameter,value|
+
+		["channel fxSet", name,parameter,value].postln;
 
 		if(fxChain[name].isKindOf(Synth)){
 			if( (parameter.isKindOf(Symbol)&&value.isKindOf(Number)) ) {
