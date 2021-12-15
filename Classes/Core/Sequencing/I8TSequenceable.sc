@@ -21,6 +21,7 @@ Sequenceable : I8TNode
 	}
 
 	init{|graph_,name_|
+
 		clock = 1;
 		nextPatternKey = 0;
 		minSpeed=1/32;
@@ -38,7 +39,7 @@ Sequenceable : I8TNode
 
 	setupSequencer {|sequencer_|
 		sequencer = sequencer_;
-		["sequencer", sequencer].postln
+		sequencer.registerInstrument( this );
 	}
 
 	seq_ {|parameter_,pattern_|
@@ -57,9 +58,7 @@ Sequenceable : I8TNode
 			pattern_
 		);
 
-
 		currentParameter = parameters.parameter;
-
 
 		if( sequencer.notNil, {
 
@@ -111,7 +110,6 @@ Sequenceable : I8TNode
 
 
 
-
 	rm {|parameter_,key_|
 
 		var key = key_;
@@ -154,7 +152,6 @@ Sequenceable : I8TNode
 
 
 	}
-
 
 	get {|parameter,key|
 		^sequencer.getPattern(name,parameter,key);
@@ -349,7 +346,6 @@ Sequenceable : I8TNode
 		play_parameters;
 
 		// if first argument not a symbol, its not a parameter. use default 'trigger'
-
 
 		if( parameter_.isKindOf(Symbol) == true, {
 

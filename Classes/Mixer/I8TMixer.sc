@@ -175,7 +175,8 @@ I8TMixer : Sequenceable
 						if( channels[node.name].isKindOf( I8TChannel ) == false ) {
 
 							channel = I8TChannel(mixNodeGroup, bus);
-							channel.sequencer = sequencer;
+
+							channel.setupSequencer( sequencer );
 
 							channels[node.name]=channel;
 

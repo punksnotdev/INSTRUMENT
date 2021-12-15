@@ -267,47 +267,58 @@ Sequencer : I8TNode
 	addPattern {|track,parameter,key,pattern,parameters,test|
 
 		var patternEvent;
+		var sequencerTrack;
 
-		patternEvent = sequencerTracks[ track ].addPattern(parameter,key,pattern,parameters,test);
-
-
-		if( patternEvent.isKindOf(PatternEvent)) {
-
-			if( patternEvent.pattern.totalDuration > 0 ) {
-
-				var patternInfo = (
-					track: track,
-					pattern: pattern,
-					beats:patternEvent.pattern.totalDuration,
-					param:parameter,
-					key:key,
-					event: patternEvent
-				);
+		sequencerTrack = sequencerTracks[ track ];
 
 
-				// main.displayNextPattern(patternInfo);
+		if( sequencerTrack.notNil, {
 
-				Task.new({
-					// 0.1.wait;
-					// ["pattern",parameter,patternInfo].postln;
-					0.1.wait;
+			patternEvent = sequencerTrack.addPattern(parameter,key,pattern,parameters,test);
 
-					if( test.asSymbol != \test, {
-						("Added pattern: "++track++"."++parameter++": "++key).postln;
-						("Duration: " ++ patternEvent.pattern.totalDuration).postln;
+			if( patternEvent.isKindOf(PatternEvent)) {
 
-					}, {
-						("Test pattern: "++track++"."++parameter++": "++key).postln;
+				if( patternEvent.pattern.totalDuration > 0 ) {
 
-						("Duration: " ++ patternEvent.pattern.totalDuration).postln;
-					});
+					var patternInfo = (
+						track: track,
+						pattern: pattern,
+						beats:patternEvent.pattern.totalDuration,
+						param:parameter,
+						key:key,
+						event: patternEvent
+					);
 
-				}).play;
 
-			}
-			^patternEvent;
+					// main.displayNextPattern(patternInfo);
 
-		};
+					Task.new({
+						// 0.1.wait;
+						// ["pattern",parameter,patternInfo].postln;
+						0.1.wait;
+
+						if( test.asSymbol != \test, {
+							("Added pattern: "++track++"."++parameter++": "++key).postln;
+							("Duration: " ++ patternEvent.pattern.totalDuration).postln;
+
+						}, {
+							("Test pattern: "++track++"."++parameter++": "++key).postln;
+
+							("Duration: " ++ patternEvent.pattern.totalDuration).postln;
+						});
+
+					}).play;
+
+				}
+				^patternEvent;
+
+			};
+
+		}, {
+
+			"Sequencer Track is nil".warn;
+
+		});
 
 	}
 	updateSequenceInfo {|track,parameter|
@@ -342,13 +353,14 @@ Sequencer : I8TNode
 	}
 
 	setPatternParameters {|track,parameter,key,play_parameters|
-
 		^sequencerTracks[ track ].setPatternParameters(parameter,key,play_parameters);
 	}
 
 	createTrack {|instrument|
 
-		if( ( instrument.isKindOf(I8TInstrument) || instrument.isKindOf(InstrumentGroup) ), {
+
+		if( ( instrument.isKindOf(Sequenceable) ), {
+		// if( ( instrument.isKindOf(I8TInstrument) || instrument.isKindOf(InstrumentGroup) ), {
 
 			if( sequencerTracks[instrument.name] == nil, {
 				sequencerTracks[instrument.name] = SequencerTrack.new(instrument, main );

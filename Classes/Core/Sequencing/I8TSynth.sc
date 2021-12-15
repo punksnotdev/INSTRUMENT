@@ -3,14 +3,14 @@ I8TSynth : Sequenceable {
 	var <>synthdef;
 	var <>synth;
 
-	*new { arg synthdef, args, target, addAction=\addToHead;
-		^super.new.init(graph,synthdef, args, target, addAction)
+	*new { arg name, synthdef, args, target, addAction=\addToHead;
+		^super.new.init(name, graph,synthdef, args, target, addAction)
 
 	}
 
 
-	*before { arg target, synthdef, args;
-		^this.new(synthdef, args, target, \addBefore)
+	*before { arg name, target, synthdef, args;
+		^this.new(name, synthdef, args, target, \addBefore)
 	}
 
 
@@ -28,7 +28,11 @@ I8TSynth : Sequenceable {
 
 
 
-	init { arg graph_, synthdef, args, target, addAction;
+	init { arg name_, graph_, synthdef, args, target, addAction;
+
+		super.init;
+
+		name = name_;
 
 		if( synthdef.notNil ) {
 
@@ -85,11 +89,21 @@ I8TSynth : Sequenceable {
 
 		arg selector ... args;
 
-		["selector", selector].postln;
-		["args", args].postln;
+		["doesNotUnderstand: selector", selector].postln;
+		["doesNotUnderstand: args", args].postln;
 
 
 
+	}
+
+
+	trigger {|name,event|
+
+		if( name.isKindOf(Symbol) && event.isKindOf(Event) ) {
+			if( event.val.notNil ) {
+				synth.set(name,event.val);
+			}
+		}
 	}
 
 }

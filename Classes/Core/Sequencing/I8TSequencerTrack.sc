@@ -30,7 +30,8 @@ SequencerTrack
 
 		sequencer = classSequencer;
 
-		if( (instrument_.isKindOf(I8TInstrument) || instrument_.isKindOf(InstrumentGroup)), {
+		if( (instrument_.isKindOf(Sequenceable) ), {
+		// if( (instrument_.isKindOf(I8TInstrument) || instrument_.isKindOf(InstrumentGroup)), {
 			instrument = instrument_;
 			name = instrument.name;
 		}, {
@@ -126,6 +127,8 @@ SequencerTrack
 		// 	[]
 		// })
 		parameterTracks[parameter].setPatternParameters(key,play_parameters);
+
+		["key,play_parameters", key,play_parameters].postln;
 
 		"TO-DO: implement set pattern!"
 

@@ -186,8 +186,6 @@ I8TChannel : Sequenceable
 
 	set {|parameter,value|
 
-		["set",parameter,value].postln;
-
 		if( ( parameter.notNil && value.notNil ) ) {
 			if( (value.isKindOf(Number)||value.isKindOf(String)), {
 
@@ -261,7 +259,6 @@ I8TChannel : Sequenceable
 
 	setFxChain {|fxChain_|
 
-		["setFxChain", fxChain_].postln;
 
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
 			fxChain.collect({|fx,key|
@@ -335,8 +332,6 @@ I8TChannel : Sequenceable
 		var fx = this.createFxSynthDef(fx_);
 
 
-		["addFx", fx_].postln;
-		
 		if( (
 			fx.synthdef.notNil
 			&&
@@ -454,7 +449,10 @@ I8TChannel : Sequenceable
 
 	setupFx {|fx_|
 
+		var fxSynthName = (name ++ '_fx_' ++ fx_.synthdefKey);
+
 		var fxSynth = I8TSynth.before(
+			fxSynthName,
 			outSynth,
 			fx_.synthdef,
 			[\inBus,bus,\outBus,bus]
@@ -462,10 +460,7 @@ I8TChannel : Sequenceable
 
 		fxChain[fx_.synthdefKey.asSymbol] = fxSynth;
 
-		"setupFx".postln;
-
 		fxSynth.setupSequencer( sequencer );
-
 
 		^fxSynth;
 
@@ -523,8 +518,6 @@ I8TChannel : Sequenceable
 	}
 
 	fxSet {|name,parameter,value|
-
-		["channel fxSet", name,parameter,value].postln;
 
 		if(fxChain[name].isKindOf(Synth)){
 			if( (parameter.isKindOf(Symbol)&&value.isKindOf(Number)) ) {
