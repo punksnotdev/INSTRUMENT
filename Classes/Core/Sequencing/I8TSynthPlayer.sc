@@ -1,4 +1,4 @@
-SynthPlayer : SynthInstrument
+I8TSynthPlayer : I8TSynthInstrument
 {
 
 	var nodeID;
@@ -179,6 +179,39 @@ SynthPlayer : SynthInstrument
 	}
 
 
+	doOperation {|value|
+
+		switch( value.operation,
+			\maybe, {
+
+				if( 1.0.rand < value.probability, {
+					^value.val;
+				}, {
+					^\r;
+				});
+
+			},
+			\or, {
+				^value.val.choose;
+
+			},
+		);
+
+	}
+
+	doValue {|val|
+		if( val.val.isKindOf(Event), {
+			if( val.val.operation.notNil ) {
+				^this.doOperation( val.val );
+			};
+		}, {
+			if( val.operation.notNil ) {
+				 ^this.doOperation( val );
+			};
+		});
+
+	}
+
 	trigger {|parameter,value_|
 
 		var value = value_.copy;
@@ -191,29 +224,23 @@ SynthPlayer : SynthInstrument
 				value = ( val: value, amplitude: 0.5 );
 			});
 
+
 			if( value.val.isKindOf(Event), {
-				if( value.val.operation.notNil ) {
-					switch( value.val.operation,
-						\maybe, {
 
-							if( 1.0.rand < value.val.probability, {
-								value.val = value.val.val;
-							}, {
-								value.val = \r;
-							});
+				var shouldDoVal = true;
 
-						},
-						\or, {
+				if( value.val.probability.notNil, {
+					if( value.val.probability > 1.0.rand ) {
+						shouldDoVal = false;
+					};
+				});
 
-							if( 1.0.rand < 0.5, {
-								value.val = value.val.val;
-							}, {
-								value.val = value.val.or;
-							});
+				if( (shouldDoVal == true), {
+					value.val = this.doValue( value.val );
+				}, {
+					value.val = \r;
+				});
 
-						},
-					);
-				};
 			});
 
 
@@ -235,7 +262,7 @@ SynthPlayer : SynthInstrument
 
 				},
 				\fxSet, {
-
+					["fxSet", value].postln;
 					value.keysValuesDo({|k,v|
 						fx_parameters[k]=v;
 						fxSynth.set(k,v);
@@ -336,7 +363,9 @@ SynthPlayer : SynthInstrument
 							});
 
 						}, {
+
 							note = event.val.asFloat.min(128);
+
 						});
 
 						note = (octave*12)+note;
@@ -490,7 +519,7 @@ SynthPlayer : SynthInstrument
 				\trigger, {
 					var floatValue = value.val.asFloat;
 
-					
+
 					if( floatValue.asFloat > 0 ) {
 
 						var amp = floatValue;

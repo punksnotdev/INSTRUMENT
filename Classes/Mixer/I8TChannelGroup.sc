@@ -18,6 +18,16 @@ I8TChannelGroup : Sequenceable
 	}
 
 
+
+	setupSequencer {|sequencer_|
+
+		channels.keysValuesDo({|k,channel|
+			channel.setupSequencer( sequencer_ );
+		});
+
+	}
+
+
 	put {|key,value|
 
 		var channel;
@@ -31,11 +41,15 @@ I8TChannelGroup : Sequenceable
 		};
 
 		if( channel.isKindOf(I8TChannel) ) {
+
+
 			if( ( key.isKindOf(Symbol) || key.isKindOf(String) ), {
+				mixer.setupChannelSequencer(channel);
 				^channels.put(key.asSymbol, channel);
 			}, {
 				"Channel not valid".warn;
 			});
+
 		};
 
 	}

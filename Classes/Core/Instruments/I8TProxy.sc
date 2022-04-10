@@ -1,4 +1,4 @@
-Proxy : Instrument
+Proxy : I8TInstrument
 {
 
 	var <proxy;

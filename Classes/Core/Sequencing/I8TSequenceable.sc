@@ -21,6 +21,7 @@ Sequenceable : I8TNode
 	}
 
 	init{|graph_,name_|
+
 		clock = 1;
 		nextPatternKey = 0;
 		minSpeed=1/32;
@@ -36,6 +37,10 @@ Sequenceable : I8TNode
 		this.remove(this);
 	}
 
+	setupSequencer {|sequencer_|
+		sequencer = sequencer_;
+		sequencer.registerInstrument( this );
+	}
 
 	seq_ {|parameter_,pattern_|
 		this.seq(parameter_,pattern_);
@@ -53,9 +58,7 @@ Sequenceable : I8TNode
 			pattern_
 		);
 
-
 		currentParameter = parameters.parameter;
-
 
 		if( sequencer.notNil, {
 
@@ -75,7 +78,7 @@ Sequenceable : I8TNode
 			});
 
 		}, {
-				"Sequencer is nil".warn;
+			"seq: Sequencer is nil".warn;
 		});
 
 		^this;
@@ -99,12 +102,11 @@ Sequenceable : I8TNode
 	pan_ {|pattern,test| this.pan(pattern,test); }
 	pan {|pattern,test| this.seq(\pan,pattern,test); }
 
-	// fx_ {|pattern,test| this.fx(pattern,test); }
-	// fx {|pattern,test| this.seq(\fx,pattern,test); }
-	//
-	// fxSet_ {|pattern,test| this.fxSet(pattern,test); }
-	// fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
-	//
+	fx_ {|pattern,test| this.fx(pattern,test); }
+	fx {|pattern,test| this.seq(\fx,pattern,test); }
+
+	fxSet_ {|pattern,test| this.fxSet(pattern,test); }
+	fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
 
 
 
@@ -145,13 +147,11 @@ Sequenceable : I8TNode
 				};
 			});
 		}, {
-
-				"Sequencer is nil".postln;
+			"rm: Sequencer is nil".warn;
 		});
 
 
 	}
-
 
 	get {|parameter,key|
 		^sequencer.getPattern(name,parameter,key);
@@ -346,7 +346,6 @@ Sequenceable : I8TNode
 		play_parameters;
 
 		// if first argument not a symbol, its not a parameter. use default 'trigger'
-
 
 		if( parameter_.isKindOf(Symbol) == true, {
 

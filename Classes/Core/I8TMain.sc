@@ -107,7 +107,7 @@ I8TMain : Event
 
 			mixer = I8TMixer.new(this);
 			mixer.setupMaster();
-			mixer.sequencer = sequencer;
+			mixer.setupSequencer(sequencer);
 
 			controllerManager = ControllerManager.new(this);
 
@@ -502,7 +502,7 @@ I8TMain : Event
 				controllerManager.map(controller,target,parameter,range);
 				("mapped: "++controller.name++" > "++target.name++": "++parameter).postln;
 			}, {
-				"Target not of class 'Instrument'"
+				"Target not of class 'I8TInstrument'"
 			});
 
 		}, {
@@ -599,7 +599,7 @@ I8TMain : Event
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
 						}, {
-							item = this.setupNode(SynthPlayer(synthdef), key);
+							item = this.setupNode(I8TSynthPlayer(synthdef), key);
 						});
 					}
 
@@ -612,20 +612,20 @@ I8TMain : Event
 					)
 				) {
 
-					item = this.setupNode(SynthPlayer(something), key);
+					item = this.setupNode(I8TSynthPlayer(something), key);
 
 				};
 
 				if( something.isKindOf(I8TFolder) ) {
 
-					item = this.setupNode(SynthPlayer(something.getMainSynthDef), key);
+					item = this.setupNode(I8TSynthPlayer(something.getMainSynthDef), key);
 
 				};
 
 
 				if( synthLoader.validateFolderName(something) ) {
 
-					item = this.setupNode(SynthPlayer(
+					item = this.setupNode(I8TSynthPlayer(
 						synthLoader.getFolderByName(something).getMainSynthDef
 					), key);
 
@@ -1074,7 +1074,7 @@ I8TMain : Event
 			||
 			childItem.isKindOf(SynthDefVariant)
 		) ) {
-			node = SynthPlayer(childItem);
+			node = I8TSynthPlayer(childItem);
 		};
 
 		if( synthLoader.validateSynthName(childItem) ) {
@@ -1084,7 +1084,7 @@ I8TMain : Event
 			},
 			{
 				var synthdef = synthLoader.getSynthDefByName(childItem);
-				node = SynthPlayer(synthdef);
+				node = I8TSynthPlayer(synthdef);
 			});
 
 
@@ -1097,7 +1097,7 @@ I8TMain : Event
 			},
 			{
 				var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-				node = SynthPlayer(synthdef);
+				node = I8TSynthPlayer(synthdef);
 			});
 
 

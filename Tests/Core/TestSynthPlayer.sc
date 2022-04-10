@@ -13,11 +13,11 @@ TestSynthPlayer : I8TUnitTest
 
 	test_onCreation_onValidSynthDefNameString_createsSynthPlayer {
 		main.key0 = "test";
-		this.assert(main.key0.isKindOf(SynthPlayer));
+		this.assert(main.key0.isKindOf(I8TSynthPlayer));
 	}
 	test_onCreation_onValidSynthDefNameSymbol_createsSynthPlayer {
 		main.key0 = 'test';
-		this.assert(main.key0.isKindOf(SynthPlayer));
+		this.assert(main.key0.isKindOf(I8TSynthPlayer));
 	}
 	test_onCreation_onInvalidSynthDefNameString_returnsNilIfNameNotFound {
 		main.someName = "invalid synth name";

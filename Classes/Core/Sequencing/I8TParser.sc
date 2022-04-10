@@ -653,8 +653,7 @@ I8TParser {
 	*applyOrModifier{|event, alternative|
 		event.val = (
 			operation: \or,
-			val: event.val,
-			or: alternative
+			val: [ event.val, alternative ]
 		);
 		^event
 	}

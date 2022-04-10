@@ -83,6 +83,3 @@ I8TInstrument : Sequenceable
 
 
 }
-
-Instrument : I8TInstrument
-{}
