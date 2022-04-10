@@ -7,7 +7,8 @@
 		res=10,
 		att=1,
 		decay=3,
-		rel=6;
+		rel=6,
+		amp=0.5;
 
 
 		var sig, env, filter_env;
@@ -34,7 +35,9 @@
 		sig = sig+Mix.new(CombC.ar(sig,3,[1/3,1/2,1/4],2));
 
 
-		sig = (sig * 1.2).tanh*8;
+		sig = (sig * 1.2).tanh*4;
+
+		sig = sig * amp;
 
 		Out.ar(0,Pan2.ar(sig));
 

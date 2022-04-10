@@ -16,8 +16,8 @@ SynthDef(\hihatDist, {|amp=0.5,out=0,filterHz=7000,rel=0.125,pan=0,gain=4,gain_o
 	    )
 
 },variants: (
-	a_overdrive: [ gain: 8, filterHz: 3000, gain_out: 0.9 ],
-	b_crunch: [ gain: 13, filterHz: 4000, gain_out: 0.7 ],
-	c_hardcore: [ gain: 300, filterHz: 2500, gain_out: 0.6, rel: 1/3 ],
+	a_overdrive: [ gain: 8, filterHz: 3000, gain_out: 0.6 ],
+	b_crunch: [ gain: 13, filterHz: 4000, gain_out: 0.5 ],
+	c_hardcore: [ gain: 300, filterHz: 2500, gain_out: 0.4, rel: 1/3 ],
 	d_extreme: [ gain: 1300, filterHz: 1800, gain_out: 0.5, rel: 2/5 ],
 )).store;

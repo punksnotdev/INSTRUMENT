@@ -402,6 +402,11 @@ InstrumentGroup : Sequenceable
 	}
 
 
+	fx_ {|fx|
+
+		dictionary.collect({|i| i.fx = fx });
+
+	}
 
 
 
