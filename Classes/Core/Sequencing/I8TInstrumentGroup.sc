@@ -166,8 +166,12 @@ InstrumentGroup : Sequenceable
 		});
 	}
 
+	fx_ {|something|
+		this.put('fx', something);
+	}
 
 	put {|key,something|
+
 
 		if( key.asSymbol == 'fx' ) {
 			^this.fx.channel.setFxChain(something);
@@ -221,7 +225,6 @@ InstrumentGroup : Sequenceable
 
 		// if( something.isKindOf(InstrumentGroup) ) {
 		//
-		// 	["got group", key, something].postln;
 		//
 		// 	something.name = name ++ "_" ++ key;
 		// 	something.graph = graph;
@@ -277,7 +280,6 @@ InstrumentGroup : Sequenceable
 		var value = args[0];
 
 		var instrument;
-
 
 		if( key.isSetter, {
 

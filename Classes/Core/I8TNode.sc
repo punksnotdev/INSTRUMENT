@@ -17,7 +17,7 @@ I8TNode : I8TeventListener
 	*new {|graph_,name_|
 
 		var newKey=name_;
-
+		
 		if( graph_ != nil, {
 
 			this.initClass(graph_);

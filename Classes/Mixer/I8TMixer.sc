@@ -31,6 +31,8 @@ I8TMixer : Sequenceable
 
 		main = main_;
 
+		// this.setupSequencer( main.sequencer );
+
 		channels = IdentityDictionary.new;
 		channelGroups = IdentityDictionary.new;
 
@@ -79,7 +81,6 @@ I8TMixer : Sequenceable
 
 
 			if(masterChannel.notNil) {
-
 				this.setupChannelSequencer( masterChannel );
 
 				masterChannel.setAmp( 1 );
