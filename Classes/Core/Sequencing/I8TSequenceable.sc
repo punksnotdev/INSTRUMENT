@@ -17,7 +17,13 @@ Sequenceable : I8TNode
 
 
 	*new{|graph_,name_|
+		
+		if(graph_.notNil) {
+			super.new(graph_,name_);	
+		};
+		
 		^super.new(this.graph,name_);
+		
 	}
 
 	init{|graph_,name_|
@@ -37,7 +43,7 @@ Sequenceable : I8TNode
 		this.remove(this);
 	}
 
-	setupSequencer {|sequencer_|
+	setupSequencer {|sequencer_|		
 		sequencer = sequencer_;
 		sequencer.registerInstrument( this );
 	}
@@ -51,7 +57,6 @@ Sequenceable : I8TNode
 
 
 		var parameters;
-
 
 		parameters = this.orderPatternParameters(
 			parameter_,

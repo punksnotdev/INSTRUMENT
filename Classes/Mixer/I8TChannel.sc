@@ -36,6 +36,12 @@ I8TChannel : Sequenceable
 
 	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
+
+
+		if( graph_.notNil, {
+			sequencer = graph_.sequencer;
+		});
+
 		if( outbus_.notNil, {
 
 			if( synthGroup_.isKindOf(Group), {
@@ -449,9 +455,12 @@ I8TChannel : Sequenceable
 
 	setupFx {|fx_|
 
-		var fxSynthName = (name ++ '_fx_' ++ fx_.synthdefKey);
+		var fxSynthName;
+		var fxSynth;
 
-		var fxSynth = I8TSynth.before(
+		fxSynthName = (name ++ '_fx_' ++ fx_.synthdefKey);
+
+		fxSynth = I8TSynth.before(
 			fxSynthName,
 			outSynth,
 			fx_.synthdef,

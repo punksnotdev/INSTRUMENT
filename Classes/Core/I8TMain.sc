@@ -106,8 +106,10 @@ I8TMain : Event
 			sequencer = Sequencer.new(this);
 
 			mixer = I8TMixer.new(this);
-			mixer.setupMaster();
+
 			mixer.setupSequencer(sequencer);
+			
+			mixer.setupMaster();
 
 			controllerManager = ControllerManager.new(this);
 
