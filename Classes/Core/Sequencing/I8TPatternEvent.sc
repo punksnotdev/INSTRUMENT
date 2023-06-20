@@ -67,4 +67,20 @@ PatternEvent : SequencerEvent
 		});
 	}
 
+	rotate {|n=0|
+		pattern.pattern = pattern.pattern.rotate(n);
+	}
+
+	shift {|n=0|
+		pattern.pattern = pattern.pattern.shift(n);
+	}
+
+	lace {|length=0|
+		pattern.pattern = pattern.pattern.lace(length);
+	}
+
+	permute {|n=0|
+		pattern.pattern = pattern.pattern.permute(n);
+	}
+
 }

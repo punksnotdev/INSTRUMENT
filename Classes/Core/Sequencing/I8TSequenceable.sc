@@ -369,6 +369,25 @@ Sequenceable : I8TNode
 	}
 
 
+	rotate {|n=0|
+		currentPatternEvent.rotate(n);
+		this.updateSequence();
+	}
+
+	shift {|n=0|
+		currentPatternEvent.shift(n);
+		this.updateSequence();
+	}
+
+	lace {|length=0|
+		currentPatternEvent.lace(length);
+		this.updateSequence();
+	}
+
+	permute {|n=0|
+		currentPatternEvent.permute(n);
+		this.updateSequence();
+	}
 
 	// utils, helpers
 
