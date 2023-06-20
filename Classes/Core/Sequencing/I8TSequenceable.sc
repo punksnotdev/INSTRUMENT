@@ -295,6 +295,15 @@ Sequenceable : I8TNode
 
 
 	speed {|n|
+
+		if( this.multiPattern ) {
+
+			"MULTIPATTERN".warn;
+
+			^this
+
+		};
+
 		if(n.isKindOf(Number)) {
 			var speed = max(n.asFloat,minSpeed);
 			if( n < minSpeed ) {
