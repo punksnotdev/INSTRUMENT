@@ -5,15 +5,16 @@ SynthDef(\fluteGlitch, {
 	arg
 	out=0,
 	freq=150,
-	q=0.9,
-	gate=1,rel=3;
+	q=0.25,
+	rate=0.3333,
+	gate=1,rel=0.2;
 
 	var sig, env, brown;
 
 	brown = BrownNoise.kr;
 
-	sig =  Resonz.ar(WhiteNoise.ar(0.5) + SinOsc.ar(freq) * brown, freq,
-	SinOsc.kr(1/3,1/2).abs.linlin(0,1,0.01,10));
+	sig =  Resonz.ar(WhiteNoise.ar(0.125) + SinOsc.ar(freq,0,1.1).tanh * brown, freq*1.5,
+	SinOsc.kr(rate,1/2,q/2,q/2+0.001).abs.linlin(0,1,0.01,10));
 
 	sig=sig.tanh;
 
