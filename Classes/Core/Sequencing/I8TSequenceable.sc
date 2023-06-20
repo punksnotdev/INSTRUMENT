@@ -15,12 +15,15 @@ Sequenceable : I8TNode
 	var currentParameter;
 	var minSpeed;
 
+	var multiPattern;
+
 
 	*new{|graph_,name_|
 		^super.new(this.graph,name_);
 	}
 
 	init{|graph_,name_|
+		multiPattern = false;
 		clock = 1;
 		nextPatternKey = 0;
 		minSpeed=1/32;
@@ -46,6 +49,50 @@ Sequenceable : I8TNode
 
 
 		var parameters;
+
+		if( parameter_.isKindOf(Symbol), {
+
+			if( pattern_.isKindOf(Array), {
+
+
+				var subarrays = pattern_.select({|item| item.isKindOf(Array) });
+
+				// TODO: mejorar chequeo. ahora está asumiendo que viene bien
+				if( subarrays.size == pattern_.size, {
+
+					
+					var subsubarrays = subarrays.select({|item| item.select({|subitem| subitem.isKindOf(Array) }).size == item.size });
+
+					
+					this.multiPattern = true;
+
+					// TODO: mejorar chequeo. ahora está asumiendo que viene bien
+					if( subsubarrays.size == subarrays.size, {
+
+						switch( parameter_,
+							\note, {
+								subarrays.do({|arr,index|
+									this[index].note( arr[0] ).x( arr[1] )
+								});
+							}
+						);
+
+
+					}, {
+
+						subarrays.do({|arr,index|
+							this[index].seq( parameter_, arr )
+						});
+
+					});
+
+
+					^this
+
+				});
+			});
+
+		});
 
 
 		parameters = this.orderPatternParameters(
@@ -349,7 +396,7 @@ Sequenceable : I8TNode
 
 			parameter = parameter_;
 
-			if( (pattern_.isKindOf(String) || pattern_.isKindOf(Array) ), {
+			if( pattern_.isKindOf(String) || pattern_.isKindOf(Array), {
 
 				pattern = pattern_;
 
@@ -370,9 +417,6 @@ Sequenceable : I8TNode
 
 				pattern = parameter_;
 
-				// if( pattern_.isKindOf(Array) ) {
-				// 	play_parameters = pattern_;
-				// };
 
 			}, {
 				^nil

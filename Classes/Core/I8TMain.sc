@@ -176,6 +176,7 @@ I8TMain : Event
 		data.synths.parameters = ();
 
 
+
 		synthLoader = I8TSynthLoader();
 
 		synths = synthLoader.loadSynths();
