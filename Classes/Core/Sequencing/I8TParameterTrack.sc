@@ -23,6 +23,8 @@ ParameterTrack
 
 	var waitOffset;
 
+	var startSeq;
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -140,6 +142,17 @@ ParameterTrack
 				var beatValue;
 				var currentPattern;
 
+				if( startSeq == true ) {
+
+					beats = 0;
+
+					durationSequencer.stop;
+					durationSequencer.play(main.clock);
+
+					startSeq = false;
+
+				};
+
 
 				if( this.currentEvent().notNil, {
 
@@ -203,6 +216,7 @@ ParameterTrack
 
 
 	play {|position|
+		
 		if( position != nil, { beats = position; });
 		^playing = true;
 	}
@@ -316,6 +330,11 @@ ParameterTrack
 
 
 		this.updateSequenceInfo();
+
+
+// test
+		startSeq = true;
+
 
 		^newPatternEvent;
 

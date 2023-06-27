@@ -160,7 +160,7 @@ Sequencer : I8TNode
 
 				if( playing, {
 					sequencerTracks.collect({|track|
-						track.fwd( i );
+						track.fwd( i, (i % (( 32 * (timeSignature.tick*2) ))) );
 					});
 				});
 

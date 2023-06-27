@@ -296,13 +296,13 @@ Sequenceable : I8TNode
 
 	speed {|n|
 
-		if( this.multiPattern ) {
+		// if( this.multiPattern ) {
 
-			"MULTIPATTERN".warn;
+		// 	"MULTIPATTERN".warn;
 
-			^this
+		// 	^this
 
-		};
+		// };
 
 		if(n.isKindOf(Number)) {
 			var speed = max(n.asFloat,minSpeed);

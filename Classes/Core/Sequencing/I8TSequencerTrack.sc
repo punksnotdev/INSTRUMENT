@@ -20,6 +20,9 @@ SequencerTrack
 	var currentSpeed;
 	var <>beats;
 
+
+	var playNext;
+
 	*new {|instrument_, main_|
 		^super.new.init(instrument_, main_);
 	}
@@ -29,6 +32,8 @@ SequencerTrack
 		main = main_;
 
 		sequencer = classSequencer;
+
+		playNext = List.new;
 
 		if( (instrument_.isKindOf(I8TInstrument) || instrument_.isKindOf(InstrumentGroup)), {
 			instrument = instrument_;
@@ -49,12 +54,16 @@ SequencerTrack
 
 
 
-	fwd{|i|
+	fwd{|i,beat|
 		if( playing == true, {
 			parameterTracks.collect({|p|
 				p.fwd(i)
 			});
 		});
+		
+		// if( beat == 0 ) {
+		// 	playNext.do({|p| p.play});
+		// };
 
 	}
 
@@ -85,6 +94,8 @@ SequencerTrack
 
 		if( playing == true, {
 			parameterTracks[ parameter ].play;
+// "add pattern!".postln;
+			// playNext.add( parameterTracks[ parameter ] );
 		});
 
 
