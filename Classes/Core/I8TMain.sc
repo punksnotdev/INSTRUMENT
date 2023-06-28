@@ -471,10 +471,6 @@ I8TMain : Event
 			clearedNodes = List.new;
 			clearedGroups = List.new;
 
-			clearedNodes = List.new;
-			clearedGroups = List.new;
-
-
 		});
 
 		this.go(0);
