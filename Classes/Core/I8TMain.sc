@@ -398,8 +398,10 @@ I8TMain : Event
 
 		}, {
 
-			clearedGroups=groups.reject({|g| this.clearCheckGroup(g, name.asSymbol) });
+			clearedGroups=groups.reject({|g| this.clearCheckGroup(g) });
 			clearedNodes=nodes.values.reject({|n| this.clearCheckNode(n) });
+			clearedNodes.postln;
+
 			clearedFunctions=sequencer.repeatFunctions.copy;
 
 		});
@@ -465,6 +467,9 @@ I8TMain : Event
 			clearedGroups.collect({|g|
 				g.play;
 			});
+			
+			clearedNodes = List.new;
+			clearedGroups = List.new;
 
 
 		});
