@@ -466,6 +466,9 @@ I8TMain : Event
 			clearedGroups.collect({|g|
 				g.play;
 			});
+			
+			clearedNodes = List.new;
+			clearedGroups = List.new;
 
 			clearedNodes = List.new;
 			clearedGroups = List.new;
