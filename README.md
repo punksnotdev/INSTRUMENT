@@ -1175,6 +1175,55 @@ i.stop;
 ```
 
 
+## named clear and restore 
+
+
+You can store nodes and groups inside named spaces, and then restore them:
+
+```
+
+i=INSTRUMENT();
+
+
+
+i.k=i.synths.kick.syn[2];
+i.h=i.synths.hihat.dist;
+i.k.seq("1").speed(2);
+i.h.seq(" 1").speed(4);
+
+
+i.clear("test1");
+
+i.b=i.synths.bass.sintri;
+i.b.note("0");
+
+
+i.clear()
+
+i.restore()
+
+i.restore("test1")
+
+i.kk=i.synths.kick.syn[2];
+i.hh=i.synths.hihat.dist;
+i.kk.seq("1 1 ").speed(4);
+i.hh.seq(" 1 1").speed(8);
+
+
+i.clear("test2")
+
+i.restore("test1")
+i.clear("test1")
+
+i.restore("test2")
+i.clear("test2")
+
+i.restore()
+i.clear()
+
+```
+
+
 ## Array manipulation
 ```SuperCollider
 
