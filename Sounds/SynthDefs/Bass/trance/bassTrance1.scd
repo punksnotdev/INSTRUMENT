@@ -3,8 +3,8 @@ SynthDef(\bassTrance1, {
 
 	var sig, env;
 
-	sig = SinOsc.ar(freq)/4;
-	sig = sig + Saw.ar(freq/4)/2;
+	sig = SinOsc.ar(freq)/3;
+	sig = sig + Saw.ar(freq/4)/1.5;
 	sig = (sig * 23.33*gain).tanh;
 	sig = RLPF.ar(sig,freq*[1,4],rq).tanh;
 	// sig = (sig * 23.33).tanh;
@@ -15,6 +15,6 @@ SynthDef(\bassTrance1, {
 
 	sig = (sig * dist).tanh;
 
-	Out.ar( out, Pan2.ar(sig * amp / 4, pan) );
+	Out.ar( out, Pan2.ar(sig * amp/2, pan) );
 
 }).store;
