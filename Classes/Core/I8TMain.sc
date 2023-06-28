@@ -417,7 +417,9 @@ I8TMain : Event
 					// 	data.storage[name.asSymbol].nodes.add( gnode );
 					// };
 				}, {
-					clearedNodes.add(gnode);
+					if( this.clearCheckNode(gnode) == false ) {
+						clearedNodes.add(gnode);
+					};
 				});
 			});
 
