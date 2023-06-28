@@ -53,6 +53,7 @@ I8TMain : Event
 	var clearedNodes;
 	var clearedFunctions;
 
+
 	*new {|server_,createNew=false|
 
 		if(( instance.isNil || createNew == true), {
@@ -307,13 +308,23 @@ I8TMain : Event
 
 			nodes.collect({|node|
 
+				var wasCleared = false;
+				
+				// TODO: también checar con storage:
 				if(clearedNodes.notNil, {
-					if(clearedNodes.includes(node)==false){
-						node.play;
+					if(clearedNodes.includes(node)){
+						wasCleared = true;
 					};
-				}, {
-					node.play;
 				});
+				if( (wasCleared==false) && data.storage.notNil, {
+					data.storage.keysValuesDo({|k,v|
+						wasCleared = wasCleared || v.nodes.includes(node);
+					});
+				});
+
+				if( wasCleared == false ) {
+					node.play;
+				};
 			});
 			sequencer.play;
 
@@ -326,22 +337,78 @@ I8TMain : Event
 		playing=false;
 		sequencer.pause;
 	}
+	
 
-	clear {
+	clearCheckGroup {|g|
+	
+	
+	
+	}
 
-		clearedGroups=groups.copy;
-		clearedNodes=List.new;
+	clearCheckNode {|node,name|
+		
+		var wasCleared = false;
 
-		clearedNodes=nodes.values.copy;
-		clearedFunctions=sequencer.repeatFunctions.copy;
+		if( data.storage.notNil, {
+			data.storage.keysValuesDo({|k,v|
+				if( k != name ) {
+					wasCleared = wasCleared || v.nodes.includes(node);
+				};
+			});
+		});	
+
+		if( clearedNodes.notNil ) {
+			wasCleared = wasCleared || clearedNodes.includes(node);			
+		};
+
+		^wasCleared
+	
+	}
+
+
+	clear {|name|
+
+		if( name.notNil, {
+
+			if( data.storage.isNil ) {
+				data.storage = ();
+			};
+
+			data.storage[name.asSymbol] = ( 
+				groups: groups.copy,
+				nodes: nodes.values.reject({|n| this.clearCheckNode(n, name.asSymbol) }),
+				functions: sequencer.repeatFunctions.copy,
+			);
+
+		}, {
+
+			clearedGroups=groups.copy;
+			clearedNodes=List.new;
+			clearedNodes=nodes.values.reject({|n| this.clearCheckNode(n) });
+			clearedFunctions=sequencer.repeatFunctions.copy;
+
+		});
+
 
 		groups.collect({|g|
+
 			g.pause;
+
 			g.collect({|gnode|
-				clearedNodes.add(gnode);
+				if( name.notNil, {
+					data.storage[name.asSymbol].nodes.add( gnode );
+				}, {
+					clearedNodes.add(gnode);
+				});
 			});
-		 });
-		nodes.collect({|n| n.pause; });
+
+		});
+
+		nodes.collect({|n|
+
+			n.pause;
+
+		});
 
 		this.clearSequencerFunctions();
 
@@ -349,17 +416,41 @@ I8TMain : Event
 
 	}
 
-	restore {
+	restore {|name|
+		if( name.notNil, {
 
-		sequencer.repeatFunctions=clearedFunctions.copy;
 
-		clearedNodes.collect({|n|
-			n.play;
+			if( data.storage[name.asSymbol].notNil, {
+			
+				sequencer.repeatFunctions = data.storage[name.asSymbol].functions.copy;
+
+				data.storage[name.asSymbol].nodes.collect({|n|
+					n.play;
+				});
+				data.storage[name.asSymbol].groups.collect({|g|
+					g.play;
+				});
+
+			}, {
+
+				( "Key '" ++ name ++ "' not found in storage" ).postln;
+
+			});
+
+
+		}, {
+
+			sequencer.repeatFunctions=clearedFunctions.copy;
+
+			clearedNodes.collect({|n|
+				n.play;
+			});
+			clearedGroups.collect({|g|
+				g.play;
+			});
+
+
 		});
-		clearedGroups.collect({|g|
-			g.play;
-		});
-
 
 		this.go(0);
 
