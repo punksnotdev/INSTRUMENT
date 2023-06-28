@@ -398,8 +398,9 @@ I8TMain : Event
 
 		}, {
 
-			clearedGroups=groups.reject({|g| this.clearCheckGroup(g, name.asSymbol) });
+			clearedGroups=groups.reject({|g| this.clearCheckGroup(g) });
 			clearedNodes=nodes.values.reject({|n| this.clearCheckNode(n) });
+
 			clearedFunctions=sequencer.repeatFunctions.copy;
 
 		});
@@ -450,7 +451,7 @@ I8TMain : Event
 
 			}, {
 
-				( "Key '" ++ name ++ "' not found in storage" ).postln;
+				( "Key '" ++ name ++ "' not found in storage" ).warn;
 
 			});
 
@@ -465,6 +466,9 @@ I8TMain : Event
 			clearedGroups.collect({|g|
 				g.play;
 			});
+
+			clearedNodes = List.new;
+			clearedGroups = List.new;
 
 
 		});
