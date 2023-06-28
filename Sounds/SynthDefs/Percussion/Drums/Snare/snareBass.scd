@@ -12,6 +12,6 @@ SynthDef(\snareBass, {|amp=0.5,out=0|
     fulloutput = (drumoutput * volenv) + (snaposc * snapenv);
     //fulloutput = (drumoutput * volenv);
 
-    Out.ar(out,Pan2.ar(fulloutput*(amp/3), 0));
+    Out.ar(out,Pan2.ar(fulloutput*(amp), 0));
 
 }).store;

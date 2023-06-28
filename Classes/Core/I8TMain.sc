@@ -178,6 +178,7 @@ I8TMain : Event
 		data.synths.parameters = ();
 
 
+
 		synthLoader = I8TSynthLoader();
 
 		synths = synthLoader.loadSynths();
@@ -308,13 +309,23 @@ I8TMain : Event
 
 			nodes.collect({|node|
 
+				var wasCleared = false;
+				
+				// TODO: también checar con storage:
 				if(clearedNodes.notNil, {
-					if(clearedNodes.includes(node)==false){
-						node.play;
+					if(clearedNodes.includes(node)){
+						wasCleared = true;
 					};
-				}, {
-					node.play;
 				});
+				if( (wasCleared==false) && data.storage.notNil, {
+					data.storage.keysValuesDo({|k,v|
+						wasCleared = wasCleared || v.nodes.includes(node);
+					});
+				});
+
+				if( wasCleared == false ) {
+					node.play;
+				};
 			});
 			sequencer.play;
 
@@ -327,22 +338,96 @@ I8TMain : Event
 		playing=false;
 		sequencer.pause;
 	}
+	
 
-	clear {
+	clearCheckGroup {|group,name|
+	
+		var wasCleared = false;
 
-		clearedGroups=groups.copy;
-		clearedNodes=List.new;
+		if( data.storage.notNil, {
+			data.storage.keysValuesDo({|k,v|
+				if( k != name ) {
+					wasCleared = wasCleared || v.groups.includes(group);
+				};
+			});
+		});	
 
-		clearedNodes=nodes.values.copy;
-		clearedFunctions=sequencer.repeatFunctions.copy;
+		
+		if( clearedGroups.notNil ) {
+			wasCleared = wasCleared || clearedGroups.includes(group);			
+		};
+
+
+		^wasCleared
+	
+	}
+
+	clearCheckNode {|node,name|
+		
+		var wasCleared = false;
+
+		if( data.storage.notNil, {
+			data.storage.keysValuesDo({|k,v|
+				if( k != name ) {
+					wasCleared = wasCleared || v.nodes.includes(node);
+				};
+			});
+		});	
+
+		if( clearedNodes.notNil ) {
+			wasCleared = wasCleared || clearedNodes.includes(node);			
+		};
+
+		^wasCleared
+	
+	}
+
+
+	clear {|name|
+
+		if( name.notNil, {
+
+			if( data.storage.isNil ) {
+				data.storage = ();
+			};
+
+			data.storage[name.asSymbol] = ( 
+				groups: groups.reject({|g| this.clearCheckGroup(g, name.asSymbol) }),
+				nodes: nodes.values.reject({|n| this.clearCheckNode(n, name.asSymbol) }),
+				functions: sequencer.repeatFunctions.copy,
+			);
+
+		}, {
+
+			clearedGroups=groups.reject({|g| this.clearCheckGroup(g) });
+			clearedNodes=nodes.values.reject({|n| this.clearCheckNode(n) });
+
+			clearedFunctions=sequencer.repeatFunctions.copy;
+
+		});
+
 
 		groups.collect({|g|
+
 			g.pause;
+
 			g.collect({|gnode|
-				clearedNodes.add(gnode);
+				if( name.notNil, {
+					// if( this.clearCheckNode(gnode, name.asSymbol) == false ) {
+					// 	data.storage[name.asSymbol].nodes.add( gnode );
+					// };
+				}, {
+					clearedNodes.add(gnode);
+				});
 			});
-		 });
-		nodes.collect({|n| n.pause; });
+
+		});
+
+		nodes.collect({|n|
+
+			n.pause;
+
+		});
 
 		this.clearSequencerFunctions();
 
@@ -350,17 +435,47 @@ I8TMain : Event
 
 	}
 
-	restore {
+	restore {|name|
+		if( name.notNil, {
 
-		sequencer.repeatFunctions=clearedFunctions.copy;
 
-		clearedNodes.collect({|n|
-			n.play;
+			if( data.storage[name.asSymbol].notNil, {
+			
+				sequencer.repeatFunctions = data.storage[name.asSymbol].functions.copy;
+
+				data.storage[name.asSymbol].nodes.collect({|n|
+					n.play;
+				});
+				data.storage[name.asSymbol].groups.collect({|g|
+					g.play;
+				});
+
+			}, {
+
+				( "Key '" ++ name ++ "' not found in storage" ).warn;
+
+			});
+
+
+		}, {
+
+			sequencer.repeatFunctions=clearedFunctions.copy;
+
+			clearedNodes.collect({|n|
+				n.play;
+			});
+			clearedGroups.collect({|g|
+				g.play;
+			});
+			
+			clearedNodes = List.new;
+			clearedGroups = List.new;
+
+			clearedNodes = List.new;
+			clearedGroups = List.new;
+
+
 		});
-		clearedGroups.collect({|g|
-			g.play;
-		});
-
 
 		this.go(0);
 

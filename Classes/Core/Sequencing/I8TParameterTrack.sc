@@ -30,6 +30,7 @@ ParameterTrack
 	var lastTick;
 	var nextDuration;
 
+	var startSeq;
 
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
@@ -84,6 +85,19 @@ ParameterTrack
 	}
 
 	fwd {|i|
+
+
+		// TODO: ver si se puede restaurar tras merge
+		// if( startSeq == true ) {
+
+		// 	beats = 0;
+
+		// 	durationSequencer.stop;
+		// 	durationSequencer.play(main.clock);
+
+		// 	startSeq = false;
+
+		// };
 
 		if( playing == true ) {
 
@@ -190,7 +204,6 @@ ParameterTrack
 				key.asString
 			).toLower;
 
-
 			if( pattern.isKindOf(I8TPattern), {
 
 				newPatternEvent = PatternEvent.new( pattern, eventName);
@@ -246,6 +259,9 @@ ParameterTrack
 				this.updateSequenceInfo();
 
 			};
+
+		startSeq = true;
+
 
 			^newPatternEvent;
 

@@ -8,11 +8,11 @@ SynthDef(\bassSinTri,
 
     var sig, env;
 
-    sig = SinOsc.ar(freq,pi/2,1,0)*2;
+    sig = SinOsc.ar(freq/2,pi/2,1,0)*2;
 
-	sig = sig + LFTri.ar(freq,4,1,0);
+	sig = sig + LFTri.ar(freq/2,4,1,0);
 
-    env = EnvGen.kr(Env.perc(0.005, rel),doneAction:2);
+    env = EnvGen.kr(Env.perc(0.005, rel, 2, 0.1),doneAction:2);
 
 	sig = (sig*3).tanh * amp;
 

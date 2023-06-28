@@ -20,6 +20,9 @@ SequencerTrack
 	var currentSpeed;
 	var <>beats;
 
+
+	var playNext;
+
 	*new {|instrument_, main_|
 		^super.new.init(instrument_, main_);
 	}

@@ -404,11 +404,11 @@ InstrumentGroup : Sequenceable
 	}
 
 
-	fx_ {|fx|
+	// fx_ {|fx|
 
-		dictionary.collect({|i| i.fx = fx });
+	// 	dictionary.collect({|i| i.fx = fx });
 
-	}
+	// }
 
 
 

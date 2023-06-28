@@ -1,4 +1,4 @@
-SynthDef(\hihatDist, {|amp=0.5,out=0,filterHz=7000,rel=0.125,pan=0,gain=4,gain_out=1|
+SynthDef(\hihatDist, {|amp=0.5,out=0,filterHz=7000,att=0.01,rel=0.125,pan=0,gain=4,gain_out=1|
 
 	    var hatosc, hatenv, hatnoise, hatoutput;
 
@@ -7,7 +7,7 @@ SynthDef(\hihatDist, {|amp=0.5,out=0,filterHz=7000,rel=0.125,pan=0,gain=4,gain_o
 	    hatosc = {HPF.ar(hatnoise,2000)};
 		hatosc = (hatosc*gain).tanh * gain_out;
 
-	    hatenv = EnvGen.kr(Env.perc(0.01,rel),doneAction:2);
+	    hatenv = EnvGen.kr(Env.perc(att,rel),doneAction:2);
 
 	    hatoutput = (hatosc * hatenv)/2;
 	    Out.ar(out,
