@@ -9,5 +9,5 @@ SynthDef(\psykick, { | dur = 0.25, atk = 0.005, amp = 1, out=0 |
 			Env.perc( atk, dur - atk),
 			doneAction: 2
 		);
-	)/5 ! 2 );
+	) ! 2 );
 }).store;
