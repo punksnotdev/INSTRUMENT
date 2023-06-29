@@ -576,7 +576,7 @@ ParameterTrack
 			// reset all events when sequence restarts after it is done:
 			if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) ) {
 				if( ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
-					newSequenceInfo.collect({|e, i|
+					newSequenceInfo.do({|e, i|
 						if( (  i > 0  ) && ( e.notNil ) ) {
 							e.played = false;
 						};

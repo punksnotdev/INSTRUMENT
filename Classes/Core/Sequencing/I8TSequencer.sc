@@ -71,7 +71,7 @@ Sequencer : I8TNode
 
 		beats = 0;
 		speed = 1;
-		repeat = 4;
+		repeat = 1;
 
 		clock = 0;
 		playing = true;
