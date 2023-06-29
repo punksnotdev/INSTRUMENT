@@ -32,6 +32,8 @@ ParameterTrack
 
 	var startSeq;
 
+	var currentPlayingKey;
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -67,11 +69,11 @@ ParameterTrack
 
 			var currentPattern;
 			var currentEvent = this.getCurrentEventNew();
-
-
+			
 			if( currentEvent.notNil ) {
 
 				var channel;
+				currentPlayingKey = currentEvent.key;
 
 				currentPattern = currentEvent.pattern;
 
@@ -101,11 +103,25 @@ ParameterTrack
 
 		if( playing == true ) {
 
-			durationSequencer.value();
+			if( startSeq == false, {
+
+				durationSequencer.value();
+			
+			}, {
+
+				if( currentTick % main.sequencer.tickTime == 0 ) {
+
+					durationSequencer.value();
+
+					startSeq = false
+
+				} 
+
+			});
 
   		};
 
-  		currentTick = main.sequencer.ticks;
+  		currentTick = main.sequencer.ticks;		
 
   	}
 
@@ -260,7 +276,11 @@ ParameterTrack
 
 			};
 
-		startSeq = true;
+			if( currentPlayingKey.isNil || key == currentPlayingKey ) {
+
+				startSeq = true;
+	
+			};
 
 
 			^newPatternEvent;
@@ -387,7 +407,7 @@ ParameterTrack
 
 		var totalBeatsInSeq = 0;
 
-		sequence.collect({|e|
+		sequence.do({|e|
 
 			var seRepeats;
 			var seSpeed;
@@ -405,6 +425,7 @@ ParameterTrack
 			});
 
 			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats ));
+			totalBeatsInSeq = totalBeatsInSeq.max(4);
 			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats / seSpeed ));
 
 		});
@@ -438,14 +459,15 @@ ParameterTrack
 
 		sequenceInfo = Order.new;
 
-		sequence.collect({|patternEvent|
+		sequence.do({|patternEvent, key|
 
 			var numBeats;
 			var repetitions;
 
 			var totalSequenceEventDurations = 0;
 
-			repetitions = track.sequencer.repeat;
+			repetitions = track.sequencer.repeat.max(4);
+
 			if( patternEvent.pattern.pattern.isArray, {
 
 				if( patternEvent.parameters.isKindOf(Dictionary), {
@@ -477,6 +499,7 @@ ParameterTrack
 						var eventMoment = repetitionStart + lastEventMoment;
 
 						modifiedEvent.duration = this.getScaledDuration(event,patternEvent);
+						modifiedEvent.key = key;
 
 						// modifiedEvent.durationModified = true;
 
@@ -563,7 +586,7 @@ ParameterTrack
 		var currentIndex;
 		var currentEvent;
 
-		patternPosition = currentTick / main.sequencer.tickTime;
+		patternPosition = (currentTick / main.sequencer.tickTime);
 		patternPosition = patternPosition * speed;
 
 
