@@ -9,7 +9,7 @@ SynthDef(\snareNeuro, {
     // another sound sweep to improve the attack, optional
     snd = snd + (SinOsc.ar(XLine.kr(3000, 1500, 0.01)) * Env.perc(0.001, 0.02).ar);
     // distortion helps glue everything together and acts as a compressor
-    snd = (snd * 1.4).tanh;
+    snd = (snd * 1.4).tanh * 2/3;
     snd = Pan2.ar(snd, \pan.kr(0), \amp.kr(0.1));
     Out.ar(\out.kr(0), snd);
 }).store;

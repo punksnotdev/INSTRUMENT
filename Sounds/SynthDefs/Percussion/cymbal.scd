@@ -31,7 +31,7 @@ SynthDef(\cymbal, {|out=0,amp=1,rel=6,pan=0|
 
     sig = (res * 1) + (lodriver * 2) + (thwack * 3);
 
-    sig = (sig*3.5).clip2 / 9;
+    sig = (sig*3.5).clip2 / 3;
     sig = sig * EnvGen.kr(Env.perc(0.01, rel), doneAction: 2);
 
 	Out.ar(out,Pan2.ar( sig, pan ));

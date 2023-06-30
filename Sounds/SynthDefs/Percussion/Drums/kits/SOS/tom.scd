@@ -16,7 +16,7 @@ SynthDef(\SOStom,
 	drum_mode_mix = Mix.new([drum_mode_sin_1, drum_mode_sin_2, drum_mode_pmosc]) * drum_mode_level;
 	stick_noise = Crackle.ar(2.01, 1);
 	stick_env = EnvGen.ar(Env.perc(0.005, 0.01), 1.0) * 3;
-	tom_mix = Mix.new([drum_mode_mix, stick_env]) * 2 * amp;
+	tom_mix = Mix.new([drum_mode_mix, stick_env]) * amp;
 	Out.ar(out, [tom_mix, tom_mix])
 	}
 ).store;

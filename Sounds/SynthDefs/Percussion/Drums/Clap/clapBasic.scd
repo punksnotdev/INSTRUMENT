@@ -28,5 +28,5 @@ SynthDef(\clapBasic, {
 	snd = snd * 2;
 	snd = snd.softclip;
 
-	Out.ar(out, Pan2.ar(snd,pan,amp) / 2);
+	Out.ar(out, Pan2.ar(snd,pan,amp) );
 }).store;

@@ -6,5 +6,5 @@ SynthDef(\kickSyn3, {|amp=0.5, out=0|
     snd = snd + (BPF.ar(Hasher.ar(Sweep.ar), 300, 0.9) * Env.perc(0.001, 0.02).ar);
     snd = snd + (SinOsc.ar(XLine.ar(472, 60, 0.045)) * EnvGen.kr(Env.perc(0.0001, 0.3, curve: \lin).delay(0.005),doneAction: 2));
     snd = snd.tanh;
-    Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp) / 2);
+    Out.ar(out, Pan2.ar(snd * amp, \pan.kr(0), amp));
 }).store;
