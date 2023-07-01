@@ -552,9 +552,19 @@ ParameterTrack
 
 
 		if( sequenceInfo.notNil ) {
-			nearestBeatCountKey = sequenceInfo.indices.findNearest( beats );
 
-			currentIndex = sequenceInfo.indices.indexOfNearest( beats );
+
+			// TODO: cambiar algoritmo:
+			// 1. Arreglo está ordenado
+			// 1. Arreglo está ordenado
+
+			
+
+
+
+			currentIndex = sequenceInfo.indices.indexOfNearestIrregularIndex( beats );
+
+			nearestBeatCountKey = sequenceInfo.indices.at( currentIndex );
 
 			if( nearestBeatCountKey == nil, {
 				^nil;
@@ -593,7 +603,7 @@ ParameterTrack
 
 		nearestEventKey = newSequenceInfo.indices.findNearest( patternPosition % sequenceDuration );
 
-		currentIndex = newSequenceInfo.indices.indexOfNearest( patternPosition % sequenceDuration );
+		currentIndex = newSequenceInfo.indices.indexOfNearestIrregularIndex( patternPosition % sequenceDuration );
 
 		if( nearestEventKey.notNil ) {
 			// reset all events when sequence restarts after it is done:
