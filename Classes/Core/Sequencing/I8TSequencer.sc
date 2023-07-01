@@ -67,6 +67,8 @@ Sequencer : I8TNode
 
 		ticks = 0;
 		maxTicks = (30 * 60) * 1000;
+
+		// 01/jul/23 seems like 500 is a safe limit, higher times have resulted in seq innacuracy on a 16gb ram i7 8th gen 
 		tickTime = 500;
 
 		beats = 0;
