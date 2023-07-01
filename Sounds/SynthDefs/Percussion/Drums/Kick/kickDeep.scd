@@ -1,4 +1,5 @@
-SynthDef(\kickDeep, {|amp=0.5, out=0|
+
+SynthDef(\kickDeep, {|amp=1, out=0|
 
     var daNoise,daOsc,env1,env2,env3;
 
@@ -10,6 +11,6 @@ SynthDef(\kickDeep, {|amp=0.5, out=0|
 
     daOsc=LPF.ar(SinOsc.ar(EnvGen.kr(env3)+20),200);
 
-    Out.ar(out,Pan2.ar(Mix.ar([daNoise,daOsc]) * amp * 2, 0, EnvGen.kr(env2,doneAction: 2)));
+    Out.ar(out,Pan2.ar(Mix.ar([daNoise,daOsc]) * amp * 8, 0, EnvGen.kr(env2,doneAction: 2)));
 
 }).store;
