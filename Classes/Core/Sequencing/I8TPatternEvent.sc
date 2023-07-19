@@ -67,6 +67,7 @@ PatternEvent : SequencerEvent
 		});
 	}
 
+
 	rotate {|n=0|
 		pattern.pattern = pattern.pattern.rotate(n);
 	}
@@ -82,5 +83,20 @@ PatternEvent : SequencerEvent
 	permute {|n=0|
 		pattern.pattern = pattern.pattern.permute(n);
 	}
+
+
+
+
+	transport {|n=0|
+		pattern.pattern = pattern.pattern.collect({|e|
+			if( ( e.val.asSymbol != \r ) && ((( e.val === "0" )||( e.val === "0.0" )) || ( e.val.asInteger != 0 ) )) {
+				e.val = e.val.asFloat+n;
+			};
+
+			e
+			
+		});
+	}
+
 
 }

@@ -406,6 +406,14 @@ Sequenceable : I8TNode
 		this.updateSequence();
 	}
 
+
+
+	transport {|n=0|
+		currentPatternEvent.transport(n);
+		this.updateSequence();
+	}
+
+	
 	// utils, helpers
 
 	updateSequence {
