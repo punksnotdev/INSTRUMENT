@@ -87,7 +87,7 @@ PatternEvent : SequencerEvent
 
 
 
-	transport {|n=0|
+	transpose {|n=0|
 		pattern.pattern = pattern.pattern.collect({|e|
 			if( ( e.val.asSymbol != \r ) && ((( e.val === "0" )||( e.val === "0.0" )) || ( e.val.asInteger != 0 ) )) {
 				e.val = e.val.asFloat+n;

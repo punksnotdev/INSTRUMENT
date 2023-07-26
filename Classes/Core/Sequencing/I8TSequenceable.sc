@@ -408,8 +408,8 @@ Sequenceable : I8TNode
 
 
 
-	transport {|n=0|
-		currentPatternEvent.transport(n);
+	transpose {|n=0|
+		currentPatternEvent.transpose(n);
 		this.updateSequence();
 	}
 
