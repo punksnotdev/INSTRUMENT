@@ -257,6 +257,7 @@ ParameterTrack
 			newPatternEvent.time=key;
 
 
+			// TODO: refactor: "test" conditional should not wrap more important things
 			if( test.isNil || (test.asSymbol != \test) ) {
 
 
@@ -415,6 +416,9 @@ ParameterTrack
 		});
 	}
 
+	// TODO: revisar nomenclatura de función, porque los elementos son de dur variable
+	// el sistema podría aparentar estar en beats homogeneos, pero quizás no lo está, verificar:
+	// (sin embargo funciona bien)
 	totalBeats {
 
 		var totalBeatsInSeq = 0;
