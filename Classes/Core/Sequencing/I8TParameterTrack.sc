@@ -163,9 +163,13 @@ ParameterTrack
 
 
 		if(key.isKindOf(Integer), {
+			var keysArray = patterns.keys.asArray.sort;
+			
 			var largest = 0;
 
-			patterns.keys.do({|k| if( k > largest) { largest = k; }; });
+			if( keysArray.size > 0 ) {
+				largest = keysArray.at( keysArray.size -1 );
+			};
 
 			if( key > (largest+1),  {
 				isKeyValid = false;
