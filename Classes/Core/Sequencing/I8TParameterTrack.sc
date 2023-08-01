@@ -234,6 +234,14 @@ ParameterTrack
 
 			});
 
+			// if( newPatternEvent.pattern.pattern.size > 128 ) {
+			// 	( "Pattern too long: " ++ newPatternEvent.pattern.pattern.size ++ ". Max size: 128" ).warn;
+
+			// 	newPatternEvent = PatternEvent.new( I8TPattern(" "), eventName);
+
+		
+			// };
+
 
 			if( play_parameters.isArray, {
 				var paramDict = play_parameters.asDict;
