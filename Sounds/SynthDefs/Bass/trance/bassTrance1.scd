@@ -13,7 +13,7 @@ SynthDef(\bassTrance1, {
 
 	sig = sig * env;
 
-	sig = (sig * dist).tanh;
+	sig = (sig * dist).tanh/2;
 
 	Out.ar( out, Pan2.ar(sig * amp, pan) );
 
