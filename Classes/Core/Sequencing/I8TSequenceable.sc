@@ -137,6 +137,13 @@ Sequenceable : I8TNode
 
 	}
 
+
+	break {|param=0|
+
+		currentPatternEvent.postln;
+
+	}
+
 	/* 'seq' shorthands */
 
 	trigger_ {|pattern,test| this.trigger(pattern,test); }
@@ -459,7 +466,6 @@ Sequenceable : I8TNode
 			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
 
 				pattern = parameter_;
-
 
 			}, {
 				^nil

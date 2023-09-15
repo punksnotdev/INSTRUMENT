@@ -20,7 +20,8 @@ ParameterTrack
 	var durationSequencer;
 
 	var <sequenceInfo;
-	var <newSequenceInfo;
+	var <sequenceInfo2;
+	var <sequenceInfo2Meta;
 	var <sequenceDuration;
 
 	var waitOffset;
@@ -63,6 +64,8 @@ ParameterTrack
 		sequence = List.new();
 
 
+		sequenceInfo2 = Order.new;
+		sequenceInfo2Meta = Order.new;
 
 
 		durationSequencer = {
@@ -284,8 +287,8 @@ ParameterTrack
 				patternEvents[key].add(newPatternEvent);
 				patterns[ key ] = pattern;
 
+				this.updateSequenceInfo( newPatternEvent, key );
 
-				this.updateSequenceInfo();
 
 			};
 
@@ -463,84 +466,115 @@ ParameterTrack
 
 	}
 
-	updateSequenceInfo {
 
-		var totalSequenceEventBeats;
-		var totalSequenceDurations;
+	updatePatternEvent  {|patternEvent, key, startMoment|
 
-		newSequenceInfo = Order.new;
+		var task;
+		
 
-		totalSequenceEventBeats = 0;
-		totalSequenceDurations = 0;
+		// TODO: revisar nomenclatura numbeats, quizas no son "beats" propiamente
+		var numBeats;
+		var repetitions;
 
-		sequenceInfo = Order.new;
+		var totalPatternEventDurations = 0;
 
-		sequence.do({|patternEvent, key|
+		var patternInfo = Order.new;
 
-			var numBeats;
-			var repetitions;
+		var eventMoment;
 
-			var totalSequenceEventDurations = 0;
+		if( startMoment.isNil == true ) {
 
-			repetitions = track.sequencer.repeat.max(4);
+			startMoment = 0;
 
-			if( patternEvent.pattern.pattern.isArray, {
+		};
+		// ["patternEvent, key",patternEvent, key].postln;
 
-				if( patternEvent.parameters.isKindOf(Dictionary), {
-					if( patternEvent.parameters[\repeat] != nil, {
-						repetitions = patternEvent.parameters[\repeat];
-					});
+		repetitions = track.sequencer.repeat.max(4);
+
+		if( patternEvent.pattern.notNil && patternEvent.pattern.pattern.isArray, {
+			
+
+			if( patternEvent.parameters.isKindOf(Dictionary), {
+				if( patternEvent.parameters[\repeat] != nil, {
+					repetitions = patternEvent.parameters[\repeat];
 				});
+			});
 
-				numBeats = patternEvent.pattern.pattern.size * repetitions;
+			numBeats = patternEvent.pattern.pattern.size * repetitions;
 
-				// sequenceInfo[ totalSequenceEventBeats ] = patternEvent.pattern;
+
+
+			["numBeats", numBeats].postln;
+			["repetitions", repetitions].postln;
+			["startMoment", startMoment].postln;
+			["patternEvent", patternEvent.pattern].postln;
+
+			// task = Task.new({
+		
+			eventMoment = startMoment;
+
+			repetitions.do({|index|
+
+
 
 				patternEvent.pattern.pattern.do({|event|
 
-					totalSequenceEventDurations = totalSequenceEventDurations  + this.getScaledDuration(event,patternEvent);
+					var modifiedEvent = event.copy;
+					modifiedEvent.duration = this.getScaledDuration(event,patternEvent);
+					modifiedEvent.key = key;
+					
+					totalPatternEventDurations = totalPatternEventDurations + modifiedEvent.duration;
+										
+					patternInfo[ eventMoment ] = modifiedEvent;
+
+					eventMoment = eventMoment + modifiedEvent.duration;
+
+					["eventMoment!!", eventMoment].postln;
 
 				});
-
-
-				repetitions.do({|index|
-					var repetitionStart = totalSequenceDurations + (totalSequenceEventDurations * index);
-
-					var lastEventMoment = 0;
-
-
-					patternEvent.pattern.pattern.do({|event|
-
-						var modifiedEvent = event.copy;
-						var eventMoment = repetitionStart + lastEventMoment;
-
-						modifiedEvent.duration = this.getScaledDuration(event,patternEvent);
-						modifiedEvent.key = key;
-
-						// modifiedEvent.durationModified = true;
-
-						// this.getScaledDuration(event,patternEvent);
-
-						newSequenceInfo[ eventMoment ] = modifiedEvent;
-
-						lastEventMoment = lastEventMoment + modifiedEvent.duration;
-
-					});
-
-				});
-
-				totalSequenceDurations = totalSequenceDurations + (totalSequenceEventDurations * repetitions);
-
-				sequenceDuration = totalSequenceDurations;
-
-				totalSequenceEventBeats = totalSequenceEventBeats + numBeats;
 
 			});
 
 
+			^(
+				patternInfo: patternInfo,
+				duration: totalPatternEventDurations
+			);
+
+
+
 
 		});
+	
+	}
+	
+	updateSequenceInfo {|patternEvent, key|
 
+		var updatePattern;
+		var totalSequenceDurations = 0;
+
+		var lastMoment = 0;
+
+		var updated;
+
+		if( patternEvent.notNil == true ) {
+
+			updated = this.updatePatternEvent(patternEvent, key, lastMoment);
+
+
+			sequenceInfo2 = sequenceInfo2 ++ updated.patternInfo;
+			
+			sequenceInfo2Meta[ key ] = (
+				duration: updated.duration,
+				moment: lastMoment 
+			);
+
+			["lastMoment", sequenceInfo2.indices].postln;
+
+			// ["patternEvent", patternEvent].postln;
+			["updated", updated.duration ].postln;
+
+		};
 
 	}
 
@@ -552,8 +586,8 @@ ParameterTrack
 
 			1.wait;
 
-			newSequenceInfo.do({|event,index|
-				["newSequenceInfo", index, newSequenceInfo[ index ]].postln;
+			sequenceInfo2.do({|event,index|
+				["sequenceInfo2", index, sequenceInfo2[ index ]].postln;
 				0.1.wait;
 			});
 
@@ -617,15 +651,15 @@ ParameterTrack
 
 
 
-		nearestEventKey = newSequenceInfo.indices.findNearest( patternPosition % sequenceDuration );
+		nearestEventKey = sequenceInfo2.indices.findNearest( patternPosition % sequenceDuration );
 
-		currentIndex = newSequenceInfo.indices.indexOfNearestIrregularIndex( patternPosition % sequenceDuration );
+		currentIndex = sequenceInfo2.indices.indexOfNearestIrregularIndex( patternPosition % sequenceDuration );
 
 		if( nearestEventKey.notNil ) {
 			// reset all events when sequence restarts after it is done:
-			if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) ) {
-				if( ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
-					newSequenceInfo.do({|e, i|
+			if( (currentIndex == 0) && (sequenceInfo2[ nearestEventKey ].notNil) ) {
+				if( ( sequenceInfo2[ nearestEventKey ].played == true ) ) {
+					sequenceInfo2.do({|e, i|
 						if( (  i > 0  ) && ( e.notNil ) ) {
 							e.played = false;
 						};
@@ -634,13 +668,13 @@ ParameterTrack
 			};
 
 			// if last event, prepare first
-			if( ( currentIndex == (newSequenceInfo.size-1) ) && ( newSequenceInfo[0].notNil ) ) {
-				newSequenceInfo[0].played = false;
+			if( ( currentIndex == (sequenceInfo2.size-1) ) && ( sequenceInfo2[0].notNil ) ) {
+				sequenceInfo2[0].played = false;
 			};
 			// check if last read event has been played
 			if( (patternPosition % sequenceDuration) > nearestEventKey ) {
-				if( ( newSequenceInfo[ nearestEventKey ].notNil ) && ( newSequenceInfo[ nearestEventKey ].played != true ) ) {
-					currentEvent = newSequenceInfo[ nearestEventKey ];
+				if( ( sequenceInfo2[ nearestEventKey ].notNil ) && ( sequenceInfo2[ nearestEventKey ].played != true ) ) {
+					currentEvent = sequenceInfo2[ nearestEventKey ];
 				};
 			};
 
