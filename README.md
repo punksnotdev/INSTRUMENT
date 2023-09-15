@@ -564,43 +564,6 @@ i.chords.note([
 
 ```
 
-## Adding probability in sequences
-
-#### Maybe
-
-You can add some probability for a certain event using the '?' operator:
-
-```SuperCollider
-
-i = INSTRUMENT();
-
-i.bass = i.synths.bass.dist;
-
-// 50% probability is the default value
-i.bass[0].note = "0 3? 5";
-// 10% probability
-i.bass[1].note = "12 15?0.1 17";
-// 90% probability
-i.bass[2].note = "14 18?0.9 20";
-
-// 40% probability applied to each event in a group of events
-i.bass.note = "14 (18 20)?0.4 8";
-
-```
-
-#### Or
-
-You can have a value be chosen between two options with the '|' operator:
-
-```SuperCollider
-
-// 50% probability of choosing D or F
-
-i.bass.note = "C D|F";
-
-```
-
-
 
 
 ## Set tempo
@@ -803,6 +766,134 @@ i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
 ```
 
 
+
+## Probability in sequences
+
+#### Maybe
+
+You can add some probability for a certain event using the '?' operator:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.bass = i.synths.bass.dist;
+
+// 50% probability is the default value
+i.bass[0].note = "0 3? 5";
+// 10% probability
+i.bass[1].note = "12 15?0.1 17";
+// 90% probability
+i.bass[2].note = "14 18?0.9 20";
+
+// 40% probability applied to each event in a group of events
+i.bass.note = "14 (18 20)?0.4 8";
+
+```
+
+#### Or
+
+You can have a value be chosen between two options with the '|' operator:
+
+```SuperCollider
+
+// 50% probability of choosing D or F
+
+i.bass.note = "C D|F";
+
+```
+
+
+## Pattern operations
+
+#### reverse
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### mirror
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### mirror1
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### mirror2
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### pyramid
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### random
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### maybe
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### rotate
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### shift
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### lace
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### permute
+
+...
+
+##### Parameters:
+- n: Integer > 0
+
+#### transpose
+
+...
+
+##### Parameters:
+- n: Integer > 0
 
 
 
