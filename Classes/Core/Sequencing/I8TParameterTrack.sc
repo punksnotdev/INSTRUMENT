@@ -491,6 +491,8 @@ ParameterTrack
 
 		repetitions = track.sequencer.repeat.max(4);
 
+		["patternEvent.parameters", patternEvent.parameters].postln;
+
 		if( patternEvent.pattern.notNil && patternEvent.pattern.pattern.isArray, {
 			
 
@@ -529,8 +531,6 @@ ParameterTrack
 
 					eventMoment = eventMoment + modifiedEvent.duration;
 
-					["eventMoment!!", eventMoment].postln;
-
 				});
 
 			});
@@ -553,26 +553,45 @@ ParameterTrack
 		var updatePattern;
 		var totalSequenceDurations = 0;
 
+		// TOOD: tendremos que obtenerlo a partir de los keys anteriores al actual 'key'
 		var lastMoment = 0;
 
 		var updated;
 
+
+		var newSequence = Order.new;
+
 		if( patternEvent.notNil == true ) {
 
 			updated = this.updatePatternEvent(patternEvent, key, lastMoment);
-
-
-			sequenceInfo2 = sequenceInfo2 ++ updated.patternInfo;
+			if( sequenceInfo2Meta.indices.size > 0 ) {
+				lastMoment = sequenceInfo2Meta[sequenceInfo2Meta.lastIndex].moment + sequenceInfo2Meta[sequenceInfo2Meta.lastIndex].duration;
+			};
 			
+
+			// sequenceInfo2 = sequenceInfo2 ++ updated.patternInfo;
+
+			// Copy elements from the first collection
+
+			// Copy elements from the second collection
+
+
+			updated.patternInfo.indices.do { |key|
+				sequenceInfo2[ lastMoment + key ] = updated.patternInfo[key];
+			};
+
+
+			lastMoment = lastMoment + updated.duration;
+
 			sequenceInfo2Meta[ key ] = (
 				duration: updated.duration,
-				moment: lastMoment 
+				pattern: updated.patternInfo,
+				moment: lastMoment,
 			);
 
-			["lastMoment", sequenceInfo2.indices].postln;
+			["sequenceInfo2", sequenceInfo2.indices ].postln;
 
-			// ["patternEvent", patternEvent].postln;
-			["updated", updated.duration ].postln;
+
 
 		};
 
