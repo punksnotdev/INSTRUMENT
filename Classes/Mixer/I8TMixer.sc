@@ -37,10 +37,10 @@ I8TMixer : Sequenceable
 		channelGroups = IdentityDictionary.new;
 
 
-		outbus = Server.local.outputBus;
+		outbus = main.server.outputBus;
 
-		bus = Bus.audio(Server.local,1);
-		// fxBus = Bus.audio(Server.local,1);
+		bus = Bus.audio(main.server,1);
+		// fxBus = Bus.audio(main.server,1);
 
 		fx = I8TChannelGroup(this);
 

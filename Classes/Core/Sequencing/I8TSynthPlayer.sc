@@ -114,7 +114,7 @@ I8TSynthPlayer : I8TSynthInstrument
 
 		if( synthdef.notNil, {
 
-			var s = Server.local;
+			var s = main.server;
 
 			// if( synths.isKindOf(List), {
 				// clean dead synths' id
@@ -436,13 +436,12 @@ I8TSynthPlayer : I8TSynthInstrument
 													\out, outbus
 												];
 
-																																if( rel.notNil ) {
-																																	synthArgs = synthArgs++[\rel, rel]
-																																};
+												if( rel.notNil ) {
+													synthArgs = synthArgs++[\rel, rel]
+												};
 
-																																creatingSynth = true;
-																																this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters)
-												);
+												creatingSynth = true;
+												this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters));
 
 											});
 

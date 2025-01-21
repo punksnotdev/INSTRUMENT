@@ -110,12 +110,12 @@ Looper : I8TSynthInstrument
 
 		recordBuffer{|nextLayer|
 			// if buffer for nextLayer not allocated,
-			if( Server.local.sampleRate.notNil && maxDuration.isKindOf(Number) ) {
+			if( main.server.sampleRate.notNil && maxDuration.isKindOf(Number) ) {
 				if( maxDuration > 0 ) {
 				// if( buffers[ nextLayer ].isKindOf(Buffer) == false ) {
 					buffers[ nextLayer ] = Buffer.alloc(
-						Server.local,
-						Server.local.sampleRate * maxDuration,
+						main.server,
+						main.server.sampleRate * maxDuration,
 						1,
 						{|buffer|
 							recSynths[ nextLayer ] = Synth(\loopWrite, [

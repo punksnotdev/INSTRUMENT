@@ -19,8 +19,8 @@ I8TSynthInstrument : I8TInstrument
   }
 
   init{|graph_,name_|
-
-      group = Group.new;
+        ["main.server", main.server].postln;
+      group = ParGroup.new( main.server );
       group.register;
       groupID = group.nodeID;
 

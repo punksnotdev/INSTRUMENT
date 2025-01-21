@@ -1,4 +1,4 @@
-I8TChannel : Sequenceable
+I8TChannel : I8TInstrument
 {
 
 	var <inSynth;
@@ -60,10 +60,10 @@ I8TChannel : Sequenceable
 			if(inbus_.notNil, {
 				inbus=inbus_;
 			}, {
-				inbus = Bus.audio(Server.local,1);
+				inbus = Bus.audio(main.server,1);
 			});
 
-			bus = Bus.audio(Server.local,1);
+			bus = Bus.audio(main.server,1);
 
 
 			inSynth = Synth.tail(
@@ -699,7 +699,7 @@ I8TChannel : Sequenceable
 
 		sourceListeners = IdentityDictionary.new;
 
-		inputsBus = Bus.audio(Server.local,1);
+		inputsBus = Bus.audio(main.server,1);
 
 		inputsSynth = Synth.before(
 			inSynth,

@@ -82,6 +82,7 @@ I8TMain : Event
 
 		if(server_.isKindOf(Server), {
 			server = server_;
+			["!!!server", server].postln;
 		}, {
 			server = Server.local;
 		});
@@ -182,7 +183,7 @@ I8TMain : Event
 		synthLoader = I8TSynthLoader();
 
 		synths = synthLoader.loadSynths();
-
+		
 		currentFolder = synths;
 
 		if( createNew == true, {
