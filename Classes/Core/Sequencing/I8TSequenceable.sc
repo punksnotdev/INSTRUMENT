@@ -29,6 +29,7 @@ Sequenceable : I8TNode
 	}
 
 	init{|graph_,name_|
+	
 		multiPattern = false;
 		clock = 1;
 		nextPatternKey = 0;

@@ -42,6 +42,7 @@ I8TNode : I8TeventListener
 
 	init {|nodeGraph_,name_|
 		var newKey;
+		["!!! init node nodeGraph_,name_",nodeGraph_,name_].postln;
 		newKey = name_;
 
 		if(nodeGraph_!=nil,{

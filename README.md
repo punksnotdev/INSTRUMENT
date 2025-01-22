@@ -22,7 +22,7 @@ s.boot;
 // Then, evaluate following block
 (
 
-i = INSTRUMENT();
+i = INSTRUMENT.new(s);
 
 d = i.synths.drums.electro;
 

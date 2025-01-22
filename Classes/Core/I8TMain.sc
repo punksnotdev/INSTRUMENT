@@ -2,7 +2,11 @@ I8TMain : Event
 {
 
 	classvar instance;
+	classvar servers;
+	
+
 	var <server;
+	var <currentServer;
 	var <isBooted;
 
 	var <>mode;
@@ -47,8 +51,6 @@ I8TMain : Event
 
 	var currentFolder;
 
-	classvar mainEvent;
-
 	var clearedGroups;
 	var clearedNodes;
 	var clearedFunctions;
@@ -74,23 +76,56 @@ I8TMain : Event
 		}
 	}
 
+	setServer {|server_|
+		currentServer = server_;
+	}
+
+	
+
+	addServer {|server_|
+		if(server_.isKindOf(Server), {
+			
+			if( servers[ server_.name ].isNil, {				
+				servers[ server_.name ] = server_;				
+			});
+
+			^servers[ server_.name ]
+
+		}, {
+			"not a server".postln;
+		});
+	}
+
 	init {|server_,createNew=false|
 
 
 		mode = "play";
 
 
+
+		if( servers.isNil, {
+			servers = Dictionary.new;
+		});
+		
 		if(server_.isKindOf(Server), {
-			server = server_;
-			["!!!server", server].postln;
+			
+			var z = this.addServer( server_ );
+
+			if( z.isKindOf(Server), {
+				server = z;
+			});
+			
+
 		}, {
 			server = Server.local;
 		});
+		
 
 		// clock = TempoClock.default;
 		clock = TempoClock.new( TempoClock.default.tempo );
 
 		ready = false;
+		
 
 		if( server.serverRunning, {
 
@@ -109,7 +144,7 @@ I8TMain : Event
 			mixer = I8TMixer.new(this);
 
 			mixer.setupSequencer(sequencer);
-			
+			"bug3".postln;
 			mixer.setupMaster();
 
 			controllerManager = ControllerManager.new(this);
@@ -124,7 +159,7 @@ I8TMain : Event
 
 			this.addNode( rootNode );
 
-
+"bug4".postln;
 			midiControllers = ();
 			midiControllers.inputs = List.new;
 			midiControllers.outputs = List.new;
@@ -162,9 +197,10 @@ I8TMain : Event
 		if(
 			server.serverRunning == false
 		) {
+			"please boot".warn;
+
 			if( I8TSynthLoader.synthsLoaded.notNil, {
 				if( mode=="play" ) {
-					"please boot".warn;
 				};
 			});
 
@@ -179,17 +215,21 @@ I8TMain : Event
 		data.synths.parameters = ();
 
 
-
+			"bug4".postln;
 		synthLoader = I8TSynthLoader();
 
 		synths = synthLoader.loadSynths();
 		
 		currentFolder = synths;
-
+	"bug5".postln;
 		if( createNew == true, {
+
 			^this
+
 		}, {
+
 			^instance
+
 		});
 
 
@@ -683,7 +723,7 @@ I8TMain : Event
 	put {|key,something|
 
 		var item;
-
+		
 		nextKey = key;
 
 		if( something.isNil, {
@@ -879,8 +919,12 @@ I8TMain : Event
 
 				}, {
 
+
+					["put ???",key_].postln;
+
 					item = this.createGroup( key_, group_ );
 
+					["put !!!",key_,item].postln;
 					groups[key_] = item;
 
 					mixer.addChannel( item );
@@ -1160,6 +1204,7 @@ I8TMain : Event
 				  // if new key:
 				  node = this.createGroupChildNode( newGroup, childItem, childItemKey );
 
+
 				  newGroup.put( childItemKey, node );
 
 			  });
@@ -1181,7 +1226,9 @@ I8TMain : Event
 
 		newKey = (group.name++'_'++childItemKey).asString.toLower.asSymbol;
 
+
 		if( childItem.isKindOf(I8TNode) ) {
+			
 		  node = childItem;
 		};
 
@@ -1190,17 +1237,25 @@ I8TMain : Event
 			||
 			childItem.isKindOf(SynthDefVariant)
 		) ) {
+
+			"bbug1".postln;
+			
 			node = I8TSynthPlayer(childItem);
+			
+
 		};
 
 		if( synthLoader.validateSynthName(childItem) ) {
+
+			"bbug2".postln;
+			
 
 			if( nodes[newKey].notNil, {
 				node = nodes[newKey];
 			},
 			{
-				var synthdef = synthLoader.getSynthDefByName(childItem);
-				node = I8TSynthPlayer(synthdef);
+				var synthdef = synthLoader.getSynthDefByName(childItem);				
+				node = I8TSynthPlayer(synthdef);				
 			});
 
 
@@ -1208,11 +1263,16 @@ I8TMain : Event
 
 		if( synthLoader.validateFolderName(childItem) ) {
 
+			"bbug3".postln;
+			
+
 			if( nodes[newKey].notNil, {
+				
 				node = nodes[newKey];
 			},
 			{
 				var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
+				
 				node = I8TSynthPlayer(synthdef);
 			});
 
@@ -1222,7 +1282,9 @@ I8TMain : Event
 		node.name = newKey;
 
 
+
 		this.setupNode( node, newKey );
+
 
 		^node
 

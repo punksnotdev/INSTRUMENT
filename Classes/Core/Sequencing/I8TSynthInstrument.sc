@@ -3,60 +3,61 @@ I8TSynthInstrument : I8TInstrument
 
 
 
-  var fx_parameters;
+    var fx_parameters;
 
-  var synthdef;
+    var synthdef;
 
-  var <fxSynth;
-  var fx;
-  var fxBus;
+    var <fxSynth;
+    var fx;
+    var fxBus;
 
-  var autostart;
-
-
-  *new{|name_|
-    ^super.new.init(name_,this.graph);
-  }
-
-  init{|graph_,name_|
-        ["main.server", main.server].postln;
-      group = ParGroup.new( main.server );
-      group.register;
-      groupID = group.nodeID;
-
-    fx_parameters = IdentityDictionary.new;
-    fxSynth = nil;
-    fxBus = Bus.audio(Server.local,2);
-
-	super.init(graph_,name_);
-
-  }
+    var autostart;
 
 
+    *new{|name_|
+        ^super.new.init(name_,this.graph);
+    }
+
+    init{|graph_,name_|
+        "init__?".postln;
+        ["graph_", graph_].postln;
+        group = ParGroup.new( graph_.server );
+        group.register;
+        groupID = group.nodeID;
+
+        fx_parameters = IdentityDictionary.new;
+        fxSynth = nil;
+        fxBus = Bus.audio(graph_.server,2);
+
+        super.init(graph_,name_);
+
+    }
 
 
-  	group_ {|group_|
-  		group = group_;
+
+
+    group_ {|group_|
+        group = group_;
         // "To do: check if should register??".warn;
         group.register;
         groupID = group.nodeID;
-  	}
-  	group {
-  		^group;
-  	}
+    }
+    group {
+        ^group;
+    }
 
 
 
     autostart {
-      autostart=true;
+        autostart=true;
     }
     autostart_ {|value|
-      autostart=value;
+        autostart=value;
     }
 
 
 
-	// fx_ {|synthdef_|
+    // fx_ {|synthdef_|
     //
     //     if(
     //         (
@@ -94,31 +95,31 @@ I8TSynthInstrument : I8TInstrument
     //         });
     //         // });
     //
-	// 	}, {
-	// 		// "clear currentFX".postln;
-	// 		fxSynth.free;
-	// 		fxSynth = nil;
-	// 	});
+    // 	}, {
+    // 		// "clear currentFX".postln;
+    // 		fxSynth.free;
+    // 		fxSynth = nil;
+    // 	});
     //
     //
     //     if( autostart == true ) {
     //         this.start();
     //     }
     //
-	// 	// ^fxSynth;
+    // 	// ^fxSynth;
     //
-	// }
+    // }
 
 
     restart {
 
     }
 
-	fxSet {|parameter,value|
+    fxSet {|parameter,value|
 
         if( value.notNil, {
 
-        	fx_parameters[parameter] = value;
+            fx_parameters[parameter] = value;
 
             if( fxSynth.notNil ) {
                 fxSynth.set(parameter,value);
@@ -128,13 +129,13 @@ I8TSynthInstrument : I8TInstrument
             // if no value, check if is valid sequence:
             if( this.checkIsValidSequence(parameter) ) {
 
-    			var pattern = parameter;
-    			this.seq(\fxSet,pattern);
+                var pattern = parameter;
+                this.seq(\fxSet,pattern);
             };
 
-		});
+        });
 
-	}
+    }
 
     checkIsValidSequence {|sequence|
         ^ (sequence.isKindOf(Collection) || sequence.isKindOf(String))

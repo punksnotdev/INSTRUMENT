@@ -1,4 +1,4 @@
-I8TChannel : I8TInstrument
+I8TChannel : Sequenceable
 {
 
 	var <inSynth;
@@ -36,7 +36,7 @@ I8TChannel : I8TInstrument
 
 	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
-
+		["channel graph.server",graph.server].postln;
 
 		if( graph_.notNil, {
 			sequencer = graph_.sequencer;
@@ -45,9 +45,9 @@ I8TChannel : I8TInstrument
 		if( outbus_.notNil, {
 
 			if( synthGroup_.isKindOf(Group), {
-				synthGroup = Group.head(synthGroup_);
+				synthGroup = ParGroup.head(synthGroup_);
 			}, {
-				synthGroup = Group.head(Server.default.defaultGroup);
+				synthGroup = ParGroup.head(graph.server.defaultGroup);
 			});
 
 			fxChain = I8TFXChain.new;
@@ -56,14 +56,15 @@ I8TChannel : I8TInstrument
 
 			this.setupListeners();
 
+			["graph.server", graph.server].postln;
 
 			if(inbus_.notNil, {
 				inbus=inbus_;
 			}, {
-				inbus = Bus.audio(main.server,1);
+				inbus = Bus.audio(graph.server,1);
 			});
 
-			bus = Bus.audio(main.server,1);
+			bus = Bus.audio(graph.server,1);
 
 
 			inSynth = Synth.tail(
@@ -699,7 +700,7 @@ I8TChannel : I8TInstrument
 
 		sourceListeners = IdentityDictionary.new;
 
-		inputsBus = Bus.audio(main.server,1);
+		inputsBus = Bus.audio(graph.server,1);
 
 		inputsSynth = Synth.before(
 			inSynth,

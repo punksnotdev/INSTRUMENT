@@ -17,7 +17,18 @@ I8TSynthPlayer : I8TSynthInstrument
 
 
 	*new{|synthdef_,name_|
+
+		["new this.graph",this.graph].postln;
+"pre1".postln;
+
+["this.graph.isKindOf(I8TMain)",this.graph.isKindOf(I8TMain)].postln;
+["synthdef_.isKindOf(SynthDef)",synthdef_.isKindOf(SynthDef)].postln;
+
+["name_.isKindOf(String)",name_.isKindOf(String)].postln;
+
+
 		if(
+			this.graph.isKindOf(I8TMain) &&
 			(
 				synthdef_.isKindOf(SynthDef)
 				||
@@ -27,7 +38,11 @@ I8TSynthPlayer : I8TSynthInstrument
 
 			var instance;
 			instance = super.new(synthdef_.name.asSymbol);
-			^instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
+			"pre2".postln;
+			
+			instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
+			
+			^instance
 
 		}, {
 
@@ -37,61 +52,68 @@ I8TSynthPlayer : I8TSynthInstrument
 	}
 
 	init{|graph_,synthdef_,name_|
+		["graph_,synthdef_,name_",graph_,synthdef_,name_].postln;
+		if( graph_.isKindOf(I8TMain) && synthdef_.notNil ) {
+		
+			["init__ 1?", graph_,synthdef_,name_ ].postln;
+			nodeIDs=IdentityDictionary.new;
 
-		nodeIDs=IdentityDictionary.new;
+			mode = \poly;
 
-		mode = \poly;
+			pressedKeys = IdentityDictionary.new;
 
-		if( synthdef_.notNil, {
-
-			if((
-				synthdef_.isKindOf(SynthDef)
-				||
-				synthdef_.isKindOf(SynthDesc)
-				||
-				synthdef_.isKindOf(SynthDefVariant)
-			)) {
-				synthdef = synthdef_;
-				name = synthdef.name.asSymbol;
-			};
-
-			if( synthdef_.isKindOf(SynthDefVariant) ) {
-				synth_parameters=synth_parameters++synthdef_.parameters;
-			};
-
-			if(
-				(
-					synthdef_.isKindOf(Symbol)
+			creatingSynth = false;
+			
+			if( synthdef_.notNil, {
+				
+				if((
+					synthdef_.isKindOf(SynthDef)
 					||
-					synthdef_.isKindOf(String)
-				)
-			) {
-				 if(graph.synths[synthdef_].notNil, {
+					synthdef_.isKindOf(SynthDesc)
+					||
+					synthdef_.isKindOf(SynthDefVariant)
+				)) {				
+					synthdef = synthdef_;
+					name = synthdef.name.asSymbol;
+				};
 
-					 synthdef = graph.synths[synthdef_.asSymbol];
-					 name = synthdef_.asSymbol;
+				if( synthdef_.isKindOf(SynthDefVariant) ) {				
+					synth_parameters=synth_parameters++synthdef_.parameters;
+				};
 
-				 }, {
+				["graph_ >>>", graph_].postln;
+				if(
+					(
+						synthdef_.isKindOf(Symbol)
+						||
+						synthdef_.isKindOf(String)
+					)
+				) {		
 
-					 ("SynthDef "++synthdef_++" doesn't exit in Library").warn;
+					"debug1".postln;
 
-				 });
+					if(graph_.synths.notNil && graph_.synths[synthdef_].notNil, {	
+						"debug2".postln;				
+						synthdef = graph_.synths[synthdef_.asSymbol];
+						name = synthdef_.asSymbol;
 
-			};
+					}, {					
+						("SynthDef "++synthdef_++" doesn't exit in Library").warn;
 
-			// this.createSynth([\out,outbus]);
-			synth_parameters = IdentityDictionary.new;
+					});
 
-			^super.init(graph_,name);
+				};
 
-		});
+				// this.createSynth([\out,outbus]);
+				synth_parameters = IdentityDictionary.new;
 
+				["graph_", graph_, graph_].postln;
+				
+				^super.init(graph_,name);
 
-		pressedKeys = IdentityDictionary.new;
+			});
 
-
-		creatingSynth = false;
-
+		};
 
 	}
 
