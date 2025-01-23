@@ -8,13 +8,13 @@ Proxy : I8TInstrument
 		^super.new.init(this.graph,proxy_);
 	}
 
-	init{|graph_,proxy_|
+	init{|main_,proxy_|
 		if( proxy_.isKindOf(NodeProxy), {
 			proxy_.postln;
 			proxy = proxy_;
-			sequencer = graph_.sequencer;
+			sequencer = main_.sequencer;
 			// this.createSynth();
-			super.init(graph_,proxy_.key,);
+			super.init(main_,proxy_.key,);
 		},{
 			"input not a nodeproxy".postln;
 		});

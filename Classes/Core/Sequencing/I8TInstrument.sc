@@ -17,18 +17,18 @@ I8TInstrument : Sequenceable
 	var outGroup;
 
 
-	*new{|name_|
-		^super.new.init(name_,this.graph);
+	*new{|name_,main_|
+		^super.new.init(name_,main_);
 	}
 
 
-	init{|graph_,name_|
+	init{|main_,name_|
 
 		volume = 1;
 		octave = 4;
 		synths = List.new;
-		main = graph_;
-		super.init(graph_,name_);
+		main = main_;
+		super.init(main_,name_);
 
 
 	}

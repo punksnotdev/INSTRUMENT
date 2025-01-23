@@ -71,9 +71,9 @@ I8TMain : Event
 
 	}
 	*initClass {
-		StartUp.add {
-			var i = INSTRUMENT();
-		}
+		// StartUp.add {
+			// var i = INSTRUMENT();
+		// }
 	}
 
 	setServer {|server_|
@@ -749,7 +749,7 @@ I8TMain : Event
 						if(nodes[synthdef].notNil, {
 							item = this.setupNode(nodes[synthdef], key);
 						}, {
-							item = this.setupNode(I8TSynthPlayer(synthdef), key);
+							item = this.setupNode(I8TSynthPlayer(synthdef, main_: this), key);
 						});
 					}
 
@@ -762,13 +762,13 @@ I8TMain : Event
 					)
 				) {
 
-					item = this.setupNode(I8TSynthPlayer(something), key);
+					item = this.setupNode(I8TSynthPlayer(something, main_: this), key);
 
 				};
 
 				if( something.isKindOf(I8TFolder) ) {
 
-					item = this.setupNode(I8TSynthPlayer(something.getMainSynthDef), key);
+					item = this.setupNode(I8TSynthPlayer(something.getMainSynthDef, main_: this), key);
 
 				};
 
@@ -776,7 +776,7 @@ I8TMain : Event
 				if( synthLoader.validateFolderName(something) ) {
 
 					item = this.setupNode(I8TSynthPlayer(
-						synthLoader.getFolderByName(something).getMainSynthDef
+						synthLoader.getFolderByName(something).getMainSynthDef, main_: this
 					), key);
 
 				};

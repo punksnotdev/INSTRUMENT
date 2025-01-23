@@ -18,17 +18,17 @@ Sequenceable : I8TNode
 	var multiPattern;
 
 
-	*new{|graph_,name_|
+	*new{|main_,name_|
 		
-		if(graph_.notNil) {
-			super.new(graph_,name_);	
+		if(main_.notNil) {
+			super.new(main_,name_);	
 		};
 		
-		^super.new(this.graph,name_);
+		^super.new(main_,name_);
 		
 	}
 
-	init{|graph_,name_|
+	init{|main_,name_|
 	
 		multiPattern = false;
 		clock = 1;

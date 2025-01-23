@@ -30,22 +30,23 @@ I8TChannel : Sequenceable
 
 
 
-	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
-		^super.new.init(this.graph,synthGroup_,outbus_,inbus_);
+	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true,main_|
+		^super.new.init(main_,synthGroup_,outbus_,inbus_);
 	}
 
-	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
+	init {|main_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
-		if( graph_.notNil, {
-			sequencer = graph_.sequencer;
+		if( main_.notNil, {
+			sequencer = main_.sequencer;
+			main = main_;
 		});
 
 		if( outbus_.notNil, {
 
-			if( synthGroup_.isKindOf(AbstractGroup), {
-				synthGroup = Group.head(synthGroup_);
-			}, {
-				synthGroup = Group.head(graph.server.defaultGroup);
+			if( synthGroup_.isKindOf(AbstractGroup), {				
+				synthGroup = ParGroup.head(synthGroup_);
+			}, {				
+				synthGroup = ParGroup.head(main.server.defaultGroup);
 			});
 
 			fxChain = I8TFXChain.new;
@@ -53,14 +54,16 @@ I8TChannel : Sequenceable
 
 
 			this.setupListeners();
+			
+			["using server", main.server].postln;
 
 			if(inbus_.notNil, {
 				inbus=inbus_;
 			}, {
-				inbus = Bus.audio(graph.server,1);
+				inbus = Bus.audio(main.server,1);
 			});
 
-			bus = Bus.audio(graph.server,1);
+			bus = Bus.audio(main.server,1);
 
 
 			inSynth = Synth.tail(
@@ -177,7 +180,7 @@ I8TChannel : Sequenceable
 	}
 
 	getSynthGroup {
-		^synthGroup
+	^synthGroup
 	}
 
 	setSynthGroup {|synthGroup_|
@@ -273,11 +276,11 @@ I8TChannel : Sequenceable
 		};
 
 		if( (
-			graph.validateFolderName(fxChain_)
+			main.validateFolderName(fxChain_)
 			||
-			graph.validateSynthName(fxChain_)
+			main.validateSynthName(fxChain_)
 			||
-			graph.validateSynthDef(fxChain_)
+			main.validateSynthDef(fxChain_)
 		), {
 
 			fxChain.collect({|fx,key|
@@ -296,11 +299,11 @@ I8TChannel : Sequenceable
 
 				var notValid = fxChain_.reject(
 					(
-						graph.validateFolderName(_)
+						main.validateFolderName(_)
 						||
-						graph.validateSynthName(_)
+						main.validateSynthName(_)
 						||
-						graph.validateSynthDef(_)
+						main.validateSynthDef(_)
 					)
 				);
 
@@ -358,9 +361,9 @@ I8TChannel : Sequenceable
 		var synthdefKey;
 
 
-		if( graph.validateSynthName(fx_), {
+		if( main.validateSynthName(fx_), {
 
-			synthdef = graph.synths.at(fx_.asString.uncapitalize.asSymbol);
+			synthdef = main.synths.at(fx_.asString.uncapitalize.asSymbol);
 
 			if( synthdef.isKindOf(I8TFolder) ) {
 				var def = synthdef.values.detect(_.isKindOf(SynthDef));
@@ -391,7 +394,7 @@ I8TChannel : Sequenceable
 		}, {
 
 
-			if( graph.validateSynthDef(fx_), {
+			if( main.validateSynthDef(fx_), {
 
 				if( fx_.isKindOf(SynthDefVariant), {
 					synthdef = fx_;
@@ -424,9 +427,9 @@ I8TChannel : Sequenceable
 				});
 			}, {
 
-				if( graph.validateFolderName(fx_) ) {
+				if( main.validateFolderName(fx_) ) {
 
-					var folder = graph.getFolderByName(fx_);
+					var folder = main.getFolderByName(fx_);
 
 					synthdef = folder.getMainSynthDef;
 
@@ -498,7 +501,7 @@ I8TChannel : Sequenceable
 			^fxChain
 		}, {
 			if( fxChain[key].isNil, {
-				if( graph.validateSynthName(key) ) {
+				if( main.validateSynthName(key) ) {
 					var fxKey;
 					// var synthdefKeys =
 					fxChain.keysValuesDo({|k,v|
@@ -696,7 +699,7 @@ I8TChannel : Sequenceable
 
 		sourceListeners = IdentityDictionary.new;
 
-		inputsBus = Bus.audio(graph.server,1);
+		inputsBus = Bus.audio(main.server,1);
 
 		inputsSynth = Synth.before(
 			inSynth,
