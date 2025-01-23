@@ -117,53 +117,50 @@ I8TSynthPlayer : I8TSynthInstrument
 	}
 
 	createSynth {|parameters|
-
+			
 		if( synthdef.notNil, {
-
-			var s = main.server;
-
+			
 			// if( synths.isKindOf(List), {
 				// clean dead synths' id
-					var removeKey;
+			var removeKey;
 
-					synths.collect({|synth_,key|
-						if( synth_.isPlaying == false, {
-							nodeIDs[synth_.nodeID]=false;
-							nodeID=synth_.nodeID;
-							removeKey = key;
-						});
-					});
-					if( removeKey.notNil,{
-						synths.removeAt( removeKey );
-					}, {
-						nodeID = nil;
-					});
-				// });
+			synths.collect({|synth_,key|
+				if( synth_.isPlaying == false, {
+					nodeIDs[synth_.nodeID]=false;
+					nodeID=synth_.nodeID;
+					removeKey = key;
+				});
+			});
+			if( removeKey.notNil,{
+				synths.removeAt( removeKey );
+			}, {
+				nodeID = nil;
+			});
+		// });
 
-				if( nodeID.isNil, {
+			if( nodeID.isNil, {
 
-					var idIndex = nil;
+				var idIndex = nil;
 
-					nodeIDs.collect({|id_set,key|
-						if( id_set==false, { idIndex=key });
-					});
-
-					if(idIndex.notNil, {
-						nodeID = idIndex;
-					}, {
-						nodeID = s.nextNodeID;
-					});
-
+				nodeIDs.collect({|id_set,key|
+					if( id_set==false, { idIndex=key });
 				});
 
+				if(idIndex.notNil, {
+					nodeID = idIndex;
+				}, {
+					nodeID = graph.server.nextNodeID;
+				});
 
-				// parameters=parameters++[\clock,main.clock];
+			});
+
 
 			if( fxSynth.isKindOf(Synth), {
+				
 				synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
 				synth.register;
 			}, {
-
+				
 				synth = Synth.head( group, synthdef.name.asSymbol, parameters );
 
 				synth.register;
@@ -523,8 +520,7 @@ I8TSynthPlayer : I8TSynthInstrument
 				// },
 				\trigger, {
 					var floatValue = value.val.asFloat;
-
-
+					
 					if( floatValue.asFloat > 0 ) {
 
 						var amp = floatValue;
@@ -545,8 +541,8 @@ I8TSynthPlayer : I8TSynthInstrument
 				},
 				// \t_trig, { this.createSynth([\t_trig,1,\note,(octave*12)+value.val]); },
 				// \chord, {
-				// 	// ["chord",value].postln;
-				// 	// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
+					// ["chord",value].postln;
+					// proxy.setn(\notes,(octave*12)+value,\freqs,((octave*12)+value).midicps,\t_trig,1);
 				// },
 				{ // default:
 

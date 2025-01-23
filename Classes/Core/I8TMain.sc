@@ -251,8 +251,9 @@ I8TMain : Event
 
 		if( node.isKindOf(I8TNode) ) {
 
-			if( nodes[key].isNil, {
 
+			if( nodes[key].isNil, {
+					
 				item = this.addNode(node,key);
 
 				if( playing == true ) {
@@ -266,9 +267,7 @@ I8TMain : Event
 				if( node.isKindOf(Proxy) == false ) {
 					node.channel = mixer.addChannel( node );
 				};
-
-
-
+	
 				if( node.name.asString.find("kick").notNil ) {
 					node.channel.free(\locut);
 				};
@@ -1266,7 +1265,7 @@ I8TMain : Event
 
 		node.name = newKey;
 
-
+		["node",node].postln;
 
 		this.setupNode( node, newKey );
 
