@@ -47,11 +47,11 @@ I8TMixer : Sequenceable
 
 	setupMaster {
 
-		masterGroup = ParGroup.tail(main.server.defaultGroup);
+		masterGroup = ParGroup.tail(main.parGroup);
 
-		mixNodeGroup = ParGroup.head(masterGroup);
-		groupsNodeGroup = ParGroup.tail(masterGroup);
-		fxNodeGroup = ParGroup.tail(masterGroup);
+		mixNodeGroup = ParGroup.head(main.parGroup);
+		groupsNodeGroup = ParGroup.tail(main.parGroup);
+		fxNodeGroup = ParGroup.tail(main.parGroup);
 
 		master = this.createMasterChannels();
 

@@ -44,9 +44,9 @@ I8TChannel : Sequenceable
 		if( outbus_.notNil, {
 
 			if( synthGroup_.isKindOf(AbstractGroup), {				
-				synthGroup = ParGroup.head(synthGroup_);
+				synthGroup = Group.head(synthGroup_);
 			}, {				
-				synthGroup = ParGroup.head(main.server.defaultGroup);
+				synthGroup = Group.head(main.parGroup);
 			});
 
 			fxChain = I8TFXChain.new;

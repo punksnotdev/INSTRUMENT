@@ -20,7 +20,7 @@ I8TSynthInstrument : I8TInstrument
 
     init{|main_,name_|
         ["new pargroup", main_.server].postln;
-        group = ParGroup.new( main_.server );
+        group = Group.new( main_.parGroup );
         group.register;
         groupID = group.nodeID;
 

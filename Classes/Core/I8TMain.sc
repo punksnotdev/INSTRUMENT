@@ -6,6 +6,7 @@ I8TMain : Event
 	
 
 	var <server;
+	var <parGroup;
 	var <currentServer;
 	var <isBooted;
 
@@ -113,11 +114,15 @@ I8TMain : Event
 
 			if( z.isKindOf(Server), {
 				server = z;
+				parGroup = ParGroup.new( server );
+				parGroup.register;
 			});
 			
 
 		}, {
 			server = Server.local;
+			parGroup = Group.new( server );
+			parGroup.register;
 		});
 		
 
