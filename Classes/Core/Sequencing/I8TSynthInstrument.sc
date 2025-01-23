@@ -86,7 +86,7 @@ I8TSynthInstrument : I8TInstrument
     //             fxSynth=nil;
     //         };
     //
-    //         if( group.isKindOf(Group), {
+    //         if( group.isKindOf(AbstractGroup), {
     //             fxSynth = Synth.head(group,synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
     //         }, {
     //              fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus]);

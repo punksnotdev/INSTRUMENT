@@ -42,10 +42,10 @@ I8TChannel : Sequenceable
 
 		if( outbus_.notNil, {
 
-			if( synthGroup_.isKindOf(Group), {
-				synthGroup = ParGroup.head(synthGroup_);
+			if( synthGroup_.isKindOf(AbstractGroup), {
+				synthGroup = Group.head(synthGroup_);
 			}, {
-				synthGroup = ParGroup.head(graph.server.defaultGroup);
+				synthGroup = Group.head(graph.server.defaultGroup);
 			});
 
 			fxChain = I8TFXChain.new;
@@ -181,7 +181,7 @@ I8TChannel : Sequenceable
 	}
 
 	setSynthGroup {|synthGroup_|
-		if(synthGroup_.isKindOf(Group)) {
+		if(synthGroup_.isKindOf(AbstractGroup)) {
 			synthGroup=synthGroup_;
 		}
 	}
