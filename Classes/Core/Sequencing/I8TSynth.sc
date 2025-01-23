@@ -66,11 +66,17 @@ I8TSynth : Sequenceable {
 
 						synthdefName = synthdef.name.asSymbol;
 
-						synth = Synth.before(
-							target,
-							synthdefName,
-							args
-						);
+
+						main_.server.bind { 
+							synth = Synth.before(
+								target,
+								synthdefName,
+								args
+							);
+						};
+
+
+						main = main_;
 
 						^this
 					}
@@ -78,6 +84,7 @@ I8TSynth : Sequenceable {
 
 			};
 		};
+
 
 	}
 

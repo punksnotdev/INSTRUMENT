@@ -15,6 +15,7 @@ I8TSynthPlayer : I8TSynthInstrument
 
 	var creatingSynth;
 
+	var main;
 
 	*new{|synthdef_,name_, main_|
 		["main_",main_].postln;
@@ -92,6 +93,7 @@ I8TSynthPlayer : I8TSynthInstrument
 				// this.createSynth([\out,outbus]);
 				synth_parameters = IdentityDictionary.new;
 				
+				main = main_;
 				
 				^super.init(main_,name);
 
@@ -156,14 +158,20 @@ I8TSynthPlayer : I8TSynthInstrument
 
 
 			if( fxSynth.isKindOf(Synth), {
+
 				
-				synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
+				main.server.bind {
+					synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
+				};
+
 				synth.register;
 			}, {
 				
-				synth = Synth.head( group, synthdef.name.asSymbol, parameters );
-
-				synth.register;
+				main.server.bind {
+					synth = Synth.head( group, synthdef.name.asSymbol, parameters )	;
+					
+					synth.register;
+				};
 
 			});
 

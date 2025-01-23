@@ -165,28 +165,31 @@ Looper : I8TSynthInstrument
 					// then create new synth:
 
 					if( fxSynth.isKindOf(Synth), {
+						main.server.bind {
+							synth = Synth.before( fxSynth, \loopRead,
+								[
+								\out,fxBus,
+								\buffer, buffers[nextLayer],
+								\duration, durations[nextLayer],
+								\amp, amp,
+								\rate, rate
+							]);
+							synth.register;
+						};
 
-						synth = Synth.before( fxSynth, \loopRead,
-							[
-							\out,fxBus,
-							\buffer, buffers[nextLayer],
-							\duration, durations[nextLayer],
-							\amp, amp,
-							\rate, rate
-						]);
 
-
-						synth.register;
 					}, {
 
-						synth = Synth.head( group, \loopRead,[
-							\buffer, buffers[nextLayer],
-							\duration, durations[nextLayer],
-							\amp, amp,
-							\rate, rate
-						]);
+						main.server.bind {
+							synth = Synth.head( group, \loopRead,[
+								\buffer, buffers[nextLayer],
+								\duration, durations[nextLayer],
+								\amp, amp,
+								\rate, rate
+							]);
+							synth.register;
+						};
 
-						synth.register;
 
 					});
 
