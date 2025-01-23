@@ -2,6 +2,7 @@ I8TNode : I8TeventListener
 {
 
 	classvar <>graph;
+	var <main;
 
 	var <>name;
 	var <>input;
@@ -14,15 +15,15 @@ I8TNode : I8TeventListener
 	var <parameters;
 
 
-	*new {|graph_,name_|
+	*new {|main_,name_|
 
 		var newKey=name_;
 		
-		if( graph_ != nil, {
+		if( main_ != nil, {
 
-			this.initClass(graph_);
+			if( this.graph.isNil ) { this.initClass(main_); };			
 
-			^super.new.init(graph_,newKey);
+			^super.new.init(main_,newKey);
 
 		}, {
 
@@ -36,17 +37,18 @@ I8TNode : I8TeventListener
 		nodeGraph.free( this );
 	}
 
-	*initClass{|graph_|
-		graph = graph_;
+	*initClass{|main_|
+		graph = main_;
 	}
 
-	init {|nodeGraph_,name_|
+	init {|main_,name_|
 		var newKey;
 		
 		newKey = name_;
 
-		if(nodeGraph_!=nil,{
-			nodeGraph = nodeGraph_;
+		if(main_!=nil,{
+			nodeGraph = main_;
+			main = main_;
 			if( name_.isNil ) {
 				newKey = UniqueID.next;
 			};

@@ -14,20 +14,21 @@ I8TSynthInstrument : I8TInstrument
     var autostart;
 
 
-    *new{|name_|
-        ^super.new.init(name_,this.graph);
+    *new{|name_,main_|
+        ^super.new.init(name_,main_);
     }
 
-    init{|graph_,name_|
-        group = ParGroup.new( graph_.server );
+    init{|main_,name_|
+        ["new pargroup", main_.server].postln;
+        group = ParGroup.new( main_.server );
         group.register;
         groupID = group.nodeID;
 
         fx_parameters = IdentityDictionary.new;
         fxSynth = nil;
-        fxBus = Bus.audio(graph_.server,2);
+        fxBus = Bus.audio(main_.server,2);
 
-        super.init(graph_,name_);
+        super.init(main_,name_);
 
     }
 

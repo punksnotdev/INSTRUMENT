@@ -28,7 +28,7 @@ I8TSynth : Sequenceable {
 
 
 
-	init { arg name_, graph_, synthdef, args, target, addAction;
+	init { arg name_, main_, synthdef, args, target, addAction;
 
 		super.init;
 

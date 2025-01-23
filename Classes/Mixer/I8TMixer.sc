@@ -6,7 +6,7 @@ I8TMixer : Sequenceable
 	var <master;
 	var <fx;
 	var <masterFx;
-	var main;
+	
 	var submixes;
 	var sends;
 	var returns;
@@ -30,7 +30,6 @@ I8TMixer : Sequenceable
 	init {|main_|
 
 		main = main_;
-
 		// this.setupSequencer( main.sequencer );
 
 		channels = IdentityDictionary.new;
@@ -42,7 +41,7 @@ I8TMixer : Sequenceable
 		bus = Bus.audio(main.server,1);
 		// fxBus = Bus.audio(main.server,1);
 
-		fx = I8TChannelGroup(this);
+		fx = I8TChannelGroup(this, main);
 
 	}
 
@@ -75,7 +74,7 @@ I8TMixer : Sequenceable
 
 		^Array.fill(2,{|index|
 
-			var masterChannel = I8TChannel(masterGroup, outbus, bus);
+			var masterChannel = I8TChannel(masterGroup, outbus, bus, main_:main);
 
 			var channelName = ("system_out_" ++ index).asSymbol;
 
@@ -147,7 +146,7 @@ I8TMixer : Sequenceable
 
 
 						if(( channel.isKindOf( I8TChannel ) == false ), {
-							channel = I8TChannel(mixNodeGroup,bus);
+							channel = I8TChannel(mixNodeGroup,bus, main_:main);
 							channel.sequencer = sequencer;
 						});
 
@@ -218,7 +217,7 @@ I8TMixer : Sequenceable
 
 					if( channelGroup['group'].isKindOf(I8TChannel) == false, {
 
-						groupMainChannel=I8TChannel(groupsNodeGroup,bus);
+						groupMainChannel=I8TChannel(groupsNodeGroup,bus, main_:main);
 						groupMainChannel.name=key;
 						groupMainChannel.sequencer = sequencer;
 

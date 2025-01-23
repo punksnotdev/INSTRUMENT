@@ -21,7 +21,7 @@ Looper : I8TSynthInstrument
 			^super.new.init(this.graph,bus_);
 		}
 
-		init{|graph_,bus_|
+		init{|main_,bus_|
 
 			if( bus_.isInteger, {
 				bus = bus_;
@@ -42,9 +42,9 @@ Looper : I8TSynthInstrument
 
 			this.amp=1;
 
-			main = graph_;
+			main = main_;
 
-			super.init(graph_,"looper_"++bus);
+			super.init(main_,"looper_"++bus);
 		}
 
 

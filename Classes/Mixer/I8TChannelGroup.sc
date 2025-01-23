@@ -6,11 +6,12 @@ I8TChannelGroup : Sequenceable
 	var channels;
 
 
-	*new {|mixer_|
-		^super.new.init(this.graph,mixer_);
+	*new {|mixer_,main_|
+		^super.new.init(main_,mixer_);
 	}
 
-	init {|graph_,mixer_|
+	init {|main_,mixer_|
+		["new channel group", main_,mixer_].postln;
 		channels = ();
 		if( mixer_.isKindOf(I8TMixer) ) {
 			mixer = mixer_;

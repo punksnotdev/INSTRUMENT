@@ -30,22 +30,22 @@ I8TChannel : Sequenceable
 
 
 
-	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
-		^super.new.init(this.graph,synthGroup_,outbus_,inbus_);
+	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true,main_|
+		^super.new.init(main_,synthGroup_,outbus_,inbus_);
 	}
 
-	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
+	init {|main_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
-		if( graph_.notNil, {
-			sequencer = graph_.sequencer;
+		if( main_.notNil, {
+			sequencer = main_.sequencer;
 		});
 
 		if( outbus_.notNil, {
 
-			if( synthGroup_.isKindOf(AbstractGroup), {
-				synthGroup = Group.head(synthGroup_);
-			}, {
-				synthGroup = Group.head(graph.server.defaultGroup);
+			if( synthGroup_.isKindOf(AbstractGroup), {				
+				synthGroup = ParGroup.head(synthGroup_);
+			}, {				
+				synthGroup = ParGroup.head(graph.server.defaultGroup);
 			});
 
 			fxChain = I8TFXChain.new;
@@ -53,6 +53,8 @@ I8TChannel : Sequenceable
 
 
 			this.setupListeners();
+			
+			["using server", graph.server].postln;
 
 			if(inbus_.notNil, {
 				inbus=inbus_;
@@ -177,7 +179,7 @@ I8TChannel : Sequenceable
 	}
 
 	getSynthGroup {
-		^synthGroup
+	^synthGroup
 	}
 
 	setSynthGroup {|synthGroup_|

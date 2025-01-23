@@ -16,10 +16,10 @@ I8TSynthPlayer : I8TSynthInstrument
 	var creatingSynth;
 
 
-	*new{|synthdef_,name_|
-
+	*new{|synthdef_,name_, main_|
+		["main_",main_].postln;
 		if(
-			this.graph.isKindOf(I8TMain) &&
+			main_.isKindOf(I8TMain) &&
 			(
 				synthdef_.isKindOf(SynthDef)
 				||
@@ -28,9 +28,9 @@ I8TSynthPlayer : I8TSynthInstrument
 		, {
 
 			var instance;
-			instance = super.new(synthdef_.name.asSymbol);
+			instance = super.new(synthdef_.name.asSymbol,main_);
 			
-			instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
+			instance.init(main_,synthdef_,synthdef_.name.asSymbol);
 			
 			^instance
 
@@ -41,8 +41,8 @@ I8TSynthPlayer : I8TSynthInstrument
 		});
 	}
 
-	init{|graph_,synthdef_,name_|
-		if( graph_.isKindOf(I8TMain) && synthdef_.notNil ) {
+	init{|main_,synthdef_,name_|
+		if( main_.isKindOf(I8TMain) && synthdef_.notNil ) {
 		
 			nodeIDs=IdentityDictionary.new;
 
@@ -78,8 +78,8 @@ I8TSynthPlayer : I8TSynthInstrument
 				) {		
 					
 
-					if(graph_.synths.notNil && graph_.synths[synthdef_].notNil, {							
-						synthdef = graph_.synths[synthdef_.asSymbol];
+					if(main_.synths.notNil && main_.synths[synthdef_].notNil, {							
+						synthdef = main_.synths[synthdef_.asSymbol];
 						name = synthdef_.asSymbol;
 
 					}, {					
@@ -93,7 +93,7 @@ I8TSynthPlayer : I8TSynthInstrument
 				synth_parameters = IdentityDictionary.new;
 				
 				
-				^super.init(graph_,name);
+				^super.init(main_,name);
 
 			});
 
