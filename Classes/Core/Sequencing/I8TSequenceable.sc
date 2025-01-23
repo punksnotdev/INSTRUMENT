@@ -58,80 +58,92 @@ Sequenceable : I8TNode
 
 	seq {|parameter_,pattern_,test_|
 
+		var parameter;
+		var pattern;
 
-		var parameters;
+		var parameters;		
 
 		if( parameter_.isKindOf(Symbol), {
+			parameter = parameter_;
+			pattern = pattern_;
+		}, {
 
-			if( pattern_.isKindOf(Array), {
-
-
-				var subarrays = pattern_.select({|item| item.isKindOf(Array) });
-
-				// TODO: mejorar chequeo. ahora está asumiendo que viene bien
-				if( subarrays.size == pattern_.size, {
-
-					
-					var subsubarrays = subarrays.select({|item| item.select({|subitem| subitem.isKindOf(Array) }).size == item.size });
-
-					
-					this.multiPattern = true;
-
-					// TODO: mejorar chequeo. ahora está asumiendo que viene bien
-					if( subsubarrays.size == subarrays.size, {
-
-						switch( parameter_,
-							\note, {
-								subarrays.do({|arr,index|
-									this[index].note( arr[0] ).x( arr[1] )
-								});
-							}
-						);
-
-
-					}, {
-
-						subarrays.do({|arr,index|
-							this[index].seq( parameter_, arr )
-						});
-
-					});
-
-
-					^this
-
-				});
-			});
-
+			if( parameter_.isKindOf(Array) || parameter_.isKindOf(String) ) {
+				parameter = \trigger;
+				pattern = parameter_;
+			};		
 		});
 
+		if( pattern.isKindOf(Array), {
 
-		parameters = this.orderPatternParameters(
-			parameter_,
-			pattern_
-		);
 
-		currentParameter = parameters.parameter;
+			var subarrays = pattern.select({|item| item.isKindOf(Array) });
 
-		if( sequencer.notNil, {
+			// TODO: mejorar chequeo. ahora está asumiendo que viene bien
+			if( subarrays.size == pattern.size, {
 
-			currentPatternEvent = sequencer.addPattern(
-				name,
-				parameters.parameter,
-				nextPatternKey,
-				parameters.pattern,
-				parameters.play_parameters,
-				test_
-			);
+				
+				var subsubarrays = subarrays.select({|item| item.select({|subitem| subitem.isKindOf(Array) }).size == item.size });
 
-			if( currentPatternEvent.isKindOf(PatternEvent), {
+				
+				this.multiPattern = true;
 
-				currentPattern = currentPatternEvent.pattern.pattern;
+				// TODO: mejorar chequeo. ahora está asumiendo que viene bien
+				if( subsubarrays.size == subarrays.size, {
+
+					switch( parameter_,
+						\note, {
+							subarrays.do({|arr,index|
+								this[index].note( arr[0] ).x( arr[1] )
+							});
+						}
+					);
+
+
+				}, {
+
+					subarrays.do({|arr,index|
+						this[index].seq( parameter_, arr )
+					});
+
+				});
+
+
+				^this
 
 			});
+		});
 
+		if( parameter.notNil && pattern.notNil, {
+
+			parameters = this.orderPatternParameters(
+				parameter,
+				pattern
+			);
+			currentParameter = parameters.parameter;
+
+			if( sequencer.notNil, {
+
+				currentPatternEvent = sequencer.addPattern(
+					name,
+					parameters.parameter,
+					nextPatternKey,
+					parameters.pattern,
+					parameters.play_parameters,
+					test_
+				);
+
+				if( currentPatternEvent.isKindOf(PatternEvent), {
+
+					currentPattern = currentPatternEvent.pattern.pattern;
+
+				});
+
+			}, {
+				"seq: Sequencer is nil".warn;
+			});
 		}, {
-			"seq: Sequencer is nil".warn;
+			"seq: parameter or pattern is nil".warn;
 		});
 
 		^this;
@@ -418,7 +430,9 @@ Sequenceable : I8TNode
 	// utils, helpers
 
 	updateSequence {
-		sequencer.updateSequenceInfo( name, currentParameter );
+		if( currentParameter.notNil ) {
+			sequencer.updateSequenceInfo( name, currentParameter );
+		};
 		^this;
 	}
 
