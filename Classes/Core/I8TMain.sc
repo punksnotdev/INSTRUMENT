@@ -143,8 +143,7 @@ I8TMain : Event
 
 			mixer = I8TMixer.new(this);
 
-			mixer.setupSequencer(sequencer);
-			"bug3".postln;
+			mixer.setupSequencer(sequencer);		
 			mixer.setupMaster();
 
 			controllerManager = ControllerManager.new(this);
@@ -158,8 +157,6 @@ I8TMain : Event
 			rootNode = I8TNode.new(this,"rootNode");
 
 			this.addNode( rootNode );
-
-"bug4".postln;
 			midiControllers = ();
 			midiControllers.inputs = List.new;
 			midiControllers.outputs = List.new;
@@ -214,14 +211,12 @@ I8TMain : Event
 		data.synths = () ;
 		data.synths.parameters = ();
 
-
-			"bug4".postln;
+		
 		synthLoader = I8TSynthLoader();
 
 		synths = synthLoader.loadSynths();
 		
 		currentFolder = synths;
-	"bug5".postln;
 		if( createNew == true, {
 
 			^this
@@ -919,12 +914,8 @@ I8TMain : Event
 
 				}, {
 
-
-					["put ???",key_].postln;
-
 					item = this.createGroup( key_, group_ );
 
-					["put !!!",key_,item].postln;
 					groups[key_] = item;
 
 					mixer.addChannel( item );
@@ -1237,8 +1228,6 @@ I8TMain : Event
 			||
 			childItem.isKindOf(SynthDefVariant)
 		) ) {
-
-			"bbug1".postln;
 			
 			node = I8TSynthPlayer(childItem);
 			
@@ -1246,8 +1235,6 @@ I8TMain : Event
 		};
 
 		if( synthLoader.validateSynthName(childItem) ) {
-
-			"bbug2".postln;
 			
 
 			if( nodes[newKey].notNil, {
@@ -1262,8 +1249,6 @@ I8TMain : Event
 		};
 
 		if( synthLoader.validateFolderName(childItem) ) {
-
-			"bbug3".postln;
 			
 
 			if( nodes[newKey].notNil, {

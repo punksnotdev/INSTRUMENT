@@ -36,8 +36,6 @@ I8TChannel : Sequenceable
 
 	init {|graph_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
-		["channel graph.server",graph.server].postln;
-
 		if( graph_.notNil, {
 			sequencer = graph_.sequencer;
 		});
@@ -55,8 +53,6 @@ I8TChannel : Sequenceable
 
 
 			this.setupListeners();
-
-			["graph.server", graph.server].postln;
 
 			if(inbus_.notNil, {
 				inbus=inbus_;

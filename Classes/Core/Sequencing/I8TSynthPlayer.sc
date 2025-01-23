@@ -18,15 +18,6 @@ I8TSynthPlayer : I8TSynthInstrument
 
 	*new{|synthdef_,name_|
 
-		["new this.graph",this.graph].postln;
-"pre1".postln;
-
-["this.graph.isKindOf(I8TMain)",this.graph.isKindOf(I8TMain)].postln;
-["synthdef_.isKindOf(SynthDef)",synthdef_.isKindOf(SynthDef)].postln;
-
-["name_.isKindOf(String)",name_.isKindOf(String)].postln;
-
-
 		if(
 			this.graph.isKindOf(I8TMain) &&
 			(
@@ -38,7 +29,6 @@ I8TSynthPlayer : I8TSynthInstrument
 
 			var instance;
 			instance = super.new(synthdef_.name.asSymbol);
-			"pre2".postln;
 			
 			instance.init(this.graph,synthdef_,synthdef_.name.asSymbol);
 			
@@ -52,10 +42,8 @@ I8TSynthPlayer : I8TSynthInstrument
 	}
 
 	init{|graph_,synthdef_,name_|
-		["graph_,synthdef_,name_",graph_,synthdef_,name_].postln;
 		if( graph_.isKindOf(I8TMain) && synthdef_.notNil ) {
 		
-			["init__ 1?", graph_,synthdef_,name_ ].postln;
 			nodeIDs=IdentityDictionary.new;
 
 			mode = \poly;
@@ -81,7 +69,6 @@ I8TSynthPlayer : I8TSynthInstrument
 					synth_parameters=synth_parameters++synthdef_.parameters;
 				};
 
-				["graph_ >>>", graph_].postln;
 				if(
 					(
 						synthdef_.isKindOf(Symbol)
@@ -89,11 +76,9 @@ I8TSynthPlayer : I8TSynthInstrument
 						synthdef_.isKindOf(String)
 					)
 				) {		
+					
 
-					"debug1".postln;
-
-					if(graph_.synths.notNil && graph_.synths[synthdef_].notNil, {	
-						"debug2".postln;				
+					if(graph_.synths.notNil && graph_.synths[synthdef_].notNil, {							
 						synthdef = graph_.synths[synthdef_.asSymbol];
 						name = synthdef_.asSymbol;
 
@@ -106,8 +91,7 @@ I8TSynthPlayer : I8TSynthInstrument
 
 				// this.createSynth([\out,outbus]);
 				synth_parameters = IdentityDictionary.new;
-
-				["graph_", graph_, graph_].postln;
+				
 				
 				^super.init(graph_,name);
 
