@@ -635,7 +635,7 @@ I8TChannel : Sequenceable
 				};
 				^compressor = Synth.new(					
 					\simpleCompressor,
-					[\in,bus,\out,bus]
+					[\inBus, bus,\outBus,bus],
 					inSynth,
 					\addAfter
 					
@@ -648,7 +648,7 @@ I8TChannel : Sequenceable
 				};
 				^locut = Synth.new(					
 					\hpf,
-					[\in,bus,\out,bus]
+					[\inBus,bus,\outBus,bus],
 					inSynth,
 					\addAfter
 				);
