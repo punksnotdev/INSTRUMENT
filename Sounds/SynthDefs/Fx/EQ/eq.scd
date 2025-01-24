@@ -37,6 +37,9 @@ SynthDef(\eq, {
 	wet = BPeakEQ.ar(wet, middleFreq, 1, dBsMiddle);
 	wet = BHiShelf.ar(wet, highFreq, 1, dBsHigh);
 
+	// compensate:
+	wet = wet * 2;
+
 	sig = (wet * (1 - lowCut)) + (HPF.ar(wet,lowCutFreq)*lowCut);
 
 	ReplaceOut.ar(outBus, Pan2.ar(sig,pan))
