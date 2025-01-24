@@ -60,10 +60,10 @@ I8TChannel : Sequenceable
 			if(inbus_.notNil, {
 				inbus=inbus_;
 			}, {
-				inbus = Bus.audio(main.server,1);
+				inbus = Bus.audio(main.server,2);
 			});
 
-			bus = Bus.audio(main.server,1);
+			bus = Bus.audio(main.server,2);
 
 
 			inSynth = Synth.new(				
