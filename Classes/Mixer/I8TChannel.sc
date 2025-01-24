@@ -24,17 +24,17 @@ I8TChannel : Sequenceable
 
 	var <inputsBus;
 
-	var synthGroup;
+	var channelGroup;
 
 	var sourceListeners;
 
 
 
-	*new {|synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true,main_|
-		^super.new.init(main_,synthGroup_,outbus_,inbus_);
+	*new {|mixerGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true,main_|
+		^super.new.init(main_,mixerGroup_,outbus_,inbus_);
 	}
 
-	init {|main_,synthGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
+	init {|main_,mixerGroup_,outbus_,inbus_,eq_=true,compressor_=true,locut_=true|
 
 		if( main_.notNil, {
 			sequencer = main_.sequencer;
@@ -43,10 +43,10 @@ I8TChannel : Sequenceable
 
 		if( outbus_.notNil, {
 
-			if( synthGroup_.isKindOf(AbstractGroup), {				
-				synthGroup = Group.head(synthGroup_);
+			if( mixerGroup_.isKindOf(AbstractGroup), {				
+				channelGroup = Group.head(mixerGroup_);
 			}, {				
-				synthGroup = Group.head(main.parGroup);
+				channelGroup = Group.head(main.parGroup);
 			});
 
 			fxChain = I8TFXChain.new;
@@ -151,7 +151,7 @@ I8TChannel : Sequenceable
 	setInput {|input_|
 
 		super.setInput(input_);
-		input.group=synthGroup;
+		input.group=channelGroup;
 		input.outbus=inbus;
 		input.synth.set(\out,inbus);
 
@@ -182,13 +182,13 @@ I8TChannel : Sequenceable
 		inbus = inbus_;
 	}
 
-	getSynthGroup {
-	^synthGroup
+	getchannelGroup {
+	^channelGroup
 	}
 
-	setSynthGroup {|synthGroup_|
-		if(synthGroup_.isKindOf(AbstractGroup)) {
-			synthGroup=synthGroup_;
+	setChannelGroup {|channelGroup_|
+		if(channelGroup_.isKindOf(AbstractGroup)) {
+			channelGroup=channelGroup_;
 		}
 	}
 
