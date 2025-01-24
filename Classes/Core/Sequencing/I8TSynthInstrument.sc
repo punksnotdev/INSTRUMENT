@@ -19,7 +19,7 @@ I8TSynthInstrument : I8TInstrument
     }
 
     init{|main_,name_|
-        ["new pargroup", main_.server].postln;
+
         group = Group.new( main_.parGroup );
         group.register;
         groupID = group.nodeID;
@@ -88,7 +88,7 @@ I8TSynthInstrument : I8TInstrument
     //         };
     //
     //         if( group.isKindOf(AbstractGroup), {
-    //             fxSynth = Synth.head(group,synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus]);
+                // fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus,\outBus,outbus], group, \addToHead);
     //         }, {
     //              fxSynth = Synth.new(synthdefName,this.createParametersArray(fx_parameters)++[\inBus,fxBus]);
     //         });

@@ -68,10 +68,11 @@ I8TSynth : Sequenceable {
 
 
 						main_.server.bind { 
-							synth = Synth.before(
-								target,
+							synth = Synth.new(
 								synthdefName,
-								args
+								args,
+								target,
+								\addBefore
 							);
 						};
 

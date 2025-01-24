@@ -161,14 +161,22 @@ I8TSynthPlayer : I8TSynthInstrument
 
 				
 				main.server.bind {
-					synth = Synth.before( fxSynth, synthdef.name.asSymbol, parameters++[\out,fxBus] );
+					synth = Synth.new( 
+						synthdef.name.asSymbol, parameters++[\out,fxBus],
+						fxSynth,
+						\addToBefore
+					);
 				};
 
 				synth.register;
 			}, {
 				
 				main.server.bind {
-					synth = Synth.head( group, synthdef.name.asSymbol, parameters )	;
+					synth = Synth.new( 
+						synthdef.name.asSymbol, parameters,
+						group,
+						\addToHead
+					);
 					
 					synth.register;
 				};

@@ -166,14 +166,14 @@ Looper : I8TSynthInstrument
 
 					if( fxSynth.isKindOf(Synth), {
 						main.server.bind {
-							synth = Synth.before( fxSynth, \loopRead,
+							synth = Synth.new( \loopRead,
 								[
 								\out,fxBus,
 								\buffer, buffers[nextLayer],
 								\duration, durations[nextLayer],
 								\amp, amp,
 								\rate, rate
-							]);
+							], fxSynth, \addBefore );
 							synth.register;
 						};
 
@@ -181,12 +181,16 @@ Looper : I8TSynthInstrument
 					}, {
 
 						main.server.bind {
-							synth = Synth.head( group, \loopRead,[
-								\buffer, buffers[nextLayer],
-								\duration, durations[nextLayer],
-								\amp, amp,
-								\rate, rate
-							]);
+							synth = Synth.new(
+								\loopRead,[
+									\buffer, buffers[nextLayer],
+									\duration, durations[nextLayer],
+									\amp, amp,
+									\rate, rate
+								],
+								group,
+								\addToHead
+							);
 							synth.register;
 						};
 

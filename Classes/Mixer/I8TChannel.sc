@@ -66,10 +66,12 @@ I8TChannel : Sequenceable
 			bus = Bus.audio(main.server,1);
 
 
-			inSynth = Synth.tail(
-				synthGroup,
+			inSynth = Synth.new(				
 				\audioBus,
-				[\inBus,inbus,\outBus,bus]
+				[\inBus,inbus,\outBus,bus],
+				channelGroup,
+				\addToTail
+
 			);
 
 
@@ -88,10 +90,11 @@ I8TChannel : Sequenceable
 			};
 
 
-			outSynth = Synth.tail(
-				synthGroup,
+			outSynth = Synth.new(
 				\audioBus,
-				[\inBus,bus,\outBus,outbus]
+				[\inBus,bus,\outBus,outbus],
+				channelGroup,
+				\addToTail
 			);
 
 
@@ -617,10 +620,12 @@ I8TChannel : Sequenceable
 					eq.free;
 					eq = nil;
 				};
-				^eq = Synth.after(
-					inSynth,
+				^eq = Synth.new(
 					\eq,
-					[\inBus,bus,\outBus,bus]
+					[\inBus,bus,\outBus,bus],
+					inSynth,
+					\addAfter
+					
 				);
 			},
 			\compressor, {
@@ -628,10 +633,12 @@ I8TChannel : Sequenceable
 					compressor.free;
 					compressor = nil;
 				};
-				^compressor = Synth.after(
-					inSynth,
+				^compressor = Synth.new(					
 					\simpleCompressor,
 					[\in,bus,\out,bus]
+					inSynth,
+					\addAfter
+					
 				);
 			},
 			\locut, {
@@ -639,10 +646,11 @@ I8TChannel : Sequenceable
 					locut.free;
 					locut = nil;
 				};
-				^locut = Synth.after(
-					inSynth,
+				^locut = Synth.new(					
 					\hpf,
 					[\in,bus,\out,bus]
+					inSynth,
+					\addAfter
 				);
 			}
 		);
@@ -701,10 +709,11 @@ I8TChannel : Sequenceable
 
 		inputsBus = Bus.audio(main.server,1);
 
-		inputsSynth = Synth.before(
-			inSynth,
+		inputsSynth = Synth.new(					
 			\audioBus,
-			[\inBus,inputsBus,\outBus,bus]
+			[\inBus,inputsBus,\outBus,bus],
+			inSynth,
+			\addBefore
 		);
 
 	}
@@ -714,10 +723,11 @@ I8TChannel : Sequenceable
 		if( inputsBus.isKindOf(Bus) ) {
 			var synth;
 
-			synth = Synth.after(
-				source.outSynth,
+			synth = Synth.new(
 				\audioBus,
-				[\inBus, source.bus,\outBus,inputsBus]
+				[\inBus, source.bus,\outBus,inputsBus],
+				source.outSynth,
+				\addAfter
 			);
 
 			^synth;
