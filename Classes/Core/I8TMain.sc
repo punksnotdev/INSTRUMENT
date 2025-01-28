@@ -331,10 +331,17 @@ I8TMain : Event
 
 
 	free {|node|
-		if( node.isKindOf(Sequenceable), {
-			sequencer.unregisterInstrument(node);
+		if( node.isNil, {
+			mixer.free;
+			nodes.do({|n| n.free; });
+			nodes.clear;
+		}, {
+			if( node.isKindOf(Sequenceable), {
+				sequencer.unregisterInstrument(node);
+				node.free;
+			});
+			nodes[node.name] = nil;
 		});
-		nodes[node.name] = nil;
 	}
 
 	speed_ {|speed_|

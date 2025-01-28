@@ -55,8 +55,6 @@ I8TChannel : Sequenceable
 
 			this.setupListeners();
 			
-			["using server", main.server].postln;
-
 			if(inbus_.notNil, {
 				inbus=inbus_;
 			}, {
@@ -597,17 +595,35 @@ I8TChannel : Sequenceable
 
 
 	free {|module|
-		switch(module,
-			\eq, {
-				eq.free; eq=nil;
-			},
-			\compressor, {
-				compressor.free; compressor=nil;
-			},
-			\locut, {
-				locut.free; locut=nil;
-			}
-		);
+
+		if( module.isNil, {
+			channelGroup.free;
+			fxChain.collect({|fx,key|
+				fx.free;
+			});
+			fxChain.clear;
+			fxChain = nil;
+			inSynth.free;
+			inputsSynth.free;
+			outSynth.free;
+			eq.free;
+			compressor.free;
+			locut.free;
+		}, {
+
+			switch(module,
+				\eq, {
+					eq.free; eq=nil;
+				},
+				\compressor, {
+					compressor.free; compressor=nil;
+				},
+				\locut, {
+					locut.free; locut=nil;
+				}
+			);
+		});
+
 	}
 
 

@@ -18,7 +18,6 @@ I8TSynthPlayer : I8TSynthInstrument
 	var main;
 
 	*new{|synthdef_,name_, main_|
-		["main_",main_].postln;
 		if(
 			main_.isKindOf(I8TMain) &&
 			(
