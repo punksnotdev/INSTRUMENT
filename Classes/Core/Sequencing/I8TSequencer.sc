@@ -12,9 +12,9 @@ Sequencer : I8TNode
 	var patterns;
 	var sequence;
 
-	var tdef;
+	var barRoutine;
+	var beatRoutine;
 
-	var clock;
 	var playing;
 
 	var beats;
@@ -33,12 +33,7 @@ Sequencer : I8TNode
 
 	// V2
 	var <queue;
-	var <tdef;
 	var <timeSignature;
-	var <ticks;
-	var <tickTime;
-	var <maxTicks;
-
 
 	// END V2
 
@@ -65,17 +60,10 @@ Sequencer : I8TNode
 
 		loopers = IdentityDictionary.new;
 
-		ticks = 0;
-		maxTicks = (30 * 60) * 1000;
-
-		// 01/jul/23 seems like 500 is a safe limit, higher times have resulted in seq innacuracy on a 16gb ram i7 8th gen 
-		tickTime = 500;
-
 		beats = 0;
 		speed = 1;
 		repeat = 1;
 
-		clock = 0;
 		playing = true;
 
 		printBeats = false;
@@ -96,144 +84,102 @@ Sequencer : I8TNode
 
 		playing = true;
 
+		// Stop existing routines if any
+		if(barRoutine.notNil) { barRoutine.stop; barRoutine = nil };
+		if(beatRoutine.notNil) { beatRoutine.stop; beatRoutine = nil };
 
-		tdef = Tdef(( "sequencer" ++ "_" ++ main.threadID).asSymbol,{
-
-			inf.do{|i|
-				if( (beats % timeSignature.beats ) == 0 ) {
-
-					// if bar start, check queue
-					if( timeSignature.isKindOf(Event) ) {
-						this.queueDo(\stop);
-						this.queueDo(\go);
-						if( beats % timeSignature.beats == 0 ) {
-							this.queueDo(\play);
-						};
-
-					};
-
-					if( beats % 1 == 0 ) {
-
-						loopers.do({|stateArray,looper|
-
-							stateArray.do({|state,stateIndex|
-
-								switch( state,
-									\awaitingRec, {
-										looper.performRec(stateIndex);
-										loopers[looper][stateIndex]=\recording;
-									},
-									\awaitingStart, {
-										looper.performStart(stateIndex);
-										loopers[looper][stateIndex]=\playing;
-									},
-									\awaitingStop, {
-										looper.performStop(stateIndex);
-										loopers[looper][stateIndex]=\stopped;
-									}
-								);
-
-							});
-						});
-					};
-
-
-					if( ticks % tickTime == 0 ) {
-
-						if( singleFunctions[beats].isKindOf(Function), {
-							singleFunctions[beats].value();
-						});
-						repeatFunctions.do({|f,k|
-
-							f.do({|rf,l|
-								var offset = 0;
-
-								if(rf.offset.isInteger, {
-									offset = rf.offset;
-								});
-
-								if( (beats - offset) % k.asInteger == 0, {
-									rf.function.value();
-								});
-							});
-
-						});
-
-
-
-					};
-
-				};
-
-
-				if( playing, {
-					sequencerTracks.do({|track|
-						track.fwd( ticks );
-					});
-				});
-
-
-				ticks = ticks+1;
-				if( ticks > maxTicks ) {
-					ticks = 0;
-				};
-
-				if( ticks % ((60/main.tempo)*tickTime) < 1 ) {
-
-					beats = beats+1;
-
-					if( printBeats ) {
-						beats.postln;
-					};
-
-				};
-
-				// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
-				(1/tickTime).wait;
-
-
+		// Bar callback — fires at bar boundaries for queue/looper processing
+		barRoutine = Routine({
+			loop {
+				this.queueDo(\stop);
+				this.queueDo(\go);
+				this.queueDo(\play);
+				this.processLoopers;
+				timeSignature.beats.wait;
 			};
+		}).play(main.clock, quant: timeSignature.beats);
 
+		// Beat callback — fires every beat for functions and beat counting
+		beatRoutine = Routine({
+			loop {
+				this.processSingleFunctions;
+				this.processRepeatFunctions;
 
+				if( printBeats ) { beats.postln };
+
+				beats = beats + 1;
+				1.wait;
+			};
+		}).play(main.clock, quant: 1);
+
+	}
+
+	processLoopers {
+		loopers.do({|stateArray, looper|
+			stateArray.do({|state, stateIndex|
+				switch( state,
+					\awaitingRec, {
+						looper.performRec(stateIndex);
+						loopers[looper][stateIndex] = \recording;
+					},
+					\awaitingStart, {
+						looper.performStart(stateIndex);
+						loopers[looper][stateIndex] = \playing;
+					},
+					\awaitingStop, {
+						looper.performStop(stateIndex);
+						loopers[looper][stateIndex] = \stopped;
+					}
+				);
+			});
 		});
+	}
 
-		tdef.quant=4;
-		tdef.play(main.clock);
+	processSingleFunctions {
+		if( singleFunctions[beats].isKindOf(Function) ) {
+			singleFunctions[beats].value();
+		};
+	}
 
+	processRepeatFunctions {
+		repeatFunctions.do({|f, k|
+			f.do({|rf, l|
+				var offset = 0;
+				if(rf.offset.isInteger) {
+					offset = rf.offset;
+				};
+				if( (beats - offset) % k.asInteger == 0 ) {
+					rf.function.value();
+				};
+			});
+		});
 	}
 
 	pause {
 		playing = false;
-		tdef.pause;
+		if(barRoutine.notNil) { barRoutine.stop; barRoutine = nil };
+		if(beatRoutine.notNil) { beatRoutine.stop; beatRoutine = nil };
+		sequencerTracks.do({|track| track.stop });
 	}
 
 	stop {
 		playing = false;
-		this.rewind();
-		tdef.stop;
+		if(barRoutine.notNil) { barRoutine.stop; barRoutine = nil };
+		if(beatRoutine.notNil) { beatRoutine.stop; beatRoutine = nil };
+		sequencerTracks.do({|track| track.stop });
+		this.go(0);
 	}
 
 	rewind {
 		this.go(0);
-		clock = 0;
 	}
 
 
 	go {|time|
-
-		beats = time;
-
+		beats = time ? 0;
 		sequencerTracks.do({|track|
 			track.go( time );
 		});
-
-		if(time == 0) {
-			tdef.reset();
-		};
-
-		// ((1/32)*max(0.01,max(0.025,speed).reciprocal)).wait;
-
-
 	}
 
 

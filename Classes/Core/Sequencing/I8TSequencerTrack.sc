@@ -53,17 +53,6 @@ SequencerTrack
 
 
 
-	fwd{|i|
-
-		// if( playing == true, {
-			parameterTracks.do({|p|
-				p.fwd(i)
-			});
-		// });
-
-	}
-
-
 	play {|position|
 		if( position != nil, { beats = position; });
 

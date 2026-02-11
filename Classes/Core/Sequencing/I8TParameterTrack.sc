@@ -17,20 +17,9 @@ ParameterTrack
 
 	var netAddr;
 
-	var durationSequencer;
-
 	var <sequenceInfo;
 	var <newSequenceInfo;
 	var <sequenceDuration;
-
-	var waitOffset;
-
-
-	var currentTick;
-	var lastTick;
-	var nextDuration;
-
-	var startSeq;
 
 	var currentPlayingKey;
 
@@ -41,8 +30,6 @@ ParameterTrack
 	}
 	init{|track_,name_,main_|
 
-				// netAddr = NetAddr("192.168.1.116",4567);
-
 		track = track_;
 		name = name_;
 		main = main_;
@@ -52,70 +39,12 @@ ParameterTrack
 		currentSpeed = speed;
 
 		beats = 0;
-		waitOffset=0;
-
-
-		currentTick = 0;
-		lastTick = 0;
-
-		nextDuration = 0;
 
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
 		sequence = List.new();
 
-
-
-
-		durationSequencer = {
-
-			var currentPattern;
-			var currentEvent = this.getCurrentEventNew();
-			
-			if( currentEvent.notNil ) {
-
-				var channel;
-				currentPlayingKey = currentEvent.key;
-
-				currentPattern = currentEvent.pattern;
-
-				track.instrument.trigger( name, currentEvent );
-				currentEvent.played=true;
-
-			};
-
-		};
-
 	}
-
-	fwd {|i|
-		// When Routine-based scheduling is active, skip tick-based forwarding
-		if(routine.notNil) { ^this };
-
-		if( playing == true ) {
-
-			if( startSeq == false, {
-
-				durationSequencer.value();
-
-			}, {
-
-				if( currentTick % main.sequencer.tickTime == 0 ) {
-
-					durationSequencer.value();
-
-					startSeq = false
-
-				}
-
-			});
-
-		};
-
-		currentTick = main.sequencer.ticks;
-
-	}
-
 
 	play {|position|
 		var startBeat;
@@ -277,18 +206,6 @@ ParameterTrack
 
 			if( test.isNil || (test.asSymbol != \test) ) {
 
-
-				if( sequence[key].notNil && newPatternEvent.notNil ) {
-					if( sequence[key].played==true ) {
-
-						waitOffset = this.calculateSyncOffset(sequence[key].pattern.pattern,newPatternEvent.pattern.pattern);
-						beats = (beats - waitOffset).asInteger;
-						waitOffset = waitOffset % 1;
-
-					};
-				};
-
-
 				if(sequence[key].notNil,{
 
 					sequence[key] = newPatternEvent;
@@ -305,13 +222,6 @@ ParameterTrack
 				this.updateSequenceInfo();
 
 			};
-
-			if( currentPlayingKey.isNil || key == currentPlayingKey ) {
-
-				startSeq = true;
-	
-			};
-
 
 			^newPatternEvent;
 
@@ -578,98 +488,6 @@ ParameterTrack
 			});
 
 		}).play;
-	}
-
-	getCurrentEvent {
-
-		var nearestBeatCountKey;
-		var currentIndex;
-
-
-
-		if( sequenceInfo.notNil ) {
-
-
-			// TODO: cambiar algoritmo:
-			// 1. Arreglo está ordenado
-			// 1. Arreglo está ordenado
-
-			
-
-
-
-			currentIndex = sequenceInfo.indices.indexOfNearestIrregularIndex( beats );
-
-			nearestBeatCountKey = sequenceInfo.indices.at( currentIndex );
-
-			if( nearestBeatCountKey == nil, {
-				^nil;
-			}, {
-
-				if( sequence.notNil, {
-					if( currentIndex.notNil, {
-						if( nearestBeatCountKey > beats, {
-							currentIndex = currentIndex - 1;
-						});
-					}, {
-						currentIndex = 0;
-					});
-					^sequence[ currentIndex ];
-				});
-
-			})
-		};
-
-		^nil;
-
-	}
-
-	getCurrentEventNew {
-
-		var patternPosition;
-
-		var nearestEventKey;
-		var currentIndex;
-		var currentEvent;
-
-		patternPosition = (currentTick / main.sequencer.tickTime);
-		patternPosition = patternPosition * speed;
-
-
-
-		nearestEventKey = newSequenceInfo.indices.findNearest( patternPosition % sequenceDuration );
-
-		currentIndex = newSequenceInfo.indices.indexOfNearestIrregularIndex( patternPosition % sequenceDuration );
-
-		if( nearestEventKey.notNil ) {
-			// reset all events when sequence restarts after it is done:
-			if( (currentIndex == 0) && (newSequenceInfo[ nearestEventKey ].notNil) ) {
-				if( ( newSequenceInfo[ nearestEventKey ].played == true ) ) {
-					newSequenceInfo.do({|e, i|
-						if( (  i > 0  ) && ( e.notNil ) ) {
-							e.played = false;
-						};
-					});
-				};
-			};
-
-			// if last event, prepare first
-			if( ( currentIndex == (newSequenceInfo.size-1) ) && ( newSequenceInfo[0].notNil ) ) {
-				newSequenceInfo[0].played = false;
-			};
-			// check if last read event has been played
-			if( (patternPosition % sequenceDuration) > nearestEventKey ) {
-				if( ( newSequenceInfo[ nearestEventKey ].notNil ) && ( newSequenceInfo[ nearestEventKey ].played != true ) ) {
-					currentEvent = newSequenceInfo[ nearestEventKey ];
-				};
-			};
-
-
-			^currentEvent;
-		};
-
-		^nil;
-
 	}
 
 	findArray{|pattern|
