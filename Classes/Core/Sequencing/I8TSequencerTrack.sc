@@ -56,7 +56,7 @@ SequencerTrack
 	fwd{|i|
 
 		// if( playing == true, {
-			parameterTracks.collect({|p|
+			parameterTracks.do({|p|
 				p.fwd(i)
 			});
 		// });
@@ -67,14 +67,14 @@ SequencerTrack
 	play {|position|
 		if( position != nil, { beats = position; });
 
-		parameterTracks.collect({|p| p.play(position); });
+		parameterTracks.do({|p| p.play(position); });
 
 		^playing = true;
 	}
 	stop {|position|
 		if( position != nil, { beats = position; });
 
-		parameterTracks.collect({|p| p.stop(position); });
+		parameterTracks.do({|p| p.stop(position); });
 
 		^playing = false;
 	}
@@ -140,13 +140,13 @@ SequencerTrack
 
 	speed_{|sp_|
 		speed = sp_;
-		parameterTracks.collect({|t|
+		parameterTracks.do({|t|
 			t.speed = speed;
 		});
 	}
 
 	go {|time|
-		parameterTracks.collect({|t|
+		parameterTracks.do({|t|
 			t.go(time);
 		});
 	}

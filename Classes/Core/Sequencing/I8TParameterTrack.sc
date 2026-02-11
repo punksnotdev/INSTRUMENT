@@ -331,7 +331,7 @@ ParameterTrack
 	removePatterns {|pattern|
 
 		if(pattern.isKindOf(I8TPattern),{
-			patterns.collect({|p,k|
+			patterns.do({|p,k|
 				if(p==k,{
 					patterns[k] = nil;
 						this.removePatternEvents(k);
@@ -345,7 +345,7 @@ ParameterTrack
 
 	clear {
 
-		patterns.collect({|p,k|
+		patterns.do({|p,k|
 
 			this.removePattern(k);
 
@@ -381,7 +381,7 @@ ParameterTrack
 
 	removePatternEvents {|key|
 
-		patternEvents[key].collect({|pattEvent|
+		patternEvents[key].do({|pattEvent|
 
 			var seqindex;
 
