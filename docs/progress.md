@@ -176,6 +176,77 @@ timing refactor. These should be addressed separately.
 - Converts numbers to strings and back for no reason (`ampRange[0].asString.asInteger`).
   Lines 720-721 compute identical expression twice — copy-paste artifact.
 
+### Queue System Bug
+
+#### `queueDo` removes wrong item when queue has mixed action types
+- **File**: `v2/I8TSequencer2.sc:55-78`
+- `queue.select({|q| q.action==action}).do({` filters correctly, but then
+  `queue.removeAt(0)` always removes the first item in the full queue — not the
+  first item matching the action. If the queue has `[\stop, \play, \stop]` and
+  `queueDo(\stop)` is called, it removes index 0 (the first `\stop`), then on
+  the next iteration removes index 0 again (now `\play`), executing a `\play`
+  as if it were a `\stop`. Fix: use `queue.remove(q)` instead of `queue.removeAt(0)`,
+  or collect the filtered items first, execute them, then remove them from the queue.
+
+### Sequencer Refactor Risks
+
+#### Looper state machine depends on beat-boundary checks
+- The looper state transitions (awaitingRec -> recording, etc.) currently happen
+  inside the tick loop's beat-boundary check. After the SEQFIX refactor, these
+  move to the bar-boundary callback. Verify that looper recording start/stop
+  still quantizes correctly — if a user calls `recLooper` mid-bar, the state
+  should hold until the next bar boundary fires `processLoopers`.
+
+#### `calculateSyncOffset` may be unnecessary after refactor
+- **File**: `I8TParameterTrack.sc:653-662`
+- Currently adjusts beat position when hot-swapping patterns to maintain continuity.
+  With the new Routine-based approach using `quant`, the new pattern starts on the
+  next bar boundary regardless. The sync offset logic may be dead code after the
+  refactor, or it may need rethinking if mid-bar pattern transitions are desired.
+
+#### InstrumentGroup.trigger dispatches to all children
+- When a ParameterTrack triggers an InstrumentGroup, the group's `trigger` calls
+  `trigger` on each child. If the ParameterTrack wraps this in `server.makeBundle`,
+  all children's OSC messages should be captured in the same bundle. Verify this
+  works — if any child instrument does async work (e.g., scheduling its own
+  deferred actions), those won't be captured by the bundle.
+
+### Mixer & Audio
+
+#### Per-instrument DSP modules are separate synths
+- Each I8TChannel creates up to 4 separate synths: `inSynth`, EQ, compressor, locut,
+  plus `outSynth`. That's 5 synths per channel just for routing and basic processing.
+  With 8 instruments, that's 40 synths before any actual sound generation. Each synth
+  adds one block of latency (64 samples = ~1.5ms at 44.1kHz). Consider consolidating
+  the channel strip into a single SynthDef with toggleable sections for lower latency
+  and reduced node overhead.
+
+#### No server.latency set currently
+- **File**: `I8TMain.sc`
+- `server.latency` is never explicitly set. SuperCollider's default is `0.2` (200ms),
+  but some builds default to `nil` (no latency compensation). The SEQFIX plan adds
+  `server.latency = 0.05`, but even before the sequencer refactor, setting this would
+  help the existing `server.bind` calls behave more predictably. Quick win.
+
+### Reliability
+
+#### No test infrastructure
+- There are zero automated tests. For a live performance system, even minimal smoke
+  tests would catch regressions:
+  - Pattern parsing: verify `I8TParser.parse("60:0.5 r 62ff")` returns expected Events
+  - Sequence timeline: verify `updateSequenceInfo` produces correct Order for known inputs
+  - Tempo math: verify `main.tempo` / `main.tempo_` round-trip correctly at edge tempos
+  - Chord construction: verify `C(60, \M7).chord` returns correct intervals
+  SuperCollider has `UnitTest` built in. A `Tests/` directory with basic coverage
+  would be valuable before the sequencer refactor (to verify behavior is preserved).
+
+#### No error recovery in live performance
+- If a Routine throws an error (e.g., nil event in sequence), it dies silently.
+  The instrument stops sequencing with no feedback. Consider wrapping the Routine
+  body in `try { ... } { |error| error.postln; 1.wait }` so a bad event skips
+  rather than killing the whole track. Especially important for live coding where
+  typos in pattern strings are common.
+
 ### Code Style (low priority, do opportunistically)
 
 #### `== nil` vs `.isNil` — inconsistent
@@ -189,6 +260,23 @@ timing refactor. These should be addressed separately.
   where `.do` should be used throughout the codebase. Examples:
   `I8TParameterTrack.sc:334,348`, `I8TSequencerTrack.sc:59,70,77,143,149`,
   and dozens more. Quick find-replace opportunity.
+
+---
+
+## Recommendations (prioritized)
+
+1. **Fix `Sequenceable.pause` bug** — one-line fix, real impact, do immediately
+2. **Fix `queueDo` removal bug** — can cause wrong actions to fire at bar boundaries
+3. **Set `server.latency = 0.05`** in I8TMain.sc — quick win even before SEQFIX
+4. **Implement SEQFIX** — the main timing overhaul (see [SEQFIX.md](../SEQFIX.md))
+5. **Fix parser event copy bug** — `event.copy` instead of `event`, prevents mutation bugs
+6. **Add basic UnitTests** — pattern parsing, timeline construction, tempo math
+7. **Add error recovery to Routines** — `try` wrapper so bad events skip, not kill
+8. **Delete dead code** — old parser, double tdef var, commented blocks, debug postln
+9. **Fix nil-safety gaps** — add guards in SequencerTrack methods
+10. **Parser caching** — cache by input string to avoid re-parsing identical patterns
+11. **Consolidate channel strip synths** — reduce per-channel latency and node count
+12. **Address architecture issues** — longer-term: I8TMain extraction, doesNotUnderstand
 
 ---
 
