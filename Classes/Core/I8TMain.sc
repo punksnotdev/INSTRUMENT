@@ -124,7 +124,8 @@ I8TMain : Event
 			parGroup = Group.new( server );
 			parGroup.register;
 		});
-		
+
+		server.latency = 0.05; // 50ms lookahead for sample-accurate timing
 
 		// clock = TempoClock.default;
 		clock = TempoClock.new( TempoClock.default.tempo );

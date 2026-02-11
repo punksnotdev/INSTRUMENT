@@ -695,21 +695,21 @@ When speed changes mid-playback, restart the Routine (it will pick up the new sp
 - [ ] `I8TParameterTrack.sc`: `currentTick`, `lastTick`, `nextDuration`, `startSeq`, `waitOffset`
 
 ### What gets added
-- [ ] `I8TParameterTrack.sc`: `routine` instance var; Routine-based `play`/`stop`/`go`
-- [ ] `I8TParameterTrack.sc`: Wrap `trigger` call in `server.makeBundle` inside Routine
+- [x] `I8TParameterTrack.sc`: `routine` instance var; Routine-based `play`/`stop`/`go`
+- [x] `I8TParameterTrack.sc`: Wrap `trigger` call in `server.makeBundle` inside Routine
 - [ ] `I8TSequencer.sc`: `processLoopers`, `processSingleFunctions`, `processRepeatFunctions`
 - [ ] `I8TSequencer.sc`: Clock-scheduled `barCallback` and `beatCallback`
-- [ ] `I8TMain.sc`: `server.latency = 0.05` in init
+- [x] `I8TMain.sc`: `server.latency = 0.05` in init
 
 ### What gets modified
 - [ ] `I8TSequencer.sc`: `play` — from tick loop to clock callbacks
 - [ ] `I8TSequencer.sc`: `stop`, `pause`, `go`, `rewind` — cancel callbacks, delegate to tracks
-- [ ] `I8TParameterTrack.sc`: `play` — start Routine with `quant`
-- [ ] `I8TParameterTrack.sc`: `stop` — stop Routine
-- [ ] `I8TParameterTrack.sc`: `go` — restart Routine at position
-- [ ] `I8TParameterTrack.sc`: `addPattern` — restart Routine on hot-swap
-- [ ] `I8TSequencerTrack.sc`: Remove `.collect` -> `.do` throughout
-- [ ] `I8TSequencer.sc`: Remove `.collect` -> `.do` throughout
+- [x] `I8TParameterTrack.sc`: `play` — start Routine with `quant`
+- [x] `I8TParameterTrack.sc`: `stop` — stop Routine
+- [x] `I8TParameterTrack.sc`: `go` — restart Routine at position
+- [x] `I8TParameterTrack.sc`: `addPattern` — restart Routine on hot-swap (via updateSequenceInfo)
+- [x] `I8TSequencerTrack.sc`: Remove `.collect` -> `.do` throughout
+- [x] `I8TSequencer.sc`: Remove `.collect` -> `.do` throughout (already .do)
 
 ### What stays unchanged
 - `I8TPattern.sc` — pattern parsing is unrelated to timing
@@ -800,3 +800,18 @@ what alternatives were considered, and any surprises encountered during implemen
 - Documented `main.tempo` returns `clock.tempo * 120` (BPM), not beats-per-second.
   At 120 BPM, clock.tempo = 1.0. At 130 BPM, clock.tempo = 1.0833. This is why the
   beat detection formula produces irrational numbers at non-round tempos
+
+### 2026-02-11 — Phase 2 implementation
+
+- Implemented Routine-based play/stop/go in ParameterTrack
+- Used delta-based wait calculation: `(beatPosition - previousBeatPos) / speed` between
+  consecutive events, rather than absolute positioning from start. The plan's example code
+  had a bug where it used absolute waits that would accumulate incorrectly
+- Made `fwd` a no-op when Routine is active (`if(routine.notNil) { ^this }`) to allow
+  Phase 2 and Phase 3 to be committed separately without double-triggering
+- Added Routine restart in `updateSequenceInfo` so pattern removal (which doesn't call
+  `play` afterwards) still gets the updated sequence. Pattern addition also triggers this
+  but then `SequencerTrack.addPattern` calls `play` again — the double-restart is harmless
+- Set `server.latency = 0.05` in I8TMain.sc init, right after server assignment
+- Also fixed `.collect` → `.do` in ParameterTrack's removePatterns, clear, and
+  removePatternEvents methods (found during Phase 1a review)

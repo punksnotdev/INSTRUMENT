@@ -34,6 +34,8 @@ ParameterTrack
 
 	var currentPlayingKey;
 
+	var routine;
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -87,26 +89,15 @@ ParameterTrack
 	}
 
 	fwd {|i|
-
-
-		// TODO: ver si se puede restaurar tras merge
-		// if( startSeq == true ) {
-
-		// 	beats = 0;
-
-		// 	durationSequencer.stop;
-		// 	durationSequencer.play(main.clock);
-
-		// 	startSeq = false;
-
-		// };
+		// When Routine-based scheduling is active, skip tick-based forwarding
+		if(routine.notNil) { ^this };
 
 		if( playing == true ) {
 
 			if( startSeq == false, {
 
 				durationSequencer.value();
-			
+
 			}, {
 
 				if( currentTick % main.sequencer.tickTime == 0 ) {
@@ -115,42 +106,81 @@ ParameterTrack
 
 					startSeq = false
 
-				} 
+				}
 
 			});
 
-  		};
+		};
 
-  		currentTick = main.sequencer.ticks;		
+		currentTick = main.sequencer.ticks;
 
-  	}
+	}
 
 
 	play {|position|
+		var startBeat;
 
-	    if( position != nil, {
-	      beats = position;
-	    }, {
-		});
+		playing = true;
 
-	    ^playing = true;
+		// Stop existing routine if any
+		if(routine.notNil) { routine.stop; routine = nil };
 
+		// Don't start if no sequence data
+		if(newSequenceInfo.isNil) { ^playing };
+		if(newSequenceInfo.size == 0) { ^playing };
+		if(sequenceDuration.isNil) { ^playing };
+		if(sequenceDuration <= 0) { ^playing };
+
+		startBeat = position ? 0;
+
+		routine = Routine({
+			var previousBeatPos, waitBeats, remainingBeats;
+
+			loop {
+				previousBeatPos = startBeat * speed;
+
+				newSequenceInfo.do {|event, beatPosition|
+					waitBeats = (beatPosition - previousBeatPos) / speed;
+
+					if(waitBeats > 0) {
+						waitBeats.wait;
+					};
+
+					if(waitBeats >= 0) {
+						main.server.makeBundle(main.server.latency, {
+							track.instrument.trigger(name, event);
+						});
+					};
+
+					previousBeatPos = beatPosition;
+				};
+
+				// Wait remaining time to complete the cycle
+				remainingBeats = (sequenceDuration - previousBeatPos) / speed;
+				if(remainingBeats > 0) { remainingBeats.wait };
+
+				startBeat = 0;
+			};
+		}).play(main.clock, quant: main.sequencer.timeSignature.beats);
+
+		^playing;
 	}
 
 	stop {|position|
-		if( position != nil, { beats = position; });
-		^playing = false;
+		playing = false;
+		if(routine.notNil) { routine.stop; routine = nil };
+		^playing;
 	}
 
 	go {|time|
-		// durationSequencer.stop();
-		//
-		// durationSequencer.play(main.clock, doReset: true, quant: 0);
-
+		if(time.isNil) { time = 0 };
 		beats = time;
-		if(time.isNil) {
-			beats = 0;
-		}
+		if(playing == true) {
+			// Restart routine at new position
+			this.stop;
+			playing = true;
+			this.play(time);
+		};
 	}
 
 	addPattern {|key,pattern,play_parameters,test|
@@ -525,6 +555,12 @@ ParameterTrack
 
 		});
 
+		// If currently playing, restart Routine with new sequence
+		if(playing == true && routine.notNil) {
+			routine.stop;
+			routine = nil;
+			this.play;
+		};
 
 	}
 
