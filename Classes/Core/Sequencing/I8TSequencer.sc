@@ -297,24 +297,12 @@ Sequencer : I8TNode
 					);
 
 
-					// main.displayNextPattern(patternInfo);
-
-					Task.new({
-						// 0.1.wait;
-						// ["pattern",parameter,patternInfo].postln;
-						0.1.wait;
-
-						if( test.asSymbol != \test, {
-							("Added pattern: "++track++"."++parameter++": "++key).postln;
-							("Duration: " ++ patternEvent.pattern.totalDuration).postln;
-
-						}, {
-							("Test pattern: "++track++"."++parameter++": "++key).postln;
-
-							("Duration: " ++ patternEvent.pattern.totalDuration).postln;
-						});
-
-					}).play;
+					if( test.asSymbol != \test, {
+						("Added pattern: "++track++"."++parameter++": "++key).postln;
+					}, {
+						("Test pattern: "++track++"."++parameter++": "++key).postln;
+					});
+					("Duration: " ++ patternEvent.pattern.totalDuration).postln;
 
 				}
 				^patternEvent;
