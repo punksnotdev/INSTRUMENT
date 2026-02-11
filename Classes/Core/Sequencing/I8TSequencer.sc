@@ -114,9 +114,9 @@ Sequencer : I8TNode
 
 					if( beats % 1 == 0 ) {
 
-						loopers.collect({|stateArray,looper|
+						loopers.do({|stateArray,looper|
 
-							stateArray.collect({|state,stateIndex|
+							stateArray.do({|state,stateIndex|
 
 								switch( state,
 									\awaitingRec, {
@@ -143,9 +143,9 @@ Sequencer : I8TNode
 						if( singleFunctions[beats].isKindOf(Function), {
 							singleFunctions[beats].value();
 						});
-						repeatFunctions.collect({|f,k|
+						repeatFunctions.do({|f,k|
 
-							f.collect({|rf,l|
+							f.do({|rf,l|
 								var offset = 0;
 
 								if(rf.offset.isInteger, {
@@ -167,7 +167,7 @@ Sequencer : I8TNode
 
 
 				if( playing, {
-					sequencerTracks.collect({|track|
+					sequencerTracks.do({|track|
 						track.fwd( ticks );
 					});
 				});
@@ -223,7 +223,7 @@ Sequencer : I8TNode
 
 		beats = time;
 
-		sequencerTracks.collect({|track|
+		sequencerTracks.do({|track|
 			track.go( time );
 		});
 
