@@ -16,7 +16,7 @@ I8TParser {
 	init {
 	}
 
-	*parse {|input|
+	*parse {|input, initialDuration|
 		if( input.notNil ) {
 
 			var lastChar;
@@ -30,6 +30,7 @@ I8TParser {
 			var subsequences;
 
 			var eventsList = List.new;
+			var lastDuration = initialDuration;
 
 			// if contains opening and closing brackets
 			if( I8TParser.validateMatching(input), {
@@ -46,6 +47,9 @@ I8TParser {
 				var pattern = subsequence.pattern.asString;
 
 				var groupStrings = List.new;
+
+				lastChar = nil;
+				buildingGroupChars = "";
 
 				pattern.size.do({|index|
 
@@ -202,10 +206,21 @@ I8TParser {
 			subsequences.do({|subsequence|
 				var subsequenceParameterGroups = List.new;
 				var subsequencesEventsList;
-				subsequence.groupStrings.do({|groupString|
-					subsequenceParameterGroups.add(this.extractParameters(groupString));
-				});
-				subsequencesEventsList = this.getEventsList(subsequenceParameterGroups);
+				var result;
+
+				if(I8TParser.validateMatching(subsequence.pattern)) {
+					// recursive: pattern contains nested brackets
+					result = this.parse(subsequence.pattern, lastDuration);
+					subsequencesEventsList = result[0];
+					lastDuration = result[1];
+				} {
+					subsequence.groupStrings.do({|groupString|
+						subsequenceParameterGroups.add(this.extractParameters(groupString));
+					});
+					result = this.getEventsList(subsequenceParameterGroups, lastDuration);
+					subsequencesEventsList = result[0];
+					lastDuration = result[1];
+				};
 
 				if((subsequencesEventsList.notNil && subsequence.operators.notNil)) {
 					if(subsequence.operators != "" ) {
@@ -230,7 +245,7 @@ I8TParser {
 				event
 			});
 
-			^eventsList;
+			^[eventsList, lastDuration];
 
 		}
 
@@ -468,12 +483,12 @@ I8TParser {
 
 
 
-	*getEventsList{|parameterGroups|
+	*getEventsList{|parameterGroups, initialDuration|
 
 		var events = List.new;
 		var eventsPost = List.new;
 
-		var nextEventDuration;
+		var nextEventDuration = initialDuration;
 		var nextEventRepetitions;
 		var nextEventAmp;
 
@@ -671,7 +686,7 @@ I8TParser {
 			};
 		}).flat(1);
 
-		^eventsPost;
+		^[eventsPost, nextEventDuration];
 
 	}
 
@@ -770,43 +785,32 @@ I8TParser {
 	}
 
 
-	// TODO: implement nested subsequence checking
-
 	*validateMatching{|input,openingSymbol=$(,closingSymbol=$)|
 
+			var depth = 0;
+			var hasOpening = false;
+			var correct = true;
 
-			var opening=input.findAll(openingSymbol);
-			var closing=input.findAll(closingSymbol);
-
-			var correct = false;
-
-			if(opening.size>0, {
-				if(opening.size===closing.size, {
-					correct = true;
-					opening.size.do({|index|
-
-						if( opening[index] > closing[index] ) {
-							correct = false;
-							("must open " ++ openingSymbol ++ " before closing "++closingSymbol).warn;
-						};
-						if( index < (opening.size - 1) ) {
-							if( opening[index+1] < closing[index] ) {
-								correct = false;
-								("must close "++closingSymbol++" before opening "++openingSymbol).warn;
-							};
-						};
-					});
-
-
-				}, {
-					("number of "++openingSymbol++" and "++closingSymbol++" not matching").warn;
-					correct = false;
-				});
-			}, {
-				correct = false;
+			input.size.do({|i|
+				if(input[i] == openingSymbol) {
+					if(depth == 0) { hasOpening = true };
+					depth = depth + 1;
+				};
+				if(input[i] == closingSymbol) {
+					depth = depth - 1;
+					if(depth < 0) {
+						correct = false;
+						("must open " ++ openingSymbol ++ " before closing " ++ closingSymbol).warn;
+					};
+				};
 			});
 
-			^correct;
+			if(depth != 0) {
+				("number of " ++ openingSymbol ++ " and " ++ closingSymbol ++ " not matching").warn;
+				correct = false;
+			};
+
+			^(correct && hasOpening);
 
 	}
 
@@ -814,11 +818,23 @@ I8TParser {
 	*getSubsequences {|input, openingSymbol=$(, closingSymbol=$)|
 
 		var subsequences = List.new;
+		var depth = 0;
+		var opening = List.new;
+		var closing = List.new;
 
-		var opening = input.findAll(openingSymbol);
-		var closing = input.findAll(closingSymbol);
+		// find top-level bracket pairs only
+		input.size.do({|i|
+			if(input[i] == openingSymbol) {
+				if(depth == 0) { opening.add(i) };
+				depth = depth + 1;
+			};
+			if(input[i] == closingSymbol) {
+				depth = depth - 1;
+				if(depth == 0) { closing.add(i) };
+			};
+		});
 
-		if( I8TParser.validateMatching(input, $(, $)) == true ) {
+		if( I8TParser.validateMatching(input, openingSymbol, closingSymbol) == true ) {
 
 			// add any pattern before first bracket
 			if( opening[0] > 0 ) {
@@ -829,7 +845,6 @@ I8TParser {
 			};
 
 			opening.size.do({|index|
-				// var total = (closing[index] - opening[index])-1;
 				var subsequence = input.copyRange(opening[index]+1,closing[index]-1);
 
 				var checkEnd = input.copyToEnd(closing[index]+1);

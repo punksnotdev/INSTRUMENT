@@ -23,7 +23,7 @@ I8TPattern
 		if( pattern_.isString, {
 
 
-			var events = I8TParser.parse( pattern_ );
+			var events = I8TParser.parse( pattern_ )[0];
 			// var events = this.parseEventString(pattern_);
 			// var values = List.new;
 			var patternEvents = List.new;
