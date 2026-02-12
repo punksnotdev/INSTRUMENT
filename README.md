@@ -602,7 +602,44 @@ i.bass.note = "C D|F";
 
 ```
 
+#### Euclidean Rhythms
 
+The '%' operator distributes hits evenly across a number of slots using the Euclidean/Bjorklund algorithm.
+
+Syntax: `value%hits/steps`
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.kick = 'kick';
+
+// 3 kicks spread across 8 slots: [x . . x . . x .]
+i.kick.seq("1%3/8");
+
+// a regular kick followed by a euclidean pattern with lower amplitude
+i.kick.seq("1 0.5%3/8");
+
+// 5 hits in 8 slots: [x . x x . x x .]
+i.kick.seq("1%5/8");
+
+```
+
+You can also apply it to subsequences. The values inside cycle across the hit positions:
+
+```SuperCollider
+
+// 3 hits in 8 slots, cycling through amplitudes [1, 0.3, 2]
+i.kick.seq("(1 0.3 2)%3/8");
+
+// if count doesn't match, values wrap: 2 values across 3 hits
+// hits get: 0.8, 0.4, 0.8
+i.kick.seq("(0.8 0.4)%3/8");
+
+// combine with other operators
+i.kick.seq("(1 0.5 0.8)%3/8:0.5");
+
+```
 
 
 ## Set tempo

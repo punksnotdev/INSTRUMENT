@@ -79,9 +79,9 @@ SequencerTrack
 		patternEvent = parameterTracks[ parameter ].addPattern(key,pattern,play_parameters,test);
 
 		if( test.isNil || test.asSymbol != \test ) {
-			// if( playing == true, {
+			if( parameterTracks[ parameter ].playing != true, {
 				parameterTracks[ parameter ].play;
-			// });
+			});
 		};
 
 

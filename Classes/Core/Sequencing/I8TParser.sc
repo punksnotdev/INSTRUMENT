@@ -240,7 +240,7 @@ I8TParser {
 	*extractOperators {|input|
 
 
-		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>,$?,$|];
+		var operators = [Char.space,$p,$f,$x,$:,$*,$<,$>,$?,$|,$%];
 
 		var foundOperators = List.new;
 
@@ -388,10 +388,12 @@ I8TParser {
 				if( (operatorParameter.notNil) && (repetitions <= 1), {
 
 					if(operatorParameter.asString.contains("/")){
-						var lh, rh;
-						lh = operatorParameter.split($/)[0];
-						rh = operatorParameter.split($/)[1];
-						operatorParameter = (lh.asFloat / rh.asFloat);
+						if(operator != $%) {
+							var lh, rh;
+							lh = operatorParameter.split($/)[0];
+							rh = operatorParameter.split($/)[1];
+							operatorParameter = (lh.asFloat / rh.asFloat);
+						};
 					};
 					operatorValue = operatorParameter.asString;
 				},
@@ -541,6 +543,9 @@ I8TParser {
 					$|, {
 						event = this.applyOrModifier( event, parameterGroup[$|] );
 					},
+					$%, {
+						event.euclidean = v;
+					},
 					// {
 					//
 					// 	event.val = v;
@@ -635,6 +640,36 @@ I8TParser {
 			});
 
 		});
+
+		// expand euclidean patterns:
+		eventsPost = eventsPost.collect({|event|
+			if(event.euclidean.notNil) {
+				var parts = event.euclidean.asString.split($/);
+				if(parts.size >= 2) {
+					var hits = parts[0].asInteger;
+					var steps = parts[1].asInteger;
+					var pattern = I8TParser.euclidean(hits, steps);
+					var eventDuration = event.duration.asFloat / steps;
+					pattern.collect({|hit|
+						if(hit == 1) {
+							var newEvent = event.copy;
+							newEvent.euclidean = nil;
+							newEvent.duration = eventDuration;
+							newEvent;
+						} {
+							(
+								val: \r,
+								duration: eventDuration
+							);
+						};
+					});
+				} {
+					[event]
+				};
+			} {
+				[event]
+			};
+		}).flat(1);
 
 		^eventsPost;
 
@@ -856,6 +891,33 @@ I8TParser {
 	*applyOperators {|events, operators|
 		if( operators.isKindOf(IdentityDictionary) ) {
 
+			if( operators[$%].notNil ) {
+				var euclideanSpec = operators[$%].asString.split($/);
+				if(euclideanSpec.size >= 2) {
+					var hits = euclideanSpec[0].asInteger;
+					var steps = euclideanSpec[1].asInteger;
+					var pattern = I8TParser.euclidean(hits, steps);
+					var totalDuration = events.collect({|e| e.duration.asFloat}).sum;
+					var slotDuration = totalDuration / steps;
+					var newEvents = List.new;
+					var valueIndex = 0;
+					pattern.do({|hit|
+						if(hit == 1) {
+							var sourceEvent = events[valueIndex % events.size].copy;
+							sourceEvent.duration = slotDuration;
+							newEvents.add(sourceEvent);
+							valueIndex = valueIndex + 1;
+						} {
+							newEvents.add((
+								val: \r,
+								duration: slotDuration
+							));
+						};
+					});
+					events = newEvents;
+				};
+			};
+
 			if( operators[$:].notNil ) {
 				var duration = operators[$:].asFloat;
 				var durations = events.collect({|event|
@@ -913,6 +975,34 @@ I8TParser {
 
 		^events;
 
+	}
+
+	*euclidean { |hits, steps|
+		var front, back, bjorklund;
+
+		if(hits <= 0) { ^Array.fill(steps, 0) };
+		if(hits >= steps) { ^Array.fill(steps, 1) };
+
+		bjorklund = { |f, b|
+			if(b.size <= 1) {
+				(f ++ b).flat(1);
+			} {
+				var minSize = f.size.min(b.size);
+				var newFront = Array.fill(minSize, { |i| f[i] ++ b[i] });
+				var newBack;
+				if(f.size > b.size) {
+					newBack = f.copyRange(minSize, f.size - 1);
+				} {
+					newBack = b.copyRange(minSize, b.size - 1);
+				};
+				bjorklund.(newFront, newBack);
+			};
+		};
+
+		front = Array.fill(hits, { [1] });
+		back = Array.fill(steps - hits, { [0] });
+
+		^bjorklund.(front, back);
 	}
 
 }
