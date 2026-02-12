@@ -46,10 +46,11 @@ ParameterTrack
 
 	}
 
-	play {|position|
+	play {|position, quantize|
 		var startBeat;
 
 		playing = true;
+		quantize = quantize ? main.sequencer.timeSignature.beats;
 
 		// Stop existing routine if any
 		if(routine.notNil) { routine.stop; routine = nil };
@@ -90,7 +91,7 @@ ParameterTrack
 
 				startBeat = 0;
 			};
-		}).play(main.clock, quant: main.sequencer.timeSignature.beats);
+		}).play(main.clock, quant: quantize);
 
 		^playing;
 	}
@@ -465,11 +466,12 @@ ParameterTrack
 
 		});
 
-		// If currently playing, restart Routine with new sequence
+		// If currently playing, restart Routine with new sequence immediately
+		// (no bar-boundary quantization, to avoid silence gap during hot-swap)
 		if(playing == true && routine.notNil) {
 			routine.stop;
 			routine = nil;
-			this.play;
+			this.play(quantize: 0);
 		};
 
 	}
