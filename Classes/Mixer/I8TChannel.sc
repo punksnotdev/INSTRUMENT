@@ -723,7 +723,7 @@ I8TChannel : Sequenceable
 
 		sourceListeners = IdentityDictionary.new;
 
-		inputsBus = Bus.audio(main.server,1);
+		inputsBus = Bus.audio(main.server,2);
 
 		inputsSynth = Synth.new(					
 			\audioBus,

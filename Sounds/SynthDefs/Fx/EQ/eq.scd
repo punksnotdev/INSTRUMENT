@@ -31,7 +31,7 @@ SynthDef(\eq, {
 	dBsMiddle = dBsMiddle.linlin(0,1,-15,15);
 	dBsHigh = dBsHigh.linlin(0,1,-15,15);
 
-	dry = In.ar(inBus) * amp;
+	dry = In.ar(inBus, 2) * amp;
 
 	wet = BLowShelf.ar(dry, lowFreq, 1, dBsLow);
 	wet = BPeakEQ.ar(wet, middleFreq, 1, dBsMiddle);
@@ -42,6 +42,6 @@ SynthDef(\eq, {
 
 	sig = (wet * (1 - lowCut)) + (HPF.ar(wet,lowCutFreq)*lowCut);
 
-	ReplaceOut.ar(outBus, Pan2.ar(sig,pan))
+	ReplaceOut.ar(outBus, Balance2.ar(sig[0], sig[1], pan))
 
 }).store;

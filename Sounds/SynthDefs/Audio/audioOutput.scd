@@ -1,7 +1,7 @@
 SynthDef(\audioOutput, {|inBus=99,outBus=99,amp=1,pan=0|
 
-	var sig = In.ar(inBus);
+	var sig = In.ar(inBus, 2);
 
-	Out.ar(outBus, Pan2.ar(sig * amp,pan))
+	Out.ar(outBus, Balance2.ar(sig[0], sig[1], pan, amp))
 
 }).store;
