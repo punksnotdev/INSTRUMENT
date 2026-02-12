@@ -2216,3 +2216,480 @@ SynthDef(\reverb, {
 }).store;
 
 ```
+
+
+# Additional Features
+
+## Amplitude Operator in Patterns
+
+The `*` operator inside string patterns sets an amplitude multiplier for individual events:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.kick = 'kick';
+
+// set amplitude directly in the pattern string
+i.kick.seq("1*2 1*0.5 1*1.5 1*0.3");
+
+```
+
+
+## Pattern Transformations
+
+In addition to `pyramid`, `mirror`, `random`, and `maybe`, the following transformations are available:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.bass = i.synths.bass.trance[2];
+
+// reverse the pattern
+i.bass.note("0 2 3 5 7").reverse();
+
+// mirror variants
+i.bass.note("0 2 3 5 7").mirror();
+i.bass.note("0 2 3 5 7").mirror1();
+i.bass.note("0 2 3 5 7").mirror2();
+
+// rotate pattern by n positions
+i.bass.note("0 2 3 5 7").rotate(2);
+
+// shift pattern values
+i.bass.note("0 2 3 5 7").shift(1);
+
+// lace pattern to a specified length
+i.bass.note("0 2 3 5 7").lace(8);
+
+// permute pattern
+i.bass.note("0 2 3 5 7").permute(2);
+
+// transpose all note values by n semitones
+i.bass.note("0 2 3 5 7").transport(3);
+
+```
+
+Transformations can be chained:
+
+```SuperCollider
+
+i.bass.note("0 2 3 5 7").reverse().mirror.speed(2);
+
+```
+
+
+## Mono / Poly Mode
+
+Instruments support both polyphonic and monophonic modes. In mono mode, notes use gate control for legato behavior:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.bass = i.synths.bass.trance[2];
+
+// monophonic mode (legato, single voice, gate-controlled)
+i.bass.mode = \mono;
+
+i.bass.note("0 2 3 5").speed(4);
+
+// polyphonic mode (default, new synth per note)
+i.bass.mode = \poly;
+
+```
+
+
+## Sequenceable Methods
+
+These methods are available on any instrument or sequenceable object:
+
+### pause
+
+Pauses playback, distinct from `stop` (which resets position):
+
+```SuperCollider
+
+i.bass.pause;
+i.bass.play;
+
+```
+
+### one
+
+Shorthand for `.repeat(1)` / `.do(1)`:
+
+```SuperCollider
+
+i.kick.seq("1 1 1").one();
+
+```
+
+### waitBefore
+
+Adds a delay (in beats) before the pattern starts playing:
+
+```SuperCollider
+
+i.kick.seq("1").waitBefore(4);
+
+```
+
+### get
+
+Retrieve a pattern by parameter and key:
+
+```SuperCollider
+
+i.kick.get(\trigger, 0);
+
+```
+
+### kill
+
+Removes the instrument from the sequencer entirely:
+
+```SuperCollider
+
+i.kick.kill;
+
+```
+
+### pattern
+
+Returns the current pattern object:
+
+```SuperCollider
+
+i.kick.pattern;
+
+```
+
+### patterns and sequence
+
+Access all patterns for a parameter, or the full sequence:
+
+```SuperCollider
+
+i.kick.patterns(\trigger);
+i.kick.sequence(\trigger);
+
+```
+
+
+## Shorthand Sequencing Methods
+
+These are shorthands for `seq(\parameter, pattern)`:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.bass = i.synths.bass.trance[2];
+
+// volume sequencing
+i.bass.vol("1 0.5 0.75 1");
+i.bass.vol = "1 0.5 0.75 1";
+
+// pan sequencing
+i.bass.pan("-1 0 1 0");
+i.bass.pan = "-1 0 1 0";
+
+// FX set sequencing (change FX parameters in sequence)
+i.bass.fxSet("paramName", [val1, val2, val3]);
+
+// trigger shorthand
+i.bass.trigger("1 0.5 1");
+i.bass.trigger = "1 0.5 1";
+
+```
+
+
+## Mixer and Channel System
+
+INSTRUMENT includes a built-in mixer with per-channel processing.
+
+### Channel EQ
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.kick = 'kick';
+i.kick.seq("1");
+
+// toggle EQ on a channel
+i.kick.channel.toggle(\eq, true);
+
+// set EQ bands
+i.kick.channel.set(\low, 0.5);
+i.kick.channel.set(\middle, 1);
+i.kick.channel.set(\high, 0.8);
+
+```
+
+### Channel Compressor and Lo-Cut
+
+```SuperCollider
+
+// toggle compressor
+i.kick.channel.toggle(\compressor, true);
+
+// toggle lo-cut filter
+i.kick.channel.toggle(\locut, true);
+
+// free (disable) a specific module
+i.kick.channel.free(\eq);
+i.kick.channel.free(\compressor);
+
+```
+
+### Channel Routing
+
+```SuperCollider
+
+// send audio to another channel
+i.kick.channel.send(targetChannel, true);
+
+// connect directly
+i.kick.channel.connect(targetChannel);
+
+// disconnect
+i.kick.channel.disconnect;
+
+// add/remove sources
+i.kick.channel.addSource(source);
+i.kick.channel.removeSource(source);
+
+```
+
+### Mixer Access
+
+```SuperCollider
+
+// access mixer channels
+i.mixer.at(\drums);
+
+// remove mixer channel
+i.mixer.rm(\drums);
+
+// get all channels
+i.mixer.getChannels;
+
+// get master channels
+i.mixer.getMasterChannels;
+
+```
+
+
+## InstrumentGroup Methods
+
+Additional methods available on instrument groups:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.drums = (
+	kick: 'kick',
+	hihat: 'hihat',
+	snare: 'snare',
+);
+
+// pause all instruments in group
+i.drums.pause;
+
+// pause specific instrument
+i.drums.pause(\kick);
+
+// stop specific instrument
+i.drums.stop(\kick);
+
+// check if group includes a value
+i.drums.includes('kick');
+
+// iterate with keys and values
+i.drums.keysValuesDo({|key, instrument|
+	[key, instrument].postln;
+});
+
+// get all keys
+i.drums.keys;
+
+```
+
+
+## INSTRUMENT Instance Methods
+
+### Master Volume
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.volume = 0.5;
+i.volume = 1;
+
+```
+
+### BPM Alias
+
+`bpm` and `bpm_` are aliases for `tempo`:
+
+```SuperCollider
+
+i.bpm = 140;
+i.bpm; // returns 140
+
+```
+
+### kill
+
+Completely destroys the INSTRUMENT instance:
+
+```SuperCollider
+
+i.kill;
+
+```
+
+### Node Management
+
+```SuperCollider
+
+// free a specific node
+i.free(i.kick);
+
+// remove node by key
+i.removeNode(\kick);
+
+// add node manually
+i.addNode(node, \myNode);
+
+```
+
+### Server Management
+
+```SuperCollider
+
+// change server
+i.setServer(s);
+
+// add additional server
+i.addServer(s);
+
+```
+
+### Auto MIDI
+
+Automatically assign MIDI controllers to instruments:
+
+```SuperCollider
+
+i.autoMIDI(true);
+i.autoMIDI(false);
+
+```
+
+### Manual MIDI Mapping
+
+```SuperCollider
+
+// start MIDI
+i.startMidi;
+
+// map a controller
+i.map(controller, target, parameter, range);
+
+// unmap a controller
+i.unmap(controller, target, parameter);
+
+```
+
+### Sequencer Utilities
+
+```SuperCollider
+
+// rewind to beginning
+i.sequencer.rewind;
+
+// clear all repeat functions
+i.clearSequencerFunctions;
+
+```
+
+
+## Looper: Per-Layer Control
+
+The Looper supports per-layer operations beyond what's shown in the basic examples:
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.loop1 = Looper(0);
+
+// record multiple layers
+i.loop1.rec(0);
+i.loop1.start(0);
+
+i.loop1.rec(1);
+i.loop1.start(1);
+
+// stop a specific layer
+i.loop1.stop(0);
+
+// play a specific layer
+i.loop1.play(1);
+
+// set volume per layer
+i.loop1.amp_(0.5, 0);
+i.loop1.amp_(1, 1);
+
+// sequence volume (vol is alias)
+i.loop1.vol("1 0.5 0.75", 0);
+
+```
+
+
+## Harmony Generator
+
+`I8THarmony` generates multi-voice harmonies following basic counterpoint rules (e.g. no parallel fifths or octaves):
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+h = I8THarmony();
+
+// generate voicings for 3 voices (default)
+v = h.generateVoicings;
+
+// generate voicings for 4 voices
+v = h.generateVoicings(4);
+
+// apply a scale
+h = v.collect(_.collect(Scale.minor.degrees.at(_)));
+
+// utility methods:
+h.getDirection(array, step);     // returns melodic direction: 1, 0, or -1
+h.getInterval(noteA, noteB);     // returns interval between two notes
+h.checkParallel(arr1, arr2, step); // checks for parallel motion
+
+```
+
+
+## Pause and Play (Global)
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+// pause everything
+i.pause;
+
+// resume
+i.play;
+
+```
