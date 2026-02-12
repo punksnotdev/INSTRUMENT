@@ -65,11 +65,17 @@ ParameterTrack
 
 		routine = Routine({
 			var previousBeatPos, waitBeats, remainingBeats;
+			var cycleSequenceInfo, cycleDuration;
 
 			loop {
+				// Snapshot sequence data for this cycle so mid-cycle
+				// hot-swaps take effect on the next loop, not mid-bar
+				cycleSequenceInfo = newSequenceInfo;
+				cycleDuration = sequenceDuration;
+
 				previousBeatPos = startBeat * speed;
 
-				newSequenceInfo.do {|event, beatPosition|
+				cycleSequenceInfo.do {|event, beatPosition|
 					waitBeats = (beatPosition - previousBeatPos) / speed;
 
 					if(waitBeats > 0) {
@@ -86,7 +92,7 @@ ParameterTrack
 				};
 
 				// Wait remaining time to complete the cycle
-				remainingBeats = (sequenceDuration - previousBeatPos) / speed;
+				remainingBeats = (cycleDuration - previousBeatPos) / speed;
 				if(remainingBeats > 0) { remainingBeats.wait };
 
 				startBeat = 0;
@@ -466,13 +472,9 @@ ParameterTrack
 
 		});
 
-		// If currently playing, restart Routine with new sequence immediately
-		// (no bar-boundary quantization, to avoid silence gap during hot-swap)
-		if(playing == true && routine.notNil) {
-			routine.stop;
-			routine = nil;
-			this.play(quantize: 0);
-		};
+		// If currently playing, no restart needed — the routine snapshots
+		// newSequenceInfo at each cycle boundary, so the new pattern
+		// takes effect after the current loop finishes (no silence gap).
 
 	}
 
