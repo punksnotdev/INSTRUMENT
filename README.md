@@ -8,6 +8,8 @@
 
 INSTRUMENT is a library for livecoding music (beats, basslines, harmony, looping, FX, signal routing, synthesis, etc.) and interfacing with musical instruments and controllers from inside the SuperCollider environment.
 
+Timing is event-scheduled with sub-millisecond OSC bundling — no polling loops, no beat-detection jitter. Each pattern track runs its own Routine on a shared TempoClock with `server.makeBundle` timestamping for sub-millisecond precision (~0.2-1ms, below the human perception threshold).
+
 
 ```SuperCollider
 

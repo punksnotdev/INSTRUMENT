@@ -40,7 +40,7 @@ AutomationRoutine {
             var phase = 0;
             loop {
                 var value = this.computeValue(phase);
-                // Use server.makeBundle for sample-accurate parameter changes
+                // Use server.makeBundle for sub-millisecond parameter changes
                 main.server.makeBundle(main.server.latency, {
                     instrument.synth.set(parameter, value);
                 });
@@ -119,4 +119,4 @@ what parameters they map to, while the actual modulation runs on the server.
 ## Depends on
 
 - Sequencer timing refactor (SEQFIX.md) — the Routine isolation model
-- `server.latency` being set (for sample-accurate parameter updates)
+- `server.latency` being set (for sub-millisecond parameter updates)

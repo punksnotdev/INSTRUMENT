@@ -5,7 +5,51 @@
 The sequencing system converts pattern strings (like `"60 62 64:0.5 67"`) into
 timed synth triggers. It's the timing core of INSTRUMENT.
 
-**Status**: Being refactored. See [SEQFIX.md](../SEQFIX.md) for the timing overhaul plan.
+---
+
+## Timing Architecture
+
+The sequencer uses three layers for timing precision:
+
+1. **TempoClock scheduling** (~0.2-1ms): sclang `Routine.wait` on `main.clock`
+2. **server.latency absorption** (50ms buffer): `server.makeBundle(latency, func)` timestamps OSC bundles in the future
+3. **scsynth bundle execution**: server executes timestamped bundles at the exact sample — but the timestamp itself carries the ~0.2-1ms jitter from layer 1
+
+This achieves sub-millisecond timing precision (~0.2-1ms, same as SC's built-in Pbind/Pattern system), with no polling, no binary searches, and no floating-point beat detection in the hot path. This is below the human perception threshold for onset timing (~2-5ms for trained listeners) but is NOT true sample-accurate — that would require computing bundle timestamps from `clock.beats2secs(targetBeat)` rather than from sclang's wall-clock time, or using server-side Demand UGens.
+
+### Sequencer clock callbacks
+
+The `Sequencer` runs two lightweight Routines on `main.clock`:
+
+- **barRoutine**: Fires every `timeSignature.beats` beats (default: 4). Processes the queue (play/stop/go commands), handles looper state machine transitions.
+- **beatRoutine**: Fires every beat. Executes `singleFunctions` and `repeatFunctions`, increments the beat counter.
+
+### ParameterTrack event scheduling
+
+Each `ParameterTrack` runs its own `Routine` that iterates through `newSequenceInfo` (the `Order` timeline) using delta-based wait calls:
+
+```supercollider
+routine = Routine({
+    loop {
+        newSequenceInfo.do {|event, beatPosition|
+            waitBeats = (beatPosition - previousBeatPos) / speed;
+            if(waitBeats > 0) { waitBeats.wait };
+            main.server.makeBundle(main.server.latency, {
+                track.instrument.trigger(name, event);
+            });
+            previousBeatPos = beatPosition;
+        };
+        remainingBeats = (sequenceDuration - previousBeatPos) / speed;
+        if(remainingBeats > 0) { remainingBeats.wait };
+    };
+}).play(main.clock, quant: main.sequencer.timeSignature.beats);
+```
+
+Key properties:
+- **Delta-based waits**: Each event waits the exact duration since the previous event, avoiding cumulative float errors
+- **`quant` alignment**: New Routines start on bar boundaries automatically
+- **`server.makeBundle` wrapping**: All OSC messages (Synth.new, synth.set, etc.) are captured into a single bundle timestamped `server.latency` seconds in the future
+- **Zero polling**: No work is done between events — the Routine simply sleeps
 
 ---
 
@@ -33,7 +77,7 @@ Central coordinator. One per `I8TMain` instance.
 
 **Looper coordination:**
 - State machine: `awaitingRec` -> `recording` -> `awaitingStart` -> `playing` -> `awaitingStop` -> `stopped`
-- State transitions happen at beat boundaries
+- State transitions happen at bar boundaries
 - Actual recording/playback delegated to `I8TLooper` (Extensions/Looper/)
 
 ### SequencerTrack (`I8TSequencerTrack.sc`)
@@ -57,13 +101,15 @@ One per parameter per instrument. This is where events actually fire.
 - `sequenceDuration`: Total duration of one cycle through all patterns
 - `speed`: Playback speed multiplier
 - `playing`: Boolean
+- `routine`: The active `Routine` (nil when stopped)
 
-**Timeline construction** (`updateSequenceInfo`, lines 450-527):
+**Timeline construction** (`updateSequenceInfo`):
 1. Iterates `sequence` (list of PatternEvents)
 2. For each PatternEvent, gets its repetition count and speed
 3. Expands each pattern's events into absolute beat positions
 4. Stores in `newSequenceInfo` Order: `beatPosition -> event`
 5. Calculates total `sequenceDuration`
+6. If currently playing, restarts the Routine with the new timeline
 
 Example: pattern `"60:1 62:0.5 64:0.5"` with repeat=2 produces:
 ```
@@ -78,8 +124,18 @@ sequenceDuration: 4.0
 ```
 
 **Event triggering:**
-When an event is due, calls `track.instrument.trigger(parameterName, event)`
-where `event` is an Event with `.val`, `.duration`, `.amplitude`, `.rel`.
+The Routine iterates through `newSequenceInfo` in beat order, waiting the delta
+between consecutive events, then calls:
+```supercollider
+main.server.makeBundle(main.server.latency, {
+    track.instrument.trigger(parameterName, event);
+});
+```
+
+**Pattern hot-swap:**
+When `addPattern` is called during playback, `updateSequenceInfo` rebuilds the
+timeline and restarts the Routine. The `quant` parameter ensures the new sequence
+starts on the next bar boundary.
 
 ### I8TPattern (`I8TPattern.sc`)
 
@@ -162,7 +218,7 @@ and gate. Tracks pressed keys for legato behavior.
 **Synth creation** (`createSynth`):
 - Manages node IDs, reuses IDs from finished synths
 - Routes through `fxBus` -> `fxSynth` if FX chain exists
-- Wraps `Synth.new` in `server.bind {}` for OSC bundling
+- Wraps `Synth.new` in `server.bind {}` (nested safely inside the outer `makeBundle`)
 
 **Operations on values:**
 - `\maybe`: Probabilistic — returns value or rest based on probability
@@ -186,19 +242,23 @@ Sequenceable.seq(\note, "60 62 64")
         -> PatternEvent wraps pattern with speed/repeat params
         -> Added to sequence list and patterns dictionary
         -> updateSequenceInfo() rebuilds Order timeline
+        -> If playing, Routine restarts with new timeline
 ```
 
 ### Event Triggering
 ```
-ParameterTrack detects event is due
-  -> track.instrument.trigger(\note, (val: 60, duration: 1, amplitude: 0.5))
+ParameterTrack Routine wakes at scheduled beat position
+  -> server.makeBundle(0.05, {
+       track.instrument.trigger(\note, (val: 60, duration: 1, amplitude: 0.5))
+     })
     -> I8TSynthPlayer.trigger(\note, event)
       -> Parses note value (60 -> MIDI)
       -> Applies octave offset
       -> Computes amplitude with synth_parameters
       -> In poly mode: createSynth([\freq, 60.midicps, \amp, 0.5, ...])
         -> server.bind { Synth.new(\synthDefName, args, group) }
-          -> OSC bundle sent to scsynth
+    -> All OSC messages bundled with timestamp = now + 0.05s
+      -> scsynth executes at exact sample
 ```
 
 ### Pattern Hot-Swap
@@ -206,11 +266,10 @@ ParameterTrack detects event is due
 User calls i[\bass].note("72 74 76") while playing
 
 -> ParameterTrack.addPattern()
-  -> calculateSyncOffset() between old and new pattern durations
-  -> Adjusts beat position for seamless transition
   -> Replaces pattern in sequence
   -> updateSequenceInfo() rebuilds timeline
-  -> Sets startSeq flag to restart on next appropriate tick
+  -> Routine stops and restarts
+  -> quant: timeSignature.beats ensures bar-boundary alignment
 ```
 
 ---
@@ -224,19 +283,6 @@ User calls i[\bass].note("72 74 76") while playing
 - `Order.indices` returns sorted array of keys
 - `Order.do {|value, key| ... }` iterates in key order
 - Iteration walks events in chronological order
-
----
-
-## Binary Search Extension (`SequenceableCollectionFindNearest.sc`)
-
-Adds to `SequenceableCollection`:
-
-- `findNearest(n)`: Returns the value at the index nearest to `n`
-- `indexOfNearestIrregularIndex(n)`: Returns the index nearest to `n`
-- `searchIndex(x, start, end)`: Recursive binary search, O(log n)
-
-Used by ParameterTrack to find which event corresponds to the current position
-in the pattern timeline.
 
 ---
 
@@ -265,13 +311,13 @@ The sequencer coordinates loop recording/playback via state machine:
 
 ```
 recLooper(looper, layer)   -> sets state to \awaitingRec
-  (at beat boundary)       -> looper.performRec(layer), state = \recording
+  (at bar boundary)        -> looper.performRec(layer), state = \recording
 startLooper(looper, layer) -> sets state to \awaitingStart
-  (at beat boundary)       -> looper.performStart(layer), state = \playing
+  (at bar boundary)        -> looper.performStart(layer), state = \playing
 stopLooper(looper, layer)  -> sets state to \awaitingStop
-  (at beat boundary)       -> looper.performStop(layer), state = \stopped
+  (at bar boundary)        -> looper.performStop(layer), state = \stopped
 ```
 
-State transitions are quantized to beat boundaries for musical sync.
+State transitions are quantized to bar boundaries for musical sync.
 The actual `I8TLooper` class (in Extensions/Looper/) handles buffer
 allocation, recording synths, and playback synths.

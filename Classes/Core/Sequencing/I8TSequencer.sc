@@ -12,8 +12,8 @@ Sequencer : I8TNode
 	var patterns;
 	var sequence;
 
-	var barRoutine;
-	var beatRoutine;
+	var <barRoutine;
+	var <beatRoutine;
 
 	var playing;
 

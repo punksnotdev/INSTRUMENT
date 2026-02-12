@@ -5,11 +5,17 @@
 ### Sequencer Timing Overhaul
 - **Plan**: [SEQFIX.md](../SEQFIX.md)
 - **Branch**: `audit`
-- **Status**: Plan complete, implementation pending
+- **Status**: Complete
 - **Goal**: Replace 500Hz tick-loop polling with event-scheduled Routines +
-  server.latency bundling for sample-accurate timing
-- **Phases**: (1) .collect->.do hygiene [partial], (2) event-scheduled ParameterTrack,
-  (3) simplify Sequencer, (4) cleanup
+  server.latency bundling for sub-millisecond timing precision
+- **Phases**:
+  - [x] Phase 1a: `.collect` -> `.do` hygiene (11 call sites)
+  - [x] Phase 1b: Remove cosmetic `Task` in `addPattern`
+  - [x] Phase 2: Event-scheduled ParameterTrack with Routine + `server.makeBundle`
+  - [x] Phase 3+4: Remove tick loop, replace with barRoutine/beatRoutine, clean up dead code
+- **Result**: Zero polling, zero binary searches, three-layer timing precision
+  (TempoClock ~0.2-1ms -> server.latency absorption -> scsynth execution)
+- **Tests**: See [TESTSEQ.md](../TESTSEQ.md) and `Tests/Core/Sequencing/TestSequencerTiming.scd`
 
 ---
 
@@ -20,8 +26,7 @@ Append new entries at the bottom with date headers.
 
 ### 2026-02-11 — Sequencer timing audit
 
-**Context**: Live performance system needs sample-accurate or near-sample-accurate
-timing. Current implementation uses a 500Hz Tdef polling loop with 2-7ms jitter.
+**Context**: Live performance system needs sub-millisecond timing precision. Current implementation uses a 500Hz Tdef polling loop with 2-7ms jitter.
 
 **Decisions:**
 
@@ -33,7 +38,7 @@ timing. Current implementation uses a 500Hz Tdef polling loop with 2-7ms jitter.
 2. **server.makeBundle wrapping goes in ParameterTrack**, not per-instrument type.
    ParameterTrack calls `main.server.makeBundle(latency, { instrument.trigger() })`.
    This way any instrument type (I8TSynthPlayer, InstrumentGroup, Proxy, etc.)
-   gets sample-accurate timing without needing a `triggerBundled` method each.
+   gets sub-millisecond timing without needing a `triggerBundled` method each.
 
 3. **server.latency = 0.05** (50ms) as starting point. Increase to 0.1-0.2 if
    sclang jitter exceeds this under heavy load. Lower values reduce perceived
@@ -145,8 +150,8 @@ timing refactor. These should be addressed separately.
 - **File**: `I8TPattern.sc:133-220`
 - Entire old parser still present, replaced by `I8TParser`. Delete it.
 
-#### Double `var <tdef` declaration
-- **File**: `I8TSequencer.sc` lines 15 and 36 — `tdef` declared twice.
+#### Double `var <tdef` declaration — RESOLVED
+- **File**: `I8TSequencer.sc` — `tdef` removed entirely in timing overhaul.
 
 #### Commented-out blocks throughout
 - Large commented-out sections in: `I8TSynthInstrument.sc:59-110`,
@@ -221,12 +226,9 @@ timing refactor. These should be addressed separately.
   the channel strip into a single SynthDef with toggleable sections for lower latency
   and reduced node overhead.
 
-#### No server.latency set currently
+#### No server.latency set currently — RESOLVED
 - **File**: `I8TMain.sc`
-- `server.latency` is never explicitly set. SuperCollider's default is `0.2` (200ms),
-  but some builds default to `nil` (no latency compensation). The SEQFIX plan adds
-  `server.latency = 0.05`, but even before the sequencer refactor, setting this would
-  help the existing `server.bind` calls behave more predictably. Quick win.
+- `server.latency = 0.05` now set in init. Added as part of the timing overhaul.
 
 ### Reliability
 
@@ -281,6 +283,15 @@ timing refactor. These should be addressed separately.
 ---
 
 ## Completed
+
+### 2026-02-11 — Sequencer timing overhaul
+- Phase 1a: `.collect` -> `.do` in 11 call sites across SequencerTrack and ParameterTrack (`5fff76a`)
+- Phase 1b: Remove cosmetic `Task.new` in `addPattern` (`be13620`)
+- Phase 2: Event-scheduled ParameterTrack with Routine + `server.makeBundle` (`1f04566`)
+- Phase 3+4: Remove tick loop, add barRoutine/beatRoutine, clean up dead code (`fe59381`)
+- Added `server.latency = 0.05` in I8TMain.sc
+- Updated unit tests and created timing measurement test scripts
+- Updated docs/sequencing.md, docs/progress.md, README.md
 
 ### 2026-02-11 — Audit documentation
 - Wrote initial audit docs (commit `ecd7bfc`)

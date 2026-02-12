@@ -39,13 +39,13 @@ I8TeventListener
         │     ├── I8TChannel (mixer channel with EQ/comp/locut)
         │     ├── I8TChannelGroup (container for channels)
         │     └── I8TMixer (master mixer)
-        └── Sequencer (timing, tracks, queue, loopers)
+        └── Sequencer (clock callbacks, tracks, queue, loopers)
 
 I8Tevent (event data with action callback)
 I8TPattern / P (pattern data: parsed string -> Events)
 PatternEvent : SequencerEvent (pattern wrapper with speed/repeat/transforms)
 SequencerTrack (per-instrument: holds ParameterTracks)
-ParameterTrack (per-parameter: schedules events, triggers instrument)
+ParameterTrack (per-parameter: Routine-based event scheduling, triggers instrument)
 I8TParser (string pattern -> event array)
 I8TFXChain : Event (dictionary of FX synths on a channel)
 I8TFolder : Event (hierarchical SynthDef organization)
@@ -79,6 +79,9 @@ Each instrument is automatically:
 ### 2. Sequencing
 
 See [docs/sequencing.md](sequencing.md) for the full sequencing architecture.
+
+**Timing**: Event-scheduled Routines with `server.makeBundle` for sub-millisecond precision (~0.2-1ms).
+See [docs/sequencing.md](sequencing.md) for the full timing architecture.
 
 **User API:**
 ```supercollider

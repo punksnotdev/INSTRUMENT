@@ -68,10 +68,10 @@ Sequenceable : I8TNode
 			pattern = pattern_;
 		}, {
 
-			if( parameter_.isKindOf(Array) || parameter_.isKindOf(String) ) {
+			if( parameter_.isKindOf(Array) || parameter_.isKindOf(String) || parameter_.isKindOf(SimpleNumber) ) {
 				parameter = \trigger;
-				pattern = parameter_;
-			};		
+				pattern = if(parameter_.isKindOf(SimpleNumber), { parameter_.asString }, { parameter_ });
+			};
 		});
 
 		if( pattern.isKindOf(Array), {
@@ -454,9 +454,9 @@ Sequenceable : I8TNode
 
 			parameter = parameter_;
 
-			if( pattern_.isKindOf(String) || pattern_.isKindOf(Array), {
+			if( pattern_.isKindOf(String) || pattern_.isKindOf(Array) || pattern_.isKindOf(SimpleNumber), {
 
-				pattern = pattern_;
+				pattern = if(pattern_.isKindOf(SimpleNumber), { pattern_.asString }, { pattern_ });
 
 			}, {
 
@@ -471,9 +471,9 @@ Sequenceable : I8TNode
 		},
 		{
 
-			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) ), {
+			if( (parameter_.isKindOf(String) || parameter_.isKindOf(Array) || parameter_.isKindOf(SimpleNumber) ), {
 
-				pattern = parameter_;
+				pattern = if(parameter_.isKindOf(SimpleNumber), { parameter_.asString }, { parameter_ });
 
 
 			}, {

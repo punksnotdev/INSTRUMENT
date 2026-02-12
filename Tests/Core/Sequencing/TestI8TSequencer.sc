@@ -11,11 +11,6 @@ TestI8TSequencer : I8TUnitTest
 		this.assert(main.sequencer.isKindOf(Sequencer));
 	}
 
-	test_hasTdef {
-		this.assert(main.sequencer.tdef.isKindOf(Tdef));
-	}
-
-
 	test_afterInit_hasCorrectTimeSignature {
 
 		var seq = main.sequencer;
@@ -27,5 +22,32 @@ TestI8TSequencer : I8TUnitTest
 
 	}
 
+	test_afterPlay_hasBarRoutine {
+		main.sequencer.play;
+		this.assert(main.sequencer.barRoutine.isKindOf(Routine));
+		main.sequencer.stop;
+	}
+
+	test_afterPlay_hasBeatRoutine {
+		main.sequencer.play;
+		this.assert(main.sequencer.beatRoutine.isKindOf(Routine));
+		main.sequencer.stop;
+	}
+
+	test_afterStop_barRoutineIsNil {
+		main.sequencer.play;
+		main.sequencer.stop;
+		this.assert(main.sequencer.barRoutine.isNil);
+	}
+
+	test_afterStop_beatRoutineIsNil {
+		main.sequencer.play;
+		main.sequencer.stop;
+		this.assert(main.sequencer.beatRoutine.isNil);
+	}
+
+	test_serverLatency_isSet {
+		this.assert(main.server.latency == 0.05);
+	}
 
 }
