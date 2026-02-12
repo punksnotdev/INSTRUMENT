@@ -313,6 +313,10 @@ Sequenceable : I8TNode
 
 
 
+	shuffle {|amount, grid|
+		sequencer.sequencerTracks[name].shuffle(amount, grid);
+	}
+
 	speed {|n|
 
 		// if( this.multiPattern ) {

@@ -25,6 +25,9 @@ ParameterTrack
 
 	var routine;
 
+	var <>shuffle;
+	var <>shuffleGrid;
+
 	*new{|track_,name_,main_|
 		^super.new.init(track_,name_,main_);
 	}
@@ -39,6 +42,9 @@ ParameterTrack
 		currentSpeed = speed;
 
 		beats = 0;
+
+		shuffle = 0;
+		shuffleGrid = 0.5;
 
 		patterns = IdentityDictionary.new();
 		patternEvents = IdentityDictionary.new();
@@ -64,8 +70,9 @@ ParameterTrack
 		startBeat = position ? 0;
 
 		routine = Routine({
-			var previousBeatPos, waitBeats, remainingBeats;
+			var previousBeatPos, previousShuffledPos, waitBeats, remainingBeats;
 			var cycleSequenceInfo, cycleDuration;
+			var shuffledPos;
 
 			loop {
 				// Snapshot sequence data for this cycle so mid-cycle
@@ -74,9 +81,11 @@ ParameterTrack
 				cycleDuration = sequenceDuration;
 
 				previousBeatPos = startBeat * speed;
+				previousShuffledPos = this.applyShuffle(previousBeatPos);
 
 				cycleSequenceInfo.do {|event, beatPosition|
-					waitBeats = (beatPosition - previousBeatPos) / speed;
+					shuffledPos = this.applyShuffle(beatPosition);
+					waitBeats = (shuffledPos - previousShuffledPos) / speed;
 
 					if(waitBeats > 0) {
 						waitBeats.wait;
@@ -89,10 +98,11 @@ ParameterTrack
 					};
 
 					previousBeatPos = beatPosition;
+					previousShuffledPos = shuffledPos;
 				};
 
 				// Wait remaining time to complete the cycle
-				remainingBeats = (cycleDuration - previousBeatPos) / speed;
+				remainingBeats = (cycleDuration - previousShuffledPos) / speed;
 				if(remainingBeats > 0) { remainingBeats.wait };
 
 				startBeat = 0;
@@ -392,6 +402,21 @@ ParameterTrack
 
 		^(duration / patternSpeed)
 
+	}
+
+	applyShuffle {|beatPosition|
+		var pairLen, pairStart, posInPair, tolerance;
+		if(shuffle <= 0) { ^beatPosition };
+
+		pairLen = shuffleGrid * 2;
+		pairStart = (beatPosition / pairLen).floor * pairLen;
+		posInPair = beatPosition - pairStart;
+		tolerance = shuffleGrid * 0.1;
+
+		if(posInPair >= (shuffleGrid - tolerance)) {
+			^(beatPosition + (shuffle * shuffleGrid))
+		};
+		^beatPosition
 	}
 
 	updateSequenceInfo {

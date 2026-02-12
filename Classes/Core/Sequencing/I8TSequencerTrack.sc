@@ -134,6 +134,13 @@ SequencerTrack
 		});
 	}
 
+	shuffle {|amount, grid|
+		parameterTracks.do({|t|
+			t.shuffle = amount ? 0;
+			if(grid.notNil) { t.shuffleGrid = grid };
+		});
+	}
+
 	go {|time|
 		parameterTracks.do({|t|
 			t.go(time);
