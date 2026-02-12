@@ -169,9 +169,10 @@ timing refactor. These should be addressed separately.
   (value, operator, space, paren), then (2) walk tokens to build events.
   Would roughly halve the code and enable nesting.
 
-#### Subsequence handling doesn't nest
-- `validateMatching` and `getSubsequences` explicitly reject nested brackets.
-  `(1 2 (3 4))` breaks. TODO acknowledged in code at line 738.
+#### Subsequence handling doesn't nest — RESOLVED
+- Fixed in commit `a060a84`. `validateMatching` now uses depth-counting,
+  `getSubsequences` finds top-level pairs only, and parsing recurses into inner groups.
+  `(1 2 (3 4))` now works correctly.
 
 #### Operator extraction is fragile
 - `extractParameters` finds operators by scanning for single characters (`$p`, `$f`, etc.)
@@ -283,6 +284,38 @@ timing refactor. These should be addressed separately.
 ---
 
 ## Completed
+
+### 2026-02-12 — Shuffle (swing) feature
+- Runtime shuffle in `ParameterTrack.play` shifts off-grid events later in time (`7f1aec6`)
+- Configurable amount (0–1) and grid resolution (default 0.5 = 8th-note swing)
+- Live-tweakable: change takes effect on next event, no pattern rebuild needed
+- User API: `i.kick.shuffle(0.3)`, `i.hihat.shuffle(0.5, 0.25)` (16th-note grid)
+- Works on individual tracks and through SequencerTrack passthrough
+- Added `TestSequencerTiming.scd` test script and `docs/features/shuffle.md`
+
+### 2026-02-12 — Pattern preview visualization PRD
+- Added product requirements doc for pattern preview visualization (`0e553dc`)
+- Defines visual representation of patterns for live-coding feedback
+- See `docs/features/pattern-preview.md`
+
+### 2026-02-12 — Pattern variables PRD
+- Added product requirements doc for pattern variables feature (`8a4425d`)
+- Defines syntax for naming and reusing pattern fragments within pattern strings
+- Using `;` delimiters, `name=value` assignments, and `=pattern` evaluation blocks
+- See `docs/features/pattern-variables.md`
+
+### 2026-02-12 — Nested parentheses support in parser
+- Rewrote `validateMatching` to use depth-counting instead of position-matching (`a060a84`)
+- Fixed `getSubsequences` to find only top-level bracket pairs
+- Added recursive parsing so inner bracketed groups are correctly handled
+- Duration modifier state now propagates across subsequences and recursion levels
+- Resolves the "subsequence handling doesn't nest" issue from the backlog
+
+### 2026-02-12 — Euclidean rhythm operator (%)
+- Implements Bjorklund algorithm for distributing hits evenly across slots (`3f6778f`)
+- Syntax: `value%hits/steps` (e.g. `"1%3/8"`) and `(values)%hits/steps` for subsequences
+- Values inside subsequences cycle across hit positions
+- Added to I8TParser.sc and documented in README.md
 
 ### 2026-02-11 — Sequencer timing overhaul
 - Phase 1a: `.collect` -> `.do` in 11 call sites across SequencerTrack and ParameterTrack (`5fff76a`)

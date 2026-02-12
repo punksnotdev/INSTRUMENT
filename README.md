@@ -641,6 +641,49 @@ i.kick.seq("(1 0.5 0.8)%3/8:0.5");
 
 ```
 
+## Shuffle (Swing)
+
+Add swing/groove feel by shifting off-beat events later in time. The stored pattern data stays clean -- shuffle is applied at runtime so it can be tweaked live.
+
+```SuperCollider
+
+i = INSTRUMENT();
+
+i.kick = 'kick';
+i.kick.seq("1").speed(2);
+
+// add shuffle (0 = straight, higher = more swing)
+i.kick.shuffle(0.3);
+
+// triplet feel
+i.kick.shuffle(0.5);
+
+// 16th-note shuffle (custom grid resolution)
+i.kick.shuffle(0.5, 0.25);
+
+// reset to straight
+i.kick.shuffle(0);
+
+```
+
+Shuffle works on any instrument or group:
+
+```SuperCollider
+
+i.drums = (
+	kick: 'kick',
+	hihat: 'hihat',
+	snare: 'snare',
+);
+
+i.drums.kick.seq("1").speed(2);
+i.drums.hihat.seq(" 1").speed(4);
+
+// shuffle the whole group
+i.drums.shuffle(0.3);
+
+```
+
 
 ## Set tempo
 
@@ -811,7 +854,7 @@ Using fractions allow some interesting rhythms:
 
 ## Subsequences
 
-You can group patterns inside patterns using parenthesis. This is useful for playing parts of patterns with different durations and repetitions.
+You can group patterns inside patterns using parenthesis, including nested groups. This is useful for playing parts of patterns with different durations and repetitions.
 
 ```SuperCollider
 
@@ -838,6 +881,10 @@ i.bass.note("(Dx2 Gx2):1/2x4  F A ");
 i.bass.note("(Dx2 Gx2):1/2x4  (F A)x3 ");
 // between patterns
 i.bass.note("C D E  (Dx2 Ex2):1/2x3  F G C5 (B A)x2  C5 B D ");
+
+// nested subsequences
+i.bass.note("(C (D E)x2 G)x3  F A");
+i.bass.note("(C (D (E F)x2)x3 G)x2");
 
 ```
 
