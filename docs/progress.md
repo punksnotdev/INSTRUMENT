@@ -112,10 +112,29 @@ timing refactor. These should be addressed separately.
 - The mixer inherits from Sequenceable to get `setupSequencer`, but this gives it
   `seq`, `trigger`, `note`, `fx`, `play`, `stop`, etc. A mixer shouldn't be sequenceable.
 
-#### `doesNotUnderstand` in I8TNode swallows errors
-- **File**: `I8TNode.sc:115`
-- Catches **any** unknown message and treats it as a parameter get/set.
-  Typos silently set parameters instead of throwing errors. Debugging nightmare.
+#### `doesNotUnderstand` — five implementations, three purposes, several bugs
+- **Files**: `I8TNode.sc:115`, `I8TSynth.sc:96`, `I8TInstrumentGroup.sc:274`, `I8TChannelGroup.sc:70`, `I8TMIDIDevice.sc:204`
+- The project uses `doesNotUnderstand` for three distinct purposes:
+  1. **Parameter proxy** (I8TNode) — `obj.param_(value)` / `obj.param` for synth parameters
+  2. **Dictionary accessor** (InstrumentGroup, I8TChannelGroup) — `container.childName` for children
+  3. **Controller lookup** (MIDIDevice) — `device.controllerName` for controllers
+- **Known bugs and issues:**
+  - **I8TNode swallows all errors**: Catches *any* unknown message and treats it as a parameter get/set. Typos like `i.bass.freqq_(440)` silently write to the dict. TODO on line 129-130 shows intent to validate, but it's commented out.
+  - **I8TSynth is a dead debug stub**: Overrides doesNotUnderstand to only log — does NOT call `super.doesNotUnderstand`, so I8TNode's parameter behavior is completely broken on I8TSynth instances despite `parameters` being populated from SynthDef control names in `init`.
+  - **InstrumentGroup/I8TChannelGroup shadow parent without delegation**: Both override doesNotUnderstand without calling `super`, so I8TNode's parameter proxy is inaccessible. This means `group.cutoff_(0.5)` silently does nothing, while `group.set(\cutoff, 0.5)` correctly broadcasts to children. Only explicitly defined methods like `amp_` and `octave_` broadcast correctly.
+  - **InstrumentGroup fx_ path missing early return**: After handling `fx_` (line 284-288), execution continues without `^`, falling through to the dictionary lookup which may trigger unexpected code paths.
+  - **I8TNode returns `""` from setters**: Line 133 returns empty string instead of `this` (for chaining) or the value. Inconsistent with SC conventions.
+  - **MIDIDevice silently ignores setters**: Any setter call on a MIDIDevice does nothing and returns nil.
+  - **Return value inconsistency**: I8TNode returns `""` for setters, InstrumentGroup returns `nil` or result of `put`/`setFxChain`, I8TSynth returns `nil`, MIDIDevice returns `nil`.
+  - **Sequenceable.set argument mismatch**: I8TNode.doesNotUnderstand passes 2 args to `this.set()`, but `Sequenceable.set` expects 3. Works in practice because I8TSynthPlayer overrides `set` with a 2-arg version, but other Sequenceable subclasses would get wrong arg binding.
+  - **InstrumentGroup.put bracket syntax error**: Line 197 has `dictionary.at[key].play` (should be `dictionary.at(key).play`).
+- **Suggested refactor approach** (incremental, not a rewrite):
+  1. **Delete I8TSynth.doesNotUnderstand** — it's a dead debug stub that only breaks functionality
+  2. **Enable param validation in I8TNode** — uncomment the TODO check on line 129-130, validate against known parameters (from SynthDef control names or an explicit whitelist), post a warning for unknown params instead of silently storing
+  3. **Fix InstrumentGroup fx_ early return** — add `^this` after `this.fx.channel.setFxChain(value)` on line 286
+  4. **Add super delegation in group doesNotUnderstand** — when the setter key is not a child name, call `super.doesNotUnderstand` so parameter broadcasting works through the natural path instead of needing explicit method overrides for every broadcastable param
+  5. **Fix return values** — return `this` from setters (not `""`) for consistency and chaining
+  6. **Fix InstrumentGroup.put bracket syntax** — `dictionary.at[key]` -> `dictionary.at(key)` on line 197
 
 #### Classvar coupling prevents multi-instance
 - `SequencerTrack.classSequencer` and `SequencerEvent.classSequencer` are classvars
@@ -279,7 +298,8 @@ timing refactor. These should be addressed separately.
 9. **Fix nil-safety gaps** — add guards in SequencerTrack methods
 10. **Parser caching** — cache by input string to avoid re-parsing identical patterns
 11. **Consolidate channel strip synths** — reduce per-channel latency and node count
-12. **Address architecture issues** — longer-term: I8TMain extraction, doesNotUnderstand
+12. **Address architecture issues** — longer-term: I8TMain extraction
+13. **Refactor doesNotUnderstand** — incremental fixes: delete I8TSynth stub, enable param validation in I8TNode, fix InstrumentGroup fx_ early return, add super delegation in group classes, fix return values (see Architecture Issues section for full plan)
 
 ---
 

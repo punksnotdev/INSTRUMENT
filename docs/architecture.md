@@ -292,6 +292,6 @@ Extensions/
 2. **Dynamic dispatch**: `I8TNode.doesNotUnderstand()` enables `instrument.paramName_(value)` syntax
 3. **Hierarchical references**: `I8TFolder` propagates refs up so `synths[\kick]` works from root
 4. **Event-based triggering**: All sequencing flows through `instrument.trigger(parameter, event)`
-5. **Broadcasting**: `InstrumentGroup.doesNotUnderstand()` forwards operations to all children
+5. **Dictionary accessor**: `InstrumentGroup.doesNotUnderstand()` and `I8TChannelGroup.doesNotUnderstand()` provide named access to children (e.g. `group.kick` returns child instrument). Broadcasting to children is handled by explicit methods (`set`, `amp_`, `octave_`, etc.), not by doesNotUnderstand
 6. **Bus-based routing**: All audio through buses for flexible FX/send/mix chains
 7. **String DSL**: Pattern strings (`"60:0.5*0.8ff"`) parsed by I8TParser into event arrays
