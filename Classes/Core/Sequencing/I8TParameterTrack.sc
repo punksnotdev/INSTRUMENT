@@ -382,7 +382,7 @@ ParameterTrack
 			});
 
 			totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats ));
-			totalBeatsInSeq = totalBeatsInSeq.max(4);
+			totalBeatsInSeq = totalBeatsInSeq.max(1);
 			// totalBeatsInSeq = totalBeatsInSeq + (e.pattern.pattern.size * ( seRepeats / seSpeed ));
 
 		});
@@ -438,7 +438,7 @@ ParameterTrack
 
 			var totalSequenceEventDurations = 0;
 
-			repetitions = track.sequencer.repeat.max(4);
+			repetitions = track.sequencer.repeat.max(1);
 
 			if( patternEvent.pattern.pattern.isArray, {
 
