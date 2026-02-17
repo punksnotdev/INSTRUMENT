@@ -11,13 +11,13 @@ SynthDef(\reverb, {
 	var targetRoom, targetDamp, lag=0.3;
 	var dsp, mix;
 
-	sig = In.ar(inBus) * 2.5;
+	sig = In.ar(inBus, 2);
 
-	dsp = FreeVerb.ar( sig, 1, room, damp );
+	dsp = FreeVerb2.ar( sig[0], sig[1], 1, room, damp );
 
 	mix = (sig * (1-wet)) + (dsp * wet);
 
-	ReplaceOut.ar( outBus, Pan2.ar( mix * amp.linlin(0,1,0,1.5), 0 ) );
+	ReplaceOut.ar( outBus, mix * amp );
 
 },
 variants: (

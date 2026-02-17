@@ -264,13 +264,19 @@ I8TChannel : Sequenceable
 	}
 
 
+	freeFxChain {
+		fxChain.keysValuesDo({|key, fx|
+			if( key != \channel ) {
+				fx.free;
+			};
+		});
+	}
+
 	setFxChain {|fxChain_|
 
 
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
-			fxChain.collect({|fx,key|
-				fx.free;
-			});
+			this.freeFxChain;
 			fxChain=I8TFXChain.new;
 			fxChain.channel = this;
 
@@ -284,9 +290,7 @@ I8TChannel : Sequenceable
 			main.validateSynthDef(fxChain_)
 		), {
 
-			fxChain.collect({|fx,key|
-				fx.free;
-			});
+			this.freeFxChain;
 
 			fxChain = I8TFXChain.new;
 			fxChain.channel = this;
@@ -309,12 +313,8 @@ I8TChannel : Sequenceable
 				);
 
 				if(notValid.size==0, {
-					// Task.new({
 
-					fxChain.collect({|fx,key|
-						fx.free;
-					});
-
+					this.freeFxChain;
 
 					fxChain = I8TFXChain.new;
 					fxChain.channel = this;
