@@ -13,7 +13,6 @@ InstrumentGroup : Sequenceable
 	var <groupSpeed;
 
 	var <groupFx;
-	var savedChildFx;
 
 	*new {
 		^super.new.init;
@@ -23,7 +22,6 @@ InstrumentGroup : Sequenceable
 		dictionary = ();
 		childrenStopped = IdentityDictionary.new;
 		groupSpeed = 1;
-		savedChildFx = IdentityDictionary.new;
 	}
 
 
@@ -197,30 +195,27 @@ InstrumentGroup : Sequenceable
 
 	fx_ {|something|
 		if( something.isNil ) {
-			// Restore each child's individual fx, clearing only the group override
-			this.collect({|item, key|
-				if( item.isKindOf(I8TInstrument) || item.isKindOf(InstrumentGroup) ) {
-					item.fx = savedChildFx[key];
+			// Remove only the group-applied FX, leaving individual FX intact
+			this.collect({|item|
+				if( item.isKindOf(I8TInstrument) ) {
+					item.channel.removeFx(\groupFx);
+				};
+				if( item.isKindOf(InstrumentGroup) ) {
+					item.fx = nil;
 				};
 			});
 			groupFx = nil;
 		} {
-			// Save each child's current fx before the group overrides it
-			this.collect({|item, key|
+			// Stack group FX on top of any individual FX, stored under \groupFx key
+			this.collect({|item|
 				if( item.isKindOf(I8TInstrument) ) {
-					var fxKeys = item.channel.fxChain.keys.reject({|k| k == \channel}).asArray;
-					savedChildFx[key] = if(fxKeys.size == 1) { fxKeys[0] } { if(fxKeys.size > 1) { fxKeys } { nil } };
+					item.channel.addFx(something, \groupFx);
 				};
 				if( item.isKindOf(InstrumentGroup) ) {
-					savedChildFx[key] = item.groupFx;
-				};
-			});
-			groupFx = something;
-			this.collect({|item|
-				if( item.isKindOf(I8TInstrument) || item.isKindOf(InstrumentGroup) ) {
 					item.fx = something;
 				};
 			});
+			groupFx = something;
 		};
 	}
 

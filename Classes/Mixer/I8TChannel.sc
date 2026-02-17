@@ -334,7 +334,7 @@ I8TChannel : Sequenceable
 
 	}
 
-	addFx {|fx_|
+	addFx {|fx_, storeKey_|
 
 		var fx = this.createFxSynthDef(fx_);
 
@@ -345,10 +345,11 @@ I8TChannel : Sequenceable
 			fx.synthdefKey.notNil
 			)
 		) {
+			var storeKey = storeKey_ ?? { fx.synthdefKey };
 
-			this.removeFx(fx.synthdefKey);
+			this.removeFx(storeKey);
 
-			^this.setupFx(fx);
+			^this.setupFx(fx, storeKey);
 
 		};
 
@@ -454,12 +455,13 @@ I8TChannel : Sequenceable
 	}
 
 
-	setupFx {|fx_|
+	setupFx {|fx_, storeKey_|
 
 		var fxSynthName;
 		var fxSynth;
+		var storeKey = storeKey_ ?? { fx_.synthdefKey };
 
-		fxSynthName = (name ++ '_fx_' ++ fx_.synthdefKey);
+		fxSynthName = (name ++ '_fx_' ++ storeKey);
 
 		fxSynth = I8TSynth.before(
 			fxSynthName,
@@ -468,7 +470,7 @@ I8TChannel : Sequenceable
 			[\inBus,bus,\outBus,bus]
 		);
 
-		fxChain[fx_.synthdefKey.asSymbol] = fxSynth;
+		fxChain[storeKey.asSymbol] = fxSynth;
 
 		fxSynth.setupSequencer( sequencer );
 
