@@ -168,7 +168,13 @@ Sequenceable : I8TNode
 	pan {|pattern,test| this.seq(\pan,pattern,test); }
 
 	fx_ {|pattern,test| this.fx(pattern,test); }
-	fx {|pattern,test| this.seq(\fx,pattern,test); }
+	fx {|pattern,test|
+		var p = pattern;
+		if( p.isKindOf(SynthDef) || p.isKindOf(SynthDefVariant) || p.isKindOf(I8TFolder) ) {
+			p = p.name.asSymbol;
+		};
+		this.seq(\fx,p,test);
+	}
 
 	fxSet_ {|pattern,test| this.fxSet(pattern,test); }
 	fxSet {|pattern,test| this.seq(\fxSet,pattern,test); }
