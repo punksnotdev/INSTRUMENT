@@ -462,11 +462,21 @@ I8TChannel : Sequenceable
 		var fxSynth;
 		var storeKey = storeKey_ ?? { fx_.synthdefKey };
 
+		// Individual FX must land before groupFx in the node tree so
+		// signal flows: individual FX → groupFx → outSynth
+		var target = if(
+			storeKey != \groupFx && fxChain[\groupFx].notNil
+		) {
+			fxChain[\groupFx].synth
+		} {
+			outSynth
+		};
+
 		fxSynthName = (name ++ '_fx_' ++ storeKey);
 
 		fxSynth = I8TSynth.before(
 			fxSynthName,
-			outSynth,
+			target,
 			fx_.synthdef,
 			[\inBus,bus,\outBus,bus]
 		);
