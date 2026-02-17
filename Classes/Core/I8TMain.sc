@@ -1241,36 +1241,36 @@ I8TMain : Event
 			childItem.isKindOf(SynthDefVariant)
 		) ) {
 			
-			node = I8TSynthPlayer(childItem);
-			
+			node = I8TSynthPlayer(childItem, main_: this);
+
 
 		};
 
 		if( synthLoader.validateSynthName(childItem) ) {
-			
+
 
 			if( nodes[newKey].notNil, {
 				node = nodes[newKey];
 			},
 			{
-				var synthdef = synthLoader.getSynthDefByName(childItem);				
-				node = I8TSynthPlayer(synthdef);				
+				var synthdef = synthLoader.getSynthDefByName(childItem);
+				node = I8TSynthPlayer(synthdef, main_: this);
 			});
 
 
 		};
 
 		if( synthLoader.validateFolderName(childItem) ) {
-			
+
 
 			if( nodes[newKey].notNil, {
-				
+
 				node = nodes[newKey];
 			},
 			{
 				var synthdef = synthLoader.getFolderByName(childItem).getMainSynthDef;
-				
-				node = I8TSynthPlayer(synthdef);
+
+				node = I8TSynthPlayer(synthdef, main_: this);
 			});
 
 
