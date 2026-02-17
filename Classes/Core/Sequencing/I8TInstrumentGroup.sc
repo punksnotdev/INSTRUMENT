@@ -192,15 +192,14 @@ InstrumentGroup : Sequenceable
 	}
 
 	fx_ {|something|
-		this.put('fx', something);
+		this.collect({|item|
+			if( item.isKindOf(I8TInstrument) || item.isKindOf(InstrumentGroup) ) {
+				item.fx = something;
+			};
+		});
 	}
 
 	put {|key,something|
-
-
-		if( key.asSymbol == 'fx' ) {
-			^this.fx.channel.setFxChain(something);
-		};
 
 		if( something.isKindOf(I8TNode), {
 
@@ -310,7 +309,8 @@ InstrumentGroup : Sequenceable
 
 			if( key.asGetter.asSymbol == 'fx' ) {
 
-				this.fx.channel.setFxChain(value);
+				this.fx_(value);
+				^nil;
 
 			};
 
