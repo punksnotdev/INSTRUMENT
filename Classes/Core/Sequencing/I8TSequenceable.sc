@@ -339,6 +339,8 @@ Sequenceable : I8TNode
 		this.updateSequence();
 	}
 
+	speed_ {|n| this.speed(n) }
+
 
 	repeat {|n|
 		if(n.isKindOf(Number)) {

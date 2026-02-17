@@ -10,6 +10,7 @@ InstrumentGroup : Sequenceable
 	var <childrenStopped;
 
 	var <dictionary;
+	var <groupSpeed;
 
 	*new {
 		^super.new.init;
@@ -18,6 +19,7 @@ InstrumentGroup : Sequenceable
 	init {
 		dictionary = ();
 		childrenStopped = IdentityDictionary.new;
+		groupSpeed = 1;
 	}
 
 
@@ -147,6 +149,31 @@ InstrumentGroup : Sequenceable
 
 
 	}
+
+	speed {|n|
+		if(n.isKindOf(Number)) {
+			var ratio = n / groupSpeed;
+			this.collect({|item|
+				if(item.isKindOf(InstrumentGroup)) {
+					item.speed(n);
+				} {
+					if(item.isKindOf(Sequenceable)) {
+						if(item.sequencer.notNil) {
+							var track = item.sequencer.sequencerTracks[item.name];
+							if(track.notNil) {
+								track.parameterTracks.do({|pTrack|
+									pTrack.speed = pTrack.speed * ratio;
+								});
+							};
+						};
+					};
+				};
+			});
+			groupSpeed = n;
+		};
+	}
+
+	speed_ {|n| this.speed(n) }
 
 	seq {|parameter_,value_|
 		this.collect({|item|
