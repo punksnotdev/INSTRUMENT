@@ -1327,7 +1327,11 @@ I8TMain : Event
 
 				currentGroup.at(childItemKey).synthdef = synthdef;
 
-				currentGroup.at(childItemKey).play;
+				// Only restart if not already playing - avoids
+				// bar-boundary quantization delay on hot-swap
+				if( currentGroup.at(childItemKey).playing != true ) {
+					currentGroup.at(childItemKey).play;
+				};
 
 			},
 			{
