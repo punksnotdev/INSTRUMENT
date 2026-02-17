@@ -125,7 +125,7 @@ ParameterTrack
 			// Restart routine at new position
 			this.stop;
 			playing = true;
-			this.play(time);
+			this.play(time, 0);
 		};
 	}
 
