@@ -272,14 +272,21 @@ I8TChannel : Sequenceable
 		});
 	}
 
+	// Remove only individually-set FX, preserving \groupFx from a parent InstrumentGroup
+	clearIndividualFx {
+		fxChain.keys.copy.do({|key|
+			if( key != \channel && key != \groupFx ) {
+				this.removeFx(key);
+			};
+		});
+	}
+
 	setFxChain {|fxChain_|
 
 
 		if( ((fxChain_===false) || fxChain_.isNil) ) {
-			this.freeFxChain;
-			fxChain=I8TFXChain.new;
-			fxChain.channel = this;
-
+			this.clearIndividualFx;
+			^fxChain;
 		};
 
 		if( (
@@ -290,10 +297,7 @@ I8TChannel : Sequenceable
 			main.validateSynthDef(fxChain_)
 		), {
 
-			this.freeFxChain;
-
-			fxChain = I8TFXChain.new;
-			fxChain.channel = this;
+			this.clearIndividualFx;
 
 			this.addFx(fxChain_);
 
@@ -314,10 +318,7 @@ I8TChannel : Sequenceable
 
 				if(notValid.size==0, {
 
-					this.freeFxChain;
-
-					fxChain = I8TFXChain.new;
-					fxChain.channel = this;
+					this.clearIndividualFx;
 
 					fxChain_.collect({|fx|
 						this.addFx(fx);
