@@ -25,7 +25,7 @@ SynthDef(\clapBasic, {
 	noise2 = BPF.ar(noise2, 1230, 0.7, 0.7);
 
 	snd = noise1 + noise2;
-	snd = snd * 2;
+	snd = snd * 5;
 	snd = snd.softclip;
 
 	Out.ar(out, Pan2.ar(snd,pan,amp) );

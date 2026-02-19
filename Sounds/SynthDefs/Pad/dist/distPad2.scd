@@ -7,7 +7,7 @@ SynthDef(\distPad2, {
 
 	sig = RLPF.ar(( (sig + LFSaw.ar(freq)) * 333.33 ).tanh, freq, 0.05 );
 
-	sig = (sig*1.3).tanh / 3;
+	sig = (sig*1.3).tanh;
 
 	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
 

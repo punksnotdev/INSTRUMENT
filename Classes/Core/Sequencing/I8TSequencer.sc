@@ -94,6 +94,7 @@ Sequencer : I8TNode
 				this.queueDo(\stop);
 				this.queueDo(\go);
 				this.queueDo(\play);
+				this.applyPendingRestarts;
 				this.processLoopers;
 				timeSignature.beats.wait;
 			};
@@ -131,6 +132,18 @@ Sequencer : I8TNode
 						loopers[looper][stateIndex] = \stopped;
 					}
 				);
+			});
+		});
+	}
+
+	applyPendingRestarts {
+		sequencerTracks.do({|track|
+			track.parameterTracks.do({|pt|
+				if(pt.pendingRestart == true) {
+					pt.pendingRestart = false;
+					pt.stop;
+					pt.play(0, 0);
+				};
 			});
 		});
 	}

@@ -16,6 +16,6 @@ SynthDef(\clapNoise, {|amp=0.5,out=0|
 	   }
 	   )};
 
-	   Out.ar(out,Pan2.ar((clapoutput*amp) * clapenv, 0) / 2);
+	   Out.ar(out,Pan2.ar((clapoutput*amp*3).tanh * clapenv, 0));
 
 }).store;

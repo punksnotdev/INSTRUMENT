@@ -1,5 +1,5 @@
 SynthDef(\distPad1, {
-|freq=440.0, decayTime=0.5, amp=0.2, temp=100, out=0, done=2, pan=0, att=1.5, sus=0.1, rel=3.5|
+|freq=440.0, decayTime=0.5, amp=1, temp=100, out=0, done=2, pan=0, att=1.5, sus=0.1, rel=3.5|
 
 	var sig, env;
 

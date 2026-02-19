@@ -33,6 +33,6 @@ SynthDef(\technokick, {
 		slopeBelow: 0.59, slopeAbove: 1,
 		clampTime: 0.002, relaxTime: 0.1, mul: 1);
 
-	Out.ar(out, sig);
+	Out.ar(out, Pan2.ar(sig,0));
 
 }).store;

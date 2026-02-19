@@ -1,16 +1,16 @@
-
-SynthDef(\kickDeep, {|amp=1, out=0|
+SynthDef(\kickLaser, {|amp=1, out=0|
 
     var daNoise,daOsc,env1,env2,env3;
 
     env1=Env.perc(0.001,1,80,-20);
-    env2=Env.perc(0.001,1,1,-8);
+    env2=Env.perc(0.001,1,1,-8);``
     env3=Env.perc(0.001,1,80,-8);
 
     daNoise=LPF.ar(WhiteNoise.ar(1),EnvGen.kr(env1)+20);
 
     daOsc=LPF.ar(SinOsc.ar(EnvGen.kr(env3)+20),200);
 
-    Out.ar(out,Pan2.ar((Mix.ar([daNoise,daOsc]) * amp * 1.2).tanh, 0, EnvGen.kr(env2,doneAction: 2)));
+    Out.ar(out,Pan2.ar((Mix.ar([daNoise,daOsc]) * amp * 12).tanh, 0, EnvGen.kr(env2,doneAction: 2)));
 
 }).store;
+

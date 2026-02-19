@@ -25,6 +25,8 @@ ParameterTrack
 
 	var routine;
 
+	var <>pendingRestart;
+
 	var <>shuffle;
 	var <>shuffleGrid;
 

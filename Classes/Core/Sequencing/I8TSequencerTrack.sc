@@ -81,6 +81,8 @@ SequencerTrack
 		if( test.isNil || test.asSymbol != \test ) {
 			if( parameterTracks[ parameter ].playing != true, {
 				parameterTracks[ parameter ].play;
+			}, {
+				parameterTracks[ parameter ].pendingRestart = true;
 			});
 		};
 
