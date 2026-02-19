@@ -1,7 +1,7 @@
 SynthDef(\kickZip, {|amp=0.5, out=0|
 
     var daNoise,daOsc,env1,env2,env3, envZip;
-    envZip=Env.perc(0.0001,1,18000,-20);
+    envZip=Env.perc(0.0001,0.1,18000,-20);
 
     env1=Env.perc(0.001,1,18000,-20);
     env2=Env.perc(0.001,1,1,-8);
