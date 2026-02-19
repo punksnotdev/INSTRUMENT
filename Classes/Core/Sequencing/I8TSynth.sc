@@ -2,6 +2,7 @@ I8TSynth : Sequenceable {
 
 	var <>synthdef;
 	var <>synth;
+	var <>userParams;
 
 	*new { arg name, synthdef, args, target, addAction=\addToHead;
 		^super.new.init(name, graph,synthdef, args, target, addAction)
@@ -22,9 +23,31 @@ I8TSynth : Sequenceable {
 
 	set { arg ...args;
 		if(synth.isKindOf(Synth)) {
+			if(userParams.isNil) { userParams = IdentityDictionary.new };
+			userParams[args[0]] = args[1];
 			^synth.set(args[0],args[1]);
 		}
 	}
+
+	reset {|param|
+		if(param.notNil) {
+			if(userParams.notNil) { userParams.removeAt(param) };
+			if(parameters[param].notNil && synth.isKindOf(Synth)) {
+				synth.set(param, parameters[param]);
+			};
+		} {
+			if(userParams.notNil) {
+				userParams.keysValuesDo({|k,v|
+					if(parameters[k].notNil && synth.isKindOf(Synth)) {
+						synth.set(k, parameters[k]);
+					};
+				});
+			};
+			userParams = IdentityDictionary.new;
+		};
+	}
+
+	clear {|param| this.reset(param) }
 
 
 
@@ -33,6 +56,7 @@ I8TSynth : Sequenceable {
 		super.init;
 
 		name = name_;
+		userParams = IdentityDictionary.new;
 
 		if( synthdef.notNil ) {
 

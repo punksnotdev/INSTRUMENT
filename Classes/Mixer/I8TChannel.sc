@@ -11,6 +11,7 @@ I8TChannel : Sequenceable
 	var pan;
 
 	var <fxChain;
+	var fxUserParams;
 
 	var eq, locut, compressor;
 
@@ -51,6 +52,7 @@ I8TChannel : Sequenceable
 
 			fxChain = I8TFXChain.new;
 			fxChain.channel = this;
+			fxUserParams = IdentityDictionary.new;
 
 
 			this.setupListeners();
@@ -281,6 +283,40 @@ I8TChannel : Sequenceable
 		});
 	}
 
+	parseFxString {|fxString|
+		var str = fxString.asString;
+		var openParen = str.find("(");
+		var closeParen = str.findBackwards(")");
+		if(openParen.notNil && closeParen.notNil && (closeParen > openParen)) {
+			var fxName = str.copyFromStart(openParen - 1);
+			var paramsStr = str.copyRange(openParen + 1, closeParen - 1);
+			var params = IdentityDictionary.new;
+			paramsStr.split($,).do({|pair|
+				var parts = pair.split($:);
+				if(parts.size >= 2) {
+					params[parts[0].stripWhiteSpace.asSymbol] = parts[1].stripWhiteSpace.asFloat;
+				};
+			});
+			^(name: fxName, params: params)
+		};
+		^(name: str, params: nil)
+	}
+
+	fxNameFromString {|fxString|
+		^this.parseFxString(fxString).name;
+	}
+
+	validateFxName {|fx_|
+		var fxName = this.fxNameFromString(fx_);
+		^(
+			main.validateFolderName(fxName)
+			||
+			main.validateSynthName(fxName)
+			||
+			main.validateSynthDef(fxName)
+		)
+	}
+
 	setFxChain {|fxChain_|
 
 
@@ -289,13 +325,7 @@ I8TChannel : Sequenceable
 			^fxChain;
 		};
 
-		if( (
-			main.validateFolderName(fxChain_)
-			||
-			main.validateSynthName(fxChain_)
-			||
-			main.validateSynthDef(fxChain_)
-		), {
+		if( this.validateFxName(fxChain_), {
 
 			this.clearIndividualFx;
 
@@ -303,29 +333,32 @@ I8TChannel : Sequenceable
 
 		}, {
 
-			if( fxChain_.isKindOf(Array), {
+			// Also accept raw SynthDef/SynthDefVariant/I8TFolder objects
+			if( main.validateSynthDef(fxChain_), {
 
+				this.clearIndividualFx;
+				this.addFx(fxChain_);
 
-				var notValid = fxChain_.reject(
-					(
-						main.validateFolderName(_)
-						||
-						main.validateSynthName(_)
-						||
-						main.validateSynthDef(_)
-					)
-				);
+			}, {
 
-				if(notValid.size==0, {
+				if( fxChain_.isKindOf(Array), {
 
-					this.clearIndividualFx;
-
-					fxChain_.collect({|fx|
-						this.addFx(fx);
+					var notValid = fxChain_.reject({|item|
+						this.validateFxName(item) || main.validateSynthDef(item)
 					});
-				}, {
-					"Invalid FX Chain".warn;
-				})
+
+					if(notValid.size==0, {
+
+						this.clearIndividualFx;
+
+						fxChain_.collect({|fx|
+							this.addFx(fx);
+						});
+					}, {
+						"Invalid FX Chain".warn;
+					})
+				});
+
 			});
 
 		});
@@ -337,7 +370,8 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_, storeKey_|
 
-		var fx = this.createFxSynthDef(fx_);
+		var parsed = this.parseFxString(fx_);
+		var fx = this.createFxSynthDef(parsed.name);
 
 
 		if( (
@@ -350,7 +384,7 @@ I8TChannel : Sequenceable
 
 			this.removeFx(storeKey);
 
-			^this.setupFx(fx, storeKey);
+			^this.setupFx(fx, storeKey, parsed.params);
 
 		};
 
@@ -456,7 +490,7 @@ I8TChannel : Sequenceable
 	}
 
 
-	setupFx {|fx_, storeKey_|
+	setupFx {|fx_, storeKey_, params_|
 
 		var fxSynthName;
 		var fxSynth;
@@ -485,12 +519,35 @@ I8TChannel : Sequenceable
 
 		fxSynth.setupSequencer( sequencer );
 
+		// Apply inline params from FX string e.g. "lpf(freq:100)"
+		if(params_.notNil) {
+			params_.keysValuesDo({|k,v|
+				fxSynth.synth.set(k,v);
+			});
+		};
+
+		// Reapply stored user params from previous .set() calls
+		if(fxUserParams.notNil && fxUserParams[storeKey.asSymbol].notNil) {
+			fxUserParams[storeKey.asSymbol].keysValuesDo({|k,v|
+				fxSynth.synth.set(k,v);
+				fxSynth.userParams[k] = v;
+			});
+		};
+
 		^fxSynth;
 
 	}
 
 
 	removeFx {|key|
+
+		// Save user params before freeing so they persist across re-creation
+		if( fxChain[ key ].isKindOf(I8TSynth) ) {
+			if(fxChain[ key ].userParams.notNil && (fxChain[ key ].userParams.size > 0)) {
+				if(fxUserParams.isNil) { fxUserParams = IdentityDictionary.new };
+				fxUserParams[key] = fxChain[ key ].userParams.copy;
+			};
+		};
 
 		if(
 			fxChain[ key ].isKindOf(Synth)
