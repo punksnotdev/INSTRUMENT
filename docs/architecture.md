@@ -88,6 +88,9 @@ See [docs/sequencing.md](sequencing.md) for the full timing architecture.
 i[\bass].note("60 62 64 67");        // sequence notes
 i[\bass].trigger("1 0.5 1 0.5");     // sequence triggers with amplitude
 i[\bass].seq(\note, "C4 E4 G4");     // explicit parameter
+i[\bass].note.seq("60 62 64");       // parameter-proxy syntax
+i[\bass].note.clear();                // clear note parameter patterns
+i[\bass].note.reset();                // clear + restore default when available
 i[\bass].rm(\note);                   // remove pattern
 i[\bass].note("60 62 64").x(4);      // repeat 4 times
 i[\bass].note("60:0.5 62:1.5");      // explicit durations

@@ -1060,6 +1060,38 @@ i.bass.seq(\rel,[2,0.2,\r,\r,1]);
 
 ```
 
+Parameter proxy syntax is also supported:
+
+```SuperCollider
+
+i.bass.rel.seq([2,0.2,1]);
+i.bass.rel.seq("2 0.2 1");
+
+// equivalent to:
+i.bass.seq(\rel,[2,0.2,1]);
+
+```
+
+You can clear or reset a specific parameter sequence directly from the parameter proxy:
+
+```SuperCollider
+
+i.bass.rel.clear();  // remove rel patterns on this instrument
+i.bass.rel.reset();  // clear + restore parameter default when available
+
+```
+
+Stop or remove parameter sequences with optional `clear` flag (`true/false` or `1/0`):
+
+```SuperCollider
+
+i.bass.rel.stop(clear: true);   // stop + clear rel patterns
+i.bass.rel.stop(clear: false);  // stop only, keep patterns
+i.bass.rel.rm(clear: true);     // remove patterns and stop
+i.bass.rel.rm(clear: false);    // remove patterns only
+
+```
+
 ## Sequencing synthdefs:
 
 ```SuperCollider
@@ -1770,6 +1802,7 @@ i.proxyspace = p;
 i.z=Proxy(~z);
 
 i.z.seq(\freq,"(1000 600):1/4x3   700");
+i.z.freq.seq("(1000 600):1/4x3   700"); // equivalent parameter-proxy syntax
 
 ~z.fadeTime=3;
 i.z.clock=1;
@@ -1800,6 +1833,9 @@ i.z=Proxy(~z);
 i.z.note("0 2 3");
 i.z.clock=4;
 i.z.octave=5;
+i.z.freq.seq("200 400 1200 300");
+i.z.freq.clear();
+i.z.freq.reset(); // restores NodeProxy function default arg when available (e.g. freq=200)
 
 ```
 

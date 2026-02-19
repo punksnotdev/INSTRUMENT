@@ -305,6 +305,46 @@ i.every(4, { "offset 2".postln }, offset: 2);
 
 ---
 
+## Parameter Proxy Syntax
+
+INSTRUMENT also supports parameter-proxy chaining as an alternative to
+`seq(\parameter, pattern)`:
+
+```supercollider
+i.bass.rel.seq("2 0.2 1");
+i.bass.rel.seq([2, 0.2, 1]);
+// equivalent:
+i.bass.seq(\rel, "2 0.2 1");
+```
+
+Clear/reset helpers on the parameter proxy:
+
+```supercollider
+i.bass.rel.clear();   // clears rel parameter patterns
+i.bass.rel.reset();   // clear + restore default value when known
+```
+
+Stop/remove helpers with optional `clear` flag (`true/false` or `1/0`):
+
+```supercollider
+i.bass.rel.stop(clear: true);   // stop + clear rel patterns
+i.bass.rel.stop(clear: false);  // stop only, keep patterns
+i.bass.rel.rm(clear: true);     // remove patterns and stop
+i.bass.rel.rm(clear: false);    // remove patterns only
+```
+
+For NodeProxy-backed instruments (`i.z = Proxy(~z)`), `reset()` restores the function
+argument default when available:
+
+```supercollider
+~z = {|freq=240, fm=20| ... };
+i.z = Proxy(~z);
+i.z.fm.seq("20 10 1");
+i.z.fm.reset();       // sets fm back to 20
+```
+
+---
+
 ## Looper Integration
 
 The sequencer coordinates loop recording/playback via state machine:
