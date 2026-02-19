@@ -287,7 +287,8 @@ I8TChannel : Sequenceable
 		var str = fxString.asString;
 		var openParen = str.find("(");
 		var closeParen = str.findBackwards(")");
-		if(openParen.notNil && closeParen.notNil && (closeParen > openParen)) {
+		// Use short-circuiting blocks to avoid evaluating > on nil in SCJS
+		if(openParen.notNil and: { closeParen.notNil } and: { closeParen > openParen }) {
 			var fxName = str.copyFromStart(openParen - 1);
 			var paramsStr = str.copyRange(openParen + 1, closeParen - 1);
 			var params = IdentityDictionary.new;
@@ -297,23 +298,33 @@ I8TChannel : Sequenceable
 					params[parts[0].stripWhiteSpace.asSymbol] = parts[1].stripWhiteSpace.asFloat;
 				};
 			});
-			^(name: fxName, params: params)
+			^(fxName: fxName, fxParams: params)
 		};
-		^(name: str, params: nil)
+		^(fxName: str, fxParams: nil)
 	}
 
 	fxNameFromString {|fxString|
-		^this.parseFxString(fxString).name;
+		^this.parseFxString(fxString).fxName;
 	}
 
 	validateFxName {|fx_|
-		var fxName = this.fxNameFromString(fx_);
+		// Only parse strings/symbols; other types (SynthDef, etc.) use direct validation
+		if(fx_.isKindOf(String) || fx_.isKindOf(Symbol)) {
+			var fxName = this.fxNameFromString(fx_);
+			^(
+				main.validateFolderName(fxName)
+				||
+				main.validateSynthName(fxName)
+				||
+				main.validateSynthDef(fxName)
+			)
+		};
 		^(
-			main.validateFolderName(fxName)
+			main.validateFolderName(fx_)
 			||
-			main.validateSynthName(fxName)
+			main.validateSynthName(fx_)
 			||
-			main.validateSynthDef(fxName)
+			main.validateSynthDef(fx_)
 		)
 	}
 
@@ -370,8 +381,16 @@ I8TChannel : Sequenceable
 
 	addFx {|fx_, storeKey_|
 
-		var parsed = this.parseFxString(fx_);
-		var fx = this.createFxSynthDef(parsed.name);
+		var parsed, fx, fxParams;
+
+		if(fx_.isKindOf(String) || fx_.isKindOf(Symbol)) {
+			parsed = this.parseFxString(fx_);
+			fx = this.createFxSynthDef(parsed.fxName);
+			fxParams = parsed.fxParams;
+		} {
+			fx = this.createFxSynthDef(fx_);
+			fxParams = nil;
+		};
 
 
 		if( (
@@ -384,7 +403,7 @@ I8TChannel : Sequenceable
 
 			this.removeFx(storeKey);
 
-			^this.setupFx(fx, storeKey, parsed.params);
+			^this.setupFx(fx, storeKey, fxParams);
 
 		};
 
