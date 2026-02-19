@@ -259,6 +259,33 @@ Sequenceable : I8TNode
 		}
 	}
 
+	stopParameter {|parameter_, clear_, position|
+		var track;
+		var pTrack;
+		var shouldClear = false;
+
+		if( clear_.notNil ) {
+			if( clear_.isKindOf(Number) ) {
+				shouldClear = (clear_ != 0);
+			}, {
+				shouldClear = (clear_ == true);
+			});
+		};
+
+		if( sequencer.notNil ) {
+			track = sequencer.sequencerTracks[name];
+			if( track.notNil ) {
+				pTrack = track.parameterTracks[parameter_];
+				if( shouldClear && pTrack.notNil ) {
+					pTrack.clear;
+				};
+				if( pTrack.notNil ) {
+					pTrack.stop(position);
+				};
+			};
+		};
+	}
+
 	go{|time|
 		if( time.isKindOf(Number)) {
 			sequencer.sequencerTracks[name].parameterTracks.collect{|track|

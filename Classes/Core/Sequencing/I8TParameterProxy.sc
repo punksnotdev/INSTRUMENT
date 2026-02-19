@@ -63,7 +63,25 @@ I8TParameterProxy : Object
 		^this.reset;
 	}
 
-	rm {|key|
+	isClearFlag {|value|
+		if(value.isNil) { ^false; };
+		if(value.isKindOf(Number)) { ^(value != 0); };
+		^(value == true);
+	}
+
+	stop {|clear, position|
+		if(target.notNil && target.respondsTo(\stopParameter)) {
+			^target.stopParameter(parameter, clear, position);
+		};
+		^nil;
+	}
+
+	rm {|key, clear|
+		if(this.isClearFlag(clear)) {
+			if(target.notNil && target.respondsTo(\stopParameter)) {
+				^target.stopParameter(parameter, true);
+			};
+		};
 		^target.rm(parameter, key);
 	}
 
