@@ -265,7 +265,7 @@ Sequenceable : I8TNode
 		var shouldClear = false;
 
 		if( clear_.notNil ) {
-			if( clear_.isKindOf(Number) ) {
+			if( clear_.isKindOf(Number), {
 				shouldClear = (clear_ != 0);
 			}, {
 				shouldClear = (clear_ == true);
