@@ -230,6 +230,36 @@ I8TSynthPlayer : I8TSynthInstrument
 
 	}
 
+	isNumericString {|str|
+		var hasDigit = false;
+		var ok = true;
+		if(str.isKindOf(String) == false) { ^false; };
+		str.do({|ch, i|
+			if(ch.isDecDigit) {
+				hasDigit = true;
+			} {
+				if((ch == $.) || (ch == $-) || (ch == $+)) {
+					if(((ch == $-) || (ch == $+)) && (i != 0)) {
+						ok = false;
+					};
+				} {
+					ok = false;
+				};
+			};
+		});
+		^(ok && hasDigit);
+	}
+
+	coerceNumericValue {|parameter, value|
+		var v = value;
+		if(v.isKindOf(String)) {
+			if(this.isNumericString(v)) {
+				v = v.asFloat;
+			};
+		};
+		^v
+	}
+
 	trigger {|parameter,value_|
 
 		var value = value_.copy;
@@ -293,7 +323,6 @@ I8TSynthPlayer : I8TSynthInstrument
 					var rel = event.rel;
 					var use_synth_parameters;
 					var note;
-					var noteStrings = ['A','B','C','D','E','F','G'];
 
 					// play comma-separated chords:
 
@@ -333,58 +362,7 @@ I8TSynthPlayer : I8TSynthInstrument
 
 					if( ( (event.val.isKindOf(Array)==false) && (event.val != \r) && (event.val != nil ) ) ) {
 
-						if(noteStrings.includes(event.val.asString[0].asSymbol)==true, {
-							var notes = (
-								'Cb': -1,
-								'C': 0,
-								'C#': 1,
-								'Db': 1,
-								'D': 2,
-								'D#': 3,
-								'Eb': 3,
-								'E': 4,
-								'E#':5,
-								'F': 5,
-								'Gb': 6,
-								'G': 7,
-								'G#': 8,
-								'Ab': 8,
-								'A': 9,
-								'A#': 10,
-								'Bb': 10,
-								'B': 11,
-								'B#': 12
-							);
-
-
-
-							var noteNumber = 4;
-							var noteName = "";
-
-
-							event.val.do({|c|
-								if(c.isDecDigit, {
-									noteNumber = c.asString.asInteger;
-								}, {
-									noteName = noteName ++ c.asString;
-								});
-							});
-
-							note = notes[noteName.asSymbol];
-
-							if( note.notNil, {
-
-								note = (note + ((noteNumber-4)*12)).asInteger;
-
-							}, {
-								note = 0;
-							});
-
-						}, {
-
-							note = event.val.asFloat.min(128);
-
-						});
+						note = this.parseNote(event.val);
 
 						note = (octave*12)+note;
 
@@ -534,7 +512,7 @@ I8TSynthPlayer : I8TSynthInstrument
 				//
 				// },
 				\trigger, {
-					var floatValue = value.val.asFloat;
+					var floatValue = this.coerceNumericValue(parameter, value.val).asFloat;
 					
 					if( floatValue.asFloat > 0 ) {
 
@@ -565,11 +543,13 @@ I8TSynthPlayer : I8TSynthInstrument
 					// if( (value.val.notNil && (value.val != 0) && (value.val.asSymbol !=\r)), {
 					if( (value.val.notNil && (value.val !=\r)), {
 
-						synth_parameters[parameter.asSymbol]=value.val.asFloat;
+						var v = this.coerceNumericValue(parameter, value.val);
+						if( v.isKindOf(String) ) { v = v.asFloat; };
+						synth_parameters[parameter.asSymbol]=v;
 
 
 						if( synth.isKindOf(Synth) && synth.isPlaying ) {
-							synth.set(parameter.asSymbol,value.val.asFloat);
+							synth.set(parameter.asSymbol,v);
 						}
 
 					});
