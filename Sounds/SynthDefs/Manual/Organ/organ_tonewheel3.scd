@@ -10,7 +10,7 @@ SynthDef(\organ_tonewheel3, {
 	sig = sig * env;
 	sig = sig * amp;
 	sig = LeakDC.ar(sig);
-	Out.ar(0, sig!2);
+	Out.ar(0, Pan2.ar(sig, 0));
 
 //By Zé Craum
 }).store;

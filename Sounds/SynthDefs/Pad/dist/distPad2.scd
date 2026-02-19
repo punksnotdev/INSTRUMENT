@@ -13,6 +13,6 @@ SynthDef(\distPad2, {
 
 	sig = sig * env;
 
-	Out.ar( out, sig * amp );
+	Out.ar( out, Pan2.ar( sig * amp, 0) );
 
 }).store;
