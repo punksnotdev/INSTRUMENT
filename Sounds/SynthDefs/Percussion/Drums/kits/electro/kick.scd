@@ -21,6 +21,6 @@ SynthDef(\kickElectro, {
     snd = body + pop + click;
     snd = snd.tanh;
 
-    Out.ar(out, Pan2.ar(snd, pan, amp));
+    Out.ar(out, Pan2.ar(snd, pan, amp*1.5));
 
 }).store;

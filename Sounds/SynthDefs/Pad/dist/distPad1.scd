@@ -1,16 +1,16 @@
 SynthDef(\distPad1, {
-|freq=440.0, decayTime=0.5, amp=1, temp=100, out=0, done=2, pan=0, att=1.5, sus=0.1, rel=3.5|
+|freq=440.0, decayTime=0.5, amp=1, temp=100, dist=33.33, out=0, done=2, pan=0, att=1.5, sus=0.1, rel=3.5|
 
 	var sig, env;
 
 	sig = RLPF.ar(WhiteNoise.ar(LFNoise2.kr(3,3,100)).tanh,freq*4,0.05)/2;
 
-	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * 33.33 ).tanh, freq*2, 0.35 ).tanh / 4;
+	sig = RLPF.ar(sig + ( LFSaw.ar(freq) * dist ).tanh, freq*2, 0.35 ).tanh / 4;
 
 	env = EnvGen.kr( Env.perc(att,rel), doneAction: 2 );
 
-	sig = sig * env;
+	sig = (sig * env * 3).tanh;
 
-	Out.ar( out, sig * amp );
+	Out.ar( out, Pan2.ar( sig * amp, 0) );
 
 }).store;
