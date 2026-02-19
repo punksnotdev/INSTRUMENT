@@ -155,7 +155,7 @@ Sequencer : I8TNode
 	}
 
 	processRepeatFunctions {
-		repeatFunctions.do({|f, k|
+		repeatFunctions.keysValuesDo({|k, f|
 			f.do({|rf, l|
 				var offset = 0;
 				if(rf.offset.isInteger) {
