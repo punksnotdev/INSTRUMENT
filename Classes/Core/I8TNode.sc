@@ -13,6 +13,7 @@ I8TNode : I8TeventListener
 	var <>outputs;
 
 	var <parameters;
+	var <parameterProxies;
 
 
 	*new {|main_,name_|
@@ -57,6 +58,7 @@ I8TNode : I8TeventListener
 		name = newKey;
 
 		parameters = IdentityDictionary.new;
+		parameterProxies = IdentityDictionary.new;
 
 	}
 
@@ -139,6 +141,18 @@ I8TNode : I8TeventListener
 		};
 
 		if (selector.isKindOf(Symbol)) {
+			if(parameterProxies.isNil) {
+				parameterProxies = IdentityDictionary.new;
+			};
+			if(parameters.isNil) {
+				parameters = IdentityDictionary.new;
+			};
+			if(this.isKindOf(Sequenceable)) {
+				if(parameterProxies[selector].isNil) {
+					parameterProxies[selector] = I8TParameterProxy(this, selector);
+				};
+				^parameterProxies[selector];
+			};
 			if( parameters[selector].notNil ) {
 				^parameters[selector]
 			};

@@ -28,6 +28,27 @@ TestSynthPlayer : I8TUnitTest
 		this.assert(main.someName.isNil);
 	}
 
+	test_parameterGetter_returnsParameterProxyOnSequenceable {
+		main.key0 = "test";
+		this.assert(main.key0.fm.isKindOf(I8TParameterProxy));
+	}
+
+	test_parameterProxySeq_createsParameterTrack {
+		var track;
+		main.key0 = "test";
+		main.key0.fm.seq([20, 10, 1]);
+		track = main.sequencer.sequencerTracks[main.key0.name];
+		this.assert(track.parameterTracks[\fm].notNil);
+	}
+
+	test_parameterProxyClearAndReset_doNotBreak {
+		main.key0 = "test";
+		main.key0.fm.seq([20, 10, 1]);
+		main.key0.fm.clear;
+		main.key0.fm.reset;
+		this.assert(main.key0.fm.isKindOf(I8TParameterProxy));
+	}
+
 
 }
 
