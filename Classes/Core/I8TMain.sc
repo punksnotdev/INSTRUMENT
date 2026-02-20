@@ -81,21 +81,6 @@ I8TMain : Event
 		currentServer = server_;
 	}
 
-	isSupernovaServer {|server_|
-		var program = Server.program.asString;
-		var isLocal = server_.notNil and: { server_.isKindOf(Server) and: { server_.isLocal } };
-
-		^(isLocal and: { program.contains("supernova") });
-	}
-
-	createMainGroup {|server_|
-		if( this.isSupernovaServer(server_), {
-			^ParGroup.new(server_);
-		}, {
-			^Group.new(server_);
-		});
-	}
-
 	
 
 	addServer {|server_|
@@ -129,14 +114,16 @@ I8TMain : Event
 
 			if( z.isKindOf(Server), {
 				server = z;
-				parGroup = this.createMainGroup( server );
+				// Keep top-level serial for stable bus routing order.
+				parGroup = Group.new( server );
 				parGroup.register;
 			});
 			
 
 		}, {
 			server = Server.local;
-			parGroup = this.createMainGroup( server );
+			// Keep top-level serial for stable bus routing order.
+			parGroup = Group.new( server );
 			parGroup.register;
 		});
 
