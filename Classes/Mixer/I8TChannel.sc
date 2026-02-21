@@ -274,13 +274,92 @@ I8TChannel : Sequenceable
 		});
 	}
 
-	// Remove only individually-set FX, preserving \groupFx from a parent InstrumentGroup
+	// Remove only individually-set FX, preserving parent InstrumentGroup FX
 	clearIndividualFx {
 		fxChain.keys.copy.do({|key|
-			if( key != \channel && key != \groupFx ) {
+			if( key != \channel && (this.isGroupFxStoreKey(key).not) ) {
 				this.removeFx(key);
 			};
 		});
+	}
+
+	isGroupFxStoreKey {|key|
+		var str;
+		if(key.isNil) { ^false; };
+		if(key.asSymbol == \groupFx) { ^true; };
+		str = key.asSymbol.asString;
+		if(str.size < 8) { ^false; };
+		^(str.copyRange(0,7) == "groupFx_");
+	}
+
+	firstGroupFxSynth {
+		var first;
+		var firstIndex;
+
+		fxChain.keysValuesDo({|key, value|
+			var parts;
+			var index;
+			if(this.isGroupFxStoreKey(key) && (key.asSymbol != \groupFx)) {
+				parts = key.asSymbol.asString.split($_);
+				index = 0;
+				if(parts.notNil && (parts.size > 0)) {
+					index = parts.last.asInteger;
+				};
+				if(index.isKindOf(Number)) {
+					if(firstIndex.isNil) {
+						firstIndex = index;
+						first = value;
+					} {
+						if(index < firstIndex) {
+							firstIndex = index;
+							first = value;
+						};
+					};
+				};
+			};
+		});
+
+		if(first.isNil) {
+			first = fxChain[\groupFx];
+		};
+		if(first.isKindOf(I8TSynth)) { ^first.synth; };
+		if(first.isKindOf(Synth)) { ^first; };
+		^nil;
+	}
+
+	clearGroupFx {
+		fxChain.keys.copy.do({|key|
+			if(this.isGroupFxStoreKey(key)) {
+				this.removeFx(key);
+			};
+		});
+	}
+
+	setGroupFxChain {|fxChain_|
+		var items;
+
+		if( ((fxChain_===false) || fxChain_.isNil) ) {
+			this.clearGroupFx;
+			^fxChain;
+		};
+
+		this.clearGroupFx;
+
+		if(fxChain_.isKindOf(Array)) {
+			items = fxChain_;
+		} {
+			items = [fxChain_];
+		};
+
+		items.do({|item, i|
+			if(this.validateFxName(item) || main.validateSynthDef(item)) {
+				this.addFx(item, ("groupFx_" ++ i).asSymbol);
+			} {
+				("Invalid group FX skipped: " ++ item).warn;
+			};
+		});
+
+		^fxChain;
 	}
 
 	parseFxString {|fxString|
@@ -514,13 +593,16 @@ I8TChannel : Sequenceable
 		var fxSynthName;
 		var fxSynth;
 		var storeKey = storeKey_ ?? { fx_.synthdefKey };
+		var firstGroupFx;
+		var target;
 
-		// Individual FX must land before groupFx in the node tree so
-		// signal flows: individual FX → groupFx → outSynth
-		var target = if(
-			storeKey != \groupFx && fxChain[\groupFx].notNil
+		// Individual FX must land before any group FX in the node tree so
+		// signal flows: individual FX → group FX → outSynth
+		firstGroupFx = this.firstGroupFxSynth;
+		target = if(
+			this.isGroupFxStoreKey(storeKey).not && firstGroupFx.notNil
 		) {
-			fxChain[\groupFx].synth
+			firstGroupFx
 		} {
 			outSynth
 		};

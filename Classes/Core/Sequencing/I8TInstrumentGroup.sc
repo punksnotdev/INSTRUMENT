@@ -198,7 +198,7 @@ InstrumentGroup : Sequenceable
 			// Remove only the group-applied FX, leaving individual FX intact
 			this.collect({|item|
 				if( item.isKindOf(I8TInstrument) ) {
-					item.channel.removeFx(\groupFx);
+					item.channel.setGroupFxChain(nil);
 				};
 				if( item.isKindOf(InstrumentGroup) ) {
 					item.fx = nil;
@@ -206,10 +206,10 @@ InstrumentGroup : Sequenceable
 			});
 			groupFx = nil;
 		} {
-			// Stack group FX on top of any individual FX, stored under \groupFx key
+			// Stack group FX on top of any individual FX
 			this.collect({|item|
 				if( item.isKindOf(I8TInstrument) ) {
-					item.channel.addFx(something, \groupFx);
+					item.channel.setGroupFxChain(something);
 				};
 				if( item.isKindOf(InstrumentGroup) ) {
 					item.fx = something;
@@ -406,7 +406,7 @@ InstrumentGroup : Sequenceable
 					this.clock_(value.val.asFloat);
 				},
 				\fx, {
-					this.fx_(value.val.asSymbol);
+					this.fx_(value.val);
 				},
 				\fxSet, {
 					this.fxSet(value.val.asFloat);
