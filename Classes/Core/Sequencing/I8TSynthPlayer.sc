@@ -260,6 +260,96 @@ I8TSynthPlayer : I8TSynthInstrument
 		^v
 	}
 
+	collectControlNames {
+		var controls;
+		controls = nil;
+
+		if(synthdef.isKindOf(SynthDefVariant)) {
+			if(
+				synthdef.synthdef.notNil
+				&&
+				synthdef.synthdef.respondsTo(\allControlNames)
+			) {
+				controls = synthdef.synthdef.allControlNames;
+			};
+		};
+
+		if(controls.isNil && synthdef.notNil && synthdef.respondsTo(\allControlNames)) {
+			controls = synthdef.allControlNames;
+		};
+
+		if(controls.isNil && synthdef.isKindOf(SynthDesc) && synthdef.respondsTo(\controls)) {
+			controls = synthdef.controls;
+		};
+
+		if(controls.isNil) {
+			controls = List.new;
+		};
+
+		^controls;
+	}
+
+	hasControl {|controlName|
+		var key = controlName.asSymbol;
+		^this.collectControlNames.any({|ctrl|
+			var ctrlName;
+			if(ctrl.respondsTo(\name)) {
+				ctrlName = ctrl.name;
+			} {
+				if(ctrl.isKindOf(Symbol) || ctrl.isKindOf(String)) {
+					ctrlName = ctrl.asSymbol;
+				};
+			};
+			(ctrlName.notNil) && (ctrlName.asSymbol == key);
+		});
+	}
+
+	hasGateControl {
+		^this.hasControl(\gate);
+	}
+
+	getPolyGateBeats {|event|
+		var gateDuration;
+		var legato;
+
+		if(event.isKindOf(Event), {
+			gateDuration = event[\gateDuration];
+			if(gateDuration.isNil) {
+				gateDuration = event.duration;
+			};
+			legato = event.legato;
+		});
+
+		if(gateDuration.isNil || (gateDuration.asFloat <= 0)) {
+			gateDuration = 0.25;
+		};
+
+		if(legato.isNil && synth_parameters.notNil) {
+			legato = synth_parameters[\legato];
+		};
+		if(legato.isNil) {
+			legato = 0.98;
+		};
+
+		^((gateDuration.asFloat * legato.asFloat).max(0.01));
+	}
+
+	schedulePolyGateRelease {|targetSynth, event|
+		var holdBeats;
+		if(targetSynth.isKindOf(Synth) == false) { ^nil; };
+		if(this.hasGateControl.not) { ^nil; };
+		if(main.isNil || main.clock.isNil) { ^nil; };
+
+		holdBeats = this.getPolyGateBeats(event);
+
+		main.clock.sched(holdBeats, {
+			if(targetSynth.isPlaying) {
+				targetSynth.set(\gate,0);
+			};
+			nil;
+		});
+	}
+
 	trigger {|parameter,value_|
 
 		var value = value_.copy;
@@ -323,6 +413,11 @@ I8TSynthPlayer : I8TSynthInstrument
 					var rel = event.rel;
 					var use_synth_parameters;
 					var note;
+					var gateDuration = event[\gateDuration];
+
+					if(gateDuration.isNil) {
+						gateDuration = event.duration;
+					};
 
 					// play comma-separated chords:
 
@@ -337,6 +432,7 @@ I8TSynthPlayer : I8TSynthInstrument
 								chord.do({|n,i|
 									var nE = event.copy;
 									nE.val=n;
+									nE[\gateDuration] = gateDuration;
 									if( i<(chord.size-1)) {
 										nE.duration = 0;
 									};
@@ -347,16 +443,17 @@ I8TSynthPlayer : I8TSynthInstrument
 
 					};
 
-					if(event.val.isKindOf(Array)) {
-						var chord = event.val.copy;
-						chord.do({|n,i|
-							var nE = event.copy;
-							nE.val=n;
+						if(event.val.isKindOf(Array)) {
+							var chord = event.val.copy;
+							chord.do({|n,i|
+								var nE = event.copy;
+								nE.val=n;
+								nE[\gateDuration] = gateDuration;
 
-							if( i<(chord.size-1)) {
-								nE.duration = 0;
-							};
-							this.trigger(\note,nE)
+								if( i<(chord.size-1)) {
+									nE.duration = 0;
+								};
+								this.trigger(\note,nE)
 						});
 					};
 
@@ -387,13 +484,14 @@ I8TSynthPlayer : I8TSynthInstrument
 
 							if( amp.asFloat > 0, {
 
-								switch(mode,
+									switch(mode,
 
-									\poly, {
+										\poly, {
+											var createdSynth;
 
-										var synthArgs = [
-											\t_trig,1,
-											\freq,(note).midicps,
+											var synthArgs = [
+												\t_trig,1,
+												\freq,(note).midicps,
 											\note,note,
 											\amp, amp,
 											\out, outbus
@@ -403,10 +501,13 @@ I8TSynthPlayer : I8TSynthInstrument
 											synthArgs = synthArgs++[\rel, rel]
 										};
 
-										this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters)
-										);
+											this.createSynth(synthArgs++this.createParametersArray(use_synth_parameters)
+											);
 
-									},
+											createdSynth = synth;
+											this.schedulePolyGateRelease(createdSynth, event);
+
+										},
 
 									\mono, {
 
