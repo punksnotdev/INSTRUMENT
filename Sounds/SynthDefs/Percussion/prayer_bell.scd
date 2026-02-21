@@ -59,7 +59,7 @@ SynthDef(\prayer_bell, { |outbus, t_trig = 1, sing_switch = 0, freq = 2434, amp 
       0.4,
       0.6
     ] * freqscale.reciprocal.pow(0.5)
-  ], input, freqscale, 0, decayscale);
+  ], input, freqscale, 0, decayscale)/8;
   DetectSilence.ar(sig, doneAction: i_doneAction);
   Out.ar(outbus, sig);
 
