@@ -430,8 +430,44 @@ I8TMain : Event
 	
 	}
 
+	isTrackPlaying {|item|
+
+		var track;
+
+		if( item.isNil ) {
+			^false;
+		};
+
+		if( sequencer.notNil && item.respondsTo(\name), {
+			track = sequencer.sequencerTracks[item.name];
+			if( track.notNil ) {
+				^(track.playing == true);
+			};
+		});
+
+		if( item.respondsTo(\playing), {
+			^(item.playing == true);
+		});
+
+		^false
+
+	}
+
 
 	clear {|name|
+
+		var clearName;
+		var snapshotGroups;
+		var snapshotNodes;
+
+		clearName = if( name.notNil, { name.asSymbol }, { nil });
+
+		snapshotGroups = groups.values.reject({|g| this.clearCheckGroup(g, clearName) });
+		snapshotNodes = nodes.values.reject({|n| this.clearCheckNode(n, clearName) });
+
+		// Preserve stop state by only snapshotting tracks that are currently active.
+		snapshotGroups = snapshotGroups.select({|g| this.isTrackPlaying(g) });
+		snapshotNodes = snapshotNodes.select({|n| this.isTrackPlaying(n) });
 
 		if( name.notNil, {
 
@@ -439,41 +475,29 @@ I8TMain : Event
 				data.storage = ();
 			};
 
-			data.storage[name.asSymbol] = ( 
-				groups: groups.reject({|g| this.clearCheckGroup(g, name.asSymbol) }),
-				nodes: nodes.values.reject({|n| this.clearCheckNode(n, name.asSymbol) }),
+			data.storage[clearName] = (
+				groups: snapshotGroups.copy,
+				nodes: snapshotNodes.copy,
 				functions: sequencer.repeatFunctions.copy,
 			);
 
 		}, {
 
-			clearedGroups=groups.reject({|g| this.clearCheckGroup(g) });
-			clearedNodes=nodes.values.reject({|n| this.clearCheckNode(n) });
+			clearedGroups = snapshotGroups.copy;
+			clearedNodes = snapshotNodes.copy;
 
-			clearedFunctions=sequencer.repeatFunctions.copy;
+			clearedFunctions = sequencer.repeatFunctions.copy;
 
 		});
 
 
-		groups.collect({|g|
+		snapshotGroups.collect({|g|
 
 			g.pause;
 
-			g.collect({|gnode|
-				if( name.notNil, {
-					// if( this.clearCheckNode(gnode, name.asSymbol) == false ) {
-					// 	data.storage[name.asSymbol].nodes.add( gnode );
-					// };
-				}, {
-					if( this.clearCheckNode(gnode) == false ) {
-						clearedNodes.add(gnode);
-					};
-				});
-			});
-
 		});
 
-		nodes.collect({|n|
+		snapshotNodes.collect({|n|
 
 			n.pause;
 
